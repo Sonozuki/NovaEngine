@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <Folder Include="Content\" />
-    <Folder Include="Maths\" />
   </ItemGroup>
 
 </Project>
