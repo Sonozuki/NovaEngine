@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.31025.194
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaEngine", "NovaEngine\NovaEngine.csproj", "{C218B284-18B4-4000-9B3D-30AE21DB1981}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platforms", "Platforms", "{892C2AD6-81E2-4427-A6AA-30763A5562C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaEngine.Platform.Windows", "NovaEngine.Platform.Windows\NovaEngine.Platform.Windows.csproj", "{3BCFDBBA-1024-4085-9CA7-6C22F72D9897}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +19,16 @@ Global
 		{C218B284-18B4-4000-9B3D-30AE21DB1981}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C218B284-18B4-4000-9B3D-30AE21DB1981}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C218B284-18B4-4000-9B3D-30AE21DB1981}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BCFDBBA-1024-4085-9CA7-6C22F72D9897}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BCFDBBA-1024-4085-9CA7-6C22F72D9897}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BCFDBBA-1024-4085-9CA7-6C22F72D9897}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BCFDBBA-1024-4085-9CA7-6C22F72D9897}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3BCFDBBA-1024-4085-9CA7-6C22F72D9897} = {892C2AD6-81E2-4427-A6AA-30763A5562C9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FB5216DF-1DDA-4736-9880-BC678B5892FB}
