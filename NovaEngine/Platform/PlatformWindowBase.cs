@@ -1,5 +1,6 @@
 ﻿using NovaEngine.IO.Events;
 using NovaEngine.Maths;
+using NovaEngine.Windowing.Events;
 using System;
 
 namespace NovaEngine.Platform
@@ -84,9 +85,6 @@ namespace NovaEngine.Platform
             }
         }
 
-        /// <summary>Whether the window has closed.</summary>
-        public bool HasClosed { get; private set; }
-
 
         /*********
         ** Public Methods
@@ -98,8 +96,6 @@ namespace NovaEngine.Platform
         {
             _Title = title;
             _Size = size;
-
-            Closed += () => HasClosed = true;
         }
 
         /// <summary>Sets the window title.</summary>
