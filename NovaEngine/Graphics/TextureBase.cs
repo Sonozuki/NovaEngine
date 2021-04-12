@@ -15,6 +15,12 @@ namespace NovaEngine.Graphics
         /// <summary>The depth of the texture.</summary>
         protected internal uint _Depth;
 
+        /// <summary>The texture wrap mode of the V axis.</summary>
+        protected internal TextureWrapMode _WrapModeV;
+
+        /// <summary>The texture wrap mode of the W axis.</summary>
+        protected internal TextureWrapMode _WrapModeW;
+
         /// <summary>The number of layers the texture has.</summary>
         protected internal uint _LayerCount;
 
@@ -45,12 +51,6 @@ namespace NovaEngine.Graphics
 
         /// <summary>The texture wrap mode of the U axis.</summary>
         public TextureWrapMode WrapModeU { get; }
-
-        /// <summary>The texture wrap mode of the V axis.</summary>
-        public TextureWrapMode WrapModeV { get; }
-
-        /// <summary>The texture wrap mode of the W axis.</summary>
-        public TextureWrapMode WrapModeW { get; }
 
         /// <summary>The filter mode of the texture.</summary>
         public TextureFilter Filter { get; }
@@ -90,18 +90,12 @@ namespace NovaEngine.Graphics
             AnisotropicFilteringEnabled = anisotropicFilteringEnabled;
             MaxAnisotropicFilteringLevel = maxAnisotropicFilteringLevel;
             WrapModeU = wrapModeU;
-            WrapModeV = wrapModeV;
-            WrapModeW = wrapModeW;
+            _WrapModeV = wrapModeV;
+            _WrapModeW = wrapModeW;
             Filter = filter;
 
             RendererTexture = RendererManager.CurrentRenderer.CreateRendererTexture(this, generateMipChain);
         }
-
-        /// <summary>Sets pixels specific colours.</summary>
-        /// <param name="pixels">The rectangle of pixels to set.</param>
-        /// <param name="xOffset">The X offset of the pixels (from top left).</param>
-        /// <param name="yOffset">The Y offset of the pixels (from top left).</param>
-        public void SetPixels(Colour[,] pixels, int xOffset = 0, int yOffset = 0) => RendererTexture.SetPixels(pixels, xOffset, yOffset); // TODO: temp
 
         /// <summary>Disposes unmanaged texture resources.</summary>
         public void Dispose() => RendererTexture.Dispose();

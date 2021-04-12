@@ -1,4 +1,5 @@
-﻿using NovaEngine.Maths;
+﻿using NovaEngine.Graphics;
+using NovaEngine.Maths;
 using System;
 
 namespace NovaEngine.Rendering
@@ -16,6 +17,11 @@ namespace NovaEngine.Rendering
         /*********
         ** Public Methods
         *********/
+        /// <summary>Creates a renderer specific texture.</summary>
+        /// <param name="baseTexture">The underlying texture.</param>
+        /// <param name="generateMipChain">Whether the mip chain should be generated for the texture.</param>
+        public RendererTextureBase CreateRendererTexture(TextureBase baseTexture, bool generateMipChain);
+
         /// <summary>Invoked when the renderer should initialise itself.</summary>
         /// <param name="windowHandle">The handle to the application window.</param>
         public void OnInitialise(IntPtr windowHandle);

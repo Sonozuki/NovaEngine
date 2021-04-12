@@ -1,4 +1,5 @@
-﻿using NovaEngine.Maths;
+﻿using NovaEngine.Graphics;
+using NovaEngine.Maths;
 using NovaEngine.Rendering;
 using System;
 
@@ -17,6 +18,9 @@ namespace NovaEngine.Renderer.Vulkan
         /*********
         ** Public Methods
         *********/
+        /// <inheritdoc/>
+        public RendererTextureBase CreateRendererTexture(TextureBase baseTexture, bool generateMipChain) => new VulkanTexture(baseTexture, generateMipChain);
+
         /// <inheritdoc/>
         public void OnInitialise(IntPtr windowHandle)
         {
