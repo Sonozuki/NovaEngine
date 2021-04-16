@@ -24,7 +24,7 @@ namespace NovaEngine.Rendering
             // get the current platform object
             var rendererFiles = Directory.GetFiles(Environment.CurrentDirectory, "NovaEngine.Renderer.*.dll");
             var types = rendererFiles
-                .Select(rendererFile => Assembly.LoadFile(rendererFile))
+                .Select(rendererFile => Assembly.LoadFrom(rendererFile))
                 .SelectMany(assembly => assembly.GetExportedTypes())
                 .Where(type => type.IsClass && !type.IsAbstract);
 

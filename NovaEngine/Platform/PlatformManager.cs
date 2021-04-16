@@ -24,7 +24,7 @@ namespace NovaEngine.Platform
             // get the current platform object
             var platformFiles = Directory.GetFiles(Environment.CurrentDirectory, "NovaEngine.Platform.*.dll");
             var types = platformFiles
-                .Select(platformFile => Assembly.LoadFile(platformFile))
+                .Select(platformFile => Assembly.LoadFrom(platformFile))
                 .SelectMany(assembly => assembly.GetExportedTypes())
                 .Where(type => type.IsClass && !type.IsAbstract);
                 
