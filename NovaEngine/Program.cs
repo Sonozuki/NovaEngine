@@ -18,6 +18,9 @@ namespace NovaEngine
         /// <summary>The main window of the application.</summary>
         public static Window? MainWindow { get; private set; }
 
+        /// <summary>A handle to the application.</summary>
+        public static IntPtr Handle { get; private set; }
+
 
         /*********
         ** Public Methods
@@ -27,6 +30,7 @@ namespace NovaEngine
         public static void Main(string[] args)
         {
             Name = Process.GetCurrentProcess().ProcessName;
+            Handle = Process.GetCurrentProcess().Handle;
 
             InitialiseWindow();
             InitialiseRenderer();
