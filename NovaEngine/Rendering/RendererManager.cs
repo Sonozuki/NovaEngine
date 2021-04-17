@@ -30,7 +30,7 @@ namespace NovaEngine.Rendering
 
             foreach (var type in types)
             {
-                // ensure type is a platform
+                // ensure type is a renderer
                 if (!(type.GetInterfaces().Contains(typeof(IRenderer))))
                     continue;
 
