@@ -1,10 +1,8 @@
 ﻿using NovaEngine.IO.Events;
 using NovaEngine.Maths;
 using NovaEngine.Platform.Windows.Api;
-using NovaEngine.Windowing;
 using NovaEngine.Windowing.Events;
 using System;
-using System.Diagnostics;
 
 namespace NovaEngine.Platform.Windows.Windowing
 {
@@ -59,7 +57,7 @@ namespace NovaEngine.Platform.Windows.Windowing
         public Win32Window(string title, Size size)
             : base(title, size)
         {
-            var hInstance = Process.GetCurrentProcess().Handle;
+            var hInstance = Program.Handle;
 
             WindowProcedure = Procedure;
 
