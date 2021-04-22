@@ -9,7 +9,7 @@ using System.Linq;
 namespace NovaEngine.Content
 {
     /// <summary>Handles content loading.</summary>
-    public class ContentLoader
+    public class Content
     {
         /*********
         ** Fields
@@ -38,7 +38,7 @@ namespace NovaEngine.Content
         ** Public Methods
         *********/
         /// <summary>Initialises the class.</summary>
-        static ContentLoader()
+        static Content()
         {
             // load all content pipeline types from assemblies
             var types = AppDomain.CurrentDomain.GetAssemblies()
@@ -73,7 +73,7 @@ namespace NovaEngine.Content
         /// <param name="path">The relative path to the file to load.</param>
         /// <returns>The loaded file.</returns>
         /// <exception cref="FileNotFoundException">Thrown if <paramref name="path"/> doesn't exist.</exception>
-        /// <exception cref="ContentLoaderException">Thrown if a content reader for <typeparamref name="T"/> couldn't be found, or if the file was invalid.</exception>
+        /// <exception cref="ContentException">Thrown if a content reader for <typeparamref name="T"/> couldn't be found, or if the file was invalid.</exception>
         public static T Load<T>(string path)
         {
             // convert path from relative to absolute
@@ -94,7 +94,7 @@ namespace NovaEngine.Content
                 // find a valid content reader
                 var contentReader = GetContentReaderForType<T>(contentType);
                 if (contentReader == null)
-                    throw new ContentLoaderException($"Cannot find content reader for object type: {typeof(T)} and content type: {contentType}.");
+                    throw new ContentException($"Cannot find content reader for object type: {typeof(T)} and content type: {contentType}.");
 
                 return contentReader.Read(stream);
             }
@@ -109,7 +109,7 @@ namespace NovaEngine.Content
         /// <param name="contentType">The type of content in the stream.</param>
         /// <returns>A stream for the content portion of the file.</returns>
         /// <exception cref="FileNotFoundException">Thrown if <paramref name="file"/> doesn't exist.</exception>
-        /// <exception cref="ContentLoaderException">Thrown if <paramref name="file"/> doesn't have a valid header.</exception>
+        /// <exception cref="ContentException">Thrown if <paramref name="file"/> doesn't have a valid header.</exception>
         private static Stream GetFileContentStream(string file, out string contentType)
         {
             // ensure file exists
@@ -127,7 +127,7 @@ namespace NovaEngine.Content
                 var a = binaryReader.ReadByte();
 
                 if (n != 'N' || o != 'O' || v != 'V' || a != 'A')
-                    throw new ContentLoaderException($"{file} isn't a valid nova file.");
+                    throw new ContentException($"{file} isn't a valid nova file.");
 
                 // read header
                 var version = binaryReader.ReadByte(); // unused for now, should always be 1
