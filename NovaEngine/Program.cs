@@ -1,5 +1,6 @@
 ﻿using NovaEngine.Maths;
 using NovaEngine.Rendering;
+using NovaEngine.Settings;
 using NovaEngine.Windowing;
 using System;
 using System.Diagnostics;
@@ -15,8 +16,12 @@ namespace NovaEngine
         /// <summary>The name of the application, more specifically the name of the executable, without the extension.</summary>
         public static string Name { get; private set; } = "Unknown";
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. (When these are actually used, they'll never be null.)
+
         /// <summary>The main window of the application.</summary>
-        public static Window? MainWindow { get; private set; }
+        public static Window MainWindow { get; private set; }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 
         /// <summary>A handle to the application.</summary>
         public static IntPtr Handle { get; private set; }
@@ -59,7 +64,13 @@ namespace NovaEngine
         }
 
         /// <summary>Initialises the renderer.</summary>
-        private static void InitialiseRenderer() => RendererManager.CurrentRenderer.OnInitialise(MainWindow!.Handle);
+        private static void InitialiseRenderer()
+        {
+            RendererManager.CurrentRenderer.OnInitialise(MainWindow!.Handle);
+
+            // set the runtime dependant rendering settings
+            RenderingSettings.MaxSampleCount = RendererManager.CurrentRenderer.GetMaxUsableSampleCount();
+        }
 
         /// <summary>Runs the main application loop.</summary>
         private static void MainLoop()

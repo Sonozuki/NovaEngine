@@ -22,6 +22,11 @@ namespace NovaEngine.Rendering
         /// <param name="generateMipChain">Whether the mip chain should be generated for the texture.</param>
         public RendererTextureBase CreateRendererTexture(TextureBase baseTexture, bool generateMipChain);
 
+        /// <summary>Gets the max supported sample count.</summary>
+        /// <returns>The max supported sample count.</returns>
+        /// <remarks>This is invoked after <see cref="OnInitialise(IntPtr)"/>.</remarks>
+        public SampleCount GetMaxUsableSampleCount();
+
         /// <summary>Invoked when the renderer should initialise itself.</summary>
         /// <param name="windowHandle">The handle to the application window.</param>
         public void OnInitialise(IntPtr windowHandle);
