@@ -1,4 +1,6 @@
-﻿using NovaEngine.Rendering;
+﻿using NovaEngine.Maths;
+using NovaEngine.Rendering;
+using NovaEngine.Settings;
 using System;
 
 namespace NovaEngine.Graphics
@@ -10,22 +12,22 @@ namespace NovaEngine.Graphics
         ** Fields
         *********/
         /// <summary>The height of the texture.</summary>
-        protected internal uint _Height;
+        protected uint _Height;
 
         /// <summary>The depth of the texture.</summary>
-        protected internal uint _Depth;
+        protected uint _Depth;
 
         /// <summary>The texture wrap mode of the V axis.</summary>
-        protected internal TextureWrapMode _WrapModeV;
+        protected TextureWrapMode _WrapModeV;
 
         /// <summary>The texture wrap mode of the W axis.</summary>
-        protected internal TextureWrapMode _WrapModeW;
+        protected TextureWrapMode _WrapModeW;
+
+        /// <summary>The number of mip levels the texture has.</summary>
+        protected uint _MipLevels = 1; // MipLevels has a protected backing field so renderer specific textures can set this
 
         /// <summary>The number of layers the texture has.</summary>
-        protected internal uint _LayerCount;
-
-        /// <summary>The renderer specific texture.</summary>
-        protected internal RendererTextureBase RendererTexture;
+        protected uint _LayerCount;
 
 
         /*********
@@ -35,7 +37,7 @@ namespace NovaEngine.Graphics
         public uint Width { get; }
 
         /// <summary>The number of mip levels the texture has.</summary>
-        public uint MipLevels { get; internal set; } = 1;
+        public uint MipLevels => _MipLevels;
 
         /// <summary>The mip LOD (level of detail) bias of the texture.</summary>
         public float MipLodBias { get; }
@@ -54,6 +56,9 @@ namespace NovaEngine.Graphics
 
         /// <summary>The filter mode of the texture.</summary>
         public TextureFilter Filter { get; }
+
+        /// <summary>The renderer specific texture.</summary>
+        public RendererTextureBase RendererTexture { get; }
 
         /// <summary>The usage of the texture.</summary>
         internal abstract TextureUsage Usage { get; }
@@ -86,7 +91,7 @@ namespace NovaEngine.Graphics
             _Depth = depth;
             MipLodBias = mipLodBias;
             _LayerCount = layerCount;
-            SampleCount = sampleCount; // TODO: clamp
+            SampleCount = (SampleCount)MathsHelper.Clamp((int)sampleCount, 0, (int)RenderingSettings.MaxSampleCount);
             AnisotropicFilteringEnabled = anisotropicFilteringEnabled;
             MaxAnisotropicFilteringLevel = maxAnisotropicFilteringLevel;
             WrapModeU = wrapModeU;
