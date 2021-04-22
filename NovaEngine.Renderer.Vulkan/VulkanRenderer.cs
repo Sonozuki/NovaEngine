@@ -22,6 +22,12 @@ namespace NovaEngine.Renderer.Vulkan
         public RendererTextureBase CreateRendererTexture(TextureBase baseTexture, bool generateMipChain) => new VulkanTexture(baseTexture, generateMipChain);
 
         /// <inheritdoc/>
+        public SampleCount GetMaxUsableSampleCount()
+        {
+            return SampleCount.Count1; // TODO: temp
+        }
+
+        /// <inheritdoc/>
         public void OnInitialise(IntPtr windowHandle)
         {
         }
