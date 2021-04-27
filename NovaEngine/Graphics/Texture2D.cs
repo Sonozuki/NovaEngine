@@ -40,5 +40,11 @@ namespace NovaEngine.Graphics
         /// <param name="filter">The filter mode of the texture.</param>
         public Texture2D(uint width, uint height, bool generateMipChain = true, float mipLodBias = 0, SampleCount sampleCount = SampleCount.Count1, bool anisotropicFilteringEnabled = true, float maxAnisotropicFilteringLevel = 16, TextureWrapMode wrapModeU = TextureWrapMode.Repeat, TextureWrapMode wrapModeV = TextureWrapMode.Repeat, TextureFilter filter = TextureFilter.Bilinear)
             : base(width, height, 1, generateMipChain, mipLodBias, 1, sampleCount, anisotropicFilteringEnabled, maxAnisotropicFilteringLevel, wrapModeU, wrapModeV, TextureWrapMode.Repeat, filter) { }
+
+        /// <summary>Sets pixels specific colours.</summary>
+        /// <param name="pixels">The rectangle of pixels to set.</param>
+        /// <param name="xOffset">The X offset of the pixels (from top left).</param>
+        /// <param name="yOffset">The Y offset of the pixels (from top left).</param>
+        public void SetPixels(Colour[,] pixels, int xOffset = 0, int yOffset = 0) => RendererTexture.Set2DPixels(pixels, xOffset, yOffset);
     }
 }
