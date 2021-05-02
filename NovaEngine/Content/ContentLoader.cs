@@ -9,7 +9,7 @@ using System.Linq;
 namespace NovaEngine.Content
 {
     /// <summary>Handles content loading.</summary>
-    public class Content
+    public class ContentLoader
     {
         /*********
         ** Fields
@@ -38,7 +38,7 @@ namespace NovaEngine.Content
         ** Public Methods
         *********/
         /// <summary>Initialises the class.</summary>
-        static Content()
+        static ContentLoader()
         {
             // load all content pipeline types from assemblies
             var types = AppDomain.CurrentDomain.GetAssemblies()
