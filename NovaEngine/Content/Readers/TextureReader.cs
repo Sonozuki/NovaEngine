@@ -1,7 +1,6 @@
 ﻿using NovaEngine.Graphics;
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 
 namespace NovaEngine.Content.Readers
 {
@@ -27,19 +26,13 @@ namespace NovaEngine.Content.Readers
                 var height = (uint)binaryReader.ReadInt32();
 
                 // read remaining pixels data
-                Span<Colour> pixels;
-                using (var memoryStream = new MemoryStream())
-                {
-                    stream.CopyTo(memoryStream);
-                    var pixelBytes = new Span<byte>(memoryStream.ToArray());
-                    pixels = MemoryMarshal.Cast<byte, Colour>(pixelBytes);
-                }
+                var pixels = binaryReader.ReadBytes((int)(width * height * 4));
 
                 // convert pixels data to multidimensional array
                 var pixelsArray = new Colour[height, width];
-                fixed (Colour* pixelsPointer = &pixels.GetPinnableReference())
+                fixed (byte* pixelsPointer = pixels)
                 fixed (Colour* pixelsArrayPointer = pixelsArray)
-                    Buffer.MemoryCopy(pixelsPointer, pixelsArrayPointer, height * width, pixels.Length);
+                    Buffer.MemoryCopy(pixelsPointer, pixelsArrayPointer, pixels.Length, pixels.Length);
 
                 // create the texture
                 var texture = new Texture2D(width, height);

@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace NovaEngine.Content.Packers
@@ -15,7 +17,7 @@ namespace NovaEngine.Content.Packers
         public string Type => "texture2d";
 
         /// <inheritdoc/>
-        public List<string> Extensions => new() { ".bmp", ".gif", ".jpg", ".png", ".tiff" };
+        public List<string> Extensions => new() { ".bmp", ".gif", ".jpg", ".png" };
 
 
         /*********
@@ -24,24 +26,17 @@ namespace NovaEngine.Content.Packers
         /// <inheritdoc/>
         public Stream Write(string file)
         {
-            using (var bitmap = new Bitmap(file))
+            using (var image = Image.Load<Rgba32>(file))
             {
                 // populate memory stream with raw pixel data
                 var stream = new MemoryStream();
                 using (var binaryWriter = new BinaryWriter(stream, Encoding.UTF8, true))
                 {
-                    binaryWriter.Write(bitmap.Width);
-                    binaryWriter.Write(bitmap.Height);
+                    binaryWriter.Write(image.Width);
+                    binaryWriter.Write(image.Height);
 
-                    for (int y = 0; y < bitmap.Height; y++)
-                        for (int x = 0; x < bitmap.Width; x++)
-                        {
-                            var pixel = bitmap.GetPixel(x, y);
-                            binaryWriter.Write(pixel.R);
-                            binaryWriter.Write(pixel.B);
-                            binaryWriter.Write(pixel.G);
-                            binaryWriter.Write(pixel.A);
-                        }
+                    for (int row = 0; row < image.Height; row++)
+                        binaryWriter.Write(MemoryMarshal.Cast<Rgba32, byte>(image.GetPixelRowSpan(row)));
                 }
 
                 return stream;

@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using System.Drawing;
 using System.IO;
 
 namespace NovaEngine.Content.Unpackers
@@ -27,22 +29,9 @@ namespace NovaEngine.Content.Unpackers
                 var width = binaryReader.ReadInt32();
                 var height = binaryReader.ReadInt32();
 
-                using (var bitmap = new Bitmap(width, height))
-                {
-                    for (int y = 0; y < bitmap.Height; y++)
-                        for (int x = 0; x < bitmap.Width; x++)
-                        {
-                            var r = binaryReader.ReadByte();
-                            var g = binaryReader.ReadByte();
-                            var b = binaryReader.ReadByte();
-                            var a = binaryReader.ReadByte();
-
-                            var pixel = Color.FromArgb(a, r, g, b);
-                            bitmap.SetPixel(x, y, pixel);
-                        }
-
-                    bitmap.Save(destinationFile);
-                }
+                var pixels = binaryReader.ReadBytes(width * height);
+                using (var image = Image.Load(pixels))
+                    image.SaveAsPng(destinationFile);
             }
         }
     }
