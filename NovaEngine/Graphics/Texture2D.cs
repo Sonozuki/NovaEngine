@@ -1,4 +1,6 @@
-﻿using NovaEngine.Rendering;
+﻿using NovaEngine.Content;
+using NovaEngine.Rendering;
+using System.IO;
 
 namespace NovaEngine.Graphics
 {
@@ -17,10 +19,19 @@ namespace NovaEngine.Graphics
         /// <inheritdoc/>
         internal override TextureType Type => TextureType.Texture2D;
 
+        /// <summary>The undefined texture.</summary>
+        /// <remarks>This is the grey checker board texture.</remarks>
+        public static Texture2D Undefined { get; }
+
 
         /*********
         ** Public Methods
         *********/
+        static Texture2D()
+        {
+            Undefined = ContentLoader.Load<Texture2D>("Textures/Undefined");
+        }
+
         /// <summary>Constructs an instance.</summary>
         /// <param name="width">The width of the texture.</param>
         /// <param name="height">The height of the texture.</param>
