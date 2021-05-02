@@ -30,7 +30,7 @@ namespace NovaEngine.Renderer.Vulkan
             var fragmentShaderModule = CreateShaderModule("Shaders/shader_frag");
 
             // create pipeline layout
-            var descriptorSetLayout = VulkanRenderer.Instance.DescriptorSetLayout;
+            var descriptorSetLayout = VulkanRenderer.Instance.NativeDescriptorSetLayout;
             var pipelineLayoutCreateInfo = new VkPipelineLayoutCreateInfo()
             {
                 SType = VkStructureType.PipelineLayoutCreateInfo,
@@ -195,6 +195,9 @@ namespace NovaEngine.Renderer.Vulkan
                 {
                     Marshal.FreeHGlobal(shaderEntryPoint);
                 }
+
+                VK.DestroyShaderModule(VulkanRenderer.Instance.Device.NativeDevice, vertexShaderModule, null);
+                VK.DestroyShaderModule(VulkanRenderer.Instance.Device.NativeDevice, fragmentShaderModule, null);
             }
         }
 

@@ -127,11 +127,11 @@ namespace NovaEngine.Renderer.Vulkan
         /// <summary>The swapchain Vulkan will present to.</summary>
         internal VulkanSwapchain Swapchain { get; private set; }
 
-        /// <summary>The descriptor set layout for <see cref="DescriptorPool"/>.</summary>
-        internal VkDescriptorSetLayout DescriptorSetLayout { get; private set; }
+        /// <summary>The descriptor set layout for <see cref="NativeDescriptorPool"/>.</summary>
+        internal VkDescriptorSetLayout NativeDescriptorSetLayout { get; private set; }
 
         /// <summary>The descriptor pool for game objects.</summary>
-        internal VkDescriptorPool DescriptorPool { get; private set; }
+        internal VkDescriptorPool NativeDescriptorPool { get; private set; }
 
         /// <summary>The singleton instance of <see cref="VulkanRenderer"/>.</summary>
         internal static VulkanRenderer Instance { get; private set; }
@@ -180,11 +180,11 @@ namespace NovaEngine.Renderer.Vulkan
             //ubo.Projection.M22 *= -1;
             UniformBuffer.CopyFrom(ubo);
 
-            var descriptorSetLayout = DescriptorSetLayout;
+            var descriptorSetLayout = NativeDescriptorSetLayout;
             var allocateInfo = new VkDescriptorSetAllocateInfo()
             {
                 SType = VkStructureType.DescriptorSetAllocateInfo,
-                DescriptorPool = DescriptorPool,
+                DescriptorPool = NativeDescriptorPool,
                 DescriptorSetCount = 1,
                 SetLayouts = &descriptorSetLayout
             };
@@ -318,11 +318,32 @@ namespace NovaEngine.Renderer.Vulkan
         /// <inheritdoc/>
         public void Dispose()
         {
+            CleanUpSwapchain();
+
+            VK.DestroyDescriptorPool(Device.NativeDevice, NativeDescriptorPool, null);
+            VK.DestroyDescriptorSetLayout(Device.NativeDevice, NativeDescriptorSetLayout, null);
+
+            Texture2D.Undefined.Dispose();
+
+            UniformBuffer.Dispose();
+            VertexBuffer.Dispose();
+            IndexBuffer.Dispose();
+
+            for (int i = 0; i < ConcurrentFrames; i++)
+            {
+                VK.DestroySemaphore(Device.NativeDevice, RenderFinishedSemaphores[i], null);
+                VK.DestroySemaphore(Device.NativeDevice, ImageAvailableSemaphores[i], null);
+                VK.DestroyFence(Device.NativeDevice, InFlightFences[i], null);
+            }
+
+            CommandPool.Dispose();
+
             Device.Dispose();
 
             if (!NativeDebugReportCallback.IsNull)
                 VK.DestroyDebugReportCallbackEXT(NativeInstance, NativeDebugReportCallback, null);
 
+            VK.DestroySurfaceKHR(NativeInstance, NativeSurface, null);
             VK.DestroyInstance(NativeInstance, null);
         }
 
@@ -622,7 +643,7 @@ namespace NovaEngine.Renderer.Vulkan
 
                 if (VK.CreateDescriptorSetLayout(Device.NativeDevice, ref descriptorSetLayoutCreateInfo, null, out var descriptorSetLayout) != VkResult.Success)
                     throw new ApplicationException("Failed to create descriptor set layout.");
-                DescriptorSetLayout = descriptorSetLayout;
+                NativeDescriptorSetLayout = descriptorSetLayout;
             }
         }
 
@@ -678,7 +699,7 @@ namespace NovaEngine.Renderer.Vulkan
 
                 if (VK.CreateDescriptorPool(Device.NativeDevice, ref descriptorPoolCreateInfo, null, out var descriptorPool) != VkResult.Success)
                     throw new ApplicationException("Failed to create descriptor pool.");
-                DescriptorPool = descriptorPool;
+                NativeDescriptorPool = descriptorPool;
             }
         }
 

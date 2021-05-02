@@ -11,13 +11,13 @@ namespace NovaEngine.Renderer.Vulkan
         ** Fields
         *********/
         /// <summary>The size of <see cref="NativeBuffer"/>.</summary>
-        private VkDeviceSize Size;
+        private readonly VkDeviceSize Size;
 
         /// <summary>The memory for <see cref="NativeBuffer"/>.</summary>
-        private VkDeviceMemory NativeMemory;
+        private readonly VkDeviceMemory NativeMemory;
 
         /// <summary>The command pool that will be used for the transfer operations.</summary>
-        private VulkanCommandPool TransferCommandPool;
+        private readonly VulkanCommandPool TransferCommandPool;
 
 
         /*********

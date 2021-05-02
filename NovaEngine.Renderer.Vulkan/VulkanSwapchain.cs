@@ -217,6 +217,13 @@ namespace NovaEngine.Renderer.Vulkan
         /// <inheritdoc/>
         public void Dispose()
         {
+            ColourTexture.Dispose();
+            DepthTexture.Dispose();
+
+            if (NativeFramebuffers != null)
+                foreach (var framebuffer in NativeFramebuffers)
+                    VK.DestroyFramebuffer(VulkanRenderer.Instance.Device.NativeDevice, framebuffer, null);
+
             foreach (var imageView in NativeImageViews)
                 VK.DestroyImageView(VulkanRenderer.Instance.Device.NativeDevice, imageView, null);
 

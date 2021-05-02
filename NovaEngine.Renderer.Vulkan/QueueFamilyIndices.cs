@@ -9,13 +9,13 @@ namespace NovaEngine.Renderer.Vulkan
         ** Fields
         *********/
         /// <summary>The index of the graphics queue family.</summary>
-        private uint? _GraphicsFamily;
+        private readonly uint? _GraphicsFamily;
 
         /// <summary>The index of the transfer queue family.</summary>
-        private uint? _TransferFamily;
+        private readonly uint? _TransferFamily;
 
         /// <summary>The index of the compute queue family.</summary>
-        private uint? _ComputeFamily;
+        private readonly uint? _ComputeFamily;
 
 
         /*********
