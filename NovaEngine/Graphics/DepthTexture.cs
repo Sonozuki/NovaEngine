@@ -17,6 +17,6 @@ namespace NovaEngine.Graphics
         *********/
         /// <inheritdoc/>
         public DepthTexture(uint width, uint height, SampleCount sampleCount)
-            : base(width, height, sampleCount: sampleCount) { }
+            : base(width, height, generateMipChain: false, sampleCount: sampleCount) { }
     }
 }
