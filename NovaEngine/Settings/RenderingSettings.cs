@@ -18,7 +18,7 @@ namespace NovaEngine.Settings
         ** Accessors
         *********/
         /// <summary>The maximum number of samples per pixel that can be used in multisample anti aliasing (MSAA).</summary>
-        public static SampleCount MaxSampleCount { get; internal set; } = SampleCount.Count1; // TODO: json ignore
+        public static SampleCount MaxSampleCount => RendererManager.CurrentRenderer.MaxSampleCount;
 
         /// <summary>The current number of samples per pixel to use in multisample anti aliasing (MSAA).</summary>
         public static SampleCount SampleCount

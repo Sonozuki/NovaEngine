@@ -1,6 +1,5 @@
 ﻿using NovaEngine.Maths;
 using NovaEngine.Rendering;
-using NovaEngine.Settings;
 using NovaEngine.Windowing;
 using System;
 using System.Diagnostics;
@@ -64,13 +63,7 @@ namespace NovaEngine
         }
 
         /// <summary>Initialises the renderer.</summary>
-        private static void InitialiseRenderer()
-        {
-            RendererManager.CurrentRenderer.OnInitialise(MainWindow!.Handle);
-
-            // set the runtime dependant rendering settings
-            RenderingSettings.MaxSampleCount = RendererManager.CurrentRenderer.GetMaxUsableSampleCount();
-        }
+        private static void InitialiseRenderer() => RendererManager.CurrentRenderer.OnInitialise(MainWindow!.Handle);
 
         /// <summary>Runs the main application loop.</summary>
         private static void MainLoop()

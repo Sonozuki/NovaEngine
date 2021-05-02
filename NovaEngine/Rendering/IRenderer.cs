@@ -13,6 +13,9 @@ namespace NovaEngine.Rendering
         /// <summary>Whether the renderer can be used on the current environment platform.</summary>
         public bool CanUseOnPlatform { get; }
 
+        /// <summary>The max supported sample count.</summary>
+        public SampleCount MaxSampleCount { get; }
+
 
         /*********
         ** Public Methods
@@ -21,11 +24,6 @@ namespace NovaEngine.Rendering
         /// <param name="baseTexture">The underlying texture.</param>
         /// <param name="generateMipChain">Whether the mip chain should be generated for the texture.</param>
         public RendererTextureBase CreateRendererTexture(TextureBase baseTexture, bool generateMipChain);
-
-        /// <summary>Gets the max supported sample count.</summary>
-        /// <returns>The max supported sample count.</returns>
-        /// <remarks>This is invoked after <see cref="OnInitialise(IntPtr)"/>.</remarks>
-        public SampleCount GetMaxUsableSampleCount();
 
         /// <summary>Invoked when the renderer should initialise itself.</summary>
         /// <param name="windowHandle">The handle to the application window.</param>
