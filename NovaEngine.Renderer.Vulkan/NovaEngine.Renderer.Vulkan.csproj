@@ -8,14 +8,38 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>C:\Development\Source\NovaEngine\NovaEngine\bin\Debug</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>C:\Development\Source\NovaEngine\NovaEngine\bin\Release</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Shaders\bin\**" />
+    <EmbeddedResource Remove="Shaders\bin\**" />
+    <None Remove="Shaders\bin\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Shaders\compile.bat" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\NovaEngine\NovaEngine.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Shaders\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NVK" Version="1.0.4" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="mkdir $(TargetDir)Data\Shaders\&#xD;&#xA;copy $(ProjectDir)Shaders\bin\* $(TargetDir)Data\Shaders\" />
+  </Target>
 
 </Project>
