@@ -15,7 +15,7 @@ layout(binding = 0) uniform UniformBufferObject
 } ubo;
 
 void main() {
-    gl_Position = vec4(inPosition, 1);
+    gl_Position = ubo.projection * ubo.view * ubo.model * vec4(inPosition, 1);
 
     outTextureCoordinate = inTextureCoordinate;
 }

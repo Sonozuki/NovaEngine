@@ -1,4 +1,6 @@
-﻿using NovaEngine.Graphics;
+﻿using NovaEngine.Core;
+using NovaEngine.Core.Components;
+using NovaEngine.Graphics;
 using NovaEngine.Maths;
 using NovaEngine.Rendering;
 using NovaEngine.Settings;
@@ -64,23 +66,18 @@ namespace NovaEngine.Renderer.Vulkan
         private VkFence[] ImagesInFlight;
 
         // TODO: temp
-        private readonly Vertex[] Vertices = new[] { 
-            new Vertex(new Vector3(-.5f, -.5f, 0), Vector2.Zero), 
-            new Vertex(new Vector3(.5f, -.5f, 0), Vector2.UnitX), 
-            new Vertex(new Vector3(-.5f, .5f, 0), Vector2.UnitY),
-            new Vertex(new Vector3(.5f, .5f, 0), Vector2.One)    
+        private readonly Vertex[] Vertices = new[] {
+            new Vertex(new Vector3(50f, 50f, 0), Vector2.Zero),
+            new Vertex(new Vector3(100f, 50f, 0), Vector2.UnitX),
+            new Vertex(new Vector3(50f, 100f, 0), Vector2.UnitY),
+            new Vertex(new Vector3(100f, 100f, 0), Vector2.One)
         };
         private readonly uint[] Indices = new uint[] {
             0, 1, 2,
             1, 3, 2
         };
-
-        private VulkanBuffer UniformBuffer;
-        private VulkanBuffer VertexBuffer;
-        private VulkanBuffer IndexBuffer;
-
-        /// <summary>The Vulkan descriptor set.</summary>
-        private VkDescriptorSet DescriptorSet;
+        private GameObject CameraObject;
+        private GameObject TempObject;
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 
@@ -90,7 +87,7 @@ namespace NovaEngine.Renderer.Vulkan
 
 
         /*********
-        ** Accessors5
+        ** Accessors
         *********/
         /// <inheritdoc/>
         public bool CanUseOnPlatform => OperatingSystem.IsWindows();
@@ -134,7 +131,7 @@ namespace NovaEngine.Renderer.Vulkan
         internal VkDescriptorPool NativeDescriptorPool { get; private set; }
 
         /// <summary>The singleton instance of <see cref="VulkanRenderer"/>.</summary>
-        internal static VulkanRenderer Instance { get; private set; }
+        public static VulkanRenderer Instance { get; private set; }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 
@@ -146,6 +143,9 @@ namespace NovaEngine.Renderer.Vulkan
         public RendererTextureBase CreateRendererTexture(TextureBase baseTexture, bool generateMipChain) => new VulkanTexture(baseTexture, generateMipChain);
 
         /// <inheritdoc/>
+        public RendererGameObjectBase CreateRendererGameObject(GameObject baseGameObject) => new VulkanGameObject(baseGameObject);
+
+        /// <inheritdoc/>
         public void OnInitialise(IntPtr windowHandle)
         {
             WindowHandle = windowHandle;
@@ -153,85 +153,29 @@ namespace NovaEngine.Renderer.Vulkan
 
             CreateInstance();
             CreateSurface();
-            Device = new VulkanDevice(PickPhysicalDevice());
+            Device = new(PickPhysicalDevice());
 
-            Swapchain = new VulkanSwapchain(false, new VkExtent2D(1280, 720)); // don't hardcode vsync or size
+            Swapchain = new(false, new VkExtent2D(1280, 720)); // TODO: don't hardcode vsync or size
             CreateRenderPass();
             Swapchain.CreateFramebuffers(NativeRenderPass);
 
             CreateDescriptorSetLayout();
-            Pipeline = new VulkanPipeline();
+            Pipeline = new();
 
             CreateSyncObjects();
 
-            CommandPool = new VulkanCommandPool(CommandPoolUsage.Graphics);
+            CommandPool = new(CommandPoolUsage.Graphics);
             CreateDescriptorPool();
 
             // TODO: temp
-            VertexBuffer = VulkanUtilities.CreateVertexBuffer(Vertices);
-            IndexBuffer = VulkanUtilities.CreateIndexBuffer(Indices);
+            CameraObject = new("camera");
+            CameraObject.AddComponent(new Camera(1920, 1080, .01f, 1000, true));
+            CameraObject.Transform.GlobalPosition = Vector3.UnitZ * -1;
 
-            UniformBuffer = new VulkanBuffer(sizeof(UniformBufferObject), VkBufferUsageFlags.UniformBuffer, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
-            var ubo = new UniformBufferObject();
-            //{
-            //    View = Matrix4x4.CreateTranslation(0, 0, -5),
-            //    Projection = Matrix4x4.CreatePerspectiveFieldOfView(MathsHelper.DegreesToRadians(90), 16 / 9f, .001f, 1000)
-            //};
-            //ubo.Projection.M22 *= -1;
-            UniformBuffer.CopyFrom(ubo);
+            TempObject = new("tempObject");
+            TempObject.AddComponent(new MeshRenderer(new("mesh", Vertices, Indices)));
 
-            var descriptorSetLayout = NativeDescriptorSetLayout;
-            var allocateInfo = new VkDescriptorSetAllocateInfo()
-            {
-                SType = VkStructureType.DescriptorSetAllocateInfo,
-                DescriptorPool = NativeDescriptorPool,
-                DescriptorSetCount = 1,
-                SetLayouts = &descriptorSetLayout
-            };
-
-            var descriptorSets = new VkDescriptorSet[1];
-            VK.AllocateDescriptorSets(Device.NativeDevice, ref allocateInfo, descriptorSets);
-            DescriptorSet = descriptorSets[0];
-
-            var bufferInfo = new VkDescriptorBufferInfo()
-            {
-                Buffer = UniformBuffer.NativeBuffer,
-                Offset = 0,
-                Range = Marshal.SizeOf<UniformBufferObject>()
-            };
-
-            var imageInfo = new VkDescriptorImageInfo()
-            {
-                ImageLayout = VkImageLayout.ShaderReadOnlyOptimal,
-                ImageView = (Texture2D.Undefined.RendererTexture as VulkanTexture)!.NativeImageView,
-                Sampler = (Texture2D.Undefined.RendererTexture as VulkanTexture)!.NativeSampler
-            };
-
-            var descriptorWrites = new[]
-            {
-                new VkWriteDescriptorSet()
-                {
-                    SType = VkStructureType.WriteDescriptorSet,
-                    DestinationSet = DescriptorSet,
-                    DestinationBinding = 0,
-                    DestinationArrayElement = 0,
-                    DescriptorType = VkDescriptorType.UniformBuffer,
-                    DescriptorCount = 1,
-                    BufferInfo = &bufferInfo
-                },
-                new VkWriteDescriptorSet()
-                {
-                    SType = VkStructureType.WriteDescriptorSet,
-                    DestinationSet = DescriptorSet,
-                    DestinationBinding = 1,
-                    DestinationArrayElement = 0,
-                    DescriptorType = VkDescriptorType.CombinedImageSampler,
-                    DescriptorCount = 1,
-                    ImageInfo = &imageInfo
-                }
-            };
-
-            VK.UpdateDescriptorSets(VulkanRenderer.Instance.Device.NativeDevice, (uint)descriptorWrites.Length, descriptorWrites, 0, null);
+            (TempObject.RendererGameObject as VulkanGameObject)!.UpdateUBO(CameraObject.GetComponent<Camera>()!);
         }
 
         /// <inheritdoc/>
@@ -268,13 +212,14 @@ namespace NovaEngine.Renderer.Vulkan
                     ClearValues = clearValuePointers
                 };
 
+                var vulkanGameObject = (TempObject.RendererGameObject as VulkanGameObject)!;
                 VK.CommandBeginRenderPass(commandBuffer, ref renderPassBeginInfo, VkSubpassContents.Inline);
                 VK.CommandBindPipeline(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.Pipeline);
-                VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.PipelineLayout, 0, 1, new[] { DescriptorSet }, 0, null);
-                var vertexBuffer = VertexBuffer.NativeBuffer;
+                VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.PipelineLayout, 0, 1, new[] { vulkanGameObject.NativeDescriptorSet }, 0, null);
+                var vertexBuffer = vulkanGameObject.VertexBuffer!.NativeBuffer;
                 var offsets = (VkDeviceSize)0;
                 VK.CommandBindVertexBuffers(commandBuffer, 0, 1, ref vertexBuffer, &offsets);
-                VK.CommandBindIndexBuffer(commandBuffer, IndexBuffer.NativeBuffer, 0, VkIndexType.Uint32);
+                VK.CommandBindIndexBuffer(commandBuffer, vulkanGameObject.IndexBuffer!.NativeBuffer, 0, VkIndexType.Uint32);
                 VK.CommandDrawIndexed(commandBuffer, (uint)Indices.Length, 1, 0, 0, 0);
                 VK.CommandEndRenderPass(commandBuffer);
                 VK.EndCommandBuffer(commandBuffer);
@@ -320,14 +265,14 @@ namespace NovaEngine.Renderer.Vulkan
         {
             CleanUpSwapchain();
 
+            // TODO: temp
+            TempObject.RendererGameObject.Dispose();
+            CameraObject.RendererGameObject.Dispose();
+
             VK.DestroyDescriptorPool(Device.NativeDevice, NativeDescriptorPool, null);
             VK.DestroyDescriptorSetLayout(Device.NativeDevice, NativeDescriptorSetLayout, null);
 
             Texture2D.Undefined.Dispose();
-
-            UniformBuffer.Dispose();
-            VertexBuffer.Dispose();
-            IndexBuffer.Dispose();
 
             for (int i = 0; i < ConcurrentFrames; i++)
             {
