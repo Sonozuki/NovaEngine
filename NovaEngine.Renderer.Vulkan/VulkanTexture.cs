@@ -186,7 +186,7 @@ namespace NovaEngine.Renderer.Vulkan
             stagingBuffer.CopyFrom(this);
 
             // get the pixel data from the staging buffer
-            var pixelBuffer = new Span<Colour>(new Colour[bufferSize / sizeof(Colour)]);
+            var pixelBuffer = new Colour[bufferSize / sizeof(Colour)].AsSpan();
             stagingBuffer.CopyTo(pixelBuffer);
 
             // apply pixel changes
