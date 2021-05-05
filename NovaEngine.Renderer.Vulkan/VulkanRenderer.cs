@@ -1,4 +1,5 @@
-﻿using NovaEngine.Core;
+﻿using NovaEngine.Content;
+using NovaEngine.Core;
 using NovaEngine.Core.Components;
 using NovaEngine.Graphics;
 using NovaEngine.Maths;
@@ -66,18 +67,8 @@ namespace NovaEngine.Renderer.Vulkan
         private VkFence[] ImagesInFlight;
 
         // TODO: temp
-        private readonly Vertex[] Vertices = new[] {
-            new Vertex(new Vector3(50f, 50f, 0), Vector2.Zero),
-            new Vertex(new Vector3(100f, 50f, 0), Vector2.UnitX),
-            new Vertex(new Vector3(50f, 100f, 0), Vector2.UnitY),
-            new Vertex(new Vector3(100f, 100f, 0), Vector2.One)
-        };
-        private readonly uint[] Indices = new uint[] {
-            0, 1, 2,
-            1, 3, 2
-        };
         private GameObject CameraObject;
-        private GameObject TempObject;
+        private GameObject ModelObject;
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 
@@ -169,13 +160,12 @@ namespace NovaEngine.Renderer.Vulkan
 
             // TODO: temp
             CameraObject = new("camera");
-            CameraObject.AddComponent(new Camera(1920, 1080, .01f, 1000, true));
-            CameraObject.Transform.GlobalPosition = Vector3.UnitZ * -1;
+            CameraObject.AddComponent(new Camera(90, .01f, 1000, true));
+            CameraObject.Transform.GlobalPosition = Vector3.UnitZ * -12.5f;
 
-            TempObject = new("tempObject");
-            TempObject.AddComponent(new MeshRenderer(new("mesh", Vertices, Indices)));
-
-            (TempObject.RendererGameObject as VulkanGameObject)!.UpdateUBO(CameraObject.GetComponent<Camera>()!);
+            ModelObject = ContentLoader.Load<GameObject>("Models/Cubes");
+            foreach (var meshObject in ModelObject.Children)
+                (meshObject.RendererGameObject as VulkanGameObject)!.UpdateUBO(CameraObject.GetComponent<Camera>()!);
         }
 
         /// <inheritdoc/>
@@ -212,15 +202,20 @@ namespace NovaEngine.Renderer.Vulkan
                     ClearValues = clearValuePointers
                 };
 
-                var vulkanGameObject = (TempObject.RendererGameObject as VulkanGameObject)!;
                 VK.CommandBeginRenderPass(commandBuffer, ref renderPassBeginInfo, VkSubpassContents.Inline);
                 VK.CommandBindPipeline(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.Pipeline);
-                VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.PipelineLayout, 0, 1, new[] { vulkanGameObject.NativeDescriptorSet }, 0, null);
-                var vertexBuffer = vulkanGameObject.VertexBuffer!.NativeBuffer;
-                var offsets = (VkDeviceSize)0;
-                VK.CommandBindVertexBuffers(commandBuffer, 0, 1, ref vertexBuffer, &offsets);
-                VK.CommandBindIndexBuffer(commandBuffer, vulkanGameObject.IndexBuffer!.NativeBuffer, 0, VkIndexType.Uint32);
-                VK.CommandDrawIndexed(commandBuffer, (uint)Indices.Length, 1, 0, 0, 0);
+
+                var vulkanGameObjects = ModelObject.Children.Select(meshObject => meshObject.RendererGameObject).Cast<VulkanGameObject>();
+                foreach (var vulkanGameObject in vulkanGameObjects)
+                {
+                    VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.PipelineLayout, 0, 1, new[] { vulkanGameObject.NativeDescriptorSet }, 0, null);
+                    var vertexBuffer = vulkanGameObject.VertexBuffer!.NativeBuffer;
+                    var offsets = (VkDeviceSize)0;
+                    VK.CommandBindVertexBuffers(commandBuffer, 0, 1, ref vertexBuffer, &offsets);
+                    VK.CommandBindIndexBuffer(commandBuffer, vulkanGameObject.IndexBuffer!.NativeBuffer, 0, VkIndexType.Uint32);
+                    VK.CommandDrawIndexed(commandBuffer, (uint)vulkanGameObject.IndexCount, 1, 0, 0, 0);
+                }
+                
                 VK.CommandEndRenderPass(commandBuffer);
                 VK.EndCommandBuffer(commandBuffer);
 
@@ -266,8 +261,8 @@ namespace NovaEngine.Renderer.Vulkan
             CleanUpSwapchain();
 
             // TODO: temp
-            TempObject.RendererGameObject.Dispose();
-            CameraObject.RendererGameObject.Dispose();
+            ModelObject.Dispose();
+            CameraObject.Dispose();
 
             VK.DestroyDescriptorPool(Device.NativeDevice, NativeDescriptorPool, null);
             VK.DestroyDescriptorSetLayout(Device.NativeDevice, NativeDescriptorSetLayout, null);
