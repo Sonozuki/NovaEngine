@@ -1,4 +1,4 @@
-﻿using NovaEngine.IO.Events;
+﻿using NovaEngine.IO;
 using NovaEngine.Maths;
 using NovaEngine.Platform;
 using NovaEngine.Windowing.Events;
@@ -23,21 +23,6 @@ namespace NovaEngine.Windowing
 
         /// <summary>Invoked when the window loses focus.</summary>
         public event Action? FocusLost;
-
-        /// <summary>Invoked when the mouse is moved.</summary>
-        public event Action<MouseMoveEventArgs>? MouseMove;
-
-        /// <summary>Invoked when a mouse button is pressed.</summary>
-        public event Action<MouseButtonPressedEventArgs>? MouseButtonPressed;
-
-        /// <summary>Invoked when a mouse button is released.</summary>
-        public event Action<MouseButtonReleasedEventArgs>? MouseButtonReleased;
-
-        /// <summary>Invoked when a key is pressed.</summary>
-        public event Action<KeyPressedEventArgs>? KeyPressed;
-
-        /// <summary>Invoked when a key is released.</summary>
-        public event Action<KeyReleasedEventArgs>? KeyReleased;
 
 
         /*********
@@ -92,11 +77,11 @@ namespace NovaEngine.Windowing
             PlatformWindow.Closed += () => { HasClosed = true; Closed?.Invoke(); };
             PlatformWindow.FocusGained += () => FocusGained?.Invoke();
             PlatformWindow.FocusLost += () => FocusLost?.Invoke();
-            PlatformWindow.MouseMove += (e) => MouseMove?.Invoke(e);
-            PlatformWindow.MouseButtonPressed += (e) => MouseButtonPressed?.Invoke(e);
-            PlatformWindow.MouseButtonReleased += (e) => MouseButtonReleased?.Invoke(e);
-            PlatformWindow.KeyPressed += (e) => KeyPressed?.Invoke(e);
-            PlatformWindow.KeyReleased += (e) => KeyReleased?.Invoke(e);
+            PlatformWindow.MouseMove += (e) => Input.MoveMouse(e.MouseDelta);
+            PlatformWindow.MouseButtonPressed += (e) => Input.PressMouseButton(e.Button);
+            PlatformWindow.MouseButtonReleased += (e) => Input.ReleaseMouseButton(e.Button);
+            PlatformWindow.KeyPressed += (e) => Input.PressKey(e.Key);
+            PlatformWindow.KeyReleased += (e) => Input.ReleaseKey(e.Key);
         }
 
         /// <summary>Sets the mouse position (relative to the window).</summary>

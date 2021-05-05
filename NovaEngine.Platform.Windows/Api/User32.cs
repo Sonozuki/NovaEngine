@@ -9,6 +9,13 @@ namespace NovaEngine.Platform.Windows.Api
     internal static class User32
     {
         /*********
+        ** Constants
+        *********/
+        /// <summary>Determines whether a <see cref="VirtualKey.Shift"/> is a <see cref="Key.LeftShift"/> or <see cref="Key.RightShift"/>.</summary>
+        public const ushort ShiftRight = 0x36;
+
+
+        /*********
         ** Public Methods
         *********/
         /// <summary>Retrieves the raw input from the specified device.</summary>

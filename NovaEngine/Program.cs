@@ -1,4 +1,5 @@
-﻿using NovaEngine.Maths;
+﻿using NovaEngine.IO;
+using NovaEngine.Maths;
 using NovaEngine.Rendering;
 using NovaEngine.Windowing;
 using System;
@@ -70,6 +71,8 @@ namespace NovaEngine
         {
             while (!MainWindow!.HasClosed)
             {
+                Input.Update();
+
                 RendererManager.CurrentRenderer.OnRenderFrame();
 
                 MainWindow.ProcessEvents();

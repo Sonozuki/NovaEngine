@@ -158,17 +158,19 @@ namespace NovaEngine.Platform.Windows.Windowing
                         {
                             if (User32.GetRawInputData(lParam, out RawInputHeader header) != Marshal.SizeOf<RawInputHeader>())
                                 break;
+                            if (User32.GetRawInputData(lParam, out RawInput rawInput) == 0)
+                                break;
 
                             switch (header.Type)
                             {
                                 case RawInputDeviceType.Mouse:
-                                    ProcessMouseInput(lParam);
+                                    ProcessMouseInput(rawInput);
                                     break;
                                 case RawInputDeviceType.Keyboard:
-                                    ProcessKeyboardInput(lParam);
+                                    ProcessKeyboardInput(rawInput);
                                     break;
                                 case RawInputDeviceType.Hid:
-                                    ProcessHidInput(lParam);
+                                    ProcessHidInput(rawInput);
                                     break;
                             }
 
@@ -186,22 +188,29 @@ namespace NovaEngine.Platform.Windows.Windowing
         }
 
         /// <summary>Process a mouse input event.</summary>
-        /// <param name="lParam">The lParam from the procedure input message.</param>
-        private void ProcessMouseInput(IntPtr lParam)
+        /// <param name="rawInput">The raw mouse input data.</param>
+        private void ProcessMouseInput(RawInput rawInput)
         {
-            Console.WriteLine("Received mouse input event");
+            // TODO: implement
         }
 
         /// <summary>Process a keyboard input event.</summary>
-        /// <param name="lParam">The lParam from the procedure input message.</param>
-        private void ProcessKeyboardInput(IntPtr lParam)
+        /// <param name="rawInput">The raw keyboard input data.</param>
+        private void ProcessKeyboardInput(RawInput rawInput)
         {
-            Console.WriteLine("Received keyboard input event");
+            var rawKeyboard = rawInput.Data.Keyboard;
+            var isE0BitSet = rawKeyboard.Flags.HasFlag(RawInputKeyboardDataFlags.E0);
+            var convertedKey = Win32Utilties.ConvertVirtualKey(rawKeyboard.VirtualKey, isE0BitSet, rawKeyboard.MakeCode);
+
+            if (rawKeyboard.Flags.HasFlag(RawInputKeyboardDataFlags.Break))
+                KeyReleased?.Invoke(new(convertedKey));
+            else
+                KeyPressed?.Invoke(new(convertedKey));
         }
 
         /// <summary>Process a hid input event.</summary>
-        /// <param name="lParam">The lParam from the procedure input message.</param>
-        private void ProcessHidInput(IntPtr lParam)
+        /// <param name="rawInput">The raw hid input data.</param>
+        private void ProcessHidInput(RawInput rawInput)
         {
             // TODO: implement
         }
