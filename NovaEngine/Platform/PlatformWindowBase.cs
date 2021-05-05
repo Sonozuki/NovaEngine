@@ -23,9 +23,6 @@ namespace NovaEngine.Platform
         /// <summary>Invoked when the window loses focus.</summary>
         public abstract event Action? FocusLost;
 
-        /// <summary>Invoked when state of the window changes.</summary>
-        public abstract event Action<StateChangeEventArgs>? StateChange;
-
         /// <summary>Invoked when the mouse is moved.</summary>
         public abstract event Action<MouseMoveEventArgs>? MouseMove;
 

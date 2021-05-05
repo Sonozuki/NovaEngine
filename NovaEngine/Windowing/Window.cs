@@ -24,9 +24,6 @@ namespace NovaEngine.Windowing
         /// <summary>Invoked when the window loses focus.</summary>
         public event Action? FocusLost;
 
-        /// <summary>Invoked when state of the window changes.</summary>
-        public event Action<StateChangeEventArgs>? StateChange;
-
         /// <summary>Invoked when the mouse is moved.</summary>
         public event Action<MouseMoveEventArgs>? MouseMove;
 
@@ -95,7 +92,6 @@ namespace NovaEngine.Windowing
             PlatformWindow.Closed += () => { HasClosed = true; Closed?.Invoke(); };
             PlatformWindow.FocusGained += () => FocusGained?.Invoke();
             PlatformWindow.FocusLost += () => FocusLost?.Invoke();
-            PlatformWindow.StateChange += (e) => StateChange?.Invoke(e);
             PlatformWindow.MouseMove += (e) => MouseMove?.Invoke(e);
             PlatformWindow.MouseButtonPressed += (e) => MouseButtonPressed?.Invoke(e);
             PlatformWindow.MouseButtonReleased += (e) => MouseButtonReleased?.Invoke(e);

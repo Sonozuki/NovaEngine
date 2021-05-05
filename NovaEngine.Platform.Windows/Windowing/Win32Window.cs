@@ -27,9 +27,6 @@ namespace NovaEngine.Platform.Windows.Windowing
         /// <summary>Invoked when the window loses focus.</summary>
         public override event Action? FocusLost;
 
-        /// <summary>Invoked when state of the window changes.</summary>
-        public override event Action<StateChangeEventArgs>? StateChange;
-
         /// <summary>Invoked when the mouse is moved.</summary>
         public override event Action<MouseMoveEventArgs>? MouseMove;
 
