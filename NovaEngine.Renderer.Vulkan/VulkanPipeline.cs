@@ -94,7 +94,7 @@ namespace NovaEngine.Renderer.Vulkan
                     RasterizerDiscardEnable = false,
                     PolygonMode = VkPolygonMode.Fill,
                     LineWidth = 1,
-                    CullMode = VkCullModeFlags.None,
+                    CullMode = VkCullModeFlags.Back,
                     FrontFace = VkFrontFace.CounterClockwise,
                     DepthBiasEnable = false,
                     DepthBiasConstantFactor = 0,
