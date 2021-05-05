@@ -67,6 +67,7 @@ namespace NovaEngine.Renderer.Vulkan
                 View = camera.Transform?.Matrix ?? Matrix4x4.Identity,
                 Projection = camera.Matrix
             };
+            ubo.Projection.M22 *= -1;
 
             // copy UBO data to uniform buffer
             UniformBuffer.CopyFrom(ubo);
