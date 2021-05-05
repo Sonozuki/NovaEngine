@@ -1,12 +1,13 @@
 ﻿using NovaEngine.Core.Components;
 using NovaEngine.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace NovaEngine.Core
 {
     /// <summary>Represents a game object.</summary>
-    public class GameObject
+    public class GameObject : IDisposable
     {
         /*********
         ** Fields
@@ -182,6 +183,18 @@ namespace NovaEngine.Core
             return components;
         }
 
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            RendererGameObject.Dispose();
+
+            foreach (var component in Components)
+                component.Dispose();
+
+            foreach (var child in Children)
+                child.Dispose();
+        }
+
 
         /*********
         ** Internal Methods
@@ -189,7 +202,6 @@ namespace NovaEngine.Core
         /// <summary>Starts the game object.</summary>
         internal void Start()
         {
-            // start components
             foreach (var component in Components)
                 component.OnStart();
 
@@ -200,12 +212,10 @@ namespace NovaEngine.Core
         /// <summary>Updates the game object.</summary>
         internal void Update()
         {
-            // update components
             foreach (var component in Components)
                 if (component.IsEnabled)
                     component.OnUpdate();
 
-            // update children game objects
             foreach (var child in Children)
                 if (child.IsEnabled)
                     child.Update();

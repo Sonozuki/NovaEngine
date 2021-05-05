@@ -1,8 +1,10 @@
-﻿namespace NovaEngine.Core.Components
+﻿using System;
+
+namespace NovaEngine.Core.Components
 {
     /// <summary>Represents the base of a <see cref="Core.GameObject"/> component.</summary>
     /// <remarks>A component refers to some scriptable behaviour.</remarks>
-    public abstract class ComponentBase
+    public abstract class ComponentBase : IDisposable
     {
         /*********
         ** Accessors
@@ -32,5 +34,8 @@
 
         /// <summary>Invoked when the component should get updated (once per tick).</summary>
         public virtual void OnUpdate() { }
+
+        /// <inheritdoc/>
+        public virtual void Dispose() { }
     }
 }
