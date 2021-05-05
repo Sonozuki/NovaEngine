@@ -1,6 +1,9 @@
-﻿namespace NovaEngine.Platform.Windows.Input
+﻿using System;
+
+namespace NovaEngine.Platform.Windows.Input
 {
     /// <summary>Flags for scan code information.</summary>
+    [Flags]
     internal enum RawInputKeyboardDataFlags : ushort
     {
         /// <summary>The key is down.</summary>

@@ -1,6 +1,9 @@
-﻿namespace NovaEngine.Platform.Windows.Input
+﻿using System;
+
+namespace NovaEngine.Platform.Windows.Input
 {
     /// <summary>The flags a <see cref="RawInputDevice"/> can have.</summary>
+    [Flags]
     internal enum RawInputDeviceFlags
     {
         /// <summary>Removes the top level collection from the inclusion list. This tell the OS to stop reading from a device which matches the top level collection/</summary>
