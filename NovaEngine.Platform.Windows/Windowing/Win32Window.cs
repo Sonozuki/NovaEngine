@@ -1,8 +1,11 @@
-﻿using NovaEngine.IO.Events;
+﻿using NovaEngine.IO;
+using NovaEngine.IO.Events;
 using NovaEngine.Maths;
 using NovaEngine.Platform.Windows.Api;
+using NovaEngine.Platform.Windows.Input;
 using NovaEngine.Windowing.Events;
 using System;
+using System.Runtime.InteropServices;
 
 namespace NovaEngine.Platform.Windows.Windowing
 {
@@ -47,7 +50,7 @@ namespace NovaEngine.Platform.Windows.Windowing
         ** Fields
         *********/
         /// <summary>The procedure of the window.</summary>
-        private WindowProcedureDelegate WindowProcedure;
+        private readonly WindowProcedureDelegate WindowProcedure;
 
 
         /*********
@@ -57,8 +60,7 @@ namespace NovaEngine.Platform.Windows.Windowing
         public Win32Window(string title, Size size)
             : base(title, size)
         {
-            var hInstance = Program.Handle;
-
+            // create window
             WindowProcedure = Procedure;
 
             var className = "NovaWindowClass";
@@ -66,18 +68,28 @@ namespace NovaEngine.Platform.Windows.Windowing
             var windowClass = new NativeWindowClass()
             {
                 WindowProcedure = WindowProcedure,
-                Handle = hInstance,
+                Handle = Program.Handle,
                 ClassName = className,
                 Cursor = User32.LoadCursor(IntPtr.Zero, 32512) // normal 'arrow' cursor
             };
 
             User32.RegisterClass(in windowClass);
 
-            Handle = User32.CreateWindowEx(0, className, Title, WindowStyle.OverlappedWindow, 0, 0, Size.Width, Size.Height, IntPtr.Zero, IntPtr.Zero, hInstance, IntPtr.Zero);
+            Handle = User32.CreateWindowEx(0, className, Title, WindowStyle.OverlappedWindow, 0, 0, Size.Width, Size.Height, IntPtr.Zero, IntPtr.Zero, Program.Handle, IntPtr.Zero);
             if (Handle == IntPtr.Zero)
                 return;
 
             User32.ShowWindow(Handle, CommandShow.Show);
+
+            // register input devices
+            var rawInputDevices = new[]
+            {
+                new RawInputDevice(HidUsageGenericDesktop.Mouse, RawInputDeviceFlags.DevNotify, Handle),
+                new RawInputDevice(HidUsageGenericDesktop.Keyboard, RawInputDeviceFlags.DevNotify, Handle)
+            };
+
+            if (!User32.RegisterRawInputDevices(rawInputDevices, (uint)rawInputDevices.Length, (uint)Marshal.SizeOf<RawInputDevice>()))
+                throw new ApplicationException($"Failed to register raw input device: {Marshal.GetLastWin32Error()}.");
         }
 
         /// <inheritdoc/>
@@ -128,28 +140,73 @@ namespace NovaEngine.Platform.Windows.Windowing
             {
                 switch (message)
                 {
-                    case (Message.Destroy):
-                        Closed?.Invoke();
-                        User32.PostQuitMessage(0);
-                        break;
-                    case (Message.Size):
-                        var oldSize = Size;
-                        var widthHeight = lParam.ToInt32();
-                        _Size.Width = widthHeight & 0x0000FFFF;
-                        _Size.Height = widthHeight >> 16;
-                        Resize?.Invoke(new ResizeEventArgs(oldSize, _Size));
-                        break;
-                    default:
-                        return User32.DefWindowProc(windowHandle, message, wParam, lParam);
+                    case Message.Destroy:
+                        {
+                            Closed?.Invoke();
+                            User32.PostQuitMessage(0);
+
+                            return IntPtr.Zero;
+                        }
+                    case Message.Size:
+                        {
+                            var oldSize = Size;
+                            var widthHeight = lParam.ToInt32();
+                            _Size.Width = widthHeight & 0x0000FFFF;
+                            _Size.Height = widthHeight >> 16;
+                            Resize?.Invoke(new ResizeEventArgs(oldSize, _Size));
+
+                            return IntPtr.Zero;
+                        }
+                    case Message.Input:
+                        {
+                            if (User32.GetRawInputData(lParam, out RawInputHeader header) != Marshal.SizeOf<RawInputHeader>())
+                                break;
+
+                            switch (header.Type)
+                            {
+                                case RawInputDeviceType.Mouse:
+                                    ProcessMouseInput(lParam);
+                                    break;
+                                case RawInputDeviceType.Keyboard:
+                                    ProcessKeyboardInput(lParam);
+                                    break;
+                                case RawInputDeviceType.Hid:
+                                    ProcessHidInput(lParam);
+                                    break;
+                            }
+
+                            return IntPtr.Zero;
+                        }
                 }
 
-                return IntPtr.Zero;
+                return User32.DefWindowProc(windowHandle, message, wParam, lParam);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Unhandled exception occured in window procedure: {ex}");
                 return IntPtr.Zero;
             }
+        }
+
+        /// <summary>Process a mouse input event.</summary>
+        /// <param name="lParam">The lParam from the procedure input message.</param>
+        private void ProcessMouseInput(IntPtr lParam)
+        {
+            Console.WriteLine("Received mouse input event");
+        }
+
+        /// <summary>Process a keyboard input event.</summary>
+        /// <param name="lParam">The lParam from the procedure input message.</param>
+        private void ProcessKeyboardInput(IntPtr lParam)
+        {
+            Console.WriteLine("Received keyboard input event");
+        }
+
+        /// <summary>Process a hid input event.</summary>
+        /// <param name="lParam">The lParam from the procedure input message.</param>
+        private void ProcessHidInput(IntPtr lParam)
+        {
+            // TODO: implement
         }
     }
 }
