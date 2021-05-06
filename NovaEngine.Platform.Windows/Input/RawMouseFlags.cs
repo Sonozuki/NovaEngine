@@ -1,6 +1,9 @@
-﻿namespace NovaEngine.Platform.Windows.Input
+﻿using System;
+
+namespace NovaEngine.Platform.Windows.Input
 {
     /// <summary>Mouse indicator flags.</summary>
+    [Flags]
     internal enum RawMouseFlags : ushort
     {
         /// <summary>Mouse movement data is relativie to the last mouse position.</summary>

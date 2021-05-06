@@ -1,6 +1,9 @@
-﻿namespace NovaEngine.Platform.Windows.Input
+﻿using System;
+
+namespace NovaEngine.Platform.Windows.Input
 {
     /// <summary>The transitions state of the mouse buttons.</summary>
+    [Flags]
     internal enum RawInputMouseState : ushort
     {
         /// <summary>Left button changed to down.</summary>

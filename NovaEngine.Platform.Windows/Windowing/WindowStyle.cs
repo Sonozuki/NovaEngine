@@ -1,6 +1,9 @@
-﻿namespace NovaEngine.Platform.Windows.Windowing
+﻿using System;
+
+namespace NovaEngine.Platform.Windows.Windowing
 {
     /// <summary>The styles a window can have.</summary>
+    [Flags]
     public enum WindowStyle : uint
     {
         /// <summary>The window has a title bar.</summary>
