@@ -26,6 +26,9 @@ namespace NovaEngine.Platform
         /// <summary>Invoked when the mouse is moved.</summary>
         public abstract event Action<MouseMoveEventArgs>? MouseMove;
 
+        /// <summary>Invoked when the mouse is scrolled.</summary>
+        public abstract event Action<MouseScrollEventArgs>? MouseScroll;
+
         /// <summary>Invoked when a mouse button is pressed.</summary>
         public abstract event Action<MouseButtonPressedEventArgs>? MouseButtonPressed;
 

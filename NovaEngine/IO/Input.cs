@@ -11,8 +11,14 @@ namespace NovaEngine.IO
         /*********
         ** Fields
         *********/
+        /// <summary>The mouse input event handlers.</summary>
+        private static readonly Dictionary<MouseButtonEventListenerInfo, List<Action>> MouseButtonEventHandlers = new();
+
         /// <summary>The keyboard input event handlers.</summary>
         private static readonly Dictionary<KeyEventListenerInfo, List<Action>> KeyEventHandlers = new();
+
+        /// <summary>The mouse buttons that are currently held down.</summary>
+        private static readonly List<MouseButton> HeldMouseButtons = new();
 
         /// <summary>The keys that are currently held down.</summary>
         private static readonly List<Key> HeldKeys = new();
@@ -24,6 +30,30 @@ namespace NovaEngine.IO
         /*********
         ** Public Methods
         *********/
+        /// <summary>Adds a keyboard event handler.</summary>
+        /// <param name="button">The button to listen to.</param>
+        /// <param name="pressType">The type of press to listen to.</param>
+        /// <param name="callback">The callback to invoke.</param>
+        public static void AddMouseButtonHandler(MouseButton button, PressType pressType, Action callback)
+        {
+            var listenerInfo = new MouseButtonEventListenerInfo(button, pressType);
+            if (MouseButtonEventHandlers.ContainsKey(listenerInfo))
+                MouseButtonEventHandlers[listenerInfo].Add(callback);
+            else
+                MouseButtonEventHandlers[listenerInfo] = new() { callback };
+        }
+
+        /// <summary>Removes a keyboard event handler.</summary>
+        /// <param name="button">The button to stop listening to.</param>
+        /// <param name="pressType">The type of press to stop listening to.</param>
+        /// <param name="callback">The callback that should no longer be invoked.</param>
+        public static void RemoveMouseButtonHandler(MouseButton button, PressType pressType, Action callback)
+        {
+            var listenerInfo = new MouseButtonEventListenerInfo(button, pressType);
+            if (MouseButtonEventHandlers.ContainsKey(listenerInfo))
+                MouseButtonEventHandlers[listenerInfo].Remove(callback);
+        }
+
         /// <summary>Adds a keyboard event handler.</summary>
         /// <param name="key">The key to listen to.</param>
         /// <param name="pressType">The type of press to listen to.</param>
@@ -69,8 +99,16 @@ namespace NovaEngine.IO
         /// <summary>Invokes the callbacks for event handlers listening to <see cref="PressType.Hold"/>.</summary>
         internal static void Update()
         {
+            // invoke held mouse button callbacks
+            var eventHandlers = MouseButtonEventHandlers
+                .Where(listenerInfo => HeldMouseButtons.Contains(listenerInfo.Key.Button) && listenerInfo.Key.PressType == PressType.Hold)
+                .SelectMany(listenerInfo => listenerInfo.Value);
+
+            foreach (var eventHandler in eventHandlers)
+                eventHandler.Invoke();
+
             // invoke held key callbacks
-            var eventHandlers = KeyEventHandlers
+            eventHandlers = KeyEventHandlers
                 .Where(listenerInfo => HeldKeys.Contains(listenerInfo.Key.Key) && (ModifiersState & listenerInfo.Key.Modifiers) == listenerInfo.Key.Modifiers && listenerInfo.Key.PressType == PressType.Hold)
                 .SelectMany(listenerInfo => listenerInfo.Value);
 
@@ -79,8 +117,9 @@ namespace NovaEngine.IO
         }
 
         /// <summary>Move the mouse.</summary>
-        /// <param name="delta">The move delta.</param>
-        internal static void MoveMouse(Vector2I delta)
+        /// <param name="mousePosition">The position of the mouse.</param>
+        /// <param name="isRelative">Whether <paramref name="mousePosition"/> is relative to the current location.</param>
+        internal static void MoveMouse(Vector2I mousePosition, bool isRelative)
         {
             // TODO: implement
         }
@@ -89,14 +128,30 @@ namespace NovaEngine.IO
         /// <param name="button">The button to press.</param>
         internal static void PressMouseButton(MouseButton button)
         {
-            // TODO: implement
+            HeldMouseButtons.Add(button);
+
+            // invoke callbacks
+            var eventHandlers = MouseButtonEventHandlers
+                .Where(listenerInfo => listenerInfo.Key.Button == button && listenerInfo.Key.PressType == PressType.Press)
+                .SelectMany(listenerInfo => listenerInfo.Value);
+
+            foreach (var eventHandler in eventHandlers)
+                eventHandler.Invoke();
         }
 
         /// <summary>Release a mouse button.</summary>
         /// <param name="button">The button to release.</param>
         internal static void ReleaseMouseButton(MouseButton button)
         {
-            // TODO: implement
+            HeldMouseButtons.Remove(button);
+
+            // invoke callbacks
+            var eventHandlers = MouseButtonEventHandlers
+                .Where(listenerInfo => listenerInfo.Key.Button == button && listenerInfo.Key.PressType == PressType.Release)
+                .SelectMany(listenerInfo => listenerInfo.Value);
+
+            foreach (var eventHandler in eventHandlers)
+                eventHandler.Invoke();
         }
 
         /// <summary>Press a key.</summary>

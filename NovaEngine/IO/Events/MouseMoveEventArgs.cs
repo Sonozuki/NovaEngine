@@ -9,26 +9,23 @@ namespace NovaEngine.IO.Events
         /*********
         ** Accessors
         *********/
-        /// <summary>The old position of the mouse.</summary>
-        public Vector2I OldMousePosition { get; }
+        /// <summary>The position of the mouse.</summary>
+        public Vector2I MousePosition { get; }
 
-        /// <summary>The new position of the mouse.</summary>
-        public Vector2I NewMousePosition { get; }
-
-        /// <summary>The delta of the mouse position.</summary>
-        public Vector2I MouseDelta => NewMousePosition - OldMousePosition;
+        /// <summary>Whether <see cref="MousePosition"/> is relative to the current location.</summary>
+        public bool IsRelative { get; }
 
 
         /*********
         ** Public Methods
         *********/
         /// <summary>Constructs an instance.</summary>
-        /// <param name="oldMousePosition">The old state of the window.</param>
-        /// <param name="newMousePosition">The new state of the window.</param>
-        public MouseMoveEventArgs(Vector2I oldMousePosition, Vector2I newMousePosition)
+        /// <param name="mousePosition">The position of the mouse.</param>
+        /// <param name="isRelative">Whether <paramref name="mousePosition"/> is relative to the current location.</param>
+        public MouseMoveEventArgs(Vector2I mousePosition, bool isRelative)
         {
-            OldMousePosition = oldMousePosition;
-            NewMousePosition = newMousePosition;
+            MousePosition = mousePosition;
+            IsRelative = isRelative;
         }
     }
 }

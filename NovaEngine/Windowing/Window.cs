@@ -77,7 +77,7 @@ namespace NovaEngine.Windowing
             PlatformWindow.Closed += () => { HasClosed = true; Closed?.Invoke(); };
             PlatformWindow.FocusGained += () => FocusGained?.Invoke();
             PlatformWindow.FocusLost += () => FocusLost?.Invoke();
-            PlatformWindow.MouseMove += (e) => Input.MoveMouse(e.MouseDelta);
+            PlatformWindow.MouseMove += (e) => Input.MoveMouse(e.MousePosition, e.IsRelative);
             PlatformWindow.MouseButtonPressed += (e) => Input.PressMouseButton(e.Button);
             PlatformWindow.MouseButtonReleased += (e) => Input.ReleaseMouseButton(e.Button);
             PlatformWindow.KeyPressed += (e) => Input.PressKey(e.Key);
