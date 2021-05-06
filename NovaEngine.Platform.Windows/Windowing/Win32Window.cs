@@ -15,31 +15,34 @@ namespace NovaEngine.Platform.Windows.Windowing
         /*********
         ** Events
         *********/
-        /// <summary>Invoked when the window is resized.</summary>
+        /// <inheritdoc/>
         public override event Action<ResizeEventArgs>? Resize;
 
-        /// <summary>Invoked when the window is closed.</summary>
+        /// <inheritdoc/>
         public override event Action? Closed;
 
-        /// <summary>Invoked when the window gains focus.</summary>
+        /// <inheritdoc/>
         public override event Action? FocusGained;
 
-        /// <summary>Invoked when the window loses focus.</summary>
+        /// <inheritdoc/>
         public override event Action? FocusLost;
 
-        /// <summary>Invoked when the mouse is moved.</summary>
+        /// <inheritdoc/>
         public override event Action<MouseMoveEventArgs>? MouseMove;
 
-        /// <summary>Invoked when a mouse button is pressed.</summary>
+        /// <inheritdoc/>
+        public override event Action<MouseScrollEventArgs>? MouseScroll;
+
+        /// <inheritdoc/>
         public override event Action<MouseButtonPressedEventArgs>? MouseButtonPressed;
 
-        /// <summary>Invoked when a mouse button is released.</summary>
+        /// <inheritdoc/>
         public override event Action<MouseButtonReleasedEventArgs>? MouseButtonReleased;
 
-        /// <summary>Invoked when a key is pressed.</summary>
+        /// <inheritdoc/>
         public override event Action<KeyPressedEventArgs>? KeyPressed;
 
-        /// <summary>Invoked when a key is released.</summary>
+        /// <inheritdoc/>
         public override event Action<KeyReleasedEventArgs>? KeyReleased;
 
 
@@ -191,7 +194,49 @@ namespace NovaEngine.Platform.Windows.Windowing
         /// <param name="rawInput">The raw mouse input data.</param>
         private void ProcessMouseInput(RawInput rawInput)
         {
-            // TODO: implement
+            var rawMouse = rawInput.Data.Mouse;
+            var button = MouseButton.LeftButton;
+            var isPressing = false;
+
+            // buttons
+            if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.LeftButtonDown))
+                (button, isPressing) = (MouseButton.LeftButton, true);
+            if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.LeftButtonUp))
+                (button, isPressing) = (MouseButton.LeftButton, false);
+
+            if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.RightButtonDown))
+                (button, isPressing) = (MouseButton.RightButton, true);
+            if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.RightButtonDown))
+                (button, isPressing) = (MouseButton.RightButton, false);
+
+            if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.MiddleButtonDown))
+                (button, isPressing) = (MouseButton.MiddleButton, true);
+            if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.MiddleButtonUp))
+                (button, isPressing) = (MouseButton.MiddleButton, false);
+
+            if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.Button4Down))
+                (button, isPressing) = (MouseButton.BackButton, true);
+            if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.Button4Up))
+                (button, isPressing) = (MouseButton.BackButton, false);
+
+            if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.Button5Down))
+                (button, isPressing) = (MouseButton.ForwardButton, true);
+            if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.Button5Up))
+                (button, isPressing) = (MouseButton.ForwardButton, false);
+
+            if (isPressing)
+                MouseButtonPressed?.Invoke(new(button));
+            else
+                MouseButtonReleased?.Invoke(new(button));
+
+            // scroll wheel
+            if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.Wheel))
+                MouseScroll?.Invoke(new(new(0, rawMouse.ButtonData / 120f), true));
+            if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.HWheel))
+                MouseScroll?.Invoke(new(new(rawMouse.ButtonData / 120f, 0), true));
+
+            // position
+            MouseMove?.Invoke(new(new(rawMouse.LastX, rawMouse.LastY), !rawMouse.Flags.HasFlag(RawMouseFlags.MoveAbsolute)));
         }
 
         /// <summary>Process a keyboard input event.</summary>
