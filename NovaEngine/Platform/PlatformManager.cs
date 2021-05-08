@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NovaEngine.Platform.Dummy;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -21,6 +22,13 @@ namespace NovaEngine.Platform
         /// <summary>Initialises the class.</summary>
         static PlatformManager()
         {
+            // ensure a platform should actually be used
+            if (!Program.HasProgramInstance)
+            {
+                CurrentPlatform = new DummyPlatform();
+                return;
+            }
+
             // get the current platform object
             var platformFiles = Directory.GetFiles(Environment.CurrentDirectory, "NovaEngine.Platform.*.dll");
             var types = platformFiles

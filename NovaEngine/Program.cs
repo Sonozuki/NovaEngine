@@ -13,6 +13,10 @@ namespace NovaEngine
         /*********
         ** Accessors
         *********/
+        /// <summary>Whether the program has been ran.</summary>
+        /// <remarks>This is used to determine if the application is being run from an executable or if the api is being used without running the app.<br/>This is important as we don't want to load up an entire renderer and platform when something as trivial as a texture is being created for content packing etc.</remarks>
+        public static bool HasProgramInstance { get; private set; }
+
         /// <summary>The name of the application, more specifically the name of the executable, without the extension.</summary>
         public static string Name { get; private set; } = "Unknown";
 
@@ -34,6 +38,8 @@ namespace NovaEngine
         /// <param name="args">The command-line arguments.</param>
         public static void Main(string[] args)
         {
+            HasProgramInstance = true;
+
             Name = Process.GetCurrentProcess().ProcessName;
             Handle = Process.GetCurrentProcess().Handle;
 

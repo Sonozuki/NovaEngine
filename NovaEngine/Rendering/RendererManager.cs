@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NovaEngine.Rendering.Dummy;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -21,6 +22,13 @@ namespace NovaEngine.Rendering
         /// <summary>Initialises the class.</summary>
         static RendererManager()
         {
+            // ensure a renderer should actually be used
+            if (!Program.HasProgramInstance)
+            {
+                CurrentRenderer = new DummyRenderer();
+                return;
+            }
+
             // get the current platform object
             var rendererFiles = Directory.GetFiles(Environment.CurrentDirectory, "NovaEngine.Renderer.*.dll");
             var types = rendererFiles
