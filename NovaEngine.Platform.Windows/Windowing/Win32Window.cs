@@ -204,15 +204,15 @@ namespace NovaEngine.Platform.Windows.Windowing
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.LeftButtonUp))
                 (button, isPressing) = (MouseButton.LeftButton, false);
 
-            if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.RightButtonDown))
-                (button, isPressing) = (MouseButton.RightButton, true);
-            if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.RightButtonDown))
-                (button, isPressing) = (MouseButton.RightButton, false);
-
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.MiddleButtonDown))
                 (button, isPressing) = (MouseButton.MiddleButton, true);
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.MiddleButtonUp))
                 (button, isPressing) = (MouseButton.MiddleButton, false);
+
+            if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.RightButtonDown))
+                (button, isPressing) = (MouseButton.RightButton, true);
+            if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.RightButtonUp))
+                (button, isPressing) = (MouseButton.RightButton, false);
 
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.Button4Down))
                 (button, isPressing) = (MouseButton.BackButton, true);
