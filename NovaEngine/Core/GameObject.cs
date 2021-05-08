@@ -27,10 +27,10 @@ namespace NovaEngine.Core
 
         /// <summary>The parent of the game object.</summary>
         /// <remarks>This is <see langword="null"/> when it's a root game object.</remarks>
-        public GameObject? Parent { get; } // TODO: make a setter for this note: scene root objects will need to be updated etc
+        public GameObject? Parent { get; internal set; } // TODO: make a public setter for this note: scene root objects will need to be updated etc
 
         /// <summary>The children of the game object.</summary>
-        public List<GameObject> Children { get; } = new(); // TODO: this should probably be a custom collection that automatically assigns the parent and of the game object being added
+        public ChildrenCollection Children { get; }
 
         /// <summary>The transform component of the game object.</summary>
         public Transform Transform { get; }
@@ -53,7 +53,8 @@ namespace NovaEngine.Core
         public GameObject(string name, GameObject? parent = null, string? sceneName = null, bool isEnabled = true)
         {
             Name = name;
-            Transform = new Transform(this);
+            Children = new(this);
+            Transform = new(this);
             IsEnabled = isEnabled;
             RendererGameObject = RendererManager.CurrentRenderer.CreateRendererGameObject(this);
 
