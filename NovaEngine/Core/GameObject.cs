@@ -13,7 +13,7 @@ namespace NovaEngine.Core
         ** Fields
         *********/
         /// <summary>The components of the game object.</summary>
-        private List<ComponentBase> Components = new();
+        internal readonly List<ComponentBase> Components = new();
 
 
         /*********
