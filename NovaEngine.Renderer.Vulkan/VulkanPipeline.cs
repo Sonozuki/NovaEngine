@@ -107,7 +107,7 @@ namespace NovaEngine.Renderer.Vulkan
                 {
                     SType = VkStructureType.PipelineMultisampleStateCreateInfo,
                     SampleShadingEnable = true, // TODO: make this a rendering setting
-                    RasterizationSamples = VulkanUtilities.ConvertSampleCount(RenderingSettings.SampleCount),
+                    RasterizationSamples = VulkanUtilities.ConvertSampleCount(RenderingSettings.Instance.SampleCount),
                     MinSampleShading = 1,
                     SampleMask = null,
                     AlphaToCoverageEnable = false,

@@ -135,8 +135,8 @@ namespace NovaEngine.Renderer.Vulkan
             }
 
             // create the colour and depth attachments
-            ColourTexture = new Texture2D(Extent.Width, Extent.Height, generateMipChain: false, sampleCount: RenderingSettings.SampleCount);
-            DepthTexture = new DepthTexture(Extent.Width, Extent.Height, RenderingSettings.SampleCount);
+            ColourTexture = new Texture2D(Extent.Width, Extent.Height, generateMipChain: false, sampleCount: RenderingSettings.Instance.SampleCount);
+            DepthTexture = new DepthTexture(Extent.Width, Extent.Height, RenderingSettings.Instance.SampleCount);
         }
 
         /// <summary>Creates the framebuffers.</summary>

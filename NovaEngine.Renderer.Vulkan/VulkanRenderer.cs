@@ -472,7 +472,7 @@ namespace NovaEngine.Renderer.Vulkan
             var colourAttachmentDescription = new VkAttachmentDescription()
             {
                 Format = Swapchain.ImageFormat,
-                Samples = VulkanUtilities.ConvertSampleCount(RenderingSettings.SampleCount),
+                Samples = VulkanUtilities.ConvertSampleCount(RenderingSettings.Instance.SampleCount),
                 LoadOp = VkAttachmentLoadOp.Clear,
                 StoreOp = VkAttachmentStoreOp.Store,
                 StencilLoadOp = VkAttachmentLoadOp.DontCare,
@@ -484,7 +484,7 @@ namespace NovaEngine.Renderer.Vulkan
             var depthAttachmentDescription = new VkAttachmentDescription()
             {
                 Format = VulkanSwapchain.GetDepthFormat(),
-                Samples = VulkanUtilities.ConvertSampleCount(RenderingSettings.SampleCount),
+                Samples = VulkanUtilities.ConvertSampleCount(RenderingSettings.Instance.SampleCount),
                 LoadOp = VkAttachmentLoadOp.Clear,
                 StoreOp = VkAttachmentStoreOp.Store,
                 StencilLoadOp = VkAttachmentLoadOp.DontCare,
