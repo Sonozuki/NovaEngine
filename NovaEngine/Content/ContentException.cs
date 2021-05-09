@@ -9,8 +9,9 @@ namespace NovaEngine.Content
         ** Public Methods
         *********/
         /// <summary>Constructs an instance.</summary>
-        /// <param name="message">The message that descibes the error.</param>
-        public ContentException(string message)
-            : base(message) { }
+        /// <param name="message">The message that describes the error.</param>
+        /// <param name="innerException">The exception that is the cause of the current exception.</param>
+        public ContentException(string? message, Exception? innerException = null)
+            : base(message, innerException) { }
     }
 }
