@@ -62,10 +62,10 @@ namespace NovaEngine.Settings
                 }
             }
 
+            Instance = instance;
+
             // save settings, this adds any missing properties as well as creating the settings file if it doesn't exist
             Save();
-
-            Instance = instance;
         }
 
         /// <summary>Saves the rendering settings.</summary>
