@@ -1,24 +1,19 @@
-﻿using NovaEngine.Graphics;
+﻿using NovaEngine.Content.Readers.Attributes;
+using NovaEngine.Graphics;
 using System;
 using System.IO;
 
 namespace NovaEngine.Content.Readers
 {
     /// <summary>Defines how a texture should be read from a nova file.</summary>
-    public class TextureReader : ContentReaderBase<Texture2D>
+    [ContentReader("texture2d", typeof(Texture2D))]
+    public class TextureReader : IContentReader
     {
-        /*********
-        ** Accessors
-        *********/
-        /// <inheritdoc/>
-        public override string Type => "texture2d";
-
-
         /*********
         ** Public Methods
         *********/
         /// <inheritdoc/>
-        public unsafe override Texture2D Read(Stream stream)
+        public unsafe object Read(Stream stream, Type outputType, string? additionalInformation = null)
         {
             using (var binaryReader = new BinaryReader(stream))
             {

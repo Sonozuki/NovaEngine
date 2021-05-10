@@ -1,6 +1,5 @@
-﻿using NovaEngine.Content.Packers;
-using NovaEngine.Content.Readers;
-using NovaEngine.Content.Unpackers;
+﻿using NovaEngine.Content.Readers;
+using NovaEngine.Content.Readers.Attributes;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,12 +13,6 @@ namespace NovaEngine.Content
         /*********
         ** Fields
         *********/
-        /// <summary>The loaded content packers.</summary>
-        private static readonly List<IContentPacker> ContentPackers = new();
-
-        /// <summary>The loaded content unpackers.</summary>
-        private static readonly List<IContentUnpacker> ContentUnpackers = new();
-
         /// <summary>The loaded content readers.</summary>
         private static readonly List<IContentReader> ContentReaders = new();
 
@@ -47,34 +40,40 @@ namespace NovaEngine.Content
 
             foreach (var type in types)
             {
-                if (type.GetInterfaces().Contains(typeof(IContentPacker)))
+                if (!type.GetInterfaces().Contains(typeof(IContentReader)))
+                    continue;
+
+                // ensure the attribute exists
+                if (!type.GetCustomAttributes(false).Any(attribute => attribute.GetType() == typeof(ContentReaderAttribute)))
                 {
-                    var packer = Activator.CreateInstance(type);
-                    if (packer != null)
-                        ContentPackers.Add((IContentPacker)packer);
+                    Console.WriteLine($"ContentReader: {type.FullName} doesn't have a {nameof(ContentReaderAttribute)}");
+                    continue;
                 }
-                else if (type.GetInterfaces().Contains(typeof(IContentUnpacker)))
-                {
-                    var unpacker = Activator.CreateInstance(type);
-                    if (unpacker != null)
-                        ContentUnpackers.Add((IContentUnpacker)unpacker);
-                }
-                else if (type.GetInterfaces().Contains(typeof(IContentReader)))
-                {
-                    var reader = Activator.CreateInstance(type);
-                    if (reader != null)
-                        ContentReaders.Add((IContentReader)reader);
-                }
+
+                // create reader
+                var reader = Activator.CreateInstance(type);
+                if (reader != null)
+                    ContentReaders.Add((IContentReader)reader);
             }
         }
 
         /// <summary>Loads content from a file to a specified type.</summary>
-        /// <typeparam name="T">The output type to load the file to.</typeparam>
+        /// <typeparam name="T">The return type to load the file to.</typeparam>
         /// <param name="path">The relative path to the file to load.</param>
+        /// <param name="additionalInformation">Any additional information that the reader may require to read the data correctly.</param>
         /// <returns>The loaded file.</returns>
         /// <exception cref="FileNotFoundException">Thrown if <paramref name="path"/> doesn't exist.</exception>
         /// <exception cref="ContentException">Thrown if a content reader for <typeparamref name="T"/> couldn't be found, or if the file was invalid.</exception>
-        public static T Load<T>(string path)
+        public static T Load<T>(string path, string? additionalInformation = null) => (T)Load(path, typeof(T), additionalInformation);
+
+        /// <summary>Loads content from a file to a specified type.</summary>
+        /// <param name="path">The relative path to the fileto load.</param>
+        /// <param name="returnType">The return type to load the file to.</param>
+        /// <param name="additionalInformation">Any additional information that the reader may require to read the data correctly.</param>
+        /// <returns>The loaded file.</returns>
+        /// <exception cref="FileNotFoundException">Thrown if <paramref name="path"/> doesn't exist.</exception>
+        /// <exception cref="ContentException">Thrown if a content reader for <typeparamref name="T"/> couldn't be found, or if the file was invalid.</exception>
+        public static object Load(string path, Type returnType, string? additionalInformation = null)
         {
             // convert path from relative to absolute
             path = Path.Combine(RootContentDirectory, path);
@@ -92,11 +91,18 @@ namespace NovaEngine.Content
             using (var stream = GetFileContentStream(file, out var contentType))
             {
                 // find a valid content reader
-                var contentReader = GetContentReaderForType<T>(contentType);
+                var contentReader = GetContentReader(returnType, contentType);
                 if (contentReader == null)
-                    throw new ContentException($"Cannot find content reader for object type: {typeof(T)} and content type: {contentType}.");
+                    throw new ContentException($"Cannot find content reader for object type: {returnType.FullName} and content type: {contentType}.");
 
-                return contentReader.Read(stream);
+                try
+                {
+                    return contentReader.Read(stream, returnType, additionalInformation);
+                }
+                catch (Exception ex)
+                {
+                    throw new ContentException("Failed to read content from file.", ex);
+                }
             }
         }
 
@@ -141,15 +147,23 @@ namespace NovaEngine.Content
             }
         }
 
-        /// <summary>Gets a <see cref="ContentReaderBase{T}"/> for a specified object type and content type.</summary>
-        /// <typeparam name="T">The tpye of object the content reader must return.</typeparam>
+        /// <summary>Gets an <see cref="IContentReader"/> for a specified object type and content type.</summary>
+        /// <param name="returnType">The type of object the content reader must return.</param>
         /// <param name="contentType">The type of content file the reader must handle.</param>
-        /// <returns>The content reader for <typeparamref name="T"/> and content type for <paramref name="contentType"/>, if one exists; otherwise, <see langword="null"/>.</returns>
-        private static ContentReaderBase<T>? GetContentReaderForType<T>(string contentType)
+        /// <returns>The content reader for <paramref name="returnType"/> and content type for <paramref name="contentType"/>, if one exists; otherwise, <see langword="null"/>.</returns>
+        private static IContentReader? GetContentReader(Type returnType, string contentType)
         {
             foreach (var contentReader in ContentReaders)
-                if (contentReader is ContentReaderBase<T> reader && reader.Type.ToLower() == contentType.ToLower())
-                    return reader;
+            {
+                var attribute = contentReader.GetType()
+                    .GetCustomAttributes(false)
+                    .First(attribute => attribute.GetType() == typeof(ContentReaderAttribute));
+                if (attribute is not ContentReaderAttribute contentReaderAttribute)
+                    continue;
+
+                if (contentReaderAttribute.Type.ToLower() == contentType.ToLower() && contentReaderAttribute.OutputTypes.Contains(returnType))
+                    return contentReader;
+            }
 
             return null;
         }

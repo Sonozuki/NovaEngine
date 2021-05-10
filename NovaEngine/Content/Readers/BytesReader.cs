@@ -1,22 +1,18 @@
-﻿using System.IO;
+﻿using NovaEngine.Content.Readers.Attributes;
+using System;
+using System.IO;
 
 namespace NovaEngine.Content.Readers
 {
     /// <summary>Defines how bytes should be read from a nova file.</summary>
-    public class BytesReader : ContentReaderBase<byte[]>
+    [ContentReader("bytes", typeof(byte[]))]
+    public class BytesReader : IContentReader
     {
-        /*********
-        ** Accessors
-        *********/
-        /// <inheritdoc/>
-        public override string Type => "bytes";
-
-
         /*********
         ** Public Methods
         *********/
         /// <inheritdoc/>
-        public override byte[] Read(Stream stream)
+        public object Read(Stream stream, Type outputType, string? additionalInformation = null)
         {
             using (var memoryStream = new MemoryStream())
             {
