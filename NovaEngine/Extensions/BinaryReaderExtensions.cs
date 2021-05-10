@@ -1,4 +1,5 @@
-﻿using NovaEngine.Content.Models;
+﻿using NovaEngine.Content;
+using NovaEngine.Content.Models;
 using NovaEngine.Core;
 using NovaEngine.Core.Components;
 using NovaEngine.Graphics;
@@ -55,13 +56,18 @@ namespace NovaEngine.Extensions
                 if (type == null)
                     throw new InvalidOperationException($"Couldn't find type: {type}.");
 
-                var componentType = FormatterServices.GetUninitializedObject(type);
-                if (componentType is not ComponentBase component)
+                // create the component
+                object? component;
+                if (reader.ReadBoolean()) // check if the component should be instantiated or loaded through the content pipeline
+                    component = FormatterServices.GetUninitializedObject(type);
+                else
+                    component = ContentLoader.Load(reader.ReadString(), type, reader.ReadString());
+                if (component is not ComponentBase componentBase)
                     throw new InvalidDataException($"{typeName} isn't a component.");
 
                 // TODO: default property values of component
 
-                gameObject.AddComponent(component);
+                gameObject.AddComponent(componentBase);
             }
 
             // children
@@ -92,7 +98,7 @@ namespace NovaEngine.Extensions
         /// <returns>The read <see cref="MeshContent"/>.</returns>
         public static MeshContent ReadMeshContent(this BinaryReader reader)
         {
-            var meshContent = new MeshContent(reader.ReadString());
+            var meshContent = new MeshContent(new Guid(reader.ReadString()), reader.ReadString());
 
             // read vertices
             var length = reader.ReadInt32();

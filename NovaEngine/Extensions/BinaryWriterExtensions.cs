@@ -1,5 +1,6 @@
 ﻿using NovaEngine.Content.Models;
 using NovaEngine.Core;
+using NovaEngine.Core.Components;
 using NovaEngine.Graphics;
 using NovaEngine.Maths;
 using NovaEngine.SceneManagement;
@@ -46,7 +47,19 @@ namespace NovaEngine.Extensions
             // components
             writer.Write(gameObject.Components.Count);
             foreach (var component in gameObject.Components)
+            {
                 writer.Write(component.GetType().FullName!);
+
+                // TODO: temp, don't hardcode just the mesh renderer to be loaded through the content pipeline
+                if (component is MeshRenderer meshRenderer)
+                {
+                    writer.Write(false);
+                    writer.Write("Models/Cubes"); // TODO: store the file in the mesh perhaps?
+                    writer.Write(meshRenderer.Mesh.Guid.ToString());
+                }
+                else
+                    writer.Write(true);
+            }
 
             // children
             writer.Write(gameObject.Children.Count);
@@ -70,7 +83,8 @@ namespace NovaEngine.Extensions
         /// <param name="meshContent">The <see cref="MeshContent"/> to write.</param>
         public static void Write(this BinaryWriter writer, MeshContent meshContent)
         {
-            // name
+            // guid + name
+            writer.Write(meshContent.Guid.ToString());
             writer.Write(meshContent.Name);
 
             // vertex data
