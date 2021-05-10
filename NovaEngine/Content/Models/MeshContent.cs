@@ -1,4 +1,5 @@
 ﻿using NovaEngine.Graphics;
+using System;
 using System.Collections.Generic;
 
 namespace NovaEngine.Content.Models
@@ -9,6 +10,9 @@ namespace NovaEngine.Content.Models
         /*********
         ** Accessors
         *********/
+        /// <summary>The unique identifier for the mesh.</summary>
+        public Guid Guid { get; set; }
+
         /// <summary>The name of the mesh.</summary>
         public string Name { get; set; }
         
@@ -25,7 +29,14 @@ namespace NovaEngine.Content.Models
         /// <summary>Constructs an instance./summary>
         /// <param name="name">The name of the mesh.</param>
         public MeshContent(string name = "")
+            : this(Guid.NewGuid(), name) { }
+
+        /// <summary>Constructs an instance.</summary>
+        /// <param name="guid">The unique identifier for the mesh.</param>
+        /// <param name="name">The name of the mesh.</param>
+        public MeshContent(Guid guid, string name)
         {
+            Guid = guid;
             Name = name;
         }
     }
