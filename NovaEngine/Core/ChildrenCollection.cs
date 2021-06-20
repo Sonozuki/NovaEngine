@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using NovaEngine.Serialisation;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace NovaEngine.Core
@@ -12,9 +13,11 @@ namespace NovaEngine.Core
         *********/
         /// <summary>The game object whose children this collection contains.</summary>
         /// <remarks>This is used for automatically setting/unsetting the parent of children.</remarks>
+        [Serialisable]
         private readonly GameObject Parent;
 
         /// <summary>The underlying collection of children.</summary>
+        [Serialisable]
         private readonly List<GameObject> Children = new();
 
 
@@ -99,5 +102,14 @@ namespace NovaEngine.Core
         {
             Parent = parent;
         }
+
+
+        /*********
+        ** Private Methods
+        *********/
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        /// <summary>Constructs an instance.</summary>
+        private ChildrenCollection() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     }
 }

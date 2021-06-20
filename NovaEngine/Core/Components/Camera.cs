@@ -76,6 +76,9 @@ namespace NovaEngine.Core.Components
         ** Private Methods
         *********/
         /// <summary>Constructs an instance.</summary>
+        private Camera() { }
+
+        /// <summary>Constructs an instance.</summary>
         /// <param name="projection"></param>
         /// <param name="fieldOfView">The field of view of the camera, in degrees (perspective projection only).</param>
         /// <param name="width">The width of the view frustum (orthograhic projection only).</param>

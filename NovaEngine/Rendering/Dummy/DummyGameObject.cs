@@ -22,5 +22,12 @@ namespace NovaEngine.Rendering.Dummy
 
         /// <inheritdoc/>
         public override void Dispose() { }
+
+
+        /*********
+        ** Private Methods
+        *********/
+        /// <summary>Constructs an instance.</summary>
+        public DummyGameObject() : base(new("Dummy")) { }
     }
 }
