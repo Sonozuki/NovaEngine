@@ -1,8 +1,11 @@
-﻿using NovaEngine.IO;
+﻿using NovaEngine.Content;
+using NovaEngine.IO;
 using NovaEngine.Maths;
 using NovaEngine.Rendering;
+using NovaEngine.SceneManagement;
 using NovaEngine.Windowing;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace NovaEngine
@@ -45,6 +48,7 @@ namespace NovaEngine
 
             InitialiseWindow();
             InitialiseRenderer();
+            InitialiseScenes();
 
             try
             {
@@ -71,6 +75,14 @@ namespace NovaEngine
 
         /// <summary>Initialises the renderer.</summary>
         private static void InitialiseRenderer() => RendererManager.CurrentRenderer.OnInitialise(MainWindow!.Handle);
+
+        /// <summary>Initialises the game scenes.</summary>
+        private static void InitialiseScenes()
+        {
+            var initialScenes = ContentLoader.Load<List<string>>("InitialScenes");
+            foreach (var scene in initialScenes)
+                SceneManager.LoadScene(scene);
+        }
 
         /// <summary>Runs the main application loop.</summary>
         private static void MainLoop()
