@@ -6,19 +6,23 @@ namespace NovaEngine.Core
     public class Transform
     {
         /*********
+        ** Fields
+        *********/
+        /// <summary>The position of the object relative to the object's parent.</summary>
+        public Vector3 LocalPosition;
+
+        /// <summary>The rotation of the object relative to the object's parent, in degrees.</summary>
+        public Quaternion LocalRotation;
+
+        /// <summary>The scale of the object relative to the object's parent.</summary>
+        public Vector3 LocalScale = Vector3.One;
+
+
+        /*********
         ** Accessors
         *********/
         /// <summary>The game object the transform belongs to.</summary>
         public GameObject GameObject { get; }
-
-        /// <summary>The position of the object relative to the object's parent.</summary>
-        public Vector3 LocalPosition { get; set; }
-
-        /// <summary>The rotation of the object relative to the object's parent, in degrees.</summary>
-        public Quaternion LocalRotation { get; set; }
-
-        /// <summary>The scale of the object relative to the object's parent.</summary>
-        public Vector3 LocalScale { get; set; } = Vector3.One;
 
         /// <summary>The world position of the object.</summary>
         public Vector3 GlobalPosition
