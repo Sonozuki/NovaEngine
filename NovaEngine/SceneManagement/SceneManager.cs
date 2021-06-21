@@ -1,6 +1,7 @@
 ﻿using NovaEngine.Content;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace NovaEngine.SceneManagement
@@ -14,6 +15,9 @@ namespace NovaEngine.SceneManagement
         /// <summary>The file extension of scene files.</summary>
         public const string SceneFileExtension = ".novascene";
 
+        /// <summary>The directory of the scene files relative to <see cref="ContentLoader.RootContentDirectory"/>.</summary>
+        public const string SceneDirectory = "Scenes";
+
 
         /*********
         ** Fields
@@ -26,10 +30,10 @@ namespace NovaEngine.SceneManagement
         ** Public Methods
         *********/
         /// <summary>Loads a scene.</summary>
-        /// <param name="path">The path to the scene file to load.</param>
-        public static void LoadScene(string path)
+        /// <param name="path">The name of the scene to load.</param>
+        public static void LoadScene(string name)
         {
-            var loadedScene = ContentLoader.Load<Scene>(path + SceneFileExtension);
+            var loadedScene = ContentLoader.Load<Scene>(Path.Combine(SceneDirectory, name + SceneFileExtension));
             LoadedScenes.Add(loadedScene);
 
             foreach (var rootObject in loadedScene.RootGameObjects)
