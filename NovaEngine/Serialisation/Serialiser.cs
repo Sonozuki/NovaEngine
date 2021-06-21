@@ -101,7 +101,7 @@ namespace NovaEngine.Serialisation
                         var objectToSetMemberValueTo = objectInfoToSet.Value;
 
                         // set the member to the retrieved object
-                        var fieldInfo = objectInfo.Value!.GetType().GetFieldRecursive(field.Key, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                        var fieldInfo = objectInfo.Value!.GetType().GetFieldRecursive(field.Key, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
                         if (fieldInfo == null)
                             throw new MissingFieldException(objectInfo.Value.GetType().FullName, field.Key);
 

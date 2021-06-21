@@ -66,12 +66,12 @@ namespace NovaEngine.Serialisation
                 }
 
                 // add members
-                items.AddRange(Value!.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                items.AddRange(Value!.GetType().GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
                     .Where(field => (field.IsPublic && field.GetCustomAttribute<NonSerialisableAttribute>() == null)
                                  || (!field.IsPublic && field.GetCustomAttribute<SerialisableAttribute>() != null))
                     .Select(field => ((string?)field.Name, field.GetValue(Value)!)));
 
-                items.AddRange(Value.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                items.AddRange(Value.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
                     .Where(property => (property.CanRead && property.HasBackingField())
                                     && ((property.GetMethod?.IsPublic ?? false && property.GetCustomAttribute<NonSerialisableAttribute>() == null)
                                     || (!property.GetMethod?.IsPublic ?? false && property.GetCustomAttribute<SerialisableAttribute>() != null)))
