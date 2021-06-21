@@ -1,22 +1,10 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 
 namespace NovaEngine.Content.Packers
 {
     /// <summary>Defines how a file should be rewritten for a nova file.</summary>
     public interface IContentPacker
     {
-        /*********
-        ** Accessors
-        *********/
-        /// <summary>The type of content the packer is for.</summary>
-        /// <remarks>For example 'texture', this is used so an asset file can't be used with the wrong reader.</remarks>
-        public string Type { get; }
-
-        /// <summary>The extensions the content packer can handle.</summary>
-        public List<string> Extensions { get; }
-
-
         /*********
         ** Public Methods
         *********/

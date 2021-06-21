@@ -1,5 +1,5 @@
-﻿using NovaEngine.Content.Readers;
-using NovaEngine.Content.Readers.Attributes;
+﻿using NovaEngine.Content.Attributes;
+using NovaEngine.Content.Readers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -125,28 +125,27 @@ namespace NovaEngine.Content
                 throw new FileNotFoundException($"Cannot find file: {file}.");
 
             // create binary reader for file
-            using (var fileStream = File.OpenRead(file))
-            using (var binaryReader = new BinaryReader(fileStream))
-            {
-                // validate file
-                var n = binaryReader.ReadByte();
-                var o = binaryReader.ReadByte();
-                var v = binaryReader.ReadByte();
-                var a = binaryReader.ReadByte();
+            using var fileStream = File.OpenRead(file);
+            using var binaryReader = new BinaryReader(fileStream);
 
-                if (n != 'N' || o != 'O' || v != 'V' || a != 'A')
-                    throw new ContentException($"{file} isn't a valid nova file.");
+            // validate file
+            var n = binaryReader.ReadByte();
+            var o = binaryReader.ReadByte();
+            var v = binaryReader.ReadByte();
+            var a = binaryReader.ReadByte();
 
-                // read header
-                var version = binaryReader.ReadByte(); // unused for now, should always be 1
-                contentType = binaryReader.ReadString();
+            if (n != 'N' || o != 'O' || v != 'V' || a != 'A')
+                throw new ContentException($"{file} isn't a valid nova file.");
 
-                // create content stream
-                var stream = new MemoryStream();
-                binaryReader.BaseStream.CopyTo(stream);
-                stream.Position = 0;
-                return stream;
-            }
+            // read header
+            var version = binaryReader.ReadByte(); // unused for now, should always be 1
+            contentType = binaryReader.ReadString();
+
+            // create content stream
+            var stream = new MemoryStream();
+            binaryReader.BaseStream.CopyTo(stream);
+            stream.Position = 0;
+            return stream;
         }
 
         /// <summary>Gets an <see cref="IContentReader"/> for a specified object type and content type.</summary>

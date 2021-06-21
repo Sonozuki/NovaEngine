@@ -1,4 +1,4 @@
-﻿using NovaEngine.Content.Readers.Attributes;
+﻿using NovaEngine.Content.Attributes;
 using NovaEngine.Graphics;
 using System;
 using System.IO;

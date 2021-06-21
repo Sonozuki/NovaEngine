@@ -1,4 +1,4 @@
-﻿using NovaEngine.Content.Readers.Attributes;
+﻿using NovaEngine.Content.Attributes;
 using NovaEngine.SceneManagement;
 using NovaEngine.Serialisation;
 using System;

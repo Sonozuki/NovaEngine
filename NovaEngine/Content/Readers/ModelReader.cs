@@ -1,5 +1,5 @@
-﻿using NovaEngine.Content.Models;
-using NovaEngine.Content.Readers.Attributes;
+﻿using NovaEngine.Content.Attributes;
+using NovaEngine.Content.Models;
 using NovaEngine.Core;
 using NovaEngine.Core.Components;
 using NovaEngine.Serialisation;
