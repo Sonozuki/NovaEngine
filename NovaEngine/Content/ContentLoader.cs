@@ -60,20 +60,18 @@ namespace NovaEngine.Content
         /// <summary>Loads content from a file to a specified type.</summary>
         /// <typeparam name="T">The return type to load the file to.</typeparam>
         /// <param name="path">The relative path to the file to load.</param>
-        /// <param name="additionalInformation">Any additional information that the reader may require to read the data correctly.</param>
         /// <returns>The loaded file.</returns>
         /// <exception cref="FileNotFoundException">Thrown if <paramref name="path"/> doesn't exist.</exception>
         /// <exception cref="ContentException">Thrown if a content reader for <typeparamref name="T"/> couldn't be found, or if the file was invalid.</exception>
-        public static T Load<T>(string path, string? additionalInformation = null) => (T)Load(path, typeof(T), additionalInformation);
+        public static T Load<T>(string path) => (T)Load(path, typeof(T));
 
         /// <summary>Loads content from a file to a specified type.</summary>
         /// <param name="path">The relative path to the fileto load.</param>
         /// <param name="returnType">The return type to load the file to.</param>
-        /// <param name="additionalInformation">Any additional information that the reader may require to read the data correctly.</param>
         /// <returns>The loaded file.</returns>
         /// <exception cref="FileNotFoundException">Thrown if <paramref name="path"/> doesn't exist.</exception>
         /// <exception cref="ContentException">Thrown if a content reader for <typeparamref name="T"/> couldn't be found, or if the file was invalid.</exception>
-        public static object Load(string path, Type returnType, string? additionalInformation = null)
+        public static object Load(string path, Type returnType)
         {
             // convert path from relative to absolute
             path = Path.Combine(RootContentDirectory, path);
@@ -97,7 +95,11 @@ namespace NovaEngine.Content
 
                 try
                 {
-                    return contentReader.Read(stream, returnType, additionalInformation);
+                    var @object = contentReader.Read(stream, returnType);
+                    if (@object == null)
+                        throw new ContentException("Cotent reader returned null.");
+
+                    return @object;
                 }
                 catch (Exception ex)
                 {

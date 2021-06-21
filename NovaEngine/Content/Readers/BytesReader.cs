@@ -12,13 +12,11 @@ namespace NovaEngine.Content.Readers
         ** Public Methods
         *********/
         /// <inheritdoc/>
-        public object Read(Stream stream, Type outputType, string? additionalInformation = null)
+        public object? Read(Stream stream, Type outputType)
         {
-            using (var memoryStream = new MemoryStream())
-            {
-                stream.CopyTo(memoryStream);
-                return memoryStream.ToArray();
-            }
+            using var memoryStream = new MemoryStream();
+            stream.CopyTo(memoryStream);
+            return memoryStream.ToArray();
         }
     }
 }

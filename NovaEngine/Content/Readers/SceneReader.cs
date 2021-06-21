@@ -1,6 +1,6 @@
 ﻿using NovaEngine.Content.Readers.Attributes;
-using NovaEngine.Extensions;
 using NovaEngine.SceneManagement;
+using NovaEngine.Serialisation;
 using System;
 using System.IO;
 
@@ -14,10 +14,10 @@ namespace NovaEngine.Content.Readers
         ** Public Methods
         *********/
         /// <inheritdoc/>
-        public object Read(Stream stream, Type outputType, string? additionalInformation = null)
+        public object? Read(Stream stream, Type outputType)
         {
-            using (var binaryReader = new BinaryReader(stream))
-                return binaryReader.ReadScene();
+            using var binaryReader = new BinaryReader(stream);
+            return Serialiser.Deserialise<Scene>(stream);
         }
     }
 }

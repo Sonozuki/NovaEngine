@@ -13,7 +13,7 @@ namespace NovaEngine.Content.Readers
         ** Public Methods
         *********/
         /// <inheritdoc/>
-        public unsafe object Read(Stream stream, Type outputType, string? additionalInformation = null)
+        public unsafe object Read(Stream stream, Type outputType)
         {
             using (var binaryReader = new BinaryReader(stream))
             {

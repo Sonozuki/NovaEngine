@@ -2,45 +2,32 @@
 using NovaEngine.Content.Readers.Attributes;
 using NovaEngine.Core;
 using NovaEngine.Core.Components;
-using NovaEngine.Extensions;
+using NovaEngine.Serialisation;
 using System;
 using System.IO;
-using System.Linq;
 
 namespace NovaEngine.Content.Readers
 {
     /// <summary>Defines how a model should be read from a nova file.</summary>
-    [ContentReader("3dmodel", typeof(GameObject), typeof(ModelContent), typeof(Mesh[]), typeof(MeshRenderer))]
+    [ContentReader("3dmodel", typeof(GameObject), typeof(ModelContent), typeof(Mesh[]))]
     public class ModelReader : IContentReader
     {
         /*********
         ** Accessors
         *********/
         /// <inheritdoc/>
-        public object Read(Stream stream, Type outputType, string? additionalInformation = null)
+        public object? Read(Stream stream, Type outputType)
         {
             // retrieve model content from stream
-            ModelContent modelContent;
-            using (var reader = new BinaryReader(stream))
-                modelContent = reader.ReadModelContent();
+            var modelContent = Serialiser.Deserialise<ModelContent>(stream);
+            if (modelContent == null)
+                return null;
 
             // return data if possible
             if (outputType == typeof(ModelContent))
                 return modelContent;
             if (outputType == typeof(Mesh[]))
                 return modelContent.Meshes.ToArray();
-            if (outputType == typeof(MeshRenderer))
-            {
-                if (string.IsNullOrEmpty(additionalInformation))
-                    throw new InvalidOperationException("Cannot load a model as a mesh without additional information.");
-
-                var guid = new Guid(additionalInformation);
-                var mesh = modelContent.Meshes.FirstOrDefault(mesh => mesh.Guid == guid);
-                if (mesh == null)
-                    throw new InvalidDataException($"Model doesn't contain a mesh with the guid: {guid}");
-
-                return new MeshRenderer(new(mesh.Name, mesh.Vertices.ToArray(), mesh.Indices.ToArray(), mesh.Guid));
-            }
 
             // return data as game object
             var parentGameObject = new GameObject("Model");
@@ -49,7 +36,7 @@ namespace NovaEngine.Content.Readers
             foreach (var meshContent in modelContent.Meshes)
             {
                 var meshGameObject = new GameObject(meshContent.Name);
-                meshGameObject.AddComponent(new MeshRenderer(new(meshContent.Name, meshContent.Vertices.ToArray(), meshContent.Indices.ToArray(), meshContent.Guid)));
+                meshGameObject.AddComponent(new MeshRenderer(new(meshContent.Name, meshContent.Vertices.ToArray(), meshContent.Indices.ToArray())));
                 parentGameObject.Children.Add(meshGameObject);
             }
 
