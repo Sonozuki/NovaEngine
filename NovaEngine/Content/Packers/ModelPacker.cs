@@ -1,11 +1,10 @@
 ﻿using NovaEngine.Content.Models;
-using NovaEngine.Extensions;
 using NovaEngine.Graphics;
 using NovaEngine.Maths;
+using NovaEngine.Serialisation;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace NovaEngine.Content.Packers
 {
@@ -26,16 +25,10 @@ namespace NovaEngine.Content.Packers
         ** Public Methods
         *********/
         /// <inheritdoc/>
-        public unsafe Stream Write(string file)
+        public Stream Write(string file)
         {
-            // parse initial obj file
-            var modelContent = ParseObjFile(file);
-
-            // write the mesh content to a stream
             var stream = new MemoryStream();
-            using (var writer = new BinaryWriter(stream, Encoding.UTF8, leaveOpen: true))
-                writer.Write(modelContent);
-
+            Serialiser.Serialise(stream, ParseObjFile(file));
             return stream;
         }
 

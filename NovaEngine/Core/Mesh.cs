@@ -31,5 +31,14 @@ namespace NovaEngine.Core
             VertexData = vertexData;
             IndexData = indexData;
         }
+
+
+        /*********
+        ** Private Methods
+        *********/
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        /// <summary>Constructs an instance.</summary>
+        private Mesh() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     }
 }

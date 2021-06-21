@@ -1,5 +1,6 @@
 ﻿using NovaEngine.Content.Attributes;
 using NovaEngine.Content.Readers;
+using NovaEngine.Serialisation;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,20 +12,24 @@ namespace NovaEngine.Content
     public class ContentLoader
     {
         /*********
+        ** Constants
+        *********/
+        /// <summary>The file extension for content files.</summary>
+        public const string ContentFileExtension = ".nova";
+
+
+        /*********
         ** Fields
         *********/
         /// <summary>The loaded content readers.</summary>
         private static readonly List<IContentReader> ContentReaders = new();
 
-        
+
         /*********
         ** Accessors
         *********/
         /// <summary>The root content directory.</summary>
         public static string RootContentDirectory => Path.Combine(Environment.CurrentDirectory, "Data");
-
-        /// <summary>The file extension for content files.</summary>
-        public static string ContentFileExtension => ".nova";
 
 
         /*********
@@ -88,23 +93,29 @@ namespace NovaEngine.Content
             // create a file content stream and read an object from it
             using (var stream = GetFileContentStream(file, out var contentType))
             {
-                // find a valid content reader
-                var contentReader = GetContentReader(returnType, contentType);
-                if (contentReader == null)
-                    throw new ContentException($"Cannot find content reader for object type: {returnType.FullName} and content type: {contentType}.");
+                object? readObject = null;
 
                 try
                 {
-                    var @object = contentReader.Read(stream, returnType);
-                    if (@object == null)
-                        throw new ContentException("Cotent reader returned null.");
+                    // check if the file should be read using the deserialiser
+                    if (contentType.ToLower() == "serialised")
+                        readObject = Serialiser.Deserialise(stream, returnType);
+                    else
+                    {
+                        // find a valid content reader
+                        var contentReader = GetContentReader(returnType, contentType);
+                        if (contentReader == null)
+                            throw new ContentException($"Cannot find content reader for object type: {returnType.FullName} and content type: {contentType}.");
 
-                    return @object;
+                        readObject = contentReader.Read(stream, returnType);
+                    }
                 }
                 catch (Exception ex)
                 {
                     throw new ContentException("Failed to read content from file.", ex);
                 }
+
+                return readObject ?? throw new ContentException("Content reader returned null.");
             }
         }
 

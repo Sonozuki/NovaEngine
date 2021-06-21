@@ -22,9 +22,13 @@ namespace NovaEngine.Content.Models
         /*********
         ** Public Methods
         *********/
+        /// <summary>Constructs an instance.</summary>
+        public MeshContent()
+            : this("") { }
+
         /// <summary>Constructs an instance./summary>
         /// <param name="name">The name of the mesh.</param>
-        public MeshContent(string name = "")
+        public MeshContent(string name)
         {
             Name = name;
         }
