@@ -17,6 +17,9 @@ namespace NovaEngine.Core
         [Serialisable]
         internal readonly List<ComponentBase> Components = new();
 
+        /// <summary>The mesh renderer component of the game object.</summary>
+        private MeshRenderer? _MeshRenderer;
+
 
         /*********
         ** Accessors
@@ -38,10 +41,21 @@ namespace NovaEngine.Core
         public Transform Transform { get; }
 
         /// <summary>The renderer specific game object.</summary>
+        [NonSerialisable]
         public RendererGameObjectBase RendererGameObject { get; }
 
         /// <summary>The mesh renderer component of the game object.</summary>
-        public MeshRenderer? MeshRenderer { get; private set; }
+        [Serialisable]
+        public MeshRenderer? MeshRenderer
+        {
+            get => _MeshRenderer;
+            private set
+            {
+                _MeshRenderer = value;
+                if (_MeshRenderer != null)
+                    RendererGameObject.UpdateMesh(_MeshRenderer!.Mesh.VertexData, _MeshRenderer.Mesh.IndexData);
+            }
+        }
 
 
         /*********
@@ -78,11 +92,8 @@ namespace NovaEngine.Core
             Components.Add(component);
 
             // cache specific components
-            if (component is MeshRenderer meshRenderer)
-            {
+            if (component is MeshRenderer)
                 MeshRenderer = GetComponent<MeshRenderer>();
-                RendererGameObject.UpdateMesh(meshRenderer.Mesh.VertexData, meshRenderer.Mesh.IndexData);
-            }
         }
 
         /// <summary>Removes a type of component from the game object.</summary>
@@ -230,7 +241,10 @@ namespace NovaEngine.Core
         *********/
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         /// <summary>Constructs an instance.</summary>
-        private GameObject() { }
+        private GameObject()
+        {
+            RendererGameObject = RendererManager.CurrentRenderer.CreateRendererGameObject(this);
+        }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     }
 }
