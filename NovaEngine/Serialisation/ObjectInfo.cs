@@ -23,8 +23,8 @@ namespace NovaEngine.Serialisation
         /// <summary>Whether the serialiser is able to inline the value of the object.</summary>
         public bool IsInlinable { get; private set; }
 
-        /// <summary>The fields of <see cref="Value"/>, pointing to the ids of the <see cref="ObjectInfo"/> representations of the field values.</summary>
-        public Dictionary<string, Guid> Fields { get; } = new();
+        /// <summary>The members of <see cref="Value"/>, pointing to the ids of the <see cref="ObjectInfo"/> representations of the member values.</summary>
+        public Dictionary<string, Guid> Members { get; } = new();
 
         /// <summary>The type of collection the object who this object info is representing (if it's a collection.)</summary>
         public CollectionType CollectionType { get; private set; }
@@ -67,15 +67,18 @@ namespace NovaEngine.Serialisation
 
                 // add members
                 items.AddRange(Value!.GetType().GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
-                    .Where(field => (field.IsPublic && field.GetCustomAttribute<NonSerialisableAttribute>() == null)
-                                 || (!field.IsPublic && field.GetCustomAttribute<SerialisableAttribute>() != null))
+                    .Where(field => (field.IsPublic && !field.HasCustomAttribute<NonSerialisableAttribute>())
+                                 || (!field.IsPublic && field.HasCustomAttribute<SerialisableAttribute>()))
                     .Select(field => ((string?)field.Name, field.GetValue(Value)!)));
 
                 items.AddRange(Value.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
-                    .Where(property => (property.CanRead && property.HasBackingField())
-                                    && ((property.GetMethod?.IsPublic ?? false && property.GetCustomAttribute<NonSerialisableAttribute>() == null)
-                                    || (!property.GetMethod?.IsPublic ?? false && property.GetCustomAttribute<SerialisableAttribute>() != null)))
-                    .Select(property => ((string?)property.GetBackingFieldName(), property.GetBackingField()!.GetValue(Value)!)));
+                    .Where(property => property.CanRead && property.CanWriteForSerialisation()
+                                    && (property.HasBackingField() || property.HasCustomAttribute<SerialisableAttribute>()) // if a property doesn't have a backing field, it must have the Serialisable attribute
+                                    && ((property.GetMethod!.IsPublic && !property.HasCustomAttribute<NonSerialisableAttribute>()) 
+                                        || (!property.GetMethod!.IsPublic && property.HasCustomAttribute<SerialisableAttribute>())))
+                    .Select(property => 
+                        (Name: property.HasBackingField() ? (string?)property.GetBackingFieldName() : property.Name, 
+                        Value: property.HasBackingField() ? property.GetBackingField()!.GetValue(Value)! : property.GetValue(Value)!)));
 
                 // add the items to the object info
                 foreach (var item in items)
@@ -87,7 +90,7 @@ namespace NovaEngine.Serialisation
                     if (item.Name == null)
                         Collection.Add(objectInfo.Id);
                     else
-                        Fields[item.Name] = objectInfo.Id;
+                        Members[item.Name] = objectInfo.Id;
                 }
             }
         }
@@ -120,11 +123,11 @@ namespace NovaEngine.Serialisation
                     binaryWriter.Write(item.ToString("N"));
 
                 // write field info
-                binaryWriter.Write(Fields.Count);
-                foreach (var field in Fields)
+                binaryWriter.Write(Members.Count);
+                foreach (var member in Members)
                 {
-                    binaryWriter.Write(field.Key); // name
-                    binaryWriter.Write(field.Value.ToString("N")); // value
+                    binaryWriter.Write(member.Key); // name
+                    binaryWriter.Write(member.Value.ToString("N")); // value
                 }
             }
         }
@@ -155,10 +158,10 @@ namespace NovaEngine.Serialisation
                 for (int i = 0; i < length; i++)
                     objectInfo.Collection.Add(new Guid(binaryReader.ReadString()));
 
-                // retrieve field info
+                // retrieve member info
                 length = binaryReader.ReadInt32();
                 for (int i = 0; i < length; i++)
-                    objectInfo.Fields[binaryReader.ReadString()] = new Guid(binaryReader.ReadString());
+                    objectInfo.Members[binaryReader.ReadString()] = new Guid(binaryReader.ReadString());
             }
 
             return objectInfo;
