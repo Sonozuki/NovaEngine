@@ -9,12 +9,12 @@ namespace NovaEngine.Extensions
     internal static class BinaryReaderExtensions
     {
         /*********
-        ** Public Methods
+        ** Internal Methods
         *********/
         /// <summary>Reads an object from the current stream and advances the stream position.</summary>
         /// <param name="binaryReader">The <see cref="BinaryReader"/> to read from.</param>
         /// <returns>The read <see langword="object"/>.</returns>
-        public static object? ReadObject(this BinaryReader binaryReader)
+        internal static object? ReadObject(this BinaryReader binaryReader)
         {
             if (binaryReader.ReadBoolean())
                 return null;

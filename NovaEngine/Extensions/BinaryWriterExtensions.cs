@@ -9,14 +9,14 @@ namespace NovaEngine.Extensions
     public static class BinaryWriterExtensions
     {
         /*********
-        ** Public Methods
+        ** Internal Methods
         *********/
         /// <summary>Writes an <see langword="object"/> to the current stream and advances the stream position.</summary>
         /// <param name="binaryWriter">The <see cref="BinaryWriter"/> to writer to.</param>
         /// <param name="object">The <see langword="object"/> to write to the stream.</param>
         /// <remarks><paramref name="object"/> must be of a type that's normally serialisable, just not casted as that type.</remarks>
         /// <exception cref="ArgumentException">Thrown if <paramref name="object"/> isn't a serialisable type.</exception>
-        public static void Write(this BinaryWriter binaryWriter, object? @object)
+        internal static void Write(this BinaryWriter binaryWriter, object? @object)
         {
             binaryWriter.Write(@object == null);
             if (@object == null)
