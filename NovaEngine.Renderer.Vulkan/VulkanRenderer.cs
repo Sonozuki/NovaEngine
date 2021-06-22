@@ -4,6 +4,7 @@ using NovaEngine.Core.Components;
 using NovaEngine.Graphics;
 using NovaEngine.Maths;
 using NovaEngine.Rendering;
+using NovaEngine.SceneManagement;
 using NovaEngine.Settings;
 using System;
 using System.Collections.Generic;
@@ -65,10 +66,6 @@ namespace NovaEngine.Renderer.Vulkan
 
         /// <summary>A collection of fences, one for each swapchain image, used to keep track of when the image is being used.</summary>
         private VkFence[] ImagesInFlight;
-
-        // TODO: temp
-        private GameObject CameraObject;
-        private GameObject ModelObject;
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 
@@ -157,23 +154,23 @@ namespace NovaEngine.Renderer.Vulkan
 
             CommandPool = new(CommandPoolUsage.Graphics);
             CreateDescriptorPool();
-
-            // TODO: temp
-            CameraObject = new("camera");
-            CameraObject.AddComponent(new Camera(90, .01f, 1000, true));
-            CameraObject.Transform.GlobalPosition = Vector3.UnitZ * -12.5f;
-
-            ModelObject = ContentLoader.Load<GameObject>("Models/Cubes");
-            foreach (var meshObject in ModelObject.Children)
-                (meshObject.RendererGameObject as VulkanGameObject)!.UpdateUBO(CameraObject.GetComponent<Camera>()!);
         }
 
         /// <inheritdoc/>
         public void OnWindowResize(Size newSize) => RecreateSwapchain(new VkExtent2D((uint)newSize.Width, (uint)newSize.Height));
 
+        private bool FirstFrame = true;
         /// <inheritdoc/>
         public void OnRenderFrame()
         {
+            // TODO: temp
+            if (FirstFrame)
+            {
+                FirstFrame = false;
+                foreach (var meshObject in SceneManager.LoadedScenes.SelectMany(scene => scene.RootGameObjects).SelectMany(gameObject => gameObject.Children))
+                    (meshObject.RendererGameObject as VulkanGameObject)!.UpdateUBO(Camera.Main!);
+            }
+
             VK.WaitForFences(Device.NativeDevice, 1, new[] { InFlightFences[CurrentFrameIndex] }, true, ulong.MaxValue);
 
             // acquire an image from the swapchain
@@ -205,7 +202,8 @@ namespace NovaEngine.Renderer.Vulkan
                 VK.CommandBeginRenderPass(commandBuffer, ref renderPassBeginInfo, VkSubpassContents.Inline);
                 VK.CommandBindPipeline(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.Pipeline);
 
-                var vulkanGameObjects = ModelObject.Children.Select(meshObject => meshObject.RendererGameObject).Cast<VulkanGameObject>();
+                // TODO: get a reference to each game object recursively, not just the first level
+                var vulkanGameObjects = SceneManager.LoadedScenes.SelectMany(scene => scene.RootGameObjects).SelectMany(gameObject => gameObject.Children).Select(meshObject => meshObject.RendererGameObject).Cast<VulkanGameObject>();
                 foreach (var vulkanGameObject in vulkanGameObjects)
                 {
                     VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.PipelineLayout, 0, 1, new[] { vulkanGameObject.NativeDescriptorSet }, 0, null);
@@ -260,14 +258,8 @@ namespace NovaEngine.Renderer.Vulkan
         {
             CleanUpSwapchain();
 
-            // TODO: temp
-            ModelObject.Dispose();
-            CameraObject.Dispose();
-
             VK.DestroyDescriptorPool(Device.NativeDevice, NativeDescriptorPool, null);
             VK.DestroyDescriptorSetLayout(Device.NativeDevice, NativeDescriptorSetLayout, null);
-
-            Texture2D.Undefined.Dispose();
 
             for (int i = 0; i < ConcurrentFrames; i++)
             {

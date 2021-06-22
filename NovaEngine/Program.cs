@@ -1,4 +1,5 @@
 ﻿using NovaEngine.Content;
+using NovaEngine.Graphics;
 using NovaEngine.IO;
 using NovaEngine.Maths;
 using NovaEngine.Rendering;
@@ -98,6 +99,14 @@ namespace NovaEngine
         }
 
         /// <summary>Cleans up the application.</summary>
-        private static void CleanUp() => RendererManager.CurrentRenderer.OnCleanUp();
+        private static void CleanUp()
+        {
+            foreach (var scene in SceneManager.LoadedScenes)
+                scene.Dispose();
+
+            Texture2D.Undefined.Dispose();
+
+            RendererManager.CurrentRenderer.OnCleanUp();
+        }
     }
 }

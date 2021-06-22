@@ -20,10 +20,10 @@ namespace NovaEngine.SceneManagement
 
 
         /*********
-        ** Fields
+        ** Accessors
         *********/
         /// <summary>The currently loaded scenes.</summary>
-        private static List<Scene> LoadedScenes { get; } = new();
+        public static List<Scene> LoadedScenes { get; } = new();
 
 
         /*********
