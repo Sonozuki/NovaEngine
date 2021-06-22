@@ -64,11 +64,28 @@ namespace NovaEngine.Serialisation
                 }
                 objectInfos.Reverse(); // reverse to populate the members for dependencies first
 
-                // populate fields, this isn't done when creating the objects to ensure every object has been created (needed when linking the references)
-                foreach (var objectInfo in objectInfos)
+                // populate objects, this isn't done when creating the objects to ensure every object has been created (needed when linking the references)
+                foreach (var objectInfo in objectInfos.Where(objectInfo => objectInfo.Members.Count > 0 || objectInfo.Collection.Count > 0))
                 {
-                    if (objectInfo.Fields.Count == 0 && objectInfo.Collection.Count == 0)
-                        continue;
+                    // populate members
+                    foreach (var member in objectInfo.Members)
+                    {
+                        // get the object to set from the file
+                        var objectInfoToSet = objectInfos.FirstOrDefault(objectInfo => objectInfo.Id == member.Value);
+                        if (objectInfoToSet == null)
+                            throw new SerialisationException($"File doesn't contain an object with an id of: {member.Value}. File seems to be corrupt.");
+                        var objectToSetMemberValueTo = objectInfoToSet.Value;
+
+                        // set the member to the retrieved object
+                        var fieldInfo = objectInfo.Value!.GetType().GetFieldRecursive(member.Key, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                        var propertyInfo = objectInfo.Value!.GetType().GetPropertyRecursive(member.Key, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                        if (fieldInfo != null)
+                            fieldInfo.SetValue(objectInfo.Value, objectToSetMemberValueTo);
+                        else if (propertyInfo != null)
+                            propertyInfo.SetValue(objectInfo.Value, objectToSetMemberValueTo);
+                        else
+                            throw new MissingMemberException(objectInfo.Value.GetType().FullName, member.Key);
+                    }
 
                     // add objects to the collection (if the object being populated is a collection)
                     for (int i = 0; i < objectInfo.Collection.Count; i++)
@@ -89,23 +106,6 @@ namespace NovaEngine.Serialisation
                             (objectInfo.Value as IList)!.Add(objectToSetMemberValueTo);
                         else if (objectInfo.CollectionType == CollectionType.Dictionary)
                             (objectInfo.Value as IDictionary)!.Add(objectToSetMemberValueTo!.GetType().GetProperty("Key")!.GetValue(objectToSetMemberValueTo)!, objectToSetMemberValueTo!.GetType().GetProperty("Value")!.GetValue(objectToSetMemberValueTo));
-                    }
-
-                    // populate fields
-                    foreach (var field in objectInfo.Fields)
-                    {
-                        // get the object to set from the file
-                        var objectInfoToSet = objectInfos.FirstOrDefault(objectInfo => objectInfo.Id == field.Value);
-                        if (objectInfoToSet == null)
-                            throw new SerialisationException($"File doesn't contain an object with an id of: {field.Value}. File seems to be corrupt.");
-                        var objectToSetMemberValueTo = objectInfoToSet.Value;
-
-                        // set the member to the retrieved object
-                        var fieldInfo = objectInfo.Value!.GetType().GetFieldRecursive(field.Key, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-                        if (fieldInfo == null)
-                            throw new MissingFieldException(objectInfo.Value.GetType().FullName, field.Key);
-
-                        fieldInfo.SetValue(objectInfo.Value, objectToSetMemberValueTo);
                     }
                 }
 

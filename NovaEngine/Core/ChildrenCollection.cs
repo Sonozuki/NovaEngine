@@ -17,7 +17,6 @@ namespace NovaEngine.Core
         private readonly GameObject Parent;
 
         /// <summary>The underlying collection of children.</summary>
-        [Serialisable]
         private readonly List<GameObject> Children = new();
 
 
