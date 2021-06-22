@@ -264,10 +264,11 @@ namespace NovaEngine.Maths
         public override string ToString() => $"<M11: {M11}, M12: {M12}, M21: {M21}, M22: {M22}, M31: {M31}, M32: {M32}>";
 
         /// <summary>Creates a rotation matrix.</summary>
-        /// <param name="angle">The anti-clockwise angle, in radians.</param>
+        /// <param name="angle">The anti-clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix3x2 CreateRotation(float angle)
         {
+            angle = MathsHelper.DegreesToRadians(angle);
             var sinAngle = MathF.Sin(angle);
             var cosAngle = MathF.Cos(angle);
 

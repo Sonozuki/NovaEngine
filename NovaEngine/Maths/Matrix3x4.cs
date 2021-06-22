@@ -552,28 +552,12 @@ namespace NovaEngine.Maths
 
         /// <summary>Creates a rotation matrix from an axis and an angle.</summary>
         /// <param name="axis">The axis to rotate around.</param>
-        /// <param name="angle">The angle, in radians, to rotate around the axis.</param>
+        /// <param name="angle">The angle, in degrees, to rotate around the axis.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix3x4 CreateFromAxisAngle(Vector3 axis, float angle)
         {
-            axis.Normalise();
-
-            var sinAngle = MathF.Sin(angle);
-            var cosAngle = MathF.Cos(angle);
-
-            var xx = axis.X * axis.X * (1 - cosAngle);
-            var xy = axis.X * axis.Y * (1 - cosAngle);
-            var xz = axis.X * axis.Z * (1 - cosAngle);
-            var yy = axis.Y * axis.Y * (1 - cosAngle);
-            var yz = axis.Y * axis.Z * (1 - cosAngle);
-
-            var sinX = axis.X * sinAngle;
-            var sinY = axis.Y * sinAngle;
-            var sinZ = axis.Z * sinAngle;
-
-            return new(xx + cosAngle, xy - sinZ,      xz + sinY,      0,
-                                 xy + sinZ,     yy + cosAngle,  yz - sinX,      0,
-                                 xz + sinY,     xy + sinX,      xx + cosAngle,  0);
+            var rotationMatrix = Matrix3x3.CreateFromAxisAngle(axis, angle);
+            return new(rotationMatrix);
         }
 
         /// <summary>Creates a rotation matrix from a quaternion.</summary>
@@ -586,10 +570,11 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>Creates a rotation matrix for a rotation about the X axis.</summary>
-        /// <param name="angle">The anti-clockwise angle, in radians.</param>
+        /// <param name="angle">The anti-clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix3x4 CreateRotationX(float angle)
         {
+            angle = MathsHelper.DegreesToRadians(angle);
             var sinAngle = MathF.Sin(angle);
             var cosAngle = MathF.Cos(angle);
 
@@ -604,10 +589,11 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>Creates a rotation matrix for a rotation about the Y axis.</summary>
-        /// <param name="angle">The anti-clockwise angle, in radians.</param>
+        /// <param name="angle">The anti-clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix3x4 CreateRotationY(float angle)
         {
+            angle = MathsHelper.DegreesToRadians(angle);
             var sinAngle = MathF.Sin(angle);
             var cosAngle = MathF.Cos(angle);
 
@@ -622,10 +608,11 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>Creates a rotation matrix for a rotation about the Z axis.</summary>
-        /// <param name="angle">The anti-clockwise angle, in radians.</param>
+        /// <param name="angle">The anti-clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix3x4 CreateRotationZ(float angle)
         {
+            angle = MathsHelper.DegreesToRadians(angle);
             var sinAngle = MathF.Sin(angle);
             var cosAngle = MathF.Cos(angle);
 

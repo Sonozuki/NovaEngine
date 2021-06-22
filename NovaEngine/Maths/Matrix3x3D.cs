@@ -517,7 +517,7 @@ namespace NovaEngine.Maths
 
         /// <summary>Creates a rotation matrix from an axis and an angle.</summary>
         /// <param name="axis">The axis to rotate around.</param>
-        /// <param name="angle">The angle, in radians, to rotate around the axis.</param>
+        /// <param name="angle">The angle, in degrees, to rotate around the axis.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix3x3D CreateFromAxisAngle(Vector3D axis, double angle)
         {
@@ -526,6 +526,7 @@ namespace NovaEngine.Maths
                 return Matrix3x3D.Identity;
             axis.Normalise();
 
+            angle = MathsHelper.DegreesToRadians(angle);
             var sinAngle = Math.Sin(angle);
             var cosAngle = Math.Cos(angle);
 
@@ -539,9 +540,9 @@ namespace NovaEngine.Maths
             var sinY = axis.Y * sinAngle;
             var sinZ = axis.Z * sinAngle;
 
-            return new(xx + cosAngle, xy - sinZ, xz + sinY,
-                                  xy + sinZ, yy + cosAngle, yz - sinX,
-                                  xz + sinY, xy + sinX, xx + cosAngle);
+            return new(xx + cosAngle, xy - sinZ,     xz + sinY,
+                       xy + sinZ,     yy + cosAngle, yz - sinX,
+                       xz + sinY,     xy + sinX,     xx + cosAngle);
         }
 
         /// <summary>Creates a rotation matrix from a quaternion.</summary>
@@ -553,22 +554,32 @@ namespace NovaEngine.Maths
             return Matrix3x3D.CreateFromAxisAngle(axis, angle);
         }
 
-        /// <summary>Creates a rotation matrix from a pitch, yaw, and roll.</summary>
-        /// <param name="pitch">The angle, in radians, around the X axis.</param>
-        /// <param name="yaw">The angle, in radians, around the Y axis.</param>
-        /// <param name="roll">The angle, in radians, around the Z axis.</param>
+        /// <summary>Creates a rotation matrix from euler angles.</summary>
+        /// <param name="eulerAngles">The euler angles, in degrees.</param>
         /// <returns>The created matrix.</returns>
-        public static Matrix3x3D CreateFromPitchYawRoll(double pitch, double yaw, double roll)
+        public static Matrix3x3D CreateFromEulerAngles(Vector3D eulerAngles)
         {
-            var quaternion = QuaternionD.CreateFromPitchYawRoll(pitch, yaw, roll);
+            var quaternion = QuaternionD.CreateFromEulerAngles(eulerAngles);
+            return Matrix3x3D.CreateFromQuaternion(quaternion);
+        }
+
+        /// <summary>Creates a rotation matrix from euler angles.</summary>
+        /// <param name="x">The angle, in degrees, around the X axis.</param>
+        /// <param name="y">The angle, in degrees, around the Y axis.</param>
+        /// <param name="z">The angle, in degrees, around the Z axis.</param>
+        /// <returns>The created matrix.</returns>
+        public static Matrix3x3D CreateFromEulerAngles(double x, double y, double z)
+        {
+            var quaternion = QuaternionD.CreateFromEulerAngles(x, y, z);
             return Matrix3x3D.CreateFromQuaternion(quaternion);
         }
 
         /// <summary>Creates a rotation matrix for a rotation about the X axis.</summary>
-        /// <param name="angle">The anti-clockwise angle, in radians.</param>
+        /// <param name="angle">The anti-clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix3x3D CreateRotationX(double angle)
         {
+            angle = MathsHelper.DegreesToRadians(angle);
             var sinAngle = Math.Sin(angle);
             var cosAngle = Math.Cos(angle);
 
@@ -581,10 +592,11 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>Creates a rotation matrix for a rotation about the Y axis.</summary>
-        /// <param name="angle">The anti-clockwise angle, in radians.</param>
+        /// <param name="angle">The anti-clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix3x3D CreateRotationY(double angle)
         {
+            angle = MathsHelper.DegreesToRadians(angle);
             var sinAngle = Math.Sin(angle);
             var cosAngle = Math.Cos(angle);
 
@@ -597,10 +609,11 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>Creates a rotation matrix for a rotation about the Z axis.</summary>
-        /// <param name="angle">The anti-clockwise angle, in radians.</param>
+        /// <param name="angle">The anti-clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix3x3D CreateRotationZ(double angle)
         {
+            angle = MathsHelper.DegreesToRadians(angle);
             var sinAngle = Math.Sin(angle);
             var cosAngle = Math.Cos(angle);
 

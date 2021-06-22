@@ -826,7 +826,7 @@ namespace NovaEngine.Maths
 
         /// <summary>Creates a rotation matrix from an axis and an angle.</summary>
         /// <param name="axis">The axis to rotate around.</param>
-        /// <param name="angle">The angle, in radians, to rotate around the axis.</param>
+        /// <param name="angle">The angle, in degrees, to rotate around the axis.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix4x4D CreateFromAxisAngle(Vector3D axis, double angle)
         {
@@ -844,17 +844,17 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>Creates a rotation matrix for a rotation about the X axis.</summary>
-        /// <param name="angle">The anti-clockwise angle, in radians.</param>
+        /// <param name="angle">The anti-clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix4x4D CreateRotationX(double angle) => new(Matrix3x3D.CreateRotationX(angle));
 
         /// <summary>Creates a rotation matrix for a rotation about the Y axis.</summary>
-        /// <param name="angle">The anti-clockwise angle, in radians.</param>
+        /// <param name="angle">The anti-clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix4x4D CreateRotationY(double angle) => new(Matrix3x3D.CreateRotationY(angle));
 
         /// <summary>Creates a rotation matrix for a rotation about the Z axis.</summary>
-        /// <param name="angle">The anti-clockwise angle, in radians.</param>
+        /// <param name="angle">The anti-clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix4x4D CreateRotationZ(double angle) => new(Matrix3x3D.CreateRotationZ(angle));
 
@@ -978,17 +978,17 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>Creates a perspective projection matrix.</summary>
-        /// <param name="fieldOfView">The field of view in the Y direction, in radians.</param>
+        /// <param name="fieldOfView">The field of view in the Y direction, in degrees.</param>
         /// <param name="aspectRatio">The aspect ratio.</param>
         /// <param name="nearClippingPlane">The distance to the near clipping plane.</param>
         /// <param name="farClippingPlane">The distance to the far clipping plane.</param>
         /// <returns>The created matrix.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="fieldOfView"/> isn't more than zero and less than PI, or if <paramref name="nearClippingPlane"/> or <paramref name="farClippingPlane"/> are less than zero, or if <paramref name="farClippingPlane"/> is less than or equal to <paramref name="nearClippingPlane"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="fieldOfView"/> is less than zero, or if <paramref name="nearClippingPlane"/> or <paramref name="farClippingPlane"/> are less than zero, or if <paramref name="farClippingPlane"/> is less than or equal to <paramref name="nearClippingPlane"/>.</exception>
         public static Matrix4x4D CreatePerspectiveFieldOfView(double fieldOfView, double aspectRatio, double nearClippingPlane, double farClippingPlane)
         {
             // validate
-            if (fieldOfView <= 0 || fieldOfView >= Math.PI)
-                throw new ArgumentOutOfRangeException(nameof(fieldOfView), "Must be between 0 => PI (inclusive).");
+            if (fieldOfView <= 0)
+                throw new ArgumentOutOfRangeException(nameof(fieldOfView), "Must be more than zero.");
 
             if (nearClippingPlane <= 0)
                 throw new ArgumentOutOfRangeException(nameof(nearClippingPlane), "Must be more than zero.");
@@ -1000,7 +1000,7 @@ namespace NovaEngine.Maths
                 throw new ArgumentOutOfRangeException(nameof(nearClippingPlane), $"Must be more than {nameof(farClippingPlane)}");
 
             // create matrix
-            var yScale = 1 / Math.Tan(fieldOfView / 2);
+            var yScale = 1 / Math.Tan(MathsHelper.DegreesToRadians(fieldOfView) / 2);
             var xScale = yScale / aspectRatio;
 
             var result = new Matrix4x4D

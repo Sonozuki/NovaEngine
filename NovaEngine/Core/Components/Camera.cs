@@ -33,7 +33,7 @@ namespace NovaEngine.Core.Components
             get
             {
                 if (Projection == CameraProjection.Perspective)
-                    return Matrix4x4.CreatePerspectiveFieldOfView(MathsHelper.DegreesToRadians(FieldOfView), Program.MainWindow.Size.Width / (float)Program.MainWindow.Size.Height, NearClippingPlane, FarClippingPlane);
+                    return Matrix4x4.CreatePerspectiveFieldOfView(FieldOfView, Program.MainWindow.Size.Width / (float)Program.MainWindow.Size.Height, NearClippingPlane, FarClippingPlane);
                 else
                     return Matrix4x4.CreateOrthographic(Width, Height, NearClippingPlane, FarClippingPlane);
             }

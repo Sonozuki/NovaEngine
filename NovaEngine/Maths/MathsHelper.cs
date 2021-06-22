@@ -117,13 +117,23 @@ namespace NovaEngine.Maths
         public static ulong Clamp(ulong value, ulong min, ulong max) => Math.Max(min, Math.Min(max, value));
 
         /// <summary>Converts degrees to radians.</summary>
-        /// <param name="degrees">The angle in degrees.</param>
-        /// <returns>The angle in radians.</returns>
+        /// <param name="degrees">The angle, in degrees.</param>
+        /// <returns>The angle, in radians.</returns>
         public static float DegreesToRadians(float degrees) => degrees * MathF.PI / 180;
 
         /// <summary>Converts degrees to radians.</summary>
-        /// <param name="degrees">The angle in degrees.</param>
-        /// <returns>The angle in radians.</returns>
+        /// <param name="degrees">The angle, in degrees.</param>
+        /// <returns>The angle, in radians.</returns>
         public static double DegreesToRadians(double degrees) => degrees * Math.PI / 180;
+
+        /// <summary>Converts radians to degrees.</summary>
+        /// <param name="radians">The angle, in radians.</param>
+        /// <returns>The angle, in degrees.</returns>
+        public static float RadiansToDegrees(float radians) => radians * 180 / MathF.PI;
+
+        /// <summary>Converts radians to degrees.</summary>
+        /// <param name="radians">The angle, in radians.</param>
+        /// <returns>The angle, in degrees.</returns>
+        public static double RadiansToDegrees(double radians) => radians * 180 / Math.PI;
     }
 }

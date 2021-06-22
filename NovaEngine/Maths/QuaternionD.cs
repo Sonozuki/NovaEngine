@@ -155,14 +155,14 @@ namespace NovaEngine.Maths
 
         /// <summary>Gets the axis and angle that the quaternion represents.</summary>
         /// <param name="axis">The axis.</param>
-        /// <param name="angle">The angle, in radians.</param>
+        /// <param name="angle">The angle, in degrees.</param>
         public void GetAxisAngle(out Vector3D axis, out double angle)
         {
             var quaternion = this;
             if (Math.Abs(quaternion.W) > 1)
                 quaternion.Normalise();
 
-            angle = 2 * Math.Acos(quaternion.W);
+            angle = MathsHelper.RadiansToDegrees(2 * Math.Acos(quaternion.W));
             var denominator = Math.Sqrt(1 - quaternion.W * quaternion.W);
             if (denominator == 0)
                 axis = Vector3D.UnitX;
@@ -249,7 +249,7 @@ namespace NovaEngine.Maths
 
         /// <summary>Creates a quaternion from an axis and an angle.</summary>
         /// <param name="axis">The axis to rotate around.</param>
-        /// <param name="angle">The angle, in radians, to rotate around the axis.</param>
+        /// <param name="angle">The angle, in degrees, to rotate around the axis.</param>
         /// <returns>The created quaternion.</returns>
         public static QuaternionD CreateFromAxisAngle(Vector3D axis, double angle)
         {
@@ -259,7 +259,7 @@ namespace NovaEngine.Maths
             axis.Normalise();
 
             // create quaternion
-            var halfAngle = angle / 2;
+            var halfAngle = MathsHelper.DegreesToRadians(angle) / 2;
             var sinHalfAngle = Math.Sin(halfAngle);
             var cosHalfAngle = Math.Cos(halfAngle);
 
@@ -271,36 +271,36 @@ namespace NovaEngine.Maths
             );
         }
 
-        /// <summary>Creates a quaternion from a pitch, yaw, and roll.</summary>
-        /// <param name="pitch">The angle, in radians, around the X axis.</param>
-        /// <param name="yaw">The angle, in radians, around the Y axis.</param>
-        /// <param name="roll">The angle, in radians, around the Z axis.</param>
+        /// <summary>Creates a quaternion from euler angles.</summary>
+        /// <param name="eulerAngles">The euler angles, in degrees.</param>
         /// <returns>The created quaternion.</returns>
-        public static QuaternionD CreateFromPitchYawRoll(double pitch, double yaw, double roll)
-        {
-            var halfPitch = pitch / 2;
-            var halfYaw = yaw / 2;
-            var halfRoll = roll / 2;
-
-            var sinHalfPitch = Math.Sin(halfPitch);
-            var sinHalfYaw = Math.Sin(halfYaw);
-            var sinHalfRoll = Math.Sin(halfRoll);
-            var cosHalfPitch = Math.Cos(halfPitch);
-            var cosHalfYaw = Math.Cos(halfYaw);
-            var cosHalfRoll = Math.Cos(halfRoll);
-
-            return new(
-                x: cosHalfYaw * sinHalfPitch * cosHalfRoll + sinHalfYaw * cosHalfPitch * sinHalfRoll,
-                y: sinHalfYaw * cosHalfPitch * cosHalfRoll - cosHalfYaw * sinHalfPitch * sinHalfRoll,
-                z: cosHalfYaw * cosHalfPitch * sinHalfRoll - sinHalfYaw * sinHalfPitch * cosHalfRoll,
-                w: cosHalfYaw * cosHalfPitch * cosHalfRoll + sinHalfYaw * sinHalfPitch * sinHalfRoll
-            );
-        }
+        public static QuaternionD CreateFromEulerAngles(Vector3D eulerAngles) => QuaternionD.CreateFromEulerAngles(eulerAngles.X, eulerAngles.Y, eulerAngles.Z);
 
         /// <summary>Creates a quaternion from euler angles.</summary>
-        /// <param name="eulerAngles">The euler angles, in radians.</param>
+        /// <param name="x">The angle, in degrees, around the X axis.</param>
+        /// <param name="y">The angle, in degrees, around the Y axis.</param>
+        /// <param name="z">The angle, in degrees, around the Z axis.</param>
         /// <returns>The created quaternion.</returns>
-        public static QuaternionD CreateFromEulerAngles(Vector3D eulerAngles) => QuaternionD.CreateFromPitchYawRoll(eulerAngles.X, eulerAngles.Y, eulerAngles.Z);
+        public static QuaternionD CreateFromEulerAngles(double x, double y, double z)
+        {
+            var halfX = MathsHelper.DegreesToRadians(x) / 2;
+            var halfY = MathsHelper.DegreesToRadians(y) / 2;
+            var halfZ = MathsHelper.DegreesToRadians(z) / 2;
+
+            var sinHalfX = Math.Sin(halfX);
+            var sinHalfY = Math.Sin(halfY);
+            var sinHalfZ = Math.Sin(halfZ);
+            var cosHalfX = Math.Cos(halfX);
+            var cosHalfY = Math.Cos(halfY);
+            var cosHalfZ = Math.Cos(halfZ);
+
+            return new(
+                x: cosHalfY * sinHalfX * cosHalfZ + sinHalfY * cosHalfX * sinHalfZ,
+                y: sinHalfY * cosHalfX * cosHalfZ - cosHalfY * sinHalfX * sinHalfZ,
+                z: cosHalfY * cosHalfX * sinHalfZ - sinHalfY * sinHalfX * cosHalfZ,
+                w: cosHalfY * cosHalfX * cosHalfZ + sinHalfY * sinHalfX * sinHalfZ
+            );
+        }
 
 
         /*********

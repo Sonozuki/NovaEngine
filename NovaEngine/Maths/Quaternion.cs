@@ -155,14 +155,14 @@ namespace NovaEngine.Maths
 
         /// <summary>Gets the axis and angle that the quaternion represents.</summary>
         /// <param name="axis">The axis.</param>
-        /// <param name="angle">The angle, in radians.</param>
+        /// <param name="angle">The angle, in degrees.</param>
         public void GetAxisAngle(out Vector3 axis, out float angle)
         {
             var quaternion = this;
             if (Math.Abs(quaternion.W) > 1)
                 quaternion.Normalise();
 
-            angle = 2 * MathF.Acos(quaternion.W);
+            angle = MathsHelper.RadiansToDegrees(2 * MathF.Acos(quaternion.W));
             var denominator = MathF.Sqrt(1 - quaternion.W * quaternion.W);
             if (denominator == 0)
                 axis = Vector3.UnitX;
@@ -195,7 +195,7 @@ namespace NovaEngine.Maths
         /// <summary>Interpolates between two values, using spherical linear interpolation.</summary>
         /// <param name="quaternion1">The source value.</param>
         /// <param name="quaternion2">The destination value.</param>
-        /// <param name="amount">The amount to interpolate between <paramref name="value1"/> and <paramref name="value2"/>.</param>
+        /// <param name="amount">The amount to interpolate between <paramref name="quaternion1"/> and <paramref name="quaternion2"/>.</param>
         /// <returns>The interpolated value.</returns>
         public static Quaternion Slerp(Quaternion quaternion1, Quaternion quaternion2, float amount)
         {
@@ -249,7 +249,7 @@ namespace NovaEngine.Maths
 
         /// <summary>Creates a quaternion from an axis and an angle.</summary>
         /// <param name="axis">The axis to rotate around.</param>
-        /// <param name="angle">The angle, in radians, to rotate around the axis.</param>
+        /// <param name="angle">The angle, in degrees, to rotate around the axis.</param>
         /// <returns>The created quaternion.</returns>
         public static Quaternion CreateFromAxisAngle(Vector3 axis, float angle)
         {
@@ -259,7 +259,7 @@ namespace NovaEngine.Maths
             axis.Normalise();
 
             // create quaternion
-            var halfAngle = angle / 2;
+            var halfAngle = MathsHelper.DegreesToRadians(angle) / 2;
             var sinHalfAngle = MathF.Sin(halfAngle);
             var cosHalfAngle = MathF.Cos(halfAngle);
 
@@ -271,36 +271,36 @@ namespace NovaEngine.Maths
             );
         }
 
-        /// <summary>Creates a quaternion from a pitch, yaw, and roll.</summary>
-        /// <param name="pitch">The angle, in radians, around the X axis.</param>
-        /// <param name="yaw">The angle, in radians, around the Y axis.</param>
-        /// <param name="roll">The angle, in radians, around the Z axis.</param>
+        /// <summary>Creates a quaternion from euler angles.</summary>
+        /// <param name="eulerAngles">The euler angles, in degrees.</param>
         /// <returns>The created quaternion.</returns>
-        public static Quaternion CreateFromPitchYawRoll(float pitch, float yaw, float roll)
-        {
-            var halfPitch = pitch / 2;
-            var halfYaw = yaw / 2;
-            var halfRoll = roll / 2;
-
-            var sinHalfPitch = MathF.Sin(halfPitch);
-            var sinHalfYaw = MathF.Sin(halfYaw);
-            var sinHalfRoll = MathF.Sin(halfRoll);
-            var cosHalfPitch = MathF.Cos(halfPitch);
-            var cosHalfYaw = MathF.Cos(halfYaw);
-            var cosHalfRoll = MathF.Cos(halfRoll);
-
-            return new(
-                x: cosHalfYaw * sinHalfPitch * cosHalfRoll + sinHalfYaw * cosHalfPitch * sinHalfRoll,
-                y: sinHalfYaw * cosHalfPitch * cosHalfRoll - cosHalfYaw * sinHalfPitch * sinHalfRoll,
-                z: cosHalfYaw * cosHalfPitch * sinHalfRoll - sinHalfYaw * sinHalfPitch * cosHalfRoll,
-                w: cosHalfYaw * cosHalfPitch * cosHalfRoll + sinHalfYaw * sinHalfPitch * sinHalfRoll
-            );
-        }
+        public static Quaternion CreateFromEulerAngles(Vector3 eulerAngles) => Quaternion.CreateFromEulerAngles(eulerAngles.X, eulerAngles.Y, eulerAngles.Z);
 
         /// <summary>Creates a quaternion from euler angles.</summary>
-        /// <param name="eulerAngles">The euler angles, in radians.</param>
-        /// <returns>The created quaternion.</returns>
-        public static Quaternion CreateFromEulerAngles(Vector3 eulerAngles) => Quaternion.CreateFromPitchYawRoll(eulerAngles.X, eulerAngles.Y, eulerAngles.Z);
+        /// <param name="x">The angle, in degrees, around the X axis.</param>
+        /// <param name="y">The angle, in degrees, around the Y axis.</param>
+        /// <param name="z">The angle, in degrees, around the Z axis.</param>
+        /// <returns>The created quaterion.</returns>
+        public static Quaternion CreateFromEulerAngles(float x, float y, float z)
+        {
+            var halfX = MathsHelper.DegreesToRadians(x) / 2;
+            var halfY = MathsHelper.DegreesToRadians(y) / 2;
+            var halfZ = MathsHelper.DegreesToRadians(z) / 2;
+
+            var sinHalfX = MathF.Sin(halfX);
+            var sinHalfY = MathF.Sin(halfY);
+            var sinHalfZ = MathF.Sin(halfZ);
+            var cosHalfX = MathF.Cos(halfX);
+            var cosHalfY = MathF.Cos(halfY);
+            var cosHalfZ = MathF.Cos(halfZ);
+
+            return new(
+                x: cosHalfY * sinHalfX * cosHalfZ + sinHalfY * cosHalfX * sinHalfZ,
+                y: sinHalfY * cosHalfX * cosHalfZ - cosHalfY * sinHalfX * sinHalfZ,
+                z: cosHalfY * cosHalfX * sinHalfZ - sinHalfY * sinHalfX * cosHalfZ,
+                w: cosHalfY * cosHalfX * cosHalfZ + sinHalfY * sinHalfX * sinHalfZ
+            );
+        }
 
 
         /*********
