@@ -1,5 +1,4 @@
-﻿using NovaEngine.Content;
-using NovaEngine.Core;
+﻿using NovaEngine.Core;
 using NovaEngine.Core.Components;
 using NovaEngine.Graphics;
 using NovaEngine.Maths;
@@ -50,7 +49,7 @@ namespace NovaEngine.Renderer.Vulkan
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. (When these are actually used, they'll never be null.)
 
         /// <summary>The graphics pipeline that Vulkan will use.</summary>
-        private VulkanPipeline Pipeline;
+        private VulkanPipelines Pipeline;
 
         /// <summary>The command pool for rendering command buffers.</summary>
         private VulkanCommandPool CommandPool;
@@ -200,13 +199,13 @@ namespace NovaEngine.Renderer.Vulkan
                 };
 
                 VK.CommandBeginRenderPass(commandBuffer, ref renderPassBeginInfo, VkSubpassContents.Inline);
-                VK.CommandBindPipeline(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.Pipeline);
+                VK.CommandBindPipeline(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.GraphicsPipeline);
 
                 // TODO: get a reference to each game object recursively, not just the first level
                 var vulkanGameObjects = SceneManager.LoadedScenes.SelectMany(scene => scene.RootGameObjects).SelectMany(gameObject => gameObject.Children).Select(meshObject => meshObject.RendererGameObject).Cast<VulkanGameObject>();
                 foreach (var vulkanGameObject in vulkanGameObjects)
                 {
-                    VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.PipelineLayout, 0, 1, new[] { vulkanGameObject.NativeDescriptorSet }, 0, null);
+                    VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.GraphicsPipelineLayout, 0, 1, new[] { vulkanGameObject.NativeDescriptorSet }, 0, null);
                     var vertexBuffer = vulkanGameObject.VertexBuffer!.NativeBuffer;
                     var offsets = (VkDeviceSize)0;
                     VK.CommandBindVertexBuffers(commandBuffer, 0, 1, ref vertexBuffer, &offsets);
@@ -293,7 +292,7 @@ namespace NovaEngine.Renderer.Vulkan
             CreateRenderPass();
             Swapchain.CreateFramebuffers(NativeRenderPass);
 
-            Pipeline = new VulkanPipeline(); // TODO: use dynamic state instead of recreating the entire pipeline
+            Pipeline = new VulkanPipelines(); // TODO: use dynamic state instead of recreating the entire pipeline
         }
 
         /// <summary>Cleans up the swapchain resources.</summary>

@@ -1,51 +1,88 @@
 ﻿using NovaEngine.Content;
 using NovaEngine.Settings;
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Vulkan;
 
 namespace NovaEngine.Renderer.Vulkan
 {
-    /// <summary>A wrapper a graphics pipeline.</summary>
-    internal unsafe class VulkanPipeline : IDisposable
+    /// <summary>Encapsulates all graphics and compute pipelines.</summary>
+    internal unsafe class VulkanPipelines : IDisposable
     {
+        /*********
+        ** Fields
+        *********/
+        /// <summary>A pointer to a <see langword="string"/> containing "main", specifying the name of a shader entry point.</summary>
+        private IntPtr ShaderEntryPointNamePointer;
+
+        /// <summary>The created shader modules, stored for destroying.</summary>
+        private readonly List<VkShaderModule> ShaderModules = new();
+
+        /// <summary>The created shader stages.</summary>
+        private ShaderStages ShaderStages;
+
+
         /*********
         ** Accessors
         *********/
-        /// <summary>The pipeline layout for <see cref="Pipeline"/>.</summary>
-        public VkPipelineLayout PipelineLayout { get; }
+        /// <summary>The layout of <see cref="GraphicsPipeline"/>.</summary>
+        public VkPipelineLayout GraphicsPipelineLayout { get; private set; }
 
-        /// <summary>A graphics pipeline using the shaders.</summary>
-        public VkPipeline Pipeline { get; }
+        /// <summary>The main graphics pipeline.</summary>
+        public VkPipeline GraphicsPipeline { get; private set; }
 
 
         /*********
         ** Public Methods
         *********/
         /// <summary>Constructs an instance.</summary>
-        /// <exception cref="ApplicationException">Thrown if the pipeline layout or pipeline couldn't be created.</exception>
-        public VulkanPipeline()
+        /// <exception cref="ApplicationException">Thrown if the pipeline layout or a pipeline couldn't be created.</exception>
+        public VulkanPipelines()
         {
-            var vertexShaderModule = CreateShaderModule("Shaders/shader_vert");
-            var fragmentShaderModule = CreateShaderModule("Shaders/shader_frag");
-
-            // create pipeline layout
-            var descriptorSetLayout = VulkanRenderer.Instance.NativeDescriptorSetLayout;
-            var pipelineLayoutCreateInfo = new VkPipelineLayoutCreateInfo()
+            try
             {
-                SType = VkStructureType.PipelineLayoutCreateInfo,
-                SetLayoutCount = 1,
-                SetLayouts = &descriptorSetLayout
-            };
+                CreateShaderStages();
 
-            if (VK.CreatePipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, ref pipelineLayoutCreateInfo, null, out var pipelineLayout) != VkResult.Success)
-                throw new ApplicationException("Failed to create pipeline layout.");
-            PipelineLayout = pipelineLayout;
+                CreateGraphicsPipelines();
+                CreateComputePipelines();
+            }
+            finally
+            {
+                CleanupShaderModules();
+            }
+        }
 
-            // create pipeline
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, GraphicsPipelineLayout, null);
+            VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, GraphicsPipeline, null);
+        }
+
+
+        /*********
+        ** Private Methods
+        *********/
+        /// <summary>Creates the shader stages.</summary>
+        private void CreateShaderStages()
+        {
+            ShaderEntryPointNamePointer = Marshal.StringToHGlobalAnsi("main");
+            ShaderStages.VertexShader = LoadShader("Shaders/shader_vert", VkShaderStageFlags.Vertex);
+            ShaderStages.FragmentShader = LoadShader("Shaders/shader_frag", VkShaderStageFlags.Fragment);
+        }
+
+        /// <summary>Creates the graphics pipelines.</summary>
+        /// <exception cref="ApplicationException">Thrown if the graphics pipeline layout or a pipeline couldn't be created.</exception>
+        private void CreateGraphicsPipelines()
+        {
+            // create pipelines
             fixed (VkVertexInputAttributeDescription* vertexAttributeDescriptionsPointer = VulkanUtilities.VertexAttributeDesciptions)
             fixed (VkVertexInputBindingDescription* vertexBindingDescriptionsPointer = VulkanUtilities.VertexBindingDescription)
             {
+                // vertex and fragment shader stages
+                var shaderStages = new[] { ShaderStages.VertexShader, ShaderStages.FragmentShader };
+
                 // vertex input
                 var vertexInputState = new VkPipelineVertexInputStateCreateInfo()
                 {
@@ -152,77 +189,76 @@ namespace NovaEngine.Renderer.Vulkan
                 colourBlendState.BlendConstants[1] = 0;
                 colourBlendState.BlendConstants[2] = 0;
                 colourBlendState.BlendConstants[3] = 0;
-
-                var shaderEntryPoint = IntPtr.Zero;
-
-                try
+                
+                // create pipeline layout
+                var descriptorSetLayout = VulkanRenderer.Instance.NativeDescriptorSetLayout;
+                var pipelineLayoutCreateInfo = new VkPipelineLayoutCreateInfo()
                 {
-                    shaderEntryPoint = Marshal.StringToHGlobalAnsi("main");
+                    SType = VkStructureType.PipelineLayoutCreateInfo,
+                    SetLayoutCount = 1,
+                    SetLayouts = &descriptorSetLayout
+                };
 
-                    var shaderStageCreateInfos = new[]
-                    {
-                        CreateShaderStage(VkShaderStageFlags.Vertex, vertexShaderModule, shaderEntryPoint),
-                        CreateShaderStage(VkShaderStageFlags.Fragment, fragmentShaderModule, shaderEntryPoint)
-                    };
+                if (VK.CreatePipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, ref pipelineLayoutCreateInfo, null, out var graphicsPipelineLayout) != VkResult.Success)
+                    throw new ApplicationException("Failed to create graphics pipeline layout.");
+                GraphicsPipelineLayout = graphicsPipelineLayout;
 
-                    // create graphics pipeline
-                    fixed (VkPipelineShaderStageCreateInfo* shaderStageCreateInfosPointer = shaderStageCreateInfos)
-                    {
-                        var pipelineCreateInfo = new VkGraphicsPipelineCreateInfo()
-                        {
-                            SType = VkStructureType.GraphicsPipelineCreateInfo,
-                            StageCount = (uint)shaderStageCreateInfos.Length,
-                            Stages = shaderStageCreateInfosPointer,
-                            VertexInputState = &vertexInputState,
-                            InputAssemblyState = &inputAssemblyState,
-                            ViewportState = &viewportState,
-                            RasterizationState = &rasterisationState,
-                            MultisampleState = &multisampleState,
-                            DepthStencilState = &depthStencilState,
-                            ColorBlendState = &colourBlendState,
-                            DynamicState = null,
-                            Layout = PipelineLayout,
-                            RenderPass = VulkanRenderer.Instance.NativeRenderPass,
-                            Subpass = 0
-                        };
-
-                        if (VK.CreateGraphicsPipelines(VulkanRenderer.Instance.Device.NativeDevice, VkPipelineCache.Null, 1, new[] { pipelineCreateInfo }, null, out var pipeline) != VkResult.Success)
-                            throw new ApplicationException("Failed to create pipeline.");
-                        Pipeline = pipeline;
-                    }
-                }
-                finally
+                // create base create info
+                var pipelineCreateInfo = new VkGraphicsPipelineCreateInfo()
                 {
-                    Marshal.FreeHGlobal(shaderEntryPoint);
-                }
+                    SType = VkStructureType.GraphicsPipelineCreateInfo,
+                    VertexInputState = &vertexInputState,
+                    InputAssemblyState = &inputAssemblyState,
+                    ViewportState = &viewportState,
+                    RasterizationState = &rasterisationState,
+                    MultisampleState = &multisampleState,
+                    DepthStencilState = &depthStencilState,
+                    ColorBlendState = &colourBlendState,
+                    Layout = GraphicsPipelineLayout,
+                    RenderPass = VulkanRenderer.Instance.NativeRenderPass,
+                    Subpass = 0
+                };
 
-                VK.DestroyShaderModule(VulkanRenderer.Instance.Device.NativeDevice, vertexShaderModule, null);
-                VK.DestroyShaderModule(VulkanRenderer.Instance.Device.NativeDevice, fragmentShaderModule, null);
+                // create main graphics pipeline
+                fixed (VkPipelineShaderStageCreateInfo* shaderStagesPointer = shaderStages)
+                {
+                    pipelineCreateInfo.StageCount = 2;
+                    pipelineCreateInfo.Stages = shaderStagesPointer;
+
+                    if (VK.CreateGraphicsPipelines(VulkanRenderer.Instance.Device.NativeDevice, VkPipelineCache.Null, 1, new[] { pipelineCreateInfo }, null, out var graphicsPipeline) != VkResult.Success)
+                        throw new ApplicationException("Failed to create pipeline.");
+                    GraphicsPipeline = graphicsPipeline;
+                }
             }
         }
 
-        /// <inheritdoc/>
-        public void Dispose()
+        /// <summary>Creates the compute pipelines.</summary>
+        /// <exception cref="ApplicationException">Thrown if a pipeline couldn't be created.</exception>
+        private void CreateComputePipelines()
         {
-            VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, PipelineLayout, null);
-            VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, Pipeline, null);
+            // TODO
         }
 
-
-        /*********
-        ** Private Methods
-        *********/
-        /// <summary>Creates a shader module using the compiled shader file at a specified path.</summary>
-        /// <param name="path">The path to the compiled shader file.</param>
-        /// <returns>The shader module loaded from <paramref name="path"/>.</returns>
-        /// <exception cref="ApplicationException">Thrown if the shader module couldn't be created.</exception>
-        private static VkShaderModule CreateShaderModule(string path)
+        /// <summary>Cleans up the shader modules.</summary>
+        private void CleanupShaderModules()
         {
-            var fileBytes = ContentLoader.Load<byte[]>(path);
-            var shaderData = new uint[(int)Math.Ceiling(fileBytes.Length / 4f)];
-            Buffer.BlockCopy(fileBytes, 0, shaderData, 0, fileBytes.Length);
+            if (ShaderEntryPointNamePointer != IntPtr.Zero)
+                Marshal.FreeHGlobal(ShaderEntryPointNamePointer);
 
-            fixed (uint* shaderDataPointer = shaderData)
+            foreach (var shaderModule in ShaderModules)
+                VK.DestroyShaderModule(VulkanRenderer.Instance.Device.NativeDevice, shaderModule, null);
+        }
+
+        /// <summary>Loads a shader.</summary>
+        /// <param name="path">The path to the compiled shader file.</param>
+        private VkPipelineShaderStageCreateInfo LoadShader(string path, VkShaderStageFlags stage)
+        {
+            // create shader module
+            var fileData = new Span<byte>(ContentLoader.Load<byte[]>(path));
+            var shaderData = MemoryMarshal.Cast<byte, uint>(fileData);
+
+            VkShaderModule shaderModule;
+            fixed (uint* shaderDataPointer = &shaderData.GetPinnableReference())
             {
                 var shaderModuleCreateInfo = new VkShaderModuleCreateInfo()
                 {
@@ -231,26 +267,18 @@ namespace NovaEngine.Renderer.Vulkan
                     Code = shaderDataPointer
                 };
 
-                if (VK.CreateShaderModule(VulkanRenderer.Instance.Device.NativeDevice, ref shaderModuleCreateInfo, null, out var shaderModule) != VkResult.Success)
-                    throw new ApplicationException("Failed to create shader module.");
-
-                return shaderModule;
+                if (VK.CreateShaderModule(VulkanRenderer.Instance.Device.NativeDevice, ref shaderModuleCreateInfo, null, out shaderModule) != VkResult.Success)
+                    throw new ApplicationException($"Failed to create shader module: {path}.");
+                ShaderModules.Add(shaderModule);
             }
-        }
 
-        /// <summary>Creates a <see cref="VkPipelineShaderStageCreateInfo"/>.</summary>
-        /// <param name="stage">The pipeline stage of the shader.</param>
-        /// <param name="module">The shader module.</param>
-        /// <param name="entryPointName">The entry method of the shader.</param>
-        /// <returns>The created <see cref="VkPipelineShaderStageCreateInfo"/>.</returns>
-        private static VkPipelineShaderStageCreateInfo CreateShaderStage(VkShaderStageFlags stage, VkShaderModule module, IntPtr entryPointName)
-        {
+            // create shader stage
             return new()
             {
                 SType = VkStructureType.PipelineShaderStageCreateInfo,
                 Stage = stage,
-                Module = module,
-                Name = (byte*)entryPointName
+                Module = shaderModule,
+                Name = (byte*)ShaderEntryPointNamePointer
             };
         }
     }
