@@ -9,15 +9,20 @@
         /// <summary>The mesh to render.</summary>
         public Mesh Mesh { get; set; }
 
+        /// <summary>The material to use when rendering the mesh.</summary>
+        public Material Material { get; private set; }
+
 
         /*********
         ** Public Methods
         *********/
         /// <summary>Constructs an instance.</summary>
         /// <param name="mesh">The mesh to render.</param>
-        public MeshRenderer(Mesh mesh)
+        /// <param name="material">The material to use when rendering the mesh.</param>
+        public MeshRenderer(Mesh mesh, Material? material = null)
         {
             Mesh = mesh;
+            Material = material ?? Material.Default;
         }
 
 
