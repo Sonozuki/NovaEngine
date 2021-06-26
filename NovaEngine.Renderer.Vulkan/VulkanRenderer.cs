@@ -114,8 +114,8 @@ namespace NovaEngine.Renderer.Vulkan
         /// <summary>The descriptor set layout for <see cref="NativeDescriptorPool"/>.</summary>
         internal VkDescriptorSetLayout NativeDescriptorSetLayout { get; private set; }
 
-        /// <summary>The descriptor pool for game objects.</summary>
-        internal VkDescriptorPool NativeDescriptorPool { get; private set; }
+        /// <summary>The descriptor pool.</summary>
+        internal VulkanDescriptorPool DescriptorPool { get; private set; }
 
         /// <summary>The singleton instance of <see cref="VulkanRenderer"/>.</summary>
         public static VulkanRenderer Instance { get; private set; }
@@ -152,7 +152,7 @@ namespace NovaEngine.Renderer.Vulkan
             CreateSyncObjects();
 
             CommandPool = new(CommandPoolUsage.Graphics);
-            CreateDescriptorPool();
+            DescriptorPool = new();
         }
 
         /// <inheritdoc/>
@@ -205,7 +205,7 @@ namespace NovaEngine.Renderer.Vulkan
                 var vulkanGameObjects = SceneManager.LoadedScenes.SelectMany(scene => scene.RootGameObjects).SelectMany(gameObject => gameObject.Children).Select(meshObject => meshObject.RendererGameObject).Cast<VulkanGameObject>();
                 foreach (var vulkanGameObject in vulkanGameObjects)
                 {
-                    VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.GraphicsPipelineLayout, 0, 1, new[] { vulkanGameObject.NativeDescriptorSet }, 0, null);
+                    VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.GraphicsPipelineLayout, 0, 1, new[] { vulkanGameObject.DescriptorSet.NativeDescriptorSet }, 0, null);
                     var vertexBuffer = vulkanGameObject.VertexBuffer!.NativeBuffer;
                     var offsets = (VkDeviceSize)0;
                     VK.CommandBindVertexBuffers(commandBuffer, 0, 1, ref vertexBuffer, &offsets);
@@ -257,7 +257,7 @@ namespace NovaEngine.Renderer.Vulkan
         {
             CleanUpSwapchain();
 
-            VK.DestroyDescriptorPool(Device.NativeDevice, NativeDescriptorPool, null);
+            DescriptorPool.Dispose();
             VK.DestroyDescriptorSetLayout(Device.NativeDevice, NativeDescriptorSetLayout, null);
 
             for (int i = 0; i < ConcurrentFrames; i++)
@@ -606,31 +606,6 @@ namespace NovaEngine.Renderer.Vulkan
 
                 if (VK.CreateFence(Device.NativeDevice, ref fenceCreateInfo, null, out InFlightFences[i]) != VkResult.Success)
                     throw new ApplicationException("Failed to create fence.");
-            }
-        }
-
-        /// <summary>Creates the descriptor pool.</summary>
-        /// <exception cref="ApplicationException">Thrown if the descriptor pool couldn't be created.</exception>
-        private void CreateDescriptorPool()
-        {
-            var uboDescriptorSize = new VkDescriptorPoolSize() { Type = VkDescriptorType.UniformBuffer, DescriptorCount = 256 };
-            var samplerDescriptorSize = new VkDescriptorPoolSize() { Type = VkDescriptorType.CombinedImageSampler, DescriptorCount = 256 };
-
-            var poolSizes = new[] { uboDescriptorSize, samplerDescriptorSize };
-
-            fixed (VkDescriptorPoolSize* poolSizesPointer = poolSizes)
-            {
-                var descriptorPoolCreateInfo = new VkDescriptorPoolCreateInfo() // TODO: dynamically expand / shrink descriptor pool
-                {
-                    SType = VkStructureType.DescriptorPoolCreateInfo,
-                    MaxSets = 256,
-                    PoolSizeCount = (uint)poolSizes.Length,
-                    PoolSizes = poolSizesPointer
-                };
-
-                if (VK.CreateDescriptorPool(Device.NativeDevice, ref descriptorPoolCreateInfo, null, out var descriptorPool) != VkResult.Success)
-                    throw new ApplicationException("Failed to create descriptor pool.");
-                NativeDescriptorPool = descriptorPool;
             }
         }
 

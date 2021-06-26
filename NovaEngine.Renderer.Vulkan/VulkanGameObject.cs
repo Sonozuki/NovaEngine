@@ -33,8 +33,8 @@ namespace NovaEngine.Renderer.Vulkan
         /// <summary>The Vulkan index buffer.</summary>
         internal VulkanBuffer? IndexBuffer { get; private set; }
 
-        /// <summary>The Vulkan descriptor set.</summary>
-        internal VkDescriptorSet NativeDescriptorSet { get; private set; }
+        /// <summary>The descriptor set.</summary>
+        internal VulkanDescriptorSet DescriptorSet { get; private set; }
 
 
         /*********
@@ -76,11 +76,10 @@ namespace NovaEngine.Renderer.Vulkan
         /// <inheritdoc/>
         public override void Dispose()
         {
+            VulkanRenderer.Instance.DescriptorPool.DisposeDescriptorSet(DescriptorSet);
             UniformBuffer.Dispose();
             VertexBuffer?.Dispose();
             IndexBuffer?.Dispose();
-
-            // TODO: dispose descriptor sets
         }
 
 
@@ -95,29 +94,6 @@ namespace NovaEngine.Renderer.Vulkan
             UniformBuffer = new VulkanBuffer(sizeof(UniformBufferObject), VkBufferUsageFlags.UniformBuffer, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
 
             // create a descriptor set for the object
-            var descriptorSetLayout = VulkanRenderer.Instance.NativeDescriptorSetLayout;
-            var allocateInfo = new VkDescriptorSetAllocateInfo()
-            {
-                SType = VkStructureType.DescriptorSetAllocateInfo,
-                DescriptorPool = VulkanRenderer.Instance.NativeDescriptorPool,
-                DescriptorSetCount = 1,
-                SetLayouts = &descriptorSetLayout
-            };
-
-            var descriptorSets = new VkDescriptorSet[1];
-            VK.AllocateDescriptorSets(VulkanRenderer.Instance.Device.NativeDevice, ref allocateInfo, descriptorSets);
-            NativeDescriptorSet = descriptorSets[0];
-
-            UpdateDescriptorSet();
-        }
-
-
-        /*********
-        ** Private Methods
-        *********/
-        /// <summary>Updates the descriptor sets.</summary>
-        private void UpdateDescriptorSet()
-        {
             var bufferInfo = new VkDescriptorBufferInfo()
             {
                 Buffer = UniformBuffer.NativeBuffer,
@@ -132,31 +108,11 @@ namespace NovaEngine.Renderer.Vulkan
                 Sampler = (Texture2D.Undefined.RendererTexture as VulkanTexture)!.NativeSampler
             };
 
-            var descriptorWrites = new[]
-            {
-                new VkWriteDescriptorSet()
-                {
-                    SType = VkStructureType.WriteDescriptorSet,
-                    DestinationSet = NativeDescriptorSet,
-                    DestinationBinding = 0,
-                    DestinationArrayElement = 0,
-                    DescriptorType = VkDescriptorType.UniformBuffer,
-                    DescriptorCount = 1,
-                    BufferInfo = &bufferInfo
-                },
-                new VkWriteDescriptorSet()
-                {
-                    SType = VkStructureType.WriteDescriptorSet,
-                    DestinationSet = NativeDescriptorSet,
-                    DestinationBinding = 1,
-                    DestinationArrayElement = 0,
-                    DescriptorType = VkDescriptorType.CombinedImageSampler,
-                    DescriptorCount = 1,
-                    ImageInfo = &imageInfo
-                }
-            };
-
-            VK.UpdateDescriptorSets(VulkanRenderer.Instance.Device.NativeDevice, (uint)descriptorWrites.Length, descriptorWrites, 0, null);
+            DescriptorSet = VulkanRenderer.Instance.DescriptorPool.GetDescriptorSet();
+            DescriptorSet
+                .Bind(0, &bufferInfo)
+                .Bind(1, &imageInfo)
+                .UpdateBindings();
         }
     }
 }
