@@ -54,6 +54,7 @@ namespace NovaEngine.Platform
                     continue;
             
                 CurrentPlatform = platform;
+                Logger.Log($"Using platform: {type.Assembly.ManifestModule.Name}", LogSeverity.Debug);
             }
 
             if (CurrentPlatform == null)

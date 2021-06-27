@@ -55,6 +55,7 @@ namespace NovaEngine.Rendering
                     continue;
 
                 CurrentRenderer = renderer;
+                Logger.Log($"Using renderer: {type.Assembly.ManifestModule.Name}", LogSeverity.Debug);
             }
 
             if (CurrentRenderer == null)
