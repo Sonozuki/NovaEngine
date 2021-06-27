@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NovaEngine.Maths;
+using System;
 
 namespace NovaEngine.Platform.Windows.Windowing
 {
@@ -24,6 +25,6 @@ namespace NovaEngine.Platform.Windows.Windowing
         public ulong Time;
 
         /// <summary>The cursor position, in screen coordinates, when the message was posted.</summary>
-        public NativePoint Point;
+        public Vector2I Point;
     }
 }
