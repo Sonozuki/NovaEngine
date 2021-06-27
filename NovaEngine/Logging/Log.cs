@@ -1,0 +1,67 @@
+﻿using NovaEngine.Extensions;
+using System;
+
+namespace NovaEngine.Logging
+{
+    /// <summary>Represents a log.</summary>
+    internal class Log
+    {
+        /*********
+        ** Accessors
+        *********/
+        /// <summary>When the log was created, in UTC.</summary>
+        public DateTime DateTime { get; }
+
+        /// <summary>Where the log was created.</summary>
+        public LogCaller Caller { get; }
+
+        /// <summary>The severity info of the log.</summary>
+        public LogSeverityInfoAttribute SeverityInfo { get; }
+
+        /// <summary>The message being logged.</summary>
+        public string Message { get; }
+
+
+        /*********
+        ** Public Methods
+        *********/
+        /// <summary>Constructs an instance.</summary>
+        /// <param name="caller">Where the log was created.</param>
+        /// <param name="severity">The severity of the log.</param>
+        /// <param name="message">The message being logged.</param>
+        public Log(LogCaller caller, LogSeverity severity, string message)
+        {
+            DateTime = DateTime.UtcNow;
+            Caller = caller;
+            SeverityInfo = severity.GetAttribute<LogSeverityInfoAttribute>()
+                ?? LogSeverity.Info.GetAttribute<LogSeverityInfoAttribute>()!;
+            Message = message;
+        }
+
+        /// <summary>Writes the log to the console.</summary>
+        public void WriteToConsole()
+        {
+            // write label
+            Console.ResetColor();
+            Console.Write($"[{DateTime.ToLocalTime():HH:mm:ss} ");
+
+            Console.ForegroundColor = SeverityInfo.LabelColour;
+            Console.Write(SeverityInfo.Label);
+
+            Console.ResetColor();
+            Console.Write($" {Caller}] ");
+
+            // write message
+            Console.ResetColor();
+            Console.ForegroundColor = SeverityInfo.ForegroundColour;
+            if (SeverityInfo.BackgroundColour.HasValue)
+                Console.BackgroundColor = SeverityInfo.BackgroundColour.Value;
+
+            Console.WriteLine(Message);
+
+            // explicitly resetting the colour here as the VS debugger console stays open between sessions, which meant it was keeping the
+            // background colour from a fatal log and setting the entire console background to that on the next debug session for some reason
+            Console.ResetColor();
+        }
+    }
+}
