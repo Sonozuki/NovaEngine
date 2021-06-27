@@ -1,4 +1,5 @@
-﻿using NovaEngine.Rendering.Dummy;
+﻿using NovaEngine.Logging;
+using NovaEngine.Rendering.Dummy;
 using System;
 using System.IO;
 using System.Linq;
@@ -19,6 +20,8 @@ namespace NovaEngine.Rendering
         /*********
         ** Public Methods
         *********/
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. (If the current renderer is null, it's handled and the program is killed before it could cause any null references.)
+
         /// <summary>Initialises the class.</summary>
         static RendererManager()
         {
@@ -55,7 +58,9 @@ namespace NovaEngine.Rendering
             }
 
             if (CurrentRenderer == null)
-                throw new PlatformNotSupportedException("The environment operating system doesn't have a supported renderer.");
+                Logger.Log("The environment operating system doesn't have a supported renderer.", LogSeverity.Fatal);
         }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
     }
 }

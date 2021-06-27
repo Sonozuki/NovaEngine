@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NovaEngine.Extensions;
+using NovaEngine.Logging;
+using System;
 using System.Collections.Generic;
 using Vulkan;
 
@@ -46,7 +48,7 @@ namespace NovaEngine.Renderer.Vulkan
                 };
 
                 if (VK.CreateDescriptorPool(VulkanRenderer.Instance.Device.NativeDevice, ref descriptorPoolCreateInfo, null, out var descriptorPool) != VkResult.Success)
-                    throw new ApplicationException("Failed to create descriptor pool.");
+                    throw new ApplicationException("Failed to create descriptor pool.").Log(LogSeverity.Fatal);
                 NativeDescriptorPool = descriptorPool;
             }
         }

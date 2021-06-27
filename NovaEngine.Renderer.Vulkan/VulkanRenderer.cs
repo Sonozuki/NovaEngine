@@ -1,6 +1,8 @@
 ﻿using NovaEngine.Core;
 using NovaEngine.Core.Components;
+using NovaEngine.Extensions;
 using NovaEngine.Graphics;
+using NovaEngine.Logging;
 using NovaEngine.Maths;
 using NovaEngine.Rendering;
 using NovaEngine.SceneManagement;
@@ -364,7 +366,7 @@ namespace NovaEngine.Renderer.Vulkan
                     var extensionName = extensionNames[i];
 
                     if (!availableExtensionNames.Contains(extensionName))
-                        throw new ApplicationException($"Required extension '{extensionName}' is not available.");
+                        throw new ApplicationException($"Required extension '{extensionName}' is not available.").Log(LogSeverity.Fatal);
 
                     enabledExtensionNames[i] = Marshal.StringToHGlobalAnsi(extensionNames[i]);
                 }
@@ -379,7 +381,7 @@ namespace NovaEngine.Renderer.Vulkan
                     instanceCreateInfo.EnabledExtensionNames = (byte**)enabledExtensionNamesPointer;
 
                     if (VK.CreateInstance(ref instanceCreateInfo, null, out NativeInstance) != VkResult.Success)
-                        throw new ApplicationException("Failed to create Vulkan instance.");
+                        throw new ApplicationException("Failed to create Vulkan instance.").Log(LogSeverity.Fatal);
 
                     VK.InitialiseInstanceMethods(NativeInstance);
                 }
@@ -395,7 +397,7 @@ namespace NovaEngine.Renderer.Vulkan
                     };
 
                     if (VK.CreateDebugReportCallbackEXT(NativeInstance, ref debugReportCallbackCreateInfo, null, out NativeDebugReportCallback) != VkResult.Success)
-                        throw new ApplicationException("Failed to create debug report callback.");
+                        throw new ApplicationException("Failed to create debug report callback.").Log(LogSeverity.Fatal);
                 }
             }
             finally
@@ -420,7 +422,7 @@ namespace NovaEngine.Renderer.Vulkan
             };
 
             if (VK.CreateWin32SurfaceKHR(NativeInstance, ref win32SurfaceCreateInfo, null, out var nativeSurface) != VkResult.Success)
-                throw new ApplicationException("Failed to create surface.");
+                throw new ApplicationException("Failed to create surface.").Log(LogSeverity.Fatal);
             NativeSurface = nativeSurface;
         }
 
@@ -433,7 +435,7 @@ namespace NovaEngine.Renderer.Vulkan
             var deviceCount = 0u;
             VK.EnumeratePhysicalDevices(NativeInstance, ref deviceCount, null);
             if (deviceCount == 0)
-                throw new InvalidOperationException("No physical devices have support for Vulkan.");
+                throw new InvalidOperationException("No physical devices have support for Vulkan.").Log(LogSeverity.Fatal);
             var physicalDevices = new VkPhysicalDevice[deviceCount];
             VK.EnumeratePhysicalDevices(NativeInstance, ref deviceCount, physicalDevices);
 
@@ -448,7 +450,7 @@ namespace NovaEngine.Renderer.Vulkan
 
             // ensure there is atleast one suitable device
             if (suitablePhysicalDevices.Count == 0)
-                throw new InvalidOperationException("No physical devices that have support for Vulkan are suitable.");
+                throw new InvalidOperationException("No physical devices that have support for Vulkan are suitable.").Log(LogSeverity.Fatal);
 
             // pick the most suitable physical device
             return suitablePhysicalDevices
@@ -536,7 +538,7 @@ namespace NovaEngine.Renderer.Vulkan
                 };
 
                 if (VK.CreateRenderPass(Device.NativeDevice, ref renderPassCreateInfo, null, out var nativeRenderPass) != VkResult.Success)
-                    throw new ApplicationException("Failed to create render pass.");
+                    throw new ApplicationException("Failed to create render pass.").Log(LogSeverity.Fatal);
                 NativeRenderPass = nativeRenderPass;
             }
         }
@@ -573,7 +575,7 @@ namespace NovaEngine.Renderer.Vulkan
                 };
 
                 if (VK.CreateDescriptorSetLayout(Device.NativeDevice, ref descriptorSetLayoutCreateInfo, null, out var descriptorSetLayout) != VkResult.Success)
-                    throw new ApplicationException("Failed to create descriptor set layout.");
+                    throw new ApplicationException("Failed to create descriptor set layout.").Log(LogSeverity.Fatal);
                 NativeDescriptorSetLayout = descriptorSetLayout;
             }
         }
@@ -602,10 +604,10 @@ namespace NovaEngine.Renderer.Vulkan
 
                 if (VK.CreateSemaphore(Device.NativeDevice, ref semaphoreCreateInfo, null, out ImageAvailableSemaphores[i]) != VkResult.Success ||
                     VK.CreateSemaphore(Device.NativeDevice, ref semaphoreCreateInfo, null, out RenderFinishedSemaphores[i]) != VkResult.Success)
-                    throw new ApplicationException("Failed to create semaphores.");
+                    throw new ApplicationException("Failed to create semaphores.").Log(LogSeverity.Fatal);
 
                 if (VK.CreateFence(Device.NativeDevice, ref fenceCreateInfo, null, out InFlightFences[i]) != VkResult.Success)
-                    throw new ApplicationException("Failed to create fence.");
+                    throw new ApplicationException("Failed to create fence.").Log(LogSeverity.Fatal);
             }
         }
 

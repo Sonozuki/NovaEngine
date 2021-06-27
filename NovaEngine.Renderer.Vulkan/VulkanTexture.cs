@@ -1,4 +1,6 @@
-﻿using NovaEngine.Graphics;
+﻿using NovaEngine.Extensions;
+using NovaEngine.Graphics;
+using NovaEngine.Logging;
 using NovaEngine.Rendering;
 using System;
 using Vulkan;
@@ -104,7 +106,7 @@ namespace NovaEngine.Renderer.Vulkan
             };
 
             if (VK.CreateImage(VulkanRenderer.Instance.Device.NativeDevice, ref imageCreateInfo, null, out var nativeImage) != VkResult.Success)
-                throw new ApplicationException("Failed to create image.");
+                throw new ApplicationException("Failed to create image.").Log(LogSeverity.Fatal);
             NativeImage = nativeImage;
 
             // allocate memory
@@ -118,10 +120,10 @@ namespace NovaEngine.Renderer.Vulkan
             };
 
             if (VK.AllocateMemory(VulkanRenderer.Instance.Device.NativeDevice, ref memoryAllocateInfo, null, out NativeMemory) != VkResult.Success)
-                throw new ApplicationException("Failed to allocate image memory.");
+                throw new ApplicationException("Failed to allocate image memory.").Log(LogSeverity.Fatal);
 
             if (VK.BindImageMemory(VulkanRenderer.Instance.Device.NativeDevice, NativeImage, NativeMemory, 0) != VkResult.Success)
-                throw new ApplicationException("Failed to bind image memory.");
+                throw new ApplicationException("Failed to bind image memory.").Log(LogSeverity.Fatal);
 
             // create image view
             var imageViewCreateInfo = new VkImageViewCreateInfo()
@@ -135,7 +137,7 @@ namespace NovaEngine.Renderer.Vulkan
             };
 
             if (VK.CreateImageView(VulkanRenderer.Instance.Device.NativeDevice, ref imageViewCreateInfo, null, out var nativeImageView) != VkResult.Success)
-                throw new ApplicationException("Failed to create image view.");
+                throw new ApplicationException("Failed to create image view.").Log(LogSeverity.Fatal);
             NativeImageView = nativeImageView;
 
             // create sampler
@@ -160,7 +162,7 @@ namespace NovaEngine.Renderer.Vulkan
             };
 
             if (VK.CreateSampler(VulkanRenderer.Instance.Device.NativeDevice, ref samplerCreateInfo, null, out var nativeSampler) != VkResult.Success)
-                throw new ApplicationException("Failed to create sampler.");
+                throw new ApplicationException("Failed to create sampler.").Log(LogSeverity.Fatal);
             NativeSampler = nativeSampler;
 
             // create command pool

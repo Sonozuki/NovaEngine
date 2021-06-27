@@ -1,5 +1,7 @@
-﻿using NovaEngine.IO;
+﻿using NovaEngine.Extensions;
+using NovaEngine.IO;
 using NovaEngine.IO.Events;
+using NovaEngine.Logging;
 using NovaEngine.Maths;
 using NovaEngine.Platform.Windows.Api;
 using NovaEngine.Platform.Windows.Input;
@@ -89,7 +91,7 @@ namespace NovaEngine.Platform.Windows.Windowing
             };
 
             if (!User32.RegisterRawInputDevices(rawInputDevices, (uint)rawInputDevices.Length, (uint)Marshal.SizeOf<RawInputDevice>()))
-                throw new ApplicationException($"Failed to register raw input device: {Marshal.GetLastWin32Error()}.");
+                throw new ApplicationException($"Failed to register raw input device: {Marshal.GetLastWin32Error()}.").Log(LogSeverity.Fatal);
         }
 
         /// <inheritdoc/>

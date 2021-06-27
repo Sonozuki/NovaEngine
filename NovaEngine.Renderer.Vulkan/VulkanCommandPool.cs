@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NovaEngine.Extensions;
+using NovaEngine.Logging;
+using System;
 using Vulkan;
 
 namespace NovaEngine.Renderer.Vulkan
@@ -46,7 +48,7 @@ namespace NovaEngine.Renderer.Vulkan
             };
 
             if (VK.CreateCommandPool(VulkanRenderer.Instance.Device.NativeDevice, ref commandPoolCreateInfo, null, out var nativeCommandPool) != VkResult.Success)
-                throw new ApplicationException("Failed to create command pool.");
+                throw new ApplicationException("Failed to create command pool.").Log(LogSeverity.Fatal);
             NativeCommandPool = nativeCommandPool;
         }
 
@@ -68,7 +70,7 @@ namespace NovaEngine.Renderer.Vulkan
 
             var commandBuffers = new VkCommandBuffer[1];
             if (VK.AllocateCommandBuffers(VulkanRenderer.Instance.Device.NativeDevice, ref commandBufferAllocateInfo, commandBuffers) != VkResult.Success) // TODO: should return an array
-                throw new ApplicationException("Failed to allocate command buffer.");
+                throw new ApplicationException("Failed to allocate command buffer.").Log(LogSeverity.Fatal);
             var commandBuffer = commandBuffers[0];
 
             // begin and return command buffer
@@ -81,7 +83,7 @@ namespace NovaEngine.Renderer.Vulkan
                 };
 
                 if (VK.BeginCommandBuffer(commandBuffer, &commandBufferBeginInfo) != VkResult.Success)
-                    throw new ApplicationException("Failed to start command buffer.");
+                    throw new ApplicationException("Failed to start command buffer.").Log(LogSeverity.Fatal);
             }
 
             return commandBuffer;
@@ -96,7 +98,7 @@ namespace NovaEngine.Renderer.Vulkan
             // end recording commands
             if (endCommandBuffer)
                 if (VK.EndCommandBuffer(commandBuffer) != VkResult.Success)
-                    throw new ApplicationException("Failed to end command buffer.");
+                    throw new ApplicationException("Failed to end command buffer.").Log(LogSeverity.Fatal);
 
             // submit command buffer
             var submitInfo = new VkSubmitInfo()
@@ -107,9 +109,9 @@ namespace NovaEngine.Renderer.Vulkan
             };
 
             if (VK.QueueSubmit(Queue, 1, new[] { submitInfo }, VkFence.Null) != VkResult.Success)
-                throw new ApplicationException("Failed to submit command buffer.");
+                throw new ApplicationException("Failed to submit command buffer.").Log(LogSeverity.Fatal);
             if (VK.QueueWaitIdle(Queue) != VkResult.Success)
-                throw new ApplicationException("Failed to queue wait idle.");
+                throw new ApplicationException("Failed to queue wait idle.").Log(LogSeverity.Fatal);
 
             // free command buffer
             VK.FreeCommandBuffers(VulkanRenderer.Instance.Device.NativeDevice, NativeCommandPool, 1, new[] { commandBuffer });

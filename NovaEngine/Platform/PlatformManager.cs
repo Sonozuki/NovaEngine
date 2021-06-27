@@ -1,4 +1,6 @@
-﻿using NovaEngine.Platform.Dummy;
+﻿using NovaEngine.Extensions;
+using NovaEngine.Logging;
+using NovaEngine.Platform.Dummy;
 using System;
 using System.IO;
 using System.Linq;
@@ -55,7 +57,7 @@ namespace NovaEngine.Platform
             }
 
             if (CurrentPlatform == null)
-                throw new PlatformNotSupportedException("The environment operating system isn't supported.");
+                throw new PlatformNotSupportedException("The environment operating system isn't supported.").Log(LogSeverity.Fatal);
         }
     }
 }

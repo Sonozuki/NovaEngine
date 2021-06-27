@@ -1,4 +1,6 @@
 ﻿using NovaEngine.Content;
+using NovaEngine.Extensions;
+using NovaEngine.Logging;
 using NovaEngine.Settings;
 using System;
 using System.Collections.Generic;
@@ -200,7 +202,7 @@ namespace NovaEngine.Renderer.Vulkan
                 };
 
                 if (VK.CreatePipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, ref pipelineLayoutCreateInfo, null, out var graphicsPipelineLayout) != VkResult.Success)
-                    throw new ApplicationException("Failed to create graphics pipeline layout.");
+                    throw new ApplicationException("Failed to create graphics pipeline layout.").Log(LogSeverity.Fatal);
                 GraphicsPipelineLayout = graphicsPipelineLayout;
 
                 // create base create info
@@ -226,7 +228,7 @@ namespace NovaEngine.Renderer.Vulkan
                     pipelineCreateInfo.Stages = shaderStagesPointer;
 
                     if (VK.CreateGraphicsPipelines(VulkanRenderer.Instance.Device.NativeDevice, VkPipelineCache.Null, 1, new[] { pipelineCreateInfo }, null, out var graphicsPipeline) != VkResult.Success)
-                        throw new ApplicationException("Failed to create pipeline.");
+                        throw new ApplicationException("Failed to create graphics pipeline.").Log(LogSeverity.Fatal);
                     GraphicsPipeline = graphicsPipeline;
                 }
             }
@@ -268,7 +270,7 @@ namespace NovaEngine.Renderer.Vulkan
                 };
 
                 if (VK.CreateShaderModule(VulkanRenderer.Instance.Device.NativeDevice, ref shaderModuleCreateInfo, null, out shaderModule) != VkResult.Success)
-                    throw new ApplicationException($"Failed to create shader module: {path}.");
+                    throw new ApplicationException($"Failed to create shader module: {path}.").Log(LogSeverity.Fatal);
                 ShaderModules.Add(shaderModule);
             }
 

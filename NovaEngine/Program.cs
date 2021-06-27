@@ -1,6 +1,7 @@
 ﻿using NovaEngine.Content;
 using NovaEngine.Graphics;
 using NovaEngine.IO;
+using NovaEngine.Logging;
 using NovaEngine.Maths;
 using NovaEngine.Rendering;
 using NovaEngine.SceneManagement;
@@ -47,60 +48,38 @@ namespace NovaEngine
             Name = Process.GetCurrentProcess().ProcessName;
             Handle = Process.GetCurrentProcess().Handle;
 
-            InitialiseWindow();
-            InitialiseRenderer();
-            InitialiseScenes();
-
-            try
-            {
-                MainLoop();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Unrecoverable error occured in main loop: {ex}");
-            }
-
-            CleanUp();
-        }
-
-
-        /*********
-        ** Private Methods
-        *********/
-        /// <summary>Initialises the application window.</summary>
-        private static void InitialiseWindow()
-        {
+            // initialise window
             MainWindow = new Window("NovaEngine", new Size(1280, 720)); // TODO: don't hardcode
             MainWindow.Resize += (e) => RendererManager.CurrentRenderer.OnWindowResize(e.NewSize);
-        }
 
-        /// <summary>Initialises the renderer.</summary>
-        private static void InitialiseRenderer() => RendererManager.CurrentRenderer.OnInitialise(MainWindow!.Handle);
+            // initialise renderer
+            if (RendererManager.CurrentRenderer == null)
+                return; // fatal log has already been created at this point
+            RendererManager.CurrentRenderer.OnInitialise(MainWindow!.Handle);
 
-        /// <summary>Initialises the game scenes.</summary>
-        private static void InitialiseScenes()
-        {
+            // initialise initial scenes
             var initialScenes = ContentLoader.Load<List<string>>("InitialScenes");
             foreach (var scene in initialScenes)
                 SceneManager.LoadScene(scene);
-        }
 
-        /// <summary>Runs the main application loop.</summary>
-        private static void MainLoop()
-        {
-            while (!MainWindow!.HasClosed)
+            try
             {
-                Input.Update();
+                // main loop
+                while (!MainWindow!.HasClosed)
+                {
+                    Input.Update();
 
-                RendererManager.CurrentRenderer.OnRenderFrame();
+                    RendererManager.CurrentRenderer.OnRenderFrame();
 
-                MainWindow.ProcessEvents();
+                    MainWindow.ProcessEvents();
+                }
             }
-        }
+            catch (Exception ex)
+            {
+                Logger.Log($"Unrecoverable error occured in main loop: {ex}", LogSeverity.Fatal);
+            }
 
-        /// <summary>Cleans up the application.</summary>
-        private static void CleanUp()
-        {
+            // clean up
             foreach (var scene in SceneManager.LoadedScenes)
                 scene.Dispose();
 

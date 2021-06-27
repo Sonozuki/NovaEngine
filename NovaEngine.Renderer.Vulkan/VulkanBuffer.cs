@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NovaEngine.Extensions;
+using NovaEngine.Logging;
+using System;
 using System.Runtime.InteropServices;
 using Vulkan;
 
@@ -54,7 +56,7 @@ namespace NovaEngine.Renderer.Vulkan
             };
 
             if (VK.CreateBuffer(VulkanRenderer.Instance.Device.NativeDevice, ref bufferCreateInfo, null, out var nativeBuffer) != VkResult.Success)
-                throw new ApplicationException("Failed to create buffer.");
+                throw new ApplicationException("Failed to create buffer.").Log(LogSeverity.Fatal);
             NativeBuffer = nativeBuffer;
 
             // allocate & bind buffer memory
@@ -68,10 +70,10 @@ namespace NovaEngine.Renderer.Vulkan
             };
 
             if (VK.AllocateMemory(VulkanRenderer.Instance.Device.NativeDevice, ref memoryAllocateInfo, null, out NativeMemory) != VkResult.Success)
-                throw new ApplicationException("Failed to allocate buffer memory.");
+                throw new ApplicationException("Failed to allocate buffer memory.").Log(LogSeverity.Fatal);
 
             if (VK.BindBufferMemory(VulkanRenderer.Instance.Device.NativeDevice, NativeBuffer, NativeMemory, 0) != VkResult.Success)
-                throw new ApplicationException("Failed to bind buffer memory.");
+                throw new ApplicationException("Failed to bind buffer memory.").Log(LogSeverity.Fatal);
 
             // create a command pool for the transfer commands
             TransferCommandPool = new VulkanCommandPool(CommandPoolUsage.Transfer, VkCommandPoolCreateFlags.Transient);

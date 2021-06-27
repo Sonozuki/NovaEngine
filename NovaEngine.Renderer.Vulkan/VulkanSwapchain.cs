@@ -1,4 +1,6 @@
-﻿using NovaEngine.Graphics;
+﻿using NovaEngine.Extensions;
+using NovaEngine.Graphics;
+using NovaEngine.Logging;
 using NovaEngine.Maths;
 using NovaEngine.Settings;
 using System;
@@ -84,7 +86,7 @@ namespace NovaEngine.Renderer.Vulkan
             // get the queue families to check how the swapchain should handle image sharing
             VK.GetPhysicalDeviceSurfaceSupportKHR(VulkanRenderer.Instance.Device.NativePhysicalDevice, new QueueFamilyIndices().GraphicsFamily, VulkanRenderer.Instance.NativeSurface, out var isSurfaceSupported);
             if (!isSurfaceSupported)
-                throw new InvalidOperationException("Physical device doesn't support surface");
+                throw new InvalidOperationException("Physical device doesn't support surface").Log(LogSeverity.Fatal);
 
             // create swapchain
             var swapchainCreateInfo = new VkSwapchainCreateInfoKHR()
@@ -106,7 +108,7 @@ namespace NovaEngine.Renderer.Vulkan
             };
 
             if (VK.CreateSwapchainKHR(VulkanRenderer.Instance.Device.NativeDevice, ref swapchainCreateInfo, null, out var nativeSwapchain) != VkResult.Success)
-                throw new ApplicationException("Failed to create swapchain.");
+                throw new ApplicationException("Failed to create swapchain.").Log(LogSeverity.Fatal);
             NativeSwapchain = nativeSwapchain;
 
             // retrieve images and create image views
@@ -130,7 +132,7 @@ namespace NovaEngine.Renderer.Vulkan
                 };
 
                 if (VK.CreateImageView(VulkanRenderer.Instance.Device.NativeDevice, ref imageViewCreateInfo, null, out var nativeImageView) != VkResult.Success)
-                    throw new ApplicationException("Failed to create swapchain image view.");
+                    throw new ApplicationException("Failed to create swapchain image view.").Log(LogSeverity.Fatal);
                 NativeImageViews[i] = nativeImageView;
             }
 
@@ -163,7 +165,7 @@ namespace NovaEngine.Renderer.Vulkan
                     };
 
                     if (VK.CreateFramebuffer(VulkanRenderer.Instance.Device.NativeDevice, ref framebufferCreateInfo, null, out var framebuffer) != VkResult.Success)
-                        throw new ApplicationException("Failed to create framebuffer.");
+                        throw new ApplicationException("Failed to create framebuffer.").Log(LogSeverity.Fatal);
                     NativeFramebuffers[i] = framebuffer;
                 }
             }
@@ -177,7 +179,7 @@ namespace NovaEngine.Renderer.Vulkan
         public uint AcquireNextImage(VkSemaphore semaphore, VkFence fence)
         {
             if (VK.AcquireNextImageKHR(VulkanRenderer.Instance.Device.NativeDevice, NativeSwapchain, ulong.MaxValue, semaphore, fence, out var imageIndex) != VkResult.Success)
-                throw new ApplicationException("Failed to acquire next image.");
+                throw new ApplicationException("Failed to acquire next image.").Log(LogSeverity.Fatal);
             return imageIndex;
         }
 
@@ -200,7 +202,7 @@ namespace NovaEngine.Renderer.Vulkan
             };
 
             if (VK.QueuePresentKHR(VulkanRenderer.Instance.Device.GraphicsQueue, ref presentInfo) != VkResult.Success)
-                throw new ApplicationException("Failed to create queue present.");
+                throw new ApplicationException("Failed to queue presentation.").Log(LogSeverity.Fatal);
         }
 
         /// <summary>Gets the format for a depth texture.</summary>
@@ -304,7 +306,7 @@ namespace NovaEngine.Renderer.Vulkan
                     return format;
             }
 
-            throw new InvalidOperationException("Failed to find a supported format");
+            throw new InvalidOperationException("Failed to find a supported format").Log(LogSeverity.Fatal);
         }
     }
 }

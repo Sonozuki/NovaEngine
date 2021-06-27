@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NovaEngine.Extensions;
+using NovaEngine.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -79,7 +81,7 @@ namespace NovaEngine.Renderer.Vulkan
                     var extensionName = extensionNames[i];
 
                     if (!availableExtensionNames.Contains(extensionName))
-                        throw new ApplicationException($"Required extension '{extensionName}' is not available.");
+                        throw new ApplicationException($"Required extension '{extensionName}' is not available.").Log(LogSeverity.Fatal);
 
                     enabledExtensionNames[i] = Marshal.StringToHGlobalAnsi(extensionNames[i]);
                 }
@@ -99,7 +101,7 @@ namespace NovaEngine.Renderer.Vulkan
                     };
 
                     if (VK.CreateDevice(NativePhysicalDevice, ref deviceCreateInfo, null, out var nativeDevice) != VkResult.Success)
-                        throw new ApplicationException("Failed to create device.");
+                        throw new ApplicationException("Failed to create device.").Log(LogSeverity.Fatal);
                     NativeDevice = nativeDevice;
                 }
             }
@@ -138,7 +140,7 @@ namespace NovaEngine.Renderer.Vulkan
                     return (uint)i;
             }
 
-            throw new InvalidOperationException("Failed to find a suitable memory type");
+            throw new InvalidOperationException("Failed to find a suitable memory type").Log(LogSeverity.Fatal);
         }
 
         /// <inheritdoc/>
