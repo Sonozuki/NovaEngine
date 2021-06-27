@@ -62,6 +62,8 @@ namespace NovaEngine
             foreach (var scene in initialScenes)
                 SceneManager.LoadScene(scene);
 
+            MainWindow.Show();
+
             try
             {
                 // main loop

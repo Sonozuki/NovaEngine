@@ -114,6 +114,9 @@ namespace NovaEngine.Platform
         /// <summary>Processes all pending window events.</summary>
         public abstract void ProcessEvents();
 
+        /// <summary>Shows the window.</summary>
+        public abstract void Show();
+
         /// <summary>Closes the window.</summary>
         public abstract void Close();
     }

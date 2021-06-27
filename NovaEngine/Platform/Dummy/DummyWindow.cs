@@ -62,6 +62,9 @@ namespace NovaEngine.Platform.Dummy
         public override void SetSize(Size size) { }
 
         /// <inheritdoc/>
+        public override void Show() { }
+
+        /// <inheritdoc/>
         public override void SetTitle(string title) { }
     }
 }

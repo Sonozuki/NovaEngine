@@ -96,6 +96,9 @@ namespace NovaEngine.Windowing
         /// <summary>Processes all pending window events.</summary>
         public void ProcessEvents() => PlatformWindow.ProcessEvents();
 
+        /// <summary>Shows the window.</summary>
+        public void Show() => PlatformWindow.Show();
+
         /// <summary>Closes the window.</summary>
         public void Close() => PlatformWindow.Close();
     }

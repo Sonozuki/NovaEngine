@@ -81,8 +81,6 @@ namespace NovaEngine.Platform.Windows.Windowing
             if (Handle == IntPtr.Zero)
                 return;
 
-            User32.ShowWindow(Handle, CommandShow.Show);
-
             // register input devices
             var rawInputDevices = new[]
             {
@@ -119,6 +117,9 @@ namespace NovaEngine.Platform.Windows.Windowing
                 User32.DispatchMessage(in message);
             }
         }
+
+        /// <inheritdoc/>
+        public override void Show() => User32.ShowWindow(Handle, CommandShow.Show);
 
         /// <inheritdoc/>
         public override void Close()
