@@ -1,4 +1,5 @@
 ﻿using NovaEngine.Maths;
+using NovaEngine.Platform;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,8 +29,24 @@ namespace NovaEngine.IO
 
 
         /*********
+        ** Accessors
+        *********/
+        /// <summary>The mouse position of the previous frame.</summary>
+        public static Vector2I PreviousMousePosition { get; private set; }
+
+        /// <summary>The mouse position of the current frame.</summary>
+        public static Vector2I CurrentMousePosition { get; private set; }
+
+
+        /*********
         ** Public Methods
         *********/
+        /// <summary>Initialises the class.</summary>
+        static Input()
+        {
+            CurrentMousePosition = PreviousMousePosition = PlatformManager.CurrentPlatform.GetCursorPosition();
+        }
+
         /// <summary>Adds a keyboard event handler.</summary>
         /// <param name="button">The button to listen to.</param>
         /// <param name="pressType">The type of press to listen to.</param>
@@ -99,6 +116,9 @@ namespace NovaEngine.IO
         /// <summary>Invokes the callbacks for event handlers listening to <see cref="PressType.Hold"/>.</summary>
         internal static void Update()
         {
+            PreviousMousePosition = CurrentMousePosition;
+            CurrentMousePosition = PlatformManager.CurrentPlatform.GetCursorPosition();
+
             // invoke held mouse button callbacks
             var eventHandlers = MouseButtonEventHandlers
                 .Where(listenerInfo => HeldMouseButtons.Contains(listenerInfo.Key.Button) && listenerInfo.Key.PressType == PressType.Hold)

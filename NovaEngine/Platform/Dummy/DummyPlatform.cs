@@ -17,5 +17,8 @@ namespace NovaEngine.Platform.Dummy
         *********/
         /// <inheritdoc/>
         public PlatformWindowBase CreatePlatformWindow(string title, Size size) => new DummyWindow(title, size);
+
+        /// <inheritdoc/>
+        public Vector2I GetCursorPosition() => new();
     }
 }
