@@ -19,7 +19,6 @@ namespace NovaEngine.Tests.Maths
         public void LerpFloat_AmountBetweenZeroAndOne_ReturnsInterpolatedValue()
         {
             var lerpValue = MathsHelper.Lerp(0, 10, .5f);
-
             Assert.AreEqual(5, lerpValue);
         }
 
@@ -29,7 +28,6 @@ namespace NovaEngine.Tests.Maths
         public void LerpFloat_AmountLessThanZero_ReturnsLessThanFirstValue()
         {
             var lerpValue = MathsHelper.Lerp(0, 10, -1f);
-
             Assert.AreEqual(-10, lerpValue);
         }
 
@@ -39,7 +37,6 @@ namespace NovaEngine.Tests.Maths
         public void LerpFloat_AmountMoreThanOne_ReturnsMoreThanSecondValue()
         {
             var lerpValue = MathsHelper.Lerp(0, 10, 2f);
-
             Assert.AreEqual(20, lerpValue);
         }
 
@@ -49,7 +46,6 @@ namespace NovaEngine.Tests.Maths
         public void LerpFloat_AmountIsZero_ReturnsFirstValue()
         {
             var lerpValue = MathsHelper.Lerp(0, 10, 0f);
-
             Assert.AreEqual(0, lerpValue);
         }
 
@@ -59,7 +55,6 @@ namespace NovaEngine.Tests.Maths
         public void LerpFloat_AmountIsOne_ReturnsSecondValue()
         {
             var lerpValue = MathsHelper.Lerp(0, 10, 1f);
-
             Assert.AreEqual(10, lerpValue);
         }
 
@@ -72,7 +67,6 @@ namespace NovaEngine.Tests.Maths
         public void LerpDouble_AmountBetweenZeroAndOne_ReturnsInterpolatedValue()
         {
             var lerpValue = MathsHelper.Lerp(0, 10, .5d);
-
             Assert.AreEqual(5, lerpValue);
         }
 
@@ -82,7 +76,6 @@ namespace NovaEngine.Tests.Maths
         public void LerpDouble_AmountLessThanZero_ReturnsLessThanFirstValue()
         {
             var lerpValue = MathsHelper.Lerp(0, 10, -1d);
-
             Assert.AreEqual(-10, lerpValue);
         }
 
@@ -92,7 +85,6 @@ namespace NovaEngine.Tests.Maths
         public void LerpDouble_AmountMoreThanOne_ReturnsMoreThanSecondValue()
         {
             var lerpValue = MathsHelper.Lerp(0, 10, 2d);
-
             Assert.AreEqual(20, lerpValue);
         }
 
@@ -102,7 +94,6 @@ namespace NovaEngine.Tests.Maths
         public void LerpDouble_AmountIsZero_ReturnsFirstValue()
         {
             var lerpValue = MathsHelper.Lerp(0, 10, 0d);
-
             Assert.AreEqual(0, lerpValue);
         }
 
@@ -112,7 +103,6 @@ namespace NovaEngine.Tests.Maths
         public void LerpDouble_AmountIsOne_ReturnsSecondValue()
         {
             var lerpValue = MathsHelper.Lerp(0, 10, 1d);
-
             Assert.AreEqual(10, lerpValue);
         }
 
@@ -125,7 +115,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampedLerpFloat_AmountBetweenZeroAndOne_ReturnsInterpolatedValue()
         {
             var lerpValue = MathsHelper.ClampedLerp(0, 10, .5f);
-
             Assert.AreEqual(5, lerpValue);
         }
 
@@ -135,7 +124,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampedLerpFloat_AmountLessThanZero_ReturnsFirstValue()
         {
             var lerpValue = MathsHelper.ClampedLerp(0, 10, -1f);
-
             Assert.AreEqual(00, lerpValue);
         }
 
@@ -145,7 +133,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampedLerpFloat_AmountMoreThanOne_ReturnsSecondValue()
         {
             var lerpValue = MathsHelper.ClampedLerp(0, 10, 2f);
-
             Assert.AreEqual(10, lerpValue);
         }
 
@@ -155,7 +142,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampedLerpFloat_AmountIsZero_ReturnsFirstValue()
         {
             var lerpValue = MathsHelper.ClampedLerp(0, 10, 0f);
-
             Assert.AreEqual(0, lerpValue);
         }
 
@@ -165,7 +151,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampedLerpFloat_AmountIsOne_ReturnsSecondValue()
         {
             var lerpValue = MathsHelper.ClampedLerp(0, 10, 1f);
-
             Assert.AreEqual(10, lerpValue);
         }
 
@@ -178,7 +163,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampedLerpDouble_AmountBetweenZeroAndOne_ReturnsInterpolatedValue()
         {
             var lerpValue = MathsHelper.ClampedLerp(0, 10, .5d);
-
             Assert.AreEqual(5, lerpValue);
         }
 
@@ -188,7 +172,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampedLerpDouble_AmountLessThanZero_ReturnsFirstValue()
         {
             var lerpValue = MathsHelper.ClampedLerp(0, 10, -1d);
-
             Assert.AreEqual(0, lerpValue);
         }
 
@@ -198,7 +181,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampedLerpDouble_AmountMoreThanOne_ReturnsSecondValue()
         {
             var lerpValue = MathsHelper.ClampedLerp(0, 10, 2d);
-
             Assert.AreEqual(10, lerpValue);
         }
 
@@ -208,7 +190,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampedLerpDouble_AmountIsZero_ReturnsFirstValue()
         {
             var lerpValue = MathsHelper.ClampedLerp(0, 10, 0d);
-
             Assert.AreEqual(0, lerpValue);
         }
 
@@ -218,7 +199,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampedLerpDouble_AmountIsOne_ReturnsSecondValue()
         {
             var lerpValue = MathsHelper.ClampedLerp(0, 10, 1d);
-
             Assert.AreEqual(10, lerpValue);
         }
 
@@ -231,7 +211,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampFloat_ValueBetweenMinMax_ReturnsValue()
         {
             var clampedValue = MathsHelper.Clamp(5f, 0, 10);
-
             Assert.AreEqual(5, clampedValue);
         }
 
@@ -241,7 +220,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampFloat_ValueLessThanMin_ReturnsMin()
         {
             var clampedValue = MathsHelper.Clamp(-1f, 0, 10);
-
             Assert.AreEqual(0, clampedValue);
         }
 
@@ -251,7 +229,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampFloat_ValueMoreThanMax_ReturnsMax()
         {
             var clampedValue = MathsHelper.Clamp(20f, 0, 10);
-
             Assert.AreEqual(10, clampedValue);
         }
 
@@ -264,7 +241,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampDouble_ValueBetweenMinMax_ReturnsValue()
         {
             var clampedValue = MathsHelper.Clamp(5d, 0, 10);
-
             Assert.AreEqual(5, clampedValue);
         }
 
@@ -274,7 +250,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampDouble_ValueLessThanMin_ReturnsMin()
         {
             var clampedValue = MathsHelper.Clamp(-1d, 0, 10);
-
             Assert.AreEqual(0, clampedValue);
         }
 
@@ -284,7 +259,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampDouble_ValueMoreThanMax_ReturnsMax()
         {
             var clampedValue = MathsHelper.Clamp(20d, 0, 10);
-
             Assert.AreEqual(10, clampedValue);
         }
 
@@ -297,7 +271,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampByte_ValueBetweenMinMax_ReturnsValue()
         {
             var clampedValue = MathsHelper.Clamp((byte)5, (byte)1, (byte)10);
-
             Assert.AreEqual(5, clampedValue);
         }
 
@@ -307,7 +280,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampByte_ValueLessThanMin_ReturnsMin()
         {
             var clampedValue = MathsHelper.Clamp((byte)0, (byte)1, (byte)10);
-
             Assert.AreEqual(1, clampedValue);
         }
 
@@ -317,7 +289,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampByte_ValueMoreThanMax_ReturnsMax()
         {
             var clampedValue = MathsHelper.Clamp((byte)20, (byte)1, (byte)10);
-
             Assert.AreEqual(10, clampedValue);
         }
 
@@ -330,7 +301,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampSByte_ValueBetweenMinMax_ReturnsValue()
         {
             var clampedValue = MathsHelper.Clamp((sbyte)5, (sbyte)0, (sbyte)10);
-
             Assert.AreEqual(5, clampedValue);
         }
 
@@ -340,7 +310,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampSByte_ValueLessThanMin_ReturnsMin()
         {
             var clampedValue = MathsHelper.Clamp((sbyte)-1, (sbyte)0, (sbyte)10);
-
             Assert.AreEqual(0, clampedValue);
         }
 
@@ -350,7 +319,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampSByte_ValueMoreThanMax_ReturnsMax()
         {
             var clampedValue = MathsHelper.Clamp((sbyte)20, (sbyte)0, (sbyte)10);
-
             Assert.AreEqual(10, clampedValue);
         }
 
@@ -363,7 +331,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampShort_ValueBetweenMinMax_ReturnsValue()
         {
             var clampedValue = MathsHelper.Clamp((short)5, (short)0, (short)10);
-
             Assert.AreEqual(5, clampedValue);
         }
 
@@ -373,7 +340,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampShort_ValueLessThanMin_ReturnsMin()
         {
             var clampedValue = MathsHelper.Clamp((short)-1, (short)0, (short)10);
-
             Assert.AreEqual(0, clampedValue);
         }
 
@@ -383,7 +349,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampShort_ValueMoreThanMax_ReturnsMax()
         {
             var clampedValue = MathsHelper.Clamp((short)20, (short)0, (short)10);
-
             Assert.AreEqual(10, clampedValue);
         }
 
@@ -396,7 +361,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampUShort_ValueBetweenMinMax_ReturnsValue()
         {
             var clampedValue = MathsHelper.Clamp((ushort)5, (ushort)1, (ushort)10);
-
             Assert.AreEqual(5, clampedValue);
         }
 
@@ -406,7 +370,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampUShort_ValueLessThanMin_ReturnsMin()
         {
             var clampedValue = MathsHelper.Clamp((ushort)0, (ushort)1, (ushort)10);
-
             Assert.AreEqual(1, clampedValue);
         }
 
@@ -416,7 +379,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampUShort_ValueMoreThanMax_ReturnsMax()
         {
             var clampedValue = MathsHelper.Clamp((ushort)20, (ushort)1, (ushort)10);
-
             Assert.AreEqual(10, clampedValue);
         }
 
@@ -429,7 +391,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampInt_ValueBetweenMinMax_ReturnsValue()
         {
             var clampedValue = MathsHelper.Clamp(5, 0, 10);
-
             Assert.AreEqual(5, clampedValue);
         }
 
@@ -439,7 +400,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampInt_ValueLessThanMin_ReturnsMin()
         {
             var clampedValue = MathsHelper.Clamp(-1, 0, 10);
-
             Assert.AreEqual(0, clampedValue);
         }
 
@@ -449,7 +409,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampInt_ValueMoreThanMax_ReturnsMax()
         {
             var clampedValue = MathsHelper.Clamp(20, 0, 10);
-
             Assert.AreEqual(10, clampedValue);
         }
 
@@ -462,7 +421,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampUInt_ValueBetweenMinMax_ReturnsValue()
         {
             var clampedValue = MathsHelper.Clamp(5u, 1, 10);
-
             Assert.AreEqual(5, clampedValue);
         }
 
@@ -472,7 +430,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampUInt_ValueLessThanMin_ReturnsMin()
         {
             var clampedValue = MathsHelper.Clamp(0u, 1, 10);
-
             Assert.AreEqual(1, clampedValue);
         }
 
@@ -482,7 +439,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampUInt_ValueMoreThanMax_ReturnsMax()
         {
             var clampedValue = MathsHelper.Clamp(20u, 1, 10);
-
             Assert.AreEqual(10, clampedValue);
         }
 
@@ -495,7 +451,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampLong_ValueBetweenMinMax_ReturnsValue()
         {
             var clampedValue = MathsHelper.Clamp(5L, 0, 10);
-
             Assert.AreEqual(5, clampedValue);
         }
 
@@ -505,7 +460,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampLong_ValueLessThanMin_ReturnsMin()
         {
             var clampedValue = MathsHelper.Clamp(-1L, 0, 10);
-
             Assert.AreEqual(0, clampedValue);
         }
 
@@ -515,7 +469,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampLong_ValueMoreThanMax_ReturnsMax()
         {
             var clampedValue = MathsHelper.Clamp(20L, 0, 10);
-
             Assert.AreEqual(10, clampedValue);
         }
 
@@ -528,7 +481,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampULong_ValueBetweenMinMax_ReturnsValue()
         {
             var clampedValue = MathsHelper.Clamp(5ul, 1, 10);
-
             Assert.AreEqual(5, clampedValue);
         }
 
@@ -538,7 +490,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampULong_ValueLessThanMin_ReturnsMin()
         {
             var clampedValue = MathsHelper.Clamp(0ul, 1, 10);
-
             Assert.AreEqual(1, clampedValue);
         }
 
@@ -548,7 +499,6 @@ namespace NovaEngine.Tests.Maths
         public void ClampULong_ValueMoreThanMax_ReturnsMax()
         {
             var clampedValue = MathsHelper.Clamp(20ul, 1, 10);
-
             Assert.AreEqual(10, clampedValue);
         }
 
@@ -561,7 +511,6 @@ namespace NovaEngine.Tests.Maths
         public void DegreesToRadiansFloat_DegreesIsZero_ReturnsZero()
         {
             var radians = MathsHelper.DegreesToRadians(0f);
-
             Assert.AreEqual(0, radians);
         }
 
@@ -571,7 +520,6 @@ namespace NovaEngine.Tests.Maths
         public void DegreesToRadiansFloat_DegreesIsNotZero_ReturnsRadians()
         {
             var radians = MathsHelper.DegreesToRadians(90f);
-
             Assert.AreEqual(1.57079633f, radians);
         }
 
@@ -584,7 +532,6 @@ namespace NovaEngine.Tests.Maths
         public void DegreesToRadiansDouble_DegreesIsZero_ReturnsZero()
         {
             var radians = MathsHelper.DegreesToRadians(0d);
-
             Assert.AreEqual(0, radians);
         }
 
@@ -594,7 +541,6 @@ namespace NovaEngine.Tests.Maths
         public void DegreesToRadiansDouble_DegreesIsNotZero_ReturnsRadians()
         {
             var radians = MathsHelper.DegreesToRadians(90d);
-
             Assert.AreEqual(1.5707963267948966d, radians);
         }
 
@@ -607,7 +553,6 @@ namespace NovaEngine.Tests.Maths
         public void RadiansToDegreesFloat_RadiansIsZero_ReturnsZero()
         {
             var degrees = MathsHelper.RadiansToDegrees(0f);
-
             Assert.AreEqual(0, degrees);
         }
 
@@ -617,7 +562,6 @@ namespace NovaEngine.Tests.Maths
         public void RadiansToDegreesFloat_RadiansIsNotZero_ReturnsDegrees()
         {
             var degrees = MathsHelper.RadiansToDegrees(1.57079633f);
-
             Assert.AreEqual(90, degrees);
         }
 
@@ -630,7 +574,6 @@ namespace NovaEngine.Tests.Maths
         public void RadiansToDegreesDouble_RadiansIsZero_ReturnsZero()
         {
             var degrees = MathsHelper.RadiansToDegrees(0d);
-
             Assert.AreEqual(0, degrees);
         }
 
@@ -640,7 +583,6 @@ namespace NovaEngine.Tests.Maths
         public void RadiansToDegreesDouble_RadiansIsNotZero_ReturnsDegrees()
         {
             var degrees = MathsHelper.RadiansToDegrees(1.5707963267948966d);
-
             Assert.AreEqual(90, degrees);
         }
     }
