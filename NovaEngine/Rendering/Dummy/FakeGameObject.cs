@@ -5,7 +5,7 @@ using NovaEngine.Graphics;
 namespace NovaEngine.Rendering.Fake
 {
     /// <summary>Represents a game object that is only used when nova is being used without a program instance.</summary>
-    public class FakeGameObject : RendererGameObjectBase
+    internal class FakeGameObject : RendererGameObjectBase
     {
         /*********
         ** Public Methods

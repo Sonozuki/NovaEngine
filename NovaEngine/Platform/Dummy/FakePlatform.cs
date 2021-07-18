@@ -3,7 +3,7 @@
 namespace NovaEngine.Platform.Fake
 {
     /// <summary>Represents a platform that is only used when nova is being used without a program instance.</summary>
-    public class FakePlatform : IPlatform
+    internal class FakePlatform : IPlatform
     {
         /*********
         ** Accessors

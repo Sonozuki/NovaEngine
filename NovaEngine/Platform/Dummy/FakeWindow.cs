@@ -6,7 +6,7 @@ using System;
 namespace NovaEngine.Platform.Fake
 {
     /// <summary>Represents a window that is only used when nova is being used without a program instance.</summary>
-    public class FakeWindow : PlatformWindowBase
+    internal class FakeWindow : PlatformWindowBase
     {
         /*********
         ** Events
