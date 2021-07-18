@@ -1,5 +1,5 @@
 ﻿using NovaEngine.Logging;
-using NovaEngine.Rendering.Dummy;
+using NovaEngine.Rendering.Fake;
 using System;
 using System.IO;
 using System.Linq;
@@ -28,7 +28,7 @@ namespace NovaEngine.Rendering
             // ensure a renderer should actually be used
             if (!Program.HasProgramInstance)
             {
-                CurrentRenderer = new DummyRenderer();
+                CurrentRenderer = new FakeRenderer();
                 return;
             }
 

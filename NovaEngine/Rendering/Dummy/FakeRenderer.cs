@@ -3,10 +3,10 @@ using NovaEngine.Graphics;
 using NovaEngine.Maths;
 using System;
 
-namespace NovaEngine.Rendering.Dummy
+namespace NovaEngine.Rendering.Fake
 {
     /// <summary>Represents a renderer that is only used when nova is being used without a program instance.</summary>
-    public class DummyRenderer : IRenderer
+    public class FakeRenderer : IRenderer
     {
         /*********
         ** Accessors
@@ -22,10 +22,10 @@ namespace NovaEngine.Rendering.Dummy
         ** Public Methods
         *********/
         /// <inheritdoc/>
-        public RendererGameObjectBase CreateRendererGameObject(GameObject baseGameObject) => new DummyGameObject(baseGameObject);
+        public RendererGameObjectBase CreateRendererGameObject(GameObject baseGameObject) => new FakeGameObject(baseGameObject);
 
         /// <inheritdoc/>
-        public RendererTextureBase CreateRendererTexture(TextureBase baseTexture, bool generateMipChain) => new DummyTexture(baseTexture);
+        public RendererTextureBase CreateRendererTexture(TextureBase baseTexture, bool generateMipChain) => new FakeTexture(baseTexture);
 
         /// <inheritdoc/>
         public void OnCleanUp() { }

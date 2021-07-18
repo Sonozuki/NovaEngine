@@ -3,10 +3,10 @@ using NovaEngine.Maths;
 using NovaEngine.Windowing.Events;
 using System;
 
-namespace NovaEngine.Platform.Dummy
+namespace NovaEngine.Platform.Fake
 {
     /// <summary>Represents a window that is only used when nova is being used without a program instance.</summary>
-    public class DummyWindow : PlatformWindowBase
+    public class FakeWindow : PlatformWindowBase
     {
         /*********
         ** Events
@@ -46,7 +46,7 @@ namespace NovaEngine.Platform.Dummy
         ** Public Methods
         *********/
         /// <inheritdoc/>
-        public DummyWindow(string title, Size size)
+        public FakeWindow(string title, Size size)
             : base(title, size) { }
 
         /// <inheritdoc/>

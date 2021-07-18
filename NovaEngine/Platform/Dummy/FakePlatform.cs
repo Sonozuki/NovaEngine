@@ -1,9 +1,9 @@
 ﻿using NovaEngine.Maths;
 
-namespace NovaEngine.Platform.Dummy
+namespace NovaEngine.Platform.Fake
 {
     /// <summary>Represents a platform that is only used when nova is being used without a program instance.</summary>
-    public class DummyPlatform : IPlatform
+    public class FakePlatform : IPlatform
     {
         /*********
         ** Accessors
@@ -16,7 +16,7 @@ namespace NovaEngine.Platform.Dummy
         ** Public Methods
         *********/
         /// <inheritdoc/>
-        public PlatformWindowBase CreatePlatformWindow(string title, Size size) => new DummyWindow(title, size);
+        public PlatformWindowBase CreatePlatformWindow(string title, Size size) => new FakeWindow(title, size);
 
         /// <inheritdoc/>
         public Vector2I GetCursorPosition() => new();

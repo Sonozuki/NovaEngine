@@ -1,6 +1,6 @@
 ﻿using NovaEngine.Extensions;
 using NovaEngine.Logging;
-using NovaEngine.Platform.Dummy;
+using NovaEngine.Platform.Fake;
 using System;
 using System.IO;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace NovaEngine.Platform
             // ensure a platform should actually be used
             if (!Program.HasProgramInstance)
             {
-                CurrentPlatform = new DummyPlatform();
+                CurrentPlatform = new FakePlatform();
                 return;
             }
 

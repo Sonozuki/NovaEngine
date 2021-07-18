@@ -2,16 +2,16 @@
 using NovaEngine.Core.Components;
 using NovaEngine.Graphics;
 
-namespace NovaEngine.Rendering.Dummy
+namespace NovaEngine.Rendering.Fake
 {
     /// <summary>Represents a game object that is only used when nova is being used without a program instance.</summary>
-    public class DummyGameObject : RendererGameObjectBase
+    public class FakeGameObject : RendererGameObjectBase
     {
         /*********
         ** Public Methods
         *********/
         /// <inheritdoc/>
-        public DummyGameObject(GameObject baseGameObject)
+        public FakeGameObject(GameObject baseGameObject)
             : base(baseGameObject) { }
 
         /// <inheritdoc/>
@@ -28,6 +28,6 @@ namespace NovaEngine.Rendering.Dummy
         ** Private Methods
         *********/
         /// <summary>Constructs an instance.</summary>
-        public DummyGameObject() : base(new("Dummy")) { }
+        public FakeGameObject() : base(new("Fake")) { }
     }
 }
