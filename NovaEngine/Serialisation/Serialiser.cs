@@ -22,15 +22,16 @@ namespace NovaEngine.Serialisation
         {
             try
             {
-                var objectInfos = new List<ObjectInfo>();
-                _ = new ObjectInfo(@object, objectInfos); // this is only used to populate the object infos collection
+                var allObjectInfos = new List<ObjectInfo>();
+                _ = new ObjectInfo(@object, allObjectInfos); // this is only used to populate the object infos collection
 
                 // write objects to stream
                 using (var binaryWriter = new BinaryWriter(stream, Encoding.UTF8, true))
                 {
-                    binaryWriter.Write(objectInfos.Count());
-                    foreach (var objectInfo in objectInfos)
-                        objectInfo.Write(binaryWriter);
+                    var nonInlinableObjectInfos = allObjectInfos.Where(objectInfo => !objectInfo.IsInlinable); // inlinable object infos shouldn't be written to the stream
+                    binaryWriter.Write(nonInlinableObjectInfos.Count());
+                    foreach (var objectInfo in nonInlinableObjectInfos)
+                        objectInfo.Write(binaryWriter, allObjectInfos);
                 }
             }
             catch (Exception ex)
@@ -53,25 +54,25 @@ namespace NovaEngine.Serialisation
         {
             try
             {
-                var objectInfos = new List<ObjectInfo>();
+                var allObjectInfos = new List<ObjectInfo>();
 
                 // create all objects
                 using (var binaryReader = new BinaryReader(stream, Encoding.UTF8, true))
                 {
                     var length = binaryReader.ReadInt32();
                     for (int i = 0; i < length; i++)
-                        objectInfos.Add(ObjectInfo.Read(binaryReader));
+                        ObjectInfo.Read(binaryReader, allObjectInfos);
                 }
-                objectInfos.Reverse(); // reverse to populate the members for dependencies first
+                allObjectInfos.Reverse(); // reverse to populate the members for dependencies first
 
                 // populate objects, this isn't done when creating the objects to ensure every object has been created (needed when linking the references)
-                foreach (var objectInfo in objectInfos.Where(objectInfo => objectInfo.Members.Count > 0 || objectInfo.Collection.Count > 0))
+                foreach (var objectInfo in allObjectInfos.Where(objectInfo => objectInfo.Members.Count > 0 || objectInfo.Collection.Count > 0))
                 {
                     // populate members
                     foreach (var member in objectInfo.Members)
                     {
                         // get the object to set from the file
-                        var objectInfoToSet = objectInfos.FirstOrDefault(objectInfo => objectInfo.Id == member.Value);
+                        var objectInfoToSet = allObjectInfos.FirstOrDefault(objectInfo => objectInfo.Id == member.Value);
                         if (objectInfoToSet == null)
                             throw new SerialisationException($"File doesn't contain an object with an id of: {member.Value}. File seems to be corrupt.");
                         var objectToSetMemberValueTo = objectInfoToSet.Value;
@@ -93,7 +94,7 @@ namespace NovaEngine.Serialisation
                         var item = objectInfo.Collection[i];
 
                         // get the object to set from the file
-                        var objectInfoToSet = objectInfos.FirstOrDefault(objectInfo => objectInfo.Id == item);
+                        var objectInfoToSet = allObjectInfos.FirstOrDefault(objectInfo => objectInfo.Id == item);
                         if (objectInfoToSet == null)
                             throw new SerialisationException($"File doesn't contain an object with an id of: {item}. File seems to be corrupt.");
                         var objectToSetMemberValueTo = objectInfoToSet.Value;
@@ -109,7 +110,7 @@ namespace NovaEngine.Serialisation
                     }
                 }
 
-                return Convert.ChangeType(objectInfos.Last().Value, returnType); // the root object is last as the collection was reversed
+                return Convert.ChangeType(allObjectInfos.Last().Value, returnType); // the root object is last as the collection was reversed
             }
             catch (Exception ex)
             {

@@ -97,7 +97,8 @@ namespace NovaEngine.Serialisation
 
         /// <summary>Writes the object info to a binary writer.</summary>
         /// <param name="binaryWriter">The binary writer to write the object info to.</param>
-        public void Write(BinaryWriter binaryWriter)
+        /// <param name="allObjectInfos">All the object infos of the object being converted. This is used to inline values properly.</param>
+        public void Write(BinaryWriter binaryWriter, List<ObjectInfo> allObjectInfos)
         {
             binaryWriter.Write(Id.ToString("N"));
 
@@ -110,7 +111,7 @@ namespace NovaEngine.Serialisation
                 var typeName = Value!.GetType().FullName!;
                 binaryWriter.Write(typeName);
 
-                // write array length
+                // write array length // TODO: the length is written twice for arrays, only write it once
                 var isArray = typeName.EndsWith("[]");
                 binaryWriter.Write(isArray);
                 if (isArray)
@@ -120,23 +121,37 @@ namespace NovaEngine.Serialisation
                 binaryWriter.Write((byte)CollectionType);
                 binaryWriter.Write(Collection.Count);
                 foreach (var item in Collection)
-                    binaryWriter.Write(item.ToString("N"));
+                    WriteValue(item);
 
-                // write field info
+                // write member info
                 binaryWriter.Write(Members.Count);
                 foreach (var member in Members)
                 {
                     binaryWriter.Write(member.Key); // name
-                    binaryWriter.Write(member.Value.ToString("N")); // value
+                    WriteValue(member.Value); // value
                 }
+            }
+
+            // Writes the value of an object
+            // This will write the value if it's inlinable; otherwise, the id
+            void WriteValue(Guid objectToWrite)
+            {
+                var @object = allObjectInfos.Single(objectInfo => objectInfo.Id == objectToWrite);
+                binaryWriter.Write(@object.IsInlinable); // TODO: optimise this so it's not specified on each object (needed for members, not for collections)
+                if (@object.IsInlinable)
+                    binaryWriter.Write(@object.Value);
+                else
+                    binaryWriter.Write(objectToWrite.ToString("N"));
             }
         }
 
         /// <summary>Reads the object info from a binary reader.</summary>
         /// <param name="binaryReader">The binary reader to read the object info from.</param>
-        public static ObjectInfo Read(BinaryReader binaryReader)
+        /// <param name="allObjectInfos">All the object infos of the object being converted. This is used to inline values properly.</param>
+        public static void Read(BinaryReader binaryReader, List<ObjectInfo> allObjectInfos)
         {
             var objectInfo = new ObjectInfo(new Guid(binaryReader.ReadString()));
+            allObjectInfos.Add(objectInfo);
 
             objectInfo.IsInlinable = binaryReader.ReadBoolean();
             if (objectInfo.IsInlinable)
@@ -156,15 +171,26 @@ namespace NovaEngine.Serialisation
                 objectInfo.CollectionType = (CollectionType)binaryReader.ReadByte();
                 var length = binaryReader.ReadInt32();
                 for (int i = 0; i < length; i++)
-                    objectInfo.Collection.Add(new Guid(binaryReader.ReadString()));
+                    objectInfo.Collection.Add(ReadValue());
 
                 // retrieve member info
                 length = binaryReader.ReadInt32();
                 for (int i = 0; i < length; i++)
-                    objectInfo.Members[binaryReader.ReadString()] = new Guid(binaryReader.ReadString());
+                    objectInfo.Members[binaryReader.ReadString()] = ReadValue();
             }
 
-            return objectInfo;
+            // Reads the value of an object
+            // This will create an object info for the value if it's inlined
+            Guid ReadValue()
+            {
+                if (binaryReader.ReadBoolean()) // isInlined
+                {
+                    var objectInfo = new ObjectInfo(binaryReader.ReadObject(), allObjectInfos);
+                    return objectInfo.Id;
+                }
+                else
+                    return new Guid(binaryReader.ReadString());
+            }
         }
 
 
