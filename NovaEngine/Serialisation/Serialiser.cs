@@ -44,13 +44,12 @@ namespace NovaEngine.Serialisation
         /// <typeparam name="T">The type of the object to deserialise.</typeparam>
         /// <param name="stream">The stream to deserialise the object from.</param>
         /// <returns>The deserialised object.</returns>
-        public static T? Deserialise<T>(Stream stream) => (T?)Deserialise(stream, typeof(T));
+        public static T? Deserialise<T>(Stream stream) => (T?)Deserialise(stream);
 
         /// <summary>Deserialises an object from a stream.</summary>
         /// <param name="stream">The stream to deserialise the object from.</param>
-        /// <param name="returnType">The type of the object to deserialise.</param>
         /// <returns>The deserialised object.</returns>
-        public static object? Deserialise(Stream stream, Type returnType)
+        public static object? Deserialise(Stream stream)
         {
             try
             {
@@ -110,7 +109,7 @@ namespace NovaEngine.Serialisation
                     }
                 }
 
-                return Convert.ChangeType(allObjectInfos.Last().Value, returnType); // the root object is last as the collection was reversed
+                return allObjectInfos.Last().Value; // the root object is last as the collection was reversed
             }
             catch (Exception ex)
             {
