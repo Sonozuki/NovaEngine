@@ -29,6 +29,9 @@ namespace NovaEngine.Serialisation
         /// <summary>The type of collection the object who this object info is representing (if it's a collection.)</summary>
         public CollectionType CollectionType { get; private set; }
 
+        /// <summary>Whether the elements in the collection can be inlined.</summary>
+        public bool IsCollectionValueInlinable { get; private set; }
+
         /// <summary>The ids of the object infos representing the objects that are stored in the collection (if it's a collection.)</summary>
         public List<Guid> Collection { get; } = new();
 
@@ -55,13 +58,21 @@ namespace NovaEngine.Serialisation
                 // add items stored in collection
                 if (Value is IEnumerable)
                 {
-                         if (Value is Array)                                                                                  CollectionType = CollectionType.Array;
-                    else if (Value?.GetType().GetInterfaces().Any(@interface => @interface.Name == "IList`1") ?? false)       CollectionType = CollectionType.GenericList;
-                    else if (Value?.GetType().GetInterfaces().Contains(typeof(IList)) ?? false)                               CollectionType = CollectionType.List;
-                    else if (Value?.GetType().GetInterfaces().Any(@interface => @interface.Name == "IDictionary`1") ?? false) CollectionType = CollectionType.GenericDictionary;
-                    else if (Value?.GetType().GetInterfaces().Contains(typeof(IDictionary)) ?? false)                         CollectionType = CollectionType.Dictionary;
+                    if (Value is Array)
+                    {
+                        CollectionType = CollectionType.Array;
+                        IsCollectionValueInlinable = Value.GetType().GetElementType()?.IsInlinable() ?? false;
+                    }
+                    else if (Value?.GetType().GetInterfaces().Any(@interface => @interface.Name == "IList`1") ?? false)
+                    {
+                        CollectionType = CollectionType.GenericList;
+                        IsCollectionValueInlinable = Value.GetType().GetGenericArguments()[0].IsInlinable();
+                    }
+                    else if (Value?.GetType().GetInterfaces().Any(@interface => @interface.Name == "IDictionary`2") ?? false) CollectionType = CollectionType.GenericDictionary;
+                    else if (Value?.GetType().GetInterfaces().Contains(typeof(IList)) ?? false) CollectionType = CollectionType.List;
+                    else if (Value?.GetType().GetInterfaces().Contains(typeof(IDictionary)) ?? false) CollectionType = CollectionType.Dictionary;
                     else throw new SerialisationException($"Failed to serialise collection of type: {Value?.GetType()}");
-                    
+
                     items.AddRange((Value as IEnumerable)!.OfType<object>().Select(item => ((string?)null, item)));
                 }
 
@@ -74,10 +85,10 @@ namespace NovaEngine.Serialisation
                 items.AddRange(Value.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
                     .Where(property => property.CanRead && property.CanWriteForSerialisation()
                                     && (property.HasBackingField() || property.HasCustomAttribute<SerialisableAttribute>()) // if a property doesn't have a backing field, it must have the Serialisable attribute
-                                    && ((property.GetMethod!.IsPublic && !property.HasCustomAttribute<NonSerialisableAttribute>()) 
+                                    && ((property.GetMethod!.IsPublic && !property.HasCustomAttribute<NonSerialisableAttribute>())
                                         || (!property.GetMethod!.IsPublic && property.HasCustomAttribute<SerialisableAttribute>())))
-                    .Select(property => 
-                        (Name: property.HasBackingField() ? (string?)property.GetBackingFieldName() : property.Name, 
+                    .Select(property =>
+                        (Name: property.HasBackingField() ? (string?)property.GetBackingFieldName() : property.Name,
                         Value: property.HasBackingField() ? property.GetBackingField()!.GetValue(Value)! : property.GetValue(Value)!)));
 
                 // add the items to the object info
@@ -111,37 +122,36 @@ namespace NovaEngine.Serialisation
                 var typeName = Value!.GetType().FullName!;
                 binaryWriter.Write(typeName);
 
-                // write array length // TODO: the length is written twice for arrays, only write it once
-                var isArray = typeName.EndsWith("[]");
-                binaryWriter.Write(isArray);
-                if (isArray)
-                    binaryWriter.Write((Value as Array)!.Length);
-
                 // write collection info
-                binaryWriter.Write((byte)CollectionType);
                 binaryWriter.Write(Collection.Count);
+                binaryWriter.Write(typeName.EndsWith("[]")); // isArray
+                binaryWriter.Write((byte)CollectionType);
+
+                binaryWriter.Write(IsCollectionValueInlinable);
                 foreach (var item in Collection)
-                    WriteValue(item);
+                    if (IsCollectionValueInlinable)
+                    {
+                        var @object = allObjectInfos.Single(objectInfo => objectInfo.Id == item);
+                        binaryWriter.Write(@object.Value);
+                    }
+                    else
+                        binaryWriter.Write(item.ToString("N"));
 
                 // write member info
                 binaryWriter.Write(Members.Count);
                 foreach (var member in Members)
                 {
-                    binaryWriter.Write(member.Key); // name
-                    WriteValue(member.Value); // value
-                }
-            }
+                    // name
+                    binaryWriter.Write(member.Key);
 
-            // Writes the value of an object
-            // This will write the value if it's inlinable; otherwise, the id
-            void WriteValue(Guid objectToWrite)
-            {
-                var @object = allObjectInfos.Single(objectInfo => objectInfo.Id == objectToWrite);
-                binaryWriter.Write(@object.IsInlinable); // TODO: optimise this so it's not specified on each object (needed for members, not for collections)
-                if (@object.IsInlinable)
-                    binaryWriter.Write(@object.Value);
-                else
-                    binaryWriter.Write(objectToWrite.ToString("N"));
+                    // value
+                    var @object = allObjectInfos.Single(objectInfo => objectInfo.Id == member.Value);
+                    binaryWriter.Write(@object.IsInlinable);
+                    if (@object.IsInlinable)
+                        binaryWriter.Write(@object.Value);
+                    else
+                        binaryWriter.Write(@object.Id.ToString("N"));
+                }
             }
         }
 
@@ -162,28 +172,34 @@ namespace NovaEngine.Serialisation
                 var typeName = binaryReader.ReadString();
 
                 // create object
+                var length = binaryReader.ReadInt32(); // length of the collection
                 if (binaryReader.ReadBoolean()) // isArray
-                    objectInfo.Value = Array.CreateInstance(Type.GetType(typeName[..^2])!, binaryReader.ReadInt32());
+                    objectInfo.Value = Array.CreateInstance(Type.GetType(typeName[..^2])!, length);
                 else
                     objectInfo.Value = Activator.CreateInstance(Type.GetType(typeName)!, true);
 
                 // retrieve collection info
                 objectInfo.CollectionType = (CollectionType)binaryReader.ReadByte();
-                var length = binaryReader.ReadInt32();
+                var isInlined = binaryReader.ReadBoolean();
                 for (int i = 0; i < length; i++)
-                    objectInfo.Collection.Add(ReadValue());
+                    objectInfo.Collection.Add(ReadValue(isInlined));
 
                 // retrieve member info
                 length = binaryReader.ReadInt32();
                 for (int i = 0; i < length; i++)
-                    objectInfo.Members[binaryReader.ReadString()] = ReadValue();
+                {
+                    var memberName = binaryReader.ReadString();
+
+                    isInlined = binaryReader.ReadBoolean();
+                    objectInfo.Members[memberName] = ReadValue(isInlined);
+                }
             }
 
             // Reads the value of an object
             // This will create an object info for the value if it's inlined
-            Guid ReadValue()
+            Guid ReadValue(bool isInlined)
             {
-                if (binaryReader.ReadBoolean()) // isInlined
+                if (isInlined)
                 {
                     var objectInfo = new ObjectInfo(binaryReader.ReadObject(), allObjectInfos);
                     return objectInfo.Id;
