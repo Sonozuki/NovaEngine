@@ -99,7 +99,7 @@ namespace NovaEngine.Content
                 {
                     // check if the file should be read using the deserialiser
                     if (contentType.ToLower() == "serialised")
-                        readObject = Serialiser.Deserialise(stream, returnType);
+                        readObject = Serialiser.Deserialise(stream);
                     else
                     {
                         // find a valid content reader
