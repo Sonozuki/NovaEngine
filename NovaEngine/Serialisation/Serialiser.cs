@@ -98,14 +98,25 @@ namespace NovaEngine.Serialisation
                             throw new SerialisationException($"File doesn't contain an object with an id of: {item}. File seems to be corrupt.");
                         var objectToSetMemberValueTo = objectInfoToSet.Value;
 
-                        if (objectInfo.CollectionType == CollectionType.Array)
-                            (objectInfo.Value as Array)!.SetValue(objectToSetMemberValueTo, i);
-                        else if (objectInfo.CollectionType == CollectionType.GenericList || objectInfo.CollectionType == CollectionType.GenericDictionary)
-                            objectInfo.Value!.GetType().GetInterfaces().Single(@interface => @interface.Name == "ICollection`1").GetMethod("Add")!.Invoke(objectInfo.Value, new[] { objectToSetMemberValueTo });
-                        else if (objectInfo.CollectionType == CollectionType.List)
-                            (objectInfo.Value as IList)!.Add(objectToSetMemberValueTo);
-                        else if (objectInfo.CollectionType == CollectionType.Dictionary)
-                            (objectInfo.Value as IDictionary)!.Add(objectToSetMemberValueTo!.GetType().GetProperty("Key")!.GetValue(objectToSetMemberValueTo)!, objectToSetMemberValueTo!.GetType().GetProperty("Value")!.GetValue(objectToSetMemberValueTo));
+                        switch (objectInfo.CollectionType)
+                        {
+                            case CollectionType.Array:
+                                (objectInfo.Value as Array)!.SetValue(objectToSetMemberValueTo, i);
+                                break;
+                            case CollectionType.GenericList:
+                            case CollectionType.GenericDictionary:
+                                objectInfo.Value!.GetType().GetInterfaces().Single(@interface => @interface.Name == "ICollection`1").GetMethod("Add")!.Invoke(objectInfo.Value, new[] { objectToSetMemberValueTo });
+                                break;
+                            case CollectionType.List:
+                                (objectInfo.Value as IList)!.Add(objectToSetMemberValueTo);
+                                break;
+                            case CollectionType.Dictionary:
+                                (objectInfo.Value as IDictionary)!.Add(
+                                    objectToSetMemberValueTo!.GetType().GetProperty("Key")!.GetValue(objectToSetMemberValueTo)!, 
+                                    objectToSetMemberValueTo!.GetType().GetProperty("Value")!.GetValue(objectToSetMemberValueTo)
+                                );
+                                break;
+                        }
                     }
                 }
 
