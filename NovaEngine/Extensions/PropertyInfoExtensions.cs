@@ -29,6 +29,13 @@ namespace NovaEngine.Extensions
         /// <param name="propertyInfo">The property whose backing field name should be retrieved.</param>
         /// <returns>The name of the backing field.</returns>
         /// <remarks>The name of the backing field will be returned regardless of if the property actually has a backing field.</remarks>
-        public static string GetBackingFieldName(this PropertyInfo propertyInfo) => $"<{propertyInfo.Name}>k__BackingField";
+        public static string GetBackingFieldName(this PropertyInfo propertyInfo)
+        {
+            // key value pair is a special case as it doesn't use auto generated properteries
+            if (propertyInfo.DeclaringType?.Name == "KeyValuePair`2")
+                return propertyInfo.Name.ToLower();
+            else
+                return $"<{propertyInfo.Name}>k__BackingField";
+        }
     }
 }
