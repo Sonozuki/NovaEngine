@@ -1,4 +1,5 @@
 ﻿using NovaEngine.Graphics;
+using NovaEngine.Serialisation;
 
 namespace NovaEngine.Core
 {
@@ -12,6 +13,7 @@ namespace NovaEngine.Core
         public Colour Tint { get; set; }
 
         /// <summary>The default material.</summary>
+        [NonSerialisable]
         public static Material Default { get; } = new(Colour.Gray);
 
 
