@@ -91,7 +91,7 @@ namespace NovaEngine
                     scene.Dispose();
 
                 Texture2D.Undefined.Dispose();
-                RendererManager.CurrentRenderer.OnCleanUp();
+                RendererManager.CurrentRenderer.Dispose();
             }
             catch (Exception ex)
             {

@@ -6,7 +6,7 @@ using System;
 namespace NovaEngine.Rendering
 {
     /// <summary>Represents a graphics renderer.</summary>
-    public interface IRenderer
+    public interface IRenderer : IDisposable
     {
         /*********
         ** Accessors
@@ -42,8 +42,5 @@ namespace NovaEngine.Rendering
 
         /// <summary>Invoked when the renderer should render a frame.</summary>
         public void OnRenderFrame();
-
-        /// <summary>Invoked when the renderer should clean itself up.</summary>
-        public void OnCleanUp();
     }
 }

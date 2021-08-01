@@ -16,7 +16,7 @@ using Vulkan;
 namespace NovaEngine.Renderer.Vulkan
 {
     /// <summary>Represents a graphics renderer using Vulkan.</summary>
-    public unsafe class VulkanRenderer : IRenderer, IDisposable
+    public unsafe class VulkanRenderer : IRenderer
     {
         /*********
         ** Constants
@@ -250,9 +250,6 @@ namespace NovaEngine.Renderer.Vulkan
             // TODO: temp
             CommandPool.FreeCommandBuffers(new[] { commandBuffer });
         }
-
-        /// <inheritdoc/>
-        public void OnCleanUp() => Dispose();
 
         /// <inheritdoc/>
         public void Dispose()

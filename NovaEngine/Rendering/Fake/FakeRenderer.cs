@@ -28,7 +28,7 @@ namespace NovaEngine.Rendering.Fake
         public RendererTextureBase CreateRendererTexture(TextureBase baseTexture, bool generateMipChain) => new FakeTexture(baseTexture);
 
         /// <inheritdoc/>
-        public void OnCleanUp() { }
+        public void Dispose() { }
 
         /// <inheritdoc/>
         public void OnInitialise(IntPtr windowHandle) { }
