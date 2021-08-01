@@ -1,5 +1,7 @@
 ﻿using NovaEngine.Extensions;
 using System;
+using System.IO;
+using System.Text;
 
 namespace NovaEngine.Logging
 {
@@ -62,6 +64,14 @@ namespace NovaEngine.Logging
             // explicitly resetting the colour here as the VS debugger console stays open between sessions, which meant it was keeping the
             // background colour from a fatal log and setting the entire console background to that on the next debug session for some reason
             Console.ResetColor();
+        }
+
+        /// <summary>Writes the log to a stream.</summary>
+        /// <param name="stream">The stream to write the log to.</param>
+        public void WriteToStream(Stream stream)
+        {
+            var message = $"[{DateTime:HH:mm:ss} {SeverityInfo.Label} {Caller}] {Message}\n";
+            stream.Write(Encoding.UTF8.GetBytes(message));
         }
     }
 }
