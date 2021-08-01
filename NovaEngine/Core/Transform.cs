@@ -48,7 +48,7 @@ namespace NovaEngine.Core
         /// <summary>The transform matrix.</summary>
         public Matrix4x4 Matrix => Matrix4x4.CreateScale(GlobalScale)
                                  * Matrix4x4.CreateFromQuaternion(GlobalRotation)
-                                 * Matrix4x4.CreateTranslation(GlobalPosition);
+                                 * Matrix4x4.CreateTranslation(GlobalPosition.X, GlobalPosition.Y, -GlobalPosition.Z);
 
         /// <summary>The transform of the parent object.</summary>
         private Transform? ParentTransform => GameObject.Parent?.Transform;
