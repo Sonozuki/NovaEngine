@@ -66,7 +66,7 @@ namespace NovaEngine.Serialisation
                     else if (Value?.GetType().GetInterfaces().Any(@interface => @interface.Name == "IList`1") ?? false)
                     {
                         CollectionType = CollectionType.GenericList;
-                        IsCollectionValueInlinable = Value.GetType().GetGenericArguments()[0].IsInlinable();
+                        IsCollectionValueInlinable = Value.GetType().GetInterfaces().First(@interface => @interface.Name == "IList`1").GetGenericArguments()[0].IsInlinable();
                     }
                     else if (Value?.GetType().GetInterfaces().Any(@interface => @interface.Name == "IDictionary`2") ?? false) CollectionType = CollectionType.GenericDictionary;
                     else if (Value?.GetType().GetInterfaces().Contains(typeof(IList)) ?? false) CollectionType = CollectionType.List;
