@@ -3,6 +3,7 @@ using NovaEngine.Graphics;
 using NovaEngine.IO;
 using NovaEngine.Logging;
 using NovaEngine.Maths;
+using NovaEngine.Platform;
 using NovaEngine.Rendering;
 using NovaEngine.SceneManagement;
 using NovaEngine.Windowing;
@@ -51,6 +52,8 @@ namespace NovaEngine
                 Handle = Process.GetCurrentProcess().Handle;
 
                 // initialise window
+                if (PlatformManager.CurrentPlatform == null)
+                    return; // fatal log has already been created at this point
                 MainWindow = new Window("NovaEngine", new Size(1280, 720)); // TODO: don't hardcode
                 MainWindow.Resize += (e) => RendererManager.CurrentRenderer.OnWindowResize(e.NewSize);
 

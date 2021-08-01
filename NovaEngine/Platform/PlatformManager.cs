@@ -21,6 +21,8 @@ namespace NovaEngine.Platform
         /*********
         ** Public Methods
         *********/
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
         /// <summary>Initialises the class.</summary>
         static PlatformManager()
         {
@@ -58,7 +60,9 @@ namespace NovaEngine.Platform
             }
 
             if (CurrentPlatform == null)
-                throw new PlatformNotSupportedException("The environment operating system isn't supported.").Log(LogSeverity.Fatal);
+                Logger.Log("The environment operating system isn't supported.", LogSeverity.Fatal);
         }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     }
 }
