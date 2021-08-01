@@ -43,51 +43,57 @@ namespace NovaEngine
         /// <param name="args">The command-line arguments.</param>
         public static void Main(string[] args)
         {
-            HasProgramInstance = true;
-
-            Name = Process.GetCurrentProcess().ProcessName;
-            Handle = Process.GetCurrentProcess().Handle;
-
-            // initialise window
-            MainWindow = new Window("NovaEngine", new Size(1280, 720)); // TODO: don't hardcode
-            MainWindow.Resize += (e) => RendererManager.CurrentRenderer.OnWindowResize(e.NewSize);
-
-            // initialise renderer
-            if (RendererManager.CurrentRenderer == null)
-                return; // fatal log has already been created at this point
-            RendererManager.CurrentRenderer.OnInitialise(MainWindow!.Handle);
-
-            // initialise initial scenes
-            var initialScenes = ContentLoader.Load<List<string>>("InitialScenes");
-            foreach (var scene in initialScenes)
-                SceneManager.LoadScene(scene);
-
-            MainWindow.Show();
-
             try
             {
+                HasProgramInstance = true;
+
+                Name = Process.GetCurrentProcess().ProcessName;
+                Handle = Process.GetCurrentProcess().Handle;
+
+                // initialise window
+                MainWindow = new Window("NovaEngine", new Size(1280, 720)); // TODO: don't hardcode
+                MainWindow.Resize += (e) => RendererManager.CurrentRenderer.OnWindowResize(e.NewSize);
+
+                // initialise renderer
+                if (RendererManager.CurrentRenderer == null)
+                    return; // fatal log has already been created at this point
+                RendererManager.CurrentRenderer.OnInitialise(MainWindow!.Handle);
+
+                // initialise initial scenes
+                var initialScenes = ContentLoader.Load<List<string>>("InitialScenes");
+                foreach (var scene in initialScenes)
+                    SceneManager.LoadScene(scene);
+
+                MainWindow.Show();
+
                 // main loop
-                while (!MainWindow!.HasClosed)
+                try
                 {
-                    Input.Update();
+                    while (!MainWindow!.HasClosed)
+                    {
+                        Input.Update();
 
-                    RendererManager.CurrentRenderer.OnRenderFrame();
+                        RendererManager.CurrentRenderer.OnRenderFrame();
 
-                    MainWindow.ProcessEvents();
+                        MainWindow.ProcessEvents();
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Logger.Log($"Unrecoverable error occured inside the main loop: {ex}", LogSeverity.Fatal);
+                }
+
+                // clean up
+                foreach (var scene in SceneManager.LoadedScenes)
+                    scene.Dispose();
+
+                Texture2D.Undefined.Dispose();
+                RendererManager.CurrentRenderer.OnCleanUp();
             }
             catch (Exception ex)
             {
-                Logger.Log($"Unrecoverable error occured in main loop: {ex}", LogSeverity.Fatal);
+                Logger.Log($"Unrecoverable error occured outside the main loop: {ex}", LogSeverity.Fatal);
             }
-
-            // clean up
-            foreach (var scene in SceneManager.LoadedScenes)
-                scene.Dispose();
-
-            Texture2D.Undefined.Dispose();
-
-            RendererManager.CurrentRenderer.OnCleanUp();
         }
     }
 }
