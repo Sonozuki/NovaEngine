@@ -43,7 +43,7 @@ namespace NovaEngine.Platform
             foreach (var type in types)
             {
                 // ensure type is a platform
-                if (!(type.GetInterfaces().Contains(typeof(IPlatform))))
+                if (!type.GetInterfaces().Contains(typeof(IPlatform)))
                     continue;
 
                 // try to create an instance
