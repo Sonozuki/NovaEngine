@@ -1,9 +1,10 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+﻿using NovaEngine.Logging;
 using NovaEngine.Maths;
 using NovaEngine.Rendering;
 using System;
 using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace NovaEngine.Settings
 {
@@ -26,7 +27,7 @@ namespace NovaEngine.Settings
         public SampleCount MaxSampleCount => RendererManager.CurrentRenderer.MaxSampleCount;
 
         /// <summary>The current number of samples per pixel to use in multisample anti aliasing (MSAA).</summary>
-        [JsonConverter(typeof(StringEnumConverter))]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public SampleCount SampleCount
         {
             get => _SampleCount;
@@ -51,10 +52,9 @@ namespace NovaEngine.Settings
             // deserialise file if it already exists
             if (File.Exists(SettingsFileName))
             {
-                using (var streamReader = File.OpenText(SettingsFileName))
-                using (var jsonReader = new JsonTextReader(streamReader))
-                    try { instance = new JsonSerializer().Deserialize<RenderingSettings>(jsonReader); }
-                    catch { instance = null; }
+                try { instance = JsonSerializer.Deserialize<RenderingSettings>(File.ReadAllText(SettingsFileName)); }
+                catch { instance = null; }
+
                 if (instance == null)
                 {
                     Console.WriteLine($"Failed to deserialise {nameof(RenderingSettings)}, reverting to default settings.");
@@ -73,16 +73,11 @@ namespace NovaEngine.Settings
         {
             // ensure directory exists before attempting to reserialise settings
             var directoryName = new FileInfo(SettingsFileName).DirectoryName!;
-            if (!Directory.Exists(directoryName))
-                Directory.CreateDirectory(directoryName);
+            Directory.CreateDirectory(directoryName);
 
             // serialise settings
-            using (var streamWriter = new StreamWriter(SettingsFileName))
-            using (var jsonWriter = new JsonTextWriter(streamWriter))
-            {
-                jsonWriter.Formatting = Formatting.Indented;
-                new JsonSerializer().Serialize(jsonWriter, Instance);
-            }
+            try { File.WriteAllText(SettingsFileName, JsonSerializer.Serialize(Instance, new() { WriteIndented = true })); }
+            catch { Logger.Log($"Failed to serialise {nameof(RenderingSettings)}, settings won't persist between sessions.", LogSeverity.Error); }
         }
     }
 }
