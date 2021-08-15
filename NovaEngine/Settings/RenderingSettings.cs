@@ -1,7 +1,6 @@
 ﻿using NovaEngine.Logging;
 using NovaEngine.Maths;
 using NovaEngine.Rendering;
-using System;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -9,7 +8,6 @@ using System.Text.Json.Serialization;
 namespace NovaEngine.Settings
 {
     /// <summary>The application settings related to rendering.</summary>
-    /// <remarks>These are automatically saved to/loaded from the file: 'Documents/My Games/[Application Name]/Settings/RenderingSettings.json'.</remarks>
     public class RenderingSettings
     {
         /*********
@@ -54,7 +52,9 @@ namespace NovaEngine.Settings
 
                 if (instance == null)
                 {
-                    Console.WriteLine($"Failed to deserialise {nameof(RenderingSettings)}, reverting to default settings.");
+                    Logger.Log($"Failed to deserialise {nameof(RenderingSettings)}, reverting to default settings.", LogSeverity.Error);
+                    Logger.Log($"The invalid settings file has been moved to: \"{Constants.InvalidRenderingSettingsFilePath}\".", LogSeverity.Error);
+                    File.Move(Constants.RenderingSettingsFilePath, Constants.InvalidRenderingSettingsFilePath, true);
                     instance = new();
                 }
             }
