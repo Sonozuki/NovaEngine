@@ -34,6 +34,8 @@ namespace NovaEngine.Logging
 
             LogFileStream = File.Create(LogFileName);
             AppDomain.CurrentDomain.ProcessExit += (sender, e) => LogFileStream?.Dispose();
+
+            Logger.LogHeader();
         }
 
         /// <summary>Logs a message.</summary>
@@ -55,6 +57,16 @@ namespace NovaEngine.Logging
             var log = new Log(caller, severity, message);
             log.WriteToConsole();
             log.WriteToStream(LogFileStream);
+        }
+
+
+        /*********
+        ** Private Methods
+        *********/
+        /// <summary>Logs the general engine and system details.</summary>
+        private static void LogHeader()
+        {
+            Logger.Log($"NovaEngine {Constants.EngineVersion} running {Program.Name} on {Environment.OSVersion}");
         }
     }
 }
