@@ -345,7 +345,7 @@ namespace NovaEngine.Renderer.Vulkan
                         .ToArray();
 
                     if (enabledLayerNames.Length == 0)
-                        Console.WriteLine("No validation layers were loaded.");
+                        Logger.Log("No validation layers were loaded.", LogSeverity.Error);
                     else
                         extensionNames.Add(VK.ExtDebugReportExtensionName);
                 }
@@ -620,7 +620,7 @@ namespace NovaEngine.Renderer.Vulkan
         /// <returns><see langword="false"/>, meaning the call won't be aborted.</returns>
         private static VkBool32 DebugReport(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, ulong @object, nuint location, int messageCode, byte* layerPrefix, byte* message, void* userData)
         {
-            Console.WriteLine(Marshal.PtrToStringAnsi((IntPtr)message));
+            Logger.Log(Marshal.PtrToStringAnsi((IntPtr)message) ?? "", LogSeverity.Error);
             return false;
         }
 

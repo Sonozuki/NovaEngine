@@ -188,7 +188,7 @@ namespace NovaEngine.Platform.Windows.Windowing
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Unhandled exception occured in window procedure: {ex}");
+                Logger.Log($"Unhandled exception occured in window procedure: {ex}", LogSeverity.Fatal);
                 return IntPtr.Zero;
             }
         }

@@ -1,5 +1,6 @@
 ﻿using NovaEngine.Content.Attributes;
 using NovaEngine.Content.Readers;
+using NovaEngine.Logging;
 using NovaEngine.Serialisation;
 using System;
 using System.Collections.Generic;
@@ -37,7 +38,7 @@ namespace NovaEngine.Content
                 // ensure the attribute exists
                 if (!type.GetCustomAttributes(false).Any(attribute => attribute.GetType() == typeof(ContentReaderAttribute)))
                 {
-                    Console.WriteLine($"ContentReader: {type.FullName} doesn't have a {nameof(ContentReaderAttribute)}");
+                    Logger.Log($"ContentReader: {type.FullName} doesn't have a {nameof(ContentReaderAttribute)}", LogSeverity.Error);
                     continue;
                 }
 
