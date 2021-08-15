@@ -61,6 +61,8 @@ namespace NovaEngine.Settings
 
             Instance = instance;
 
+            Logger.Log($"{nameof(RenderingSettings)}:\n{JsonSerializer.Serialize(Instance, new() { WriteIndented = true })}", LogSeverity.Debug);
+
             // save settings, this adds any missing properties as well as creating the settings file if it doesn't exist
             Save();
         }
