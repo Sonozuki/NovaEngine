@@ -37,9 +37,6 @@ namespace NovaEngine.Settings
         /// <summary>The singleton <see cref="RenderingSettings"/> instance.</summary>
         public static RenderingSettings Instance { get; }
 
-        /// <summary>The settings file.</summary>
-        private static string SettingsFileName => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games", Program.Name, "Settings", "RenderingSettings.json");
-
 
         /*********
         ** Public Methods
@@ -50,9 +47,9 @@ namespace NovaEngine.Settings
             RenderingSettings? instance = new();
 
             // deserialise file if it already exists
-            if (File.Exists(SettingsFileName))
+            if (File.Exists(Constants.RenderingSettingsFilePath))
             {
-                try { instance = JsonSerializer.Deserialize<RenderingSettings>(File.ReadAllText(SettingsFileName)); }
+                try { instance = JsonSerializer.Deserialize<RenderingSettings>(File.ReadAllText(Constants.RenderingSettingsFilePath)); }
                 catch { instance = null; }
 
                 if (instance == null)
@@ -72,11 +69,11 @@ namespace NovaEngine.Settings
         public static void Save()
         {
             // ensure directory exists before attempting to reserialise settings
-            var directoryName = new FileInfo(SettingsFileName).DirectoryName!;
+            var directoryName = new FileInfo(Constants.RenderingSettingsFilePath).DirectoryName!;
             Directory.CreateDirectory(directoryName);
 
             // serialise settings
-            try { File.WriteAllText(SettingsFileName, JsonSerializer.Serialize(Instance, new() { WriteIndented = true })); }
+            try { File.WriteAllText(Constants.RenderingSettingsFilePath, JsonSerializer.Serialize(Instance, new() { WriteIndented = true })); }
             catch { Logger.Log($"Failed to serialise {nameof(RenderingSettings)}, settings won't persist between sessions.", LogSeverity.Error); }
         }
     }

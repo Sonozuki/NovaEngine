@@ -10,16 +10,6 @@ namespace NovaEngine.SceneManagement
     public static class SceneManager
     {
         /*********
-        ** Constants
-        *********/
-        /// <summary>The file extension of scene files.</summary>
-        public const string SceneFileExtension = ".novascene";
-
-        /// <summary>The directory of the scene files relative to <see cref="ContentLoader.RootContentDirectory"/>.</summary>
-        public const string SceneDirectory = "Scenes";
-
-
-        /*********
         ** Accessors
         *********/
         /// <summary>The currently loaded scenes.</summary>
@@ -33,7 +23,7 @@ namespace NovaEngine.SceneManagement
         /// <param name="path">The name of the scene to load.</param>
         public static void LoadScene(string name)
         {
-            var loadedScene = ContentLoader.Load<Scene>(Path.Combine(SceneDirectory, name + SceneFileExtension));
+            var loadedScene = ContentLoader.Load<Scene>(Path.Combine(Constants.RelativeSceneDirectory, name + Constants.SceneFileExtension));
             LoadedScenes.Add(loadedScene);
 
             foreach (var rootObject in loadedScene.RootGameObjects)

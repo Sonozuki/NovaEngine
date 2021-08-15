@@ -9,13 +9,6 @@ namespace NovaEngine.Logging
     public static class Logger
     {
         /*********
-        ** Fields
-        *********/
-        /// <summary>The log file.</summary>
-        private static string LogFileName => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games", Program.Name, "Logs", "LatestLog.txt");
-
-
-        /*********
         ** Accessors
         *********/
         /// <summary>The stream to the current log file.</summary>
@@ -29,10 +22,10 @@ namespace NovaEngine.Logging
         static Logger()
         {
             // ensure directory exists before attempting to create log file
-            var directoryName = new FileInfo(LogFileName).DirectoryName!;
+            var directoryName = new FileInfo(Constants.LogFilePath).DirectoryName!;
             Directory.CreateDirectory(directoryName);
 
-            LogFileStream = File.Create(LogFileName);
+            LogFileStream = File.Create(Constants.LogFilePath);
             AppDomain.CurrentDomain.ProcessExit += (sender, e) => LogFileStream?.Dispose();
 
             Logger.LogHeader();
@@ -66,7 +59,7 @@ namespace NovaEngine.Logging
         /// <summary>Logs the general engine and system details.</summary>
         private static void LogHeader()
         {
-            Logger.Log($"NovaEngine {Constants.EngineVersion} running {Program.Name} on {Environment.OSVersion}");
+            Logger.Log($"{Constants.EngineName} {Constants.EngineVersion} running {Program.Name} on {Environment.OSVersion}");
         }
     }
 }

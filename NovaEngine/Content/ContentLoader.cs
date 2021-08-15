@@ -12,24 +12,10 @@ namespace NovaEngine.Content
     public class ContentLoader
     {
         /*********
-        ** Constants
-        *********/
-        /// <summary>The file extension for content files.</summary>
-        public const string ContentFileExtension = ".nova";
-
-
-        /*********
         ** Fields
         *********/
         /// <summary>The loaded content readers.</summary>
         private static readonly List<IContentReader> ContentReaders = new();
-
-
-        /*********
-        ** Accessors
-        *********/
-        /// <summary>The root content directory.</summary>
-        public static string RootContentDirectory => Path.Combine(Environment.CurrentDirectory, "Data");
 
 
         /*********
@@ -79,12 +65,12 @@ namespace NovaEngine.Content
         public static object Load(string path, Type returnType)
         {
             // convert path from relative to absolute
-            path = Path.Combine(RootContentDirectory, path);
+            path = Path.Combine(Constants.ContentDirectory, path);
 
             // add file extension if needed
             var file = path;
             if (string.IsNullOrEmpty(new FileInfo(file).Extension))
-                file += ContentFileExtension;
+                file += Constants.ContentFileExtension;
 
             // ensure file exists
             if (!File.Exists(file))
