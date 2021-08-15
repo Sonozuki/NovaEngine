@@ -14,8 +14,8 @@ namespace NovaEngine.Logging
         /// <summary>When the log was created, in UTC.</summary>
         public DateTime DateTime { get; }
 
-        /// <summary>Where the log was created.</summary>
-        public LogCaller Caller { get; }
+        /// <summary>The creator of the log.</summary>
+        public LogCreator Creator { get; }
 
         /// <summary>The severity info of the log.</summary>
         public LogSeverityInfoAttribute SeverityInfo { get; }
@@ -28,13 +28,13 @@ namespace NovaEngine.Logging
         ** Public Methods
         *********/
         /// <summary>Constructs an instance.</summary>
-        /// <param name="caller">Where the log was created.</param>
+        /// <param name="creator">The creator of the log.</param>
         /// <param name="severity">The severity of the log.</param>
         /// <param name="message">The message being logged.</param>
-        public Log(LogCaller caller, LogSeverity severity, string message)
+        public Log(LogCreator creator, LogSeverity severity, string message)
         {
             DateTime = DateTime.UtcNow;
-            Caller = caller;
+            Creator = creator;
             SeverityInfo = severity.GetAttribute<LogSeverityInfoAttribute>()
                 ?? LogSeverity.Info.GetAttribute<LogSeverityInfoAttribute>()!;
             Message = message;
@@ -51,10 +51,13 @@ namespace NovaEngine.Logging
             Console.Write(SeverityInfo.Label);
 
             Console.ResetColor();
-            Console.Write($" {Caller}] ");
+            if (Creator.IsInternal)
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write($" {Creator.Name}");
+            Console.ResetColor();
+            Console.Write("] ");
 
             // write message
-            Console.ResetColor();
             Console.ForegroundColor = SeverityInfo.ForegroundColour;
             if (SeverityInfo.BackgroundColour.HasValue)
                 Console.BackgroundColor = SeverityInfo.BackgroundColour.Value;
@@ -70,7 +73,7 @@ namespace NovaEngine.Logging
         /// <param name="stream">The stream to write the log to.</param>
         public void WriteToStream(Stream stream)
         {
-            var message = $"[{DateTime:HH:mm:ss} {SeverityInfo.Label} {Caller}] {Message}\n";
+            var message = $"[{DateTime:HH:mm:ss} {SeverityInfo.Label} {Creator.Name}] {Message}\n";
             stream.Write(Encoding.UTF8.GetBytes(message));
         }
     }

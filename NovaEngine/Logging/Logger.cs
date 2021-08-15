@@ -2,12 +2,23 @@
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 namespace NovaEngine.Logging
 {
     /// <summary>Handles logging for the engine, game, and mods.</summary>
     public static class Logger
     {
+        /*********
+        ** Fields
+        *********/
+        /// <summary>The pattern used for determining if an assembly is a platform assembly.</summary>
+        private static Regex PlatformAssemblyPattern = new("^NovaEngine.Platform.*", RegexOptions.Compiled);
+
+        /// <summary>The pattern used for determining if an assembly is a renderer assembly.</summary>
+        private static Regex RendererAssemblyPattern = new("^NovaEngine.Renderer.*", RegexOptions.Compiled);
+
+
         /*********
         ** Accessors
         *********/
@@ -40,14 +51,16 @@ namespace NovaEngine.Logging
             // get the log caller
             var callingAssembly = Assembly.GetCallingAssembly();
             var callingLibraryName = Path.GetFileNameWithoutExtension(callingAssembly.ManifestModule.Name);
-            var caller = callingLibraryName switch // TODO: mods
+            LogCreator creator = callingLibraryName switch // TODO: mods
             {
-                "NovaEngine" => LogCaller.Engine,
-                _ => LogCaller.Game
+                "NovaEngine" => new("Engine", true),
+                var assembly when PlatformAssemblyPattern.IsMatch(assembly) => new("Platform", true),
+                var assembly when RendererAssemblyPattern.IsMatch(assembly) => new("Renderer", true),
+                var assembly => new(assembly, false)
             };
 
             // create a log
-            var log = new Log(caller, severity, message);
+            var log = new Log(creator, severity, message);
             log.WriteToConsole();
             log.WriteToStream(LogFileStream);
         }
