@@ -4,7 +4,7 @@ namespace NovaEngine.Logging
 {
     /// <summary>An attribute to specify information of a <see cref="LogSeverity"/></summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
-    public class LogSeverityInfoAttribute : Attribute
+    internal class LogSeverityInfoAttribute : Attribute
     {
         /*********
         ** Accessors
