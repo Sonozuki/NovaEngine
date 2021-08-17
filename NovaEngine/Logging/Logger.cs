@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -13,10 +14,10 @@ namespace NovaEngine.Logging
         ** Fields
         *********/
         /// <summary>The pattern used for determining if an assembly is a platform assembly.</summary>
-        private static Regex PlatformAssemblyPattern = new("^NovaEngine.Platform.*", RegexOptions.Compiled);
+        private static readonly Regex PlatformAssemblyPattern = new("^NovaEngine.Platform.*", RegexOptions.Compiled);
 
         /// <summary>The pattern used for determining if an assembly is a renderer assembly.</summary>
-        private static Regex RendererAssemblyPattern = new("^NovaEngine.Renderer.*", RegexOptions.Compiled);
+        private static readonly Regex RendererAssemblyPattern = new("^NovaEngine.Renderer.*", RegexOptions.Compiled);
 
 
         /*********
@@ -46,9 +47,9 @@ namespace NovaEngine.Logging
         /// <param name="message">The message to log.</param>
         /// <param name="severity">The severity of the log.</param>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void Log(string message, LogSeverity severity = LogSeverity.Info)
+        public static void Log(string? message, LogSeverity severity = LogSeverity.Info)
         {
-            // get the log caller
+            // get the log creator
             var callingAssembly = Assembly.GetCallingAssembly();
             var callingLibraryName = Path.GetFileNameWithoutExtension(callingAssembly.ManifestModule.Name);
             LogCreator creator = callingLibraryName switch // TODO: mods
@@ -60,10 +61,21 @@ namespace NovaEngine.Logging
             };
 
             // create a log
-            var log = new Log(creator, severity, message);
+            var log = new Log(creator, severity, message ?? "");
             log.WriteToConsole();
             log.WriteToStream(LogFileStream);
         }
+
+        /// <summary>Logs a collection.</summary>
+        /// <typeparam name="T">The type of the collection.</typeparam>
+        /// <param name="collection">The collection to log.</param>
+        /// <param name="severity">The sevirity of the log.</param>
+        public static void Log<T>(IEnumerable<T> collection, LogSeverity severity = LogSeverity.Info) => Logger.Log($"[{string.Join(", ", collection)}]", severity);
+
+        /// <summary>Logs an object.</summary>
+        /// <param name="object">The object to log.</param>
+        /// <param name="severity">The severity of the log.</param>
+        public static void Log(object? @object, LogSeverity severity = LogSeverity.Info) => Logger.Log(@object?.ToString(), severity);
 
 
         /*********
