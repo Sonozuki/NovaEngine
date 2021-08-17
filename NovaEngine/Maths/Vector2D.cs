@@ -19,20 +19,20 @@ namespace NovaEngine.Maths
         ** Accessors
         *********/
         /// <summary>The length of the vector.</summary>
-        public double Length => Math.Sqrt(LengthSquared);
+        public readonly double Length => Math.Sqrt(LengthSquared);
 
         /// <summary>The squared length of the vector.</summary>
         /// <remarks>This is preferred for comparison as it avoids the square root operation.</remarks>
-        public double LengthSquared => X * X + Y * Y;
+        public readonly double LengthSquared => X * X + Y * Y;
 
         /// <summary>The perpendicular vector to the left of this vector.</summary>
-        public Vector2D PerpendicularLeft => new(-Y, X);
+        public readonly Vector2D PerpendicularLeft => new(-Y, X);
 
         /// <summary>The perpendicular vector to the right of this vector.</summary>
-        public Vector2D PerpendicularRight => new(Y, -X);
+        public readonly Vector2D PerpendicularRight => new(Y, -X);
 
         /// <summary>The vector with unit length.</summary>
-        public Vector2D Normalised
+        public readonly Vector2D Normalised
         {
             get
             {
@@ -45,7 +45,7 @@ namespace NovaEngine.Maths
         /// <summary>Swizzle the <see cref="Y"/> and <see cref="X"/> components.</summary>
         public Vector2D YX
         {
-            get => new(Y, X);
+            readonly get => new(Y, X);
             set
             {
                 Y = value.X;
@@ -70,7 +70,7 @@ namespace NovaEngine.Maths
         /// <returns>The value at the specified position.</returns>
         public double this[int index]
         {
-            get
+            readonly get
             {
                 if (index == 0)
                     return X;
@@ -121,82 +121,82 @@ namespace NovaEngine.Maths
 
         /// <summary>Gets the vector as a <see cref="Vector2"/>.</summary>
         /// <returns>The vector as a <see cref="Vector2"/>.</returns>
-        public Vector2 ToVector2() => new((float)X, (float)Y);
+        public readonly Vector2 ToVector2() => new((float)X, (float)Y);
 
         /// <summary>Gets the vector as a <see cref="Vector2I"/> by rounding the components down.</summary>
         /// <returns>The rounded down vector as a <see cref="Vector2I"/>.</returns>
-        public Vector2I ToFlooredVector2I() => new((int)Math.Floor(X), (int)Math.Floor(Y));
+        public readonly Vector2I ToFlooredVector2I() => new((int)Math.Floor(X), (int)Math.Floor(Y));
 
         /// <summary>Gets the vector as a <see cref="Vector2I"/> by rounding the components.</summary>
         /// <returns>The rounded vector as a <see cref="Vector2I"/>.</returns>
-        public Vector2I ToRoundedVector2I() => new((int)Math.Round(X), (int)Math.Round(Y));
+        public readonly Vector2I ToRoundedVector2I() => new((int)Math.Round(X), (int)Math.Round(Y));
 
         /// <summary>Gets the vector as a <see cref="Vector2I"/> by rounding the components up.</summary>
         /// <returns>The rounded up vector as a <see cref="Vector2I"/>.</returns>
-        public Vector2I ToCeilingedVector2I() => new((int)Math.Ceiling(X), (int)Math.Ceiling(Y));
+        public readonly Vector2I ToCeilingedVector2I() => new((int)Math.Ceiling(X), (int)Math.Ceiling(Y));
 
         /// <inheritdoc/>
-        public bool Equals(Vector2D other) => this == other;
+        public readonly bool Equals(Vector2D other) => this == other;
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj) => obj is Vector2D vector && this == vector;
+        public readonly override bool Equals(object? obj) => obj is Vector2D vector && this == vector;
 
         /// <inheritdoc/>
-        public override int GetHashCode() => (X, Y).GetHashCode();
+        public readonly override int GetHashCode() => (X, Y).GetHashCode();
 
         /// <inheritdoc/>
-        public override string ToString() => $"<X: {X}, Y: {Y}>";
+        public readonly override string ToString() => $"<X: {X}, Y: {Y}>";
 
         /// <summary>Calculates the distance between two vectors.</summary>
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>The distance between <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
-        public static double Distance(Vector2D vector1, Vector2D vector2) => Math.Sqrt(Vector2D.DistanceSquared(vector1, vector2));
+        public static double Distance(in Vector2D vector1, in Vector2D vector2) => Math.Sqrt(Vector2D.DistanceSquared(vector1, vector2));
 
         /// <summary>Calculates the sqaured distance between two vectors.</summary>
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>The squared distance between <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
         /// <remarks>This is preferred for comparison as it avoids the square root operation.</remarks>
-        public static double DistanceSquared(Vector2D vector1, Vector2D vector2) => (vector2.X - vector1.X) * (vector2.X - vector1.X) + (vector2.Y - vector1.Y) * (vector2.Y - vector1.Y);
+        public static double DistanceSquared(in Vector2D vector1, in Vector2D vector2) => (vector2.X - vector1.X) * (vector2.X - vector1.X) + (vector2.Y - vector1.Y) * (vector2.Y - vector1.Y);
 
         /// <summary>Calculates the dot product of two vectors.</summary>
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>The dot product of <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
-        public static double Dot(Vector2D vector1, Vector2D vector2) => vector1.X * vector2.X + vector1.Y * vector2.Y;
+        public static double Dot(in Vector2D vector1, in Vector2D vector2) => vector1.X * vector2.X + vector1.Y * vector2.Y;
 
         /// <summary>Creates a vector using the smallest of the corresponding components from two vectors.</summary>
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>The component-wise minimum.</returns>
-        public static Vector2D ComponentMin(Vector2D vector1, Vector2D vector2) => new(Math.Min(vector1.X, vector2.X), Math.Min(vector1.Y, vector2.Y));
+        public static Vector2D ComponentMin(in Vector2D vector1, in Vector2D vector2) => new(Math.Min(vector1.X, vector2.X), Math.Min(vector1.Y, vector2.Y));
 
         /// <summary>Creates a vector using the largest of the corresponding components from two vectors.</summary>
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>The component-wise maximum.</returns>
-        public static Vector2D ComponentMax(Vector2D vector1, Vector2D vector2) => new(Math.Max(vector1.X, vector2.X), Math.Max(vector1.Y, vector2.Y));
+        public static Vector2D ComponentMax(in Vector2D vector1, in Vector2D vector2) => new(Math.Max(vector1.X, vector2.X), Math.Max(vector1.Y, vector2.Y));
 
         /// <summary>Clamps a vector to the specified minimum and maximum vectors.</summary>
         /// <param name="value">The value to clamp.</param>
         /// <param name="min">The minimum value.</param>
         /// <param name="max">The maximum value.</param>
         /// <returns>The clamped value.</returns>
-        public static Vector2D Clamp(Vector2D value, Vector2D min, Vector2D max) => new(MathsHelper.Clamp(value.X, min.X, max.X), MathsHelper.Clamp(value.Y, min.Y, max.Y));
+        public static Vector2D Clamp(in Vector2D value, in Vector2D min, in Vector2D max) => new(MathsHelper.Clamp(value.X, min.X, max.X), MathsHelper.Clamp(value.Y, min.Y, max.Y));
 
         /// <summary>Linearly interpolates between two values.</summary>
         /// <param name="value1">The source value.</param>
         /// <param name="value2">The destination value.</param>
         /// <param name="amount">The amount to interpolate between <paramref name="value1"/> and <paramref name="value2"/>.</param>
         /// <returns>The interpolated value.</returns>
-        public static Vector2D Lerp(Vector2D value1, Vector2D value2, double amount) => new(MathsHelper.Lerp(value1.X, value2.X, amount), MathsHelper.Lerp(value1.Y, value2.Y, amount));
+        public static Vector2D Lerp(in Vector2D value1, in Vector2D value2, double amount) => new(MathsHelper.Lerp(value1.X, value2.X, amount), MathsHelper.Lerp(value1.Y, value2.Y, amount));
 
         /// <summary>Transforms a vector by a rotation.</summary>
         /// <param name="vector">The vector to rotate.</param>
         /// <param name="rotation">The rotation to apply.</param>
         /// <returns>The rotated vector.</returns>
-        public static Vector2D Transform(Vector2D vector, QuaternionD rotation)
+        public static Vector2D Transform(in Vector2D vector, in QuaternionD rotation)
         {
             var x2 = rotation.X + rotation.X;
             var y2 = rotation.Y + rotation.Y;

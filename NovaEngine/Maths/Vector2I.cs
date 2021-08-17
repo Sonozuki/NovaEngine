@@ -19,22 +19,22 @@ namespace NovaEngine.Maths
         ** Accessors
         *********/
         /// <summary>The length of the vector.</summary>
-        public float Length => MathF.Sqrt(LengthSquared);
+        public readonly float Length => MathF.Sqrt(LengthSquared);
 
         /// <summary>The squared length of the vector.</summary>
         /// <remarks>This is preferred for comparison as it avoids the square root operation.</remarks>
-        public int LengthSquared => X * X + Y * Y;
+        public readonly int LengthSquared => X * X + Y * Y;
 
         /// <summary>The perpendicular vector to the left of this vector.</summary>
-        public Vector2I PerpendicularLeft => new(-Y, X);
+        public readonly Vector2I PerpendicularLeft => new(-Y, X);
 
         /// <summary>The perpendicular vector to the right of this vector.</summary>
-        public Vector2I PerpendicularRight => new(Y, -X);
+        public readonly Vector2I PerpendicularRight => new(Y, -X);
 
         /// <summary>Swizzle the <see cref="Y"/> and <see cref="X"/> components.</summary>
         public Vector2I YX
         {
-            get => new(Y, X);
+            readonly get => new(Y, X);
             set
             {
                 Y = value.X;
@@ -59,7 +59,7 @@ namespace NovaEngine.Maths
         /// <returns>The value at the specified position.</returns>
         public int this[int index]
         {
-            get
+            readonly get
             {
                 if (index == 0)
                     return X;
@@ -102,55 +102,55 @@ namespace NovaEngine.Maths
 
         /// <summary>Gets the vector as a <see cref="Vector2"/>.</summary>
         /// <returns>The vector as a <see cref="Vector2"/>.</returns>
-        public Vector2 ToVector2() => new(X, Y);
+        public readonly Vector2 ToVector2() => new(X, Y);
 
         /// <summary>Gets the vector as a <see cref="Vector2D"/>.</summary>
         /// <returns>The vector as a <see cref="Vector2D"/>.</returns>
-        public Vector2D ToVector2D() => new(X, Y);
+        public readonly Vector2D ToVector2D() => new(X, Y);
 
         /// <inheritdoc/>
-        public bool Equals(Vector2I other) => this == other;
+        public readonly bool Equals(Vector2I other) => this == other;
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj) => obj is Vector2I vector && this == vector;
+        public readonly override bool Equals(object? obj) => obj is Vector2I vector && this == vector;
 
         /// <inheritdoc/>
-        public override int GetHashCode() => (X, Y).GetHashCode();
+        public readonly override int GetHashCode() => (X, Y).GetHashCode();
 
         /// <inheritdoc/>
-        public override string ToString() => $"<X: {X}, Y: {Y}>";
+        public readonly override string ToString() => $"<X: {X}, Y: {Y}>";
 
         /// <summary>Calculates the distance between two vectors.</summary>
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>The distance between <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
-        public static float Distance(Vector2I vector1, Vector2I vector2) => MathF.Sqrt(Vector2I.DistanceSquared(vector1, vector2));
+        public static float Distance(in Vector2I vector1, in Vector2I vector2) => MathF.Sqrt(Vector2I.DistanceSquared(vector1, vector2));
 
         /// <summary>Calculates the squared distance between two vectors.</summary>
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>The squared distance between <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
         /// <remarks>This is preferred for comparison as it avoids the square root operation.</remarks>
-        public static int DistanceSquared(Vector2I vector1, Vector2I vector2) => (vector2.X - vector1.X) * (vector2.X - vector1.X) + (vector2.Y - vector1.Y) * (vector2.Y - vector1.Y);
+        public static int DistanceSquared(in Vector2I vector1, in Vector2I vector2) => (vector2.X - vector1.X) * (vector2.X - vector1.X) + (vector2.Y - vector1.Y) * (vector2.Y - vector1.Y);
 
         /// <summary>Creates a vector using the smallest of the corresponding components from two vectors.</summary>
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>The component-wise minimum.</returns>
-        public static Vector2I ComponentMin(Vector2I vector1, Vector2I vector2) => new(Math.Min(vector1.X, vector2.X), Math.Min(vector1.Y, vector2.Y));
+        public static Vector2I ComponentMin(in Vector2I vector1, in Vector2I vector2) => new(Math.Min(vector1.X, vector2.X), Math.Min(vector1.Y, vector2.Y));
 
         /// <summary>Creates a vector using the largest of the corresponding components from two vectors.</summary>
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>The component-wise maximum.</returns>
-        public static Vector2I ComponentMax(Vector2I vector1, Vector2I vector2) => new(Math.Max(vector1.X, vector2.X), Math.Max(vector1.Y, vector2.Y));
+        public static Vector2I ComponentMax(in Vector2I vector1, in Vector2I vector2) => new(Math.Max(vector1.X, vector2.X), Math.Max(vector1.Y, vector2.Y));
 
         /// <summary>Clamps a vector to the specified minimum and maximum vectors.</summary>
         /// <param name="value">The value to clamp.</param>
         /// <param name="min">The minimum value.</param>
         /// <param name="max">The maximum value.</param>
         /// <returns>The clamped value.</returns>
-        public static Vector2I Clamp(Vector2I value, Vector2I min, Vector2I max) => new(MathsHelper.Clamp(value.X, min.X, max.X), MathsHelper.Clamp(value.Y, min.Y, max.Y));
+        public static Vector2I Clamp(in Vector2I value, in Vector2I min, in Vector2I max) => new(MathsHelper.Clamp(value.X, min.X, max.X), MathsHelper.Clamp(value.Y, min.Y, max.Y));
 
 
         /*********

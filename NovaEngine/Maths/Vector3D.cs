@@ -22,14 +22,14 @@ namespace NovaEngine.Maths
         ** Accessors
         *********/
         /// <summary>The length of the vector.</summary>
-        public double Length => Math.Sqrt(LengthSquared);
+        public readonly double Length => Math.Sqrt(LengthSquared);
 
         /// <summary>The sqaured length of the vector.</summary>
         /// <remarks>This is preferred for comparison as it avoids the square root operation.</remarks>
-        public double LengthSquared => X * X + Y * Y + Z * Z;
+        public readonly double LengthSquared => X * X + Y * Y + Z * Z;
 
         /// <summary>The vector with unit length.</summary>
-        public Vector3D Normalised
+        public readonly Vector3D Normalised
         {
             get
             {
@@ -42,7 +42,7 @@ namespace NovaEngine.Maths
         /// <summary>Swizzle the <see cref="X"/>, <see cref="Z"/>, and <see cref="Y"/> components.</summary>
         public Vector3D XZY
         {
-            get => new(X, Z, Y);
+            readonly get => new(X, Z, Y);
             set
             {
                 X = value.X;
@@ -54,7 +54,7 @@ namespace NovaEngine.Maths
         /// <summary>Swizzle the <see cref="Y"/>, <see cref="X"/>, and <see cref="Z"/> components.</summary>
         public Vector3D YXZ
         {
-            get => new(Y, X, Z);
+            readonly get => new(Y, X, Z);
             set
             {
                 Y = value.X;
@@ -66,7 +66,7 @@ namespace NovaEngine.Maths
         /// <summary>Swizzle the <see cref="Y"/>, <see cref="Z"/>, and <see cref="X"/> components.</summary>
         public Vector3D YZX
         {
-            get => new(Y, Z, X);
+            readonly get => new(Y, Z, X);
             set
             {
                 Y = value.X;
@@ -78,7 +78,7 @@ namespace NovaEngine.Maths
         /// <summary>Swizzle the <see cref="Z"/>, <see cref="X"/>, and <see cref="Y"/> components.</summary>
         public Vector3D ZXY
         {
-            get => new(Z, X, Y);
+            readonly get => new(Z, X, Y);
             set
             {
                 Z = value.X;
@@ -90,7 +90,7 @@ namespace NovaEngine.Maths
         /// <summary>Swizzle the <see cref="Z"/>, <see cref="Y"/>, and <see cref="X"/> components.</summary>
         public Vector3D ZYX
         {
-            get => new(Z, Y, X);
+            readonly get => new(Z, Y, X);
             set
             {
                 Z = value.X;
@@ -102,7 +102,7 @@ namespace NovaEngine.Maths
         /// <summary>Swizzle the <see cref="X"/> and <see cref="Y"/> components.</summary>
         public Vector2D XY
         {
-            get => new(X, Y);
+            readonly get => new(X, Y);
             set
             {
                 X = value.X;
@@ -113,7 +113,7 @@ namespace NovaEngine.Maths
         /// <summary>Swizzle the <see cref="Y"/> and <see cref="X"/> components.</summary>
         public Vector2D YX
         {
-            get => new(Y, X);
+            readonly get => new(Y, X);
             set
             {
                 Y = value.X;
@@ -124,7 +124,7 @@ namespace NovaEngine.Maths
         /// <summary>Swizzle the <see cref="X"/> and <see cref="Z"/> components.</summary>
         public Vector2D XZ
         {
-            get => new(X, Z);
+            readonly get => new(X, Z);
             set
             {
                 X = value.X;
@@ -135,7 +135,7 @@ namespace NovaEngine.Maths
         /// <summary>Swizzle the <see cref="Z"/> and <see cref="X"/> components.</summary>
         public Vector2D ZX
         {
-            get => new(Z, X);
+            readonly get => new(Z, X);
             set
             {
                 Z = value.X;
@@ -146,7 +146,7 @@ namespace NovaEngine.Maths
         /// <summary>Swizzle the <see cref="Y"/> and <see cref="Z"/> components.</summary>
         public Vector2D YZ
         {
-            get => new(Y, Z);
+            readonly get => new(Y, Z);
             set
             {
                 Y = value.X;
@@ -157,7 +157,7 @@ namespace NovaEngine.Maths
         /// <summary>Swizzle the <see cref="Z"/> and <see cref="Y"/> components.</summary>
         public Vector2D ZY
         {
-            get => new(Z, Y);
+            readonly get => new(Z, Y);
             set
             {
                 Z = value.X;
@@ -185,7 +185,7 @@ namespace NovaEngine.Maths
         /// <returns>The value at the specified position.</returns>
         public double this[int index]
         {
-            get
+            readonly get
             {
                 if (index == 0)
                     return X;
@@ -236,7 +236,7 @@ namespace NovaEngine.Maths
         /// <summary>Constructs an instance.</summary>
         /// <param name="xy">The X and Y components of the vector.</param>
         /// <param name="z">The Z component of the vector.</param>
-        public Vector3D(Vector2D xy, double z = 0)
+        public Vector3D(in Vector2D xy, double z = 0)
         {
             X = xy.X;
             Y = xy.Y;
@@ -254,88 +254,88 @@ namespace NovaEngine.Maths
 
         /// <summary>Gets the vector as a <see cref="Vector2"/>.</summary>
         /// <returns>The vector as a <see cref="Vector2"/>.</returns>
-        public Vector3 ToVector3() => new((float)X, (float)Y, (float)Z);
+        public readonly Vector3 ToVector3() => new((float)X, (float)Y, (float)Z);
 
         /// <summary>Gets the vector as a <see cref="Vector3I"/> by rounding the components down.</summary>
         /// <returns>The rounded down vector as a <see cref="Vector3I"/>.</returns>
-        public Vector3I ToFlooredVector3I() => new((int)Math.Floor(X), (int)Math.Floor(Y), (int)Math.Floor(Z));
+        public readonly Vector3I ToFlooredVector3I() => new((int)Math.Floor(X), (int)Math.Floor(Y), (int)Math.Floor(Z));
 
         /// <summary>Gets the vector as a <see cref="Vector3I"/> by rounding the components.</summary>
         /// <returns>The rounded vector as a <see cref="Vector3I"/>.</returns>
-        public Vector3I ToRoundedVector3I() => new((int)Math.Round(X), (int)Math.Round(Y), (int)Math.Round(Z));
+        public readonly Vector3I ToRoundedVector3I() => new((int)Math.Round(X), (int)Math.Round(Y), (int)Math.Round(Z));
 
         /// <summary>Gets the vector as a <see cref="Vector3I"/> by rounding the components up.</summary>
         /// <returns>The rounded up vector as a <see cref="Vector32I"/>.</returns>
-        public Vector3I ToCeilingedVector3I() => new((int)Math.Ceiling(X), (int)Math.Ceiling(Y), (int)Math.Ceiling(Z));
+        public readonly Vector3I ToCeilingedVector3I() => new((int)Math.Ceiling(X), (int)Math.Ceiling(Y), (int)Math.Ceiling(Z));
 
         /// <inheritdoc/>
-        public bool Equals(Vector3D other) => this == other;
+        public readonly bool Equals(Vector3D other) => this == other;
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj) => obj is Vector3D vector && this == vector;
+        public readonly override bool Equals(object? obj) => obj is Vector3D vector && this == vector;
 
         /// <inheritdoc/>
-        public override int GetHashCode() => (X, Y, Z).GetHashCode();
+        public readonly override int GetHashCode() => (X, Y, Z).GetHashCode();
 
         /// <inheritdoc/>
-        public override string ToString() => $"<X: {X}, Y: {Y}, Z: {Z}>";
+        public readonly override string ToString() => $"<X: {X}, Y: {Y}, Z: {Z}>";
 
         /// <summary>Calculates the distance between two vectors.</summary>
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>The distance between <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
-        public static double Distance(Vector3D vector1, Vector3D vector2) => Math.Sqrt(Vector3D.DistanceSquared(vector1, vector2));
+        public static double Distance(in Vector3D vector1, in Vector3D vector2) => Math.Sqrt(Vector3D.DistanceSquared(vector1, vector2));
 
         /// <summary>Calculates the sqaured distance between two vectors.</summary>
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>The squared distance between <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
         /// <remarks>This is preferred for comparison as it avoids the square root operation.</remarks>
-        public static double DistanceSquared(Vector3D vector1, Vector3D vector2) => (vector2.X - vector1.X) * (vector2.X - vector1.X) + (vector2.Y - vector1.Y) * (vector2.Y - vector1.Y) + (vector2.Z - vector1.Z) * (vector2.Z - vector1.Z);
+        public static double DistanceSquared(in Vector3D vector1, in Vector3D vector2) => (vector2.X - vector1.X) * (vector2.X - vector1.X) + (vector2.Y - vector1.Y) * (vector2.Y - vector1.Y) + (vector2.Z - vector1.Z) * (vector2.Z - vector1.Z);
 
         /// <summary>Calculates the dot product of two vectors.</summary>
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>The dot product of <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
-        public static double Dot(Vector3D vector1, Vector3D vector2) => vector1.X * vector2.X + vector1.Y * vector2.Y + vector1.Z * vector2.Z;
+        public static double Dot(in Vector3D vector1, in Vector3D vector2) => vector1.X * vector2.X + vector1.Y * vector2.Y + vector1.Z * vector2.Z;
 
         /// <summary>Calculates the cross product of two vectors.</summary>
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>The cross product of <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
-        public static Vector3D Cross(Vector3D vector1, Vector3D vector2) => new(vector1.Y * vector2.Z - vector1.Z * vector2.Y, vector1.Z * vector2.X - vector1.X * vector2.Z, vector1.X * vector2.Y - vector1.Y * vector2.X);
+        public static Vector3D Cross(in Vector3D vector1, in Vector3D vector2) => new(vector1.Y * vector2.Z - vector1.Z * vector2.Y, vector1.Z * vector2.X - vector1.X * vector2.Z, vector1.X * vector2.Y - vector1.Y * vector2.X);
 
         /// <summary>Creates a vector using the smallest of the corresponding components from two vectors.</summary>
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>The component-wise minimum.</returns>
-        public static Vector3D ComponentMin(Vector3D vector1, Vector3D vector2) => new(Math.Min(vector1.X, vector2.X), Math.Min(vector1.Y, vector2.Y), Math.Min(vector1.Z, vector2.Z));
+        public static Vector3D ComponentMin(in Vector3D vector1, in Vector3D vector2) => new(Math.Min(vector1.X, vector2.X), Math.Min(vector1.Y, vector2.Y), Math.Min(vector1.Z, vector2.Z));
 
         /// <summary>Creates a vector using the largest of the corresponding components from two vectors.</summary>
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>The component-wise maximum.</returns>
-        public static Vector3D ComponentMax(Vector3D vector1, Vector3D vector2) => new(Math.Max(vector1.X, vector2.X), Math.Max(vector1.Y, vector2.Y), Math.Max(vector1.Z, vector2.Z));
+        public static Vector3D ComponentMax(in Vector3D vector1, in Vector3D vector2) => new(Math.Max(vector1.X, vector2.X), Math.Max(vector1.Y, vector2.Y), Math.Max(vector1.Z, vector2.Z));
 
         /// <summary>Clamps a vector to the specified minimum and maximum vectors.</summary>
         /// <param name="value">The value to clamp.</param>
         /// <param name="min">The minimum value.</param>
         /// <param name="max">The maximum value.</param>
         /// <returns>The clamped value.</returns>
-        public static Vector3D Clamp(Vector3D value, Vector3D min, Vector3D max) => new(MathsHelper.Clamp(value.X, min.X, max.X), MathsHelper.Clamp(value.Y, min.Y, max.Y), MathsHelper.Clamp(value.Z, min.Z, max.Z));
+        public static Vector3D Clamp(in Vector3D value, in Vector3D min, in Vector3D max) => new(MathsHelper.Clamp(value.X, min.X, max.X), MathsHelper.Clamp(value.Y, min.Y, max.Y), MathsHelper.Clamp(value.Z, min.Z, max.Z));
 
         /// <summary>Linearly interpolates between two values.</summary>
         /// <param name="value1">The source value.</param>
         /// <param name="value2">The destination value.</param>
         /// <param name="amount">The amount to interpolate between <paramref name="value1"/> and <paramref name="value2"/>.</param>
         /// <returns>The interpolated value.</returns>
-        public static Vector3D Lerp(Vector3D value1, Vector3D value2, double amount) => new(MathsHelper.Lerp(value1.X, value2.X, amount), MathsHelper.Lerp(value1.Y, value2.Y, amount), MathsHelper.Lerp(value1.Z, value2.Z, amount));
+        public static Vector3D Lerp(in Vector3D value1, in Vector3D value2, double amount) => new(MathsHelper.Lerp(value1.X, value2.X, amount), MathsHelper.Lerp(value1.Y, value2.Y, amount), MathsHelper.Lerp(value1.Z, value2.Z, amount));
 
         /// <summary>Transforms a vector by a matrix.</summary>
         /// <param name="position">The source position.</param>
         /// <param name="matrix">The transformation matrix.</param>
         /// <returns>The transformed vector.</returns>
-        public static Vector3D Transform(Vector3D position, Matrix4x4D matrix)
+        public static Vector3D Transform(in Vector3D position, in Matrix4x4D matrix)
         {
             return new(
                 x: position.X * matrix.M11 + position.Y * matrix.M21 + position.Z * matrix.M31 + matrix.M41,
@@ -348,7 +348,7 @@ namespace NovaEngine.Maths
         /// <param name="vector">The vector to rotate.</param>
         /// <param name="rotation">The rotation to apply.</param>
         /// <returns>The rotated vector.</returns>
-        public static Vector3D Transform(Vector3D vector, QuaternionD rotation)
+        public static Vector3D Transform(in Vector3D vector, in QuaternionD rotation)
         {
             var x2 = rotation.X + rotation.X;
             var y2 = rotation.Y + rotation.Y;
@@ -375,7 +375,7 @@ namespace NovaEngine.Maths
         /// <param name="normal">The source vector.</param>
         /// <param name="matrix">The transformation matrix.</param>
         /// <returns>The transformed vector.</returns>
-        public static Vector3D TransformNormal(Vector3D normal, Matrix4x4D matrix)
+        public static Vector3D TransformNormal(in Vector3D normal, in Matrix4x4D matrix)
         {
             return new(
                 x: normal.X * matrix.M11 + normal.Y * matrix.M21 + normal.Z * matrix.M31,
