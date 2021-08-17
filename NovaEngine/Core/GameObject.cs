@@ -1,4 +1,5 @@
 ﻿using NovaEngine.Core.Components;
+using NovaEngine.Logging;
 using NovaEngine.Rendering;
 using NovaEngine.Serialisation;
 using System;
@@ -216,23 +217,39 @@ namespace NovaEngine.Core
         /// <summary>Starts the game object.</summary>
         internal void Start()
         {
-            foreach (var component in Components)
-                component.OnStart();
+            // for loops here so the objects can freely edit themselves
+            for (int i = 0; i < Components.Count; i++)
+                try
+                {
+                    Components[i].OnStart();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log($"Component crashed on start. Technical details:\n{ex}", LogSeverity.Error);
+                }
 
-            foreach (var child in Children)
-                child.Start();
+            for (int i = 0; i < Children.Count; i++)
+                Children[i].Start();
         }
 
         /// <summary>Updates the game object.</summary>
         internal void Update()
         {
-            foreach (var component in Components)
-                if (component.IsEnabled)
-                    component.OnUpdate();
+            // for loops here so the objects can freely edit themselves
+            for (int i = 0; i < Components.Count; i++)
+                try
+                {
+                    if (Components[i].IsEnabled)
+                        Components[i].OnUpdate();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log($"Component crashed on update. Technical detailed:\n{ex}", LogSeverity.Error);
+                }
 
-            foreach (var child in Children)
-                if (child.IsEnabled)
-                    child.Update();
+            for (int i = 0; i < Children.Count; i++)
+                if (Children[i].IsEnabled)
+                    Children[i].Update();
         }
 
 
