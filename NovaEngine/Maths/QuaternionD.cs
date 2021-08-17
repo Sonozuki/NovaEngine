@@ -25,17 +25,17 @@ namespace NovaEngine.Maths
         ** Accessors
         *********/
         /// <summary>Whether the quaternion is an identity quaternion.</summary>
-        public bool IsIdentity => this == Identity;
+        public readonly bool IsIdentity => this == Identity;
 
         /// <summary>The length of the quaternion.</summary>
-        public double Length => Math.Sqrt(LengthSquared);
+        public readonly double Length => Math.Sqrt(LengthSquared);
 
         /// <summary>The sqaured length of the quaternion.</summary>
         /// <remarks>This is preferred for comparison as it avoids the square root operation.</remarks>
-        public double LengthSquared => X * X + Y * Y + Z * Z + W * W;
+        public readonly double LengthSquared => X * X + Y * Y + Z * Z + W * W;
 
         /// <summary>The quaternion with unit length.</summary>
-        public QuaternionD Normalised
+        public readonly QuaternionD Normalised
         {
             get
             {
@@ -46,7 +46,7 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>The inverse of the quaternion.</summary>
-        public QuaternionD Inverted
+        public readonly QuaternionD Inverted
         {
             get
             {
@@ -57,7 +57,7 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>The conjugate of the quaternion.</summary>
-        public QuaternionD Conjugate => new(-X, -Y, -Z, W);
+        public readonly QuaternionD Conjugate => new(-X, -Y, -Z, W);
 
         /// <summary>Gets a quaternion with (X, Y, Z, W) = (0, 0, 0, 1), which represents no rotation.</summary>
         public static QuaternionD Identity => new(0, 0, 0, 1);
@@ -67,7 +67,7 @@ namespace NovaEngine.Maths
         /// <returns>The value at the specified position.</returns>
         public double this[int index]
         {
-            get
+            readonly get
             {
                 if (index == 0)
                     return X;
@@ -115,7 +115,7 @@ namespace NovaEngine.Maths
         /// <summary>Constructs an instance.</summary>
         /// <param name="vector">The vector part of the quaternion.</param>
         /// <param name="w">The W component of the quaternion.</param>
-        public QuaternionD(Vector3D vector, double w = 1)
+        public QuaternionD(in Vector3D vector, double w = 1)
         {
             X = vector.X;
             Y = vector.Y;
@@ -125,7 +125,7 @@ namespace NovaEngine.Maths
 
         /// <summary>Constructs an instance.</summary>
         /// <param name="vector">The quaternion components.</param>
-        public QuaternionD(Vector4D vector)
+        public QuaternionD(in Vector4D vector)
         {
             X = vector.X;
             Y = vector.Y;
@@ -172,32 +172,32 @@ namespace NovaEngine.Maths
 
         /// <summary>Gets the quaternion as a <see cref="Quaternion"/>.</summary>
         /// <returns>The quaternion as a <see cref="Quaternion"/>.</returns>
-        public Quaternion ToQuaternion() => new((float)X, (float)Y, (float)Z, (float)W);
+        public readonly Quaternion ToQuaternion() => new((float)X, (float)Y, (float)Z, (float)W);
 
         /// <inheritdoc/>
-        public bool Equals(QuaternionD other) => this == other;
+        public readonly bool Equals(QuaternionD other) => this == other;
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj) => obj is QuaternionD quaternion && this == quaternion;
+        public readonly override bool Equals(object? obj) => obj is QuaternionD quaternion && this == quaternion;
 
         /// <inheritdoc/>
-        public override int GetHashCode() => (X, Y, Z, W).GetHashCode();
+        public readonly override int GetHashCode() => (X, Y, Z, W).GetHashCode();
 
         /// <inheritdoc/>
-        public override string ToString() => $"<X: {X}, Y: {Y}, Z: {Z}, W: {W}>";
+        public readonly override string ToString() => $"<X: {X}, Y: {Y}, Z: {Z}, W: {W}>";
 
         /// <summary>Calculates the dot product of two quaternions.</summary>
         /// <param name="quaternion1">The first quaternion.</param>
         /// <param name="quaternion2">The second quaternion.</param>
         /// <returns>The dot product of <paramref name="quaternion1"/> and <paramref name="quaternion2"/>.</returns>
-        public static double Dot(QuaternionD quaternion1, QuaternionD quaternion2) => quaternion1.X * quaternion2.X + quaternion1.Y * quaternion2.Y + quaternion1.Z * quaternion2.Z + quaternion1.W * quaternion2.W;
+        public static double Dot(in QuaternionD quaternion1, in QuaternionD quaternion2) => quaternion1.X * quaternion2.X + quaternion1.Y * quaternion2.Y + quaternion1.Z * quaternion2.Z + quaternion1.W * quaternion2.W;
 
         /// <summary>Interpolates between two values, using spherical linear interpolation.</summary>
         /// <param name="quaternion1">The source value.</param>
         /// <param name="quaternion2">The destination value.</param>
         /// <param name="amount">The amount to interpolate between <paramref name="value1"/> and <paramref name="value2"/>.</param>
         /// <returns>The interpolated value.</returns>
-        public static QuaternionD Slerp(QuaternionD quaternion1, QuaternionD quaternion2, double amount)
+        public static QuaternionD Slerp(in QuaternionD quaternion1, in QuaternionD quaternion2, double amount)
         {
             // if either quaternion is zero, return the other
             if (quaternion1.LengthSquared == 0)
@@ -251,7 +251,7 @@ namespace NovaEngine.Maths
         /// <param name="axis">The axis to rotate around.</param>
         /// <param name="angle">The angle, in degrees, to rotate around the axis.</param>
         /// <returns>The created quaternion.</returns>
-        public static QuaternionD CreateFromAxisAngle(Vector3D axis, double angle)
+        public static QuaternionD CreateFromAxisAngle(in Vector3D axis, double angle)
         {
             // validate axis
             if (axis.LengthSquared == 0)
@@ -274,7 +274,7 @@ namespace NovaEngine.Maths
         /// <summary>Creates a quaternion from euler angles.</summary>
         /// <param name="eulerAngles">The euler angles, in degrees.</param>
         /// <returns>The created quaternion.</returns>
-        public static QuaternionD CreateFromEulerAngles(Vector3D eulerAngles) => QuaternionD.CreateFromEulerAngles(eulerAngles.X, eulerAngles.Y, eulerAngles.Z);
+        public static QuaternionD CreateFromEulerAngles(in Vector3D eulerAngles) => QuaternionD.CreateFromEulerAngles(eulerAngles.X, eulerAngles.Y, eulerAngles.Z);
 
         /// <summary>Creates a quaternion from euler angles.</summary>
         /// <param name="x">The angle, in degrees, around the X axis.</param>
