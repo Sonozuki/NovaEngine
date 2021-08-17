@@ -31,12 +31,12 @@ namespace NovaEngine.Maths
         ** Accessors
         *********/
         /// <summary>The trace of the matrix (the sum of the values along the diagonal).</summary>
-        public double Trace => M11 + M22;
+        public readonly double Trace => M11 + M22;
 
         /// <summary>The diagonal of the matrix.</summary>
         public Vector2D Diagonal
         {
-            get => new(M11, M22);
+            readonly get => new(M11, M22);
             set
             {
                 M11 = value.X;
@@ -45,12 +45,12 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>The transposed matrix.</summary>
-        public Matrix2x3D Transposed => new(M11, M21, M31, M21, M22, M32);
+        public readonly Matrix2x3D Transposed => new(M11, M21, M31, M21, M22, M32);
 
         /// <summary>The first row of the matrix.</summary>
         public Vector2D Row1
         {
-            get => new(M11, M12);
+            readonly get => new(M11, M12);
             set
             {
                 M11 = value.X;
@@ -61,7 +61,7 @@ namespace NovaEngine.Maths
         /// <summary>The second row of the matrix.</summary>
         public Vector2D Row2
         {
-            get => new(M21, M22);
+            readonly get => new(M21, M22);
             set
             {
                 M21 = value.X;
@@ -72,7 +72,7 @@ namespace NovaEngine.Maths
         /// <summary>The third row of the matrix.</summary>
         public Vector2D Row3
         {
-            get => new(M31, M32);
+            readonly get => new(M31, M32);
             set
             {
                 M31 = value.X;
@@ -83,7 +83,7 @@ namespace NovaEngine.Maths
         /// <summary>The first column of the matrix.</summary>
         public Vector3D Column1
         {
-            get => new(M11, M21, M31);
+            readonly get => new(M11, M21, M31);
             set
             {
                 M11 = value.X;
@@ -95,7 +95,7 @@ namespace NovaEngine.Maths
         /// <summary>The second column of the matrix.</summary>
         public Vector3D Column2
         {
-            get => new(M12, M22, M32);
+            readonly get => new(M12, M22, M32);
             set
             {
                 M12 = value.X;
@@ -112,7 +112,7 @@ namespace NovaEngine.Maths
         /// <returns>The value at the specified position.</returns>
         public double this[int index]
         {
-            get
+            readonly get
             {
                 if (index < 0 || index > 5)
                     throw new IndexOutOfRangeException($"{nameof(index)} must be between 0 => 5 (inclusive)");
@@ -150,7 +150,7 @@ namespace NovaEngine.Maths
         /// <returns>The value at the specified position.</returns>
         public double this[int rowIndex, int columnIndex]
         {
-            get
+            readonly get
             {
                 if (rowIndex < 0 || rowIndex > 2)
                     throw new IndexOutOfRangeException($"{nameof(rowIndex)} must be between 0 => 2 (inclusive)");
@@ -223,7 +223,7 @@ namespace NovaEngine.Maths
         /// <param name="row1">The first row of the matrix.</param>
         /// <param name="row2">The second row of the matrix.</param>
         /// <param name="row3">The third row of the matrix.</param>
-        public Matrix3x2D(Vector2D row1, Vector2D row2, Vector2D row3)
+        public Matrix3x2D(in Vector2D row1, in Vector2D row2, in Vector2D row3)
         {
             M11 = row1.X;
             M12 = row1.Y;
@@ -237,7 +237,7 @@ namespace NovaEngine.Maths
         /// <param name="matrix">The top left 2x2 matrix.</param>
         /// <param name="m31">The first element of the third row.</param>
         /// <param name="m32">The second element of the third row.</param>
-        public Matrix3x2D(Matrix2x2D matrix, double m31 = 0, double m32 = 0)
+        public Matrix3x2D(in Matrix2x2D matrix, double m31 = 0, double m32 = 0)
         {
             M11 = matrix.M11;
             M12 = matrix.M12;
@@ -249,19 +249,19 @@ namespace NovaEngine.Maths
 
         /// <summary>Gets the matrix as a <see cref="Matrix3x2"/>.</summary>
         /// <returns>The matrix as a <see cref="Matrix3x2"/>.</returns>
-        public Matrix3x2 ToMatrix3x2() => new((float)M11, (float)M12, (float)M21, (float)M22, (float)M31, (float)M32);
+        public readonly Matrix3x2 ToMatrix3x2() => new((float)M11, (float)M12, (float)M21, (float)M22, (float)M31, (float)M32);
 
         /// <inheritdoc/>
-        public bool Equals(Matrix3x2D other) => this == other;
+        public readonly bool Equals(Matrix3x2D other) => this == other;
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj) => obj is Matrix3x2D matrix && this == matrix;
+        public readonly override bool Equals(object? obj) => obj is Matrix3x2D matrix && this == matrix;
 
         /// <inheritdoc/>
-        public override int GetHashCode() => (M11, M12, M21, M22, M31, M32).GetHashCode();
+        public readonly override int GetHashCode() => (M11, M12, M21, M22, M31, M32).GetHashCode();
 
         /// <inheritdoc/>
-        public override string ToString() => $"<M11: {M11}, M12: {M12}, M21: {M21}, M22: {M22}, M31: {M31}, M32: {M32}>";
+        public readonly override string ToString() => $"<M11: {M11}, M12: {M12}, M21: {M21}, M22: {M22}, M31: {M31}, M32: {M32}>";
 
         /// <summary>Creates a rotation matrix.</summary>
         /// <param name="angle">The anti-clockwise angle, in degrees.</param>

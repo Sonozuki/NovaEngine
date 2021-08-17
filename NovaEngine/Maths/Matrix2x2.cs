@@ -25,18 +25,18 @@ namespace NovaEngine.Maths
         ** Accessors
         *********/
         /// <summary>Whether the matrix is an identity matrix.</summary>
-        public bool IsIdentity => this == Identity;
+        public readonly bool IsIdentity => this == Identity;
 
         /// <summary>The determinant of the matrix.</summary>
-        public float Determinant => M11 * M22 - M12 * M21;
+        public readonly float Determinant => M11 * M22 - M12 * M21;
 
         /// <summary>The trace of the matrix (the sum of the values along the diagonal).</summary>
-        public float Trace => M11 + M22;
+        public readonly float Trace => M11 + M22;
 
         /// <summary>The diagonal of the matrix.</summary>
         public Vector2 Diagonal
         {
-            get => new(M11, M22);
+            readonly get => new(M11, M22);
             set
             {
                 M11 = value.X;
@@ -45,7 +45,7 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>The transposed matrix.</summary>
-        public Matrix2x2 Transposed
+        public readonly Matrix2x2 Transposed
         {
             get
             {
@@ -56,7 +56,7 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>The inverse of the matrix.</summary>
-        public Matrix2x2 Inverted
+        public readonly Matrix2x2 Inverted
         {
             get
             {
@@ -69,7 +69,7 @@ namespace NovaEngine.Maths
         /// <summary>The first row of the matrix.</summary>
         public Vector2 Row1
         {
-            get => new(M11, M12);
+            readonly get => new(M11, M12);
             set
             {
                 M11 = value.X;
@@ -80,7 +80,7 @@ namespace NovaEngine.Maths
         /// <summary>The second row of the matrix.</summary>
         public Vector2 Row2
         {
-            get => new(M21, M22);
+            readonly get => new(M21, M22);
             set
             {
                 M21 = value.X;
@@ -91,7 +91,7 @@ namespace NovaEngine.Maths
         /// <summary>The first column of the matrix.</summary>
         public Vector2 Column1
         {
-            get => new(M11, M21);
+            readonly get => new(M11, M21);
             set
             {
                 M11 = value.X;
@@ -102,7 +102,7 @@ namespace NovaEngine.Maths
         /// <summary>The second column of the matrix.</summary>
         public Vector2 Column2
         {
-            get => new(M12, M22);
+            readonly get => new(M12, M22);
             set
             {
                 M12 = value.X;
@@ -121,7 +121,7 @@ namespace NovaEngine.Maths
         /// <returns>The value at the specified position.</returns>
         public float this[int index]
         {
-            get
+            readonly get
             {
                 if (index < 0 || index > 3)
                     throw new IndexOutOfRangeException($"{nameof(index)} must be between 0 => 3 (inclusive)");
@@ -155,7 +155,7 @@ namespace NovaEngine.Maths
         /// <returns>The value at the specified position.</returns>
         public float this[int rowIndex, int columnIndex]
         {
-            get
+            readonly get
             {
                 if (rowIndex < 0 || rowIndex > 1)
                     throw new IndexOutOfRangeException($"{nameof(rowIndex)} must be between 0 => 1 (inclusive)");
@@ -217,7 +217,7 @@ namespace NovaEngine.Maths
         /// <summary>Constructs an instance.</summary>
         /// <param name="row1">The first row of the matrix.</param>
         /// <param name="row2">The second row of the matrix.</param>
-        public Matrix2x2(Vector2 row1, Vector2 row2)
+        public Matrix2x2(in Vector2 row1, in Vector2 row2)
         {
             M11 = row1.X;
             M12 = row1.Y;
@@ -249,19 +249,19 @@ namespace NovaEngine.Maths
 
         /// <summary>Gets the matrix as a <see cref="Matrix2x2D"/>.</summary>
         /// <returns>The matrix as a <see cref="Matrix2x2D"/>.</returns>
-        public Matrix2x2D ToMatrix2x2D() => new(M11, M12, M21, M22);
+        public readonly Matrix2x2D ToMatrix2x2D() => new(M11, M12, M21, M22);
 
         /// <inheritdoc/>
-        public bool Equals(Matrix2x2 other) => this == other;
+        public readonly bool Equals(Matrix2x2 other) => this == other;
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj) => obj is Matrix2x2 matrix && this == matrix;
+        public readonly override bool Equals(object? obj) => obj is Matrix2x2 matrix && this == matrix;
 
         /// <inheritdoc/>
-        public override int GetHashCode() => (M11, M12, M21, M22).GetHashCode();
+        public readonly override int GetHashCode() => (M11, M12, M21, M22).GetHashCode();
 
         /// <inheritdoc/>
-        public override string ToString() => $"<M11: {M11}, M12: {M12}, M21: {M21}, M22: {M22}>";
+        public readonly override string ToString() => $"<M11: {M11}, M12: {M12}, M21: {M21}, M22: {M22}>";
 
 
         /*********

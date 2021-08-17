@@ -37,12 +37,12 @@ namespace NovaEngine.Maths
         ** Accessors
         *********/
         /// <summary>The trace of the matrix (the sum of the values along the diagonal).</summary>
-        public double Trace => M11 + M22;
+        public readonly double Trace => M11 + M22;
 
         /// <summary>The diagonal of the matrix.</summary>
         public Vector2D Diagonal
         {
-            get => new(M11, M22);
+            readonly get => new(M11, M22);
             set
             {
                 M11 = value.X;
@@ -51,12 +51,12 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>The transposed matrix.</summary>
-        public Matrix4x2D Transposed => new(M11, M21, M12, M22, M13, M23, M14, M24);
+        public readonly Matrix4x2D Transposed => new(M11, M21, M12, M22, M13, M23, M14, M24);
 
         /// <summary>The first row of the matrix.</summary>
         public Vector4D Row1
         {
-            get => new(M11, M12, M13, M14);
+            readonly get => new(M11, M12, M13, M14);
             set
             {
                 M11 = value.X;
@@ -69,7 +69,7 @@ namespace NovaEngine.Maths
         /// <summary>The second row of the matrix.</summary>
         public Vector4D Row2
         {
-            get => new(M21, M22, M23, M24);
+            readonly get => new(M21, M22, M23, M24);
             set
             {
                 M21 = value.X;
@@ -82,7 +82,7 @@ namespace NovaEngine.Maths
         /// <summary>The first column of the matrix.</summary>
         public Vector2D Column1
         {
-            get => new(M11, M21);
+            readonly get => new(M11, M21);
             set
             {
                 M11 = value.X;
@@ -93,7 +93,7 @@ namespace NovaEngine.Maths
         /// <summary>The second column of the matrix.</summary>
         public Vector2D Column2
         {
-            get => new(M12, M22);
+            readonly get => new(M12, M22);
             set
             {
                 M12 = value.X;
@@ -104,7 +104,7 @@ namespace NovaEngine.Maths
         /// <summary>The third column of the matrix.</summary>
         public Vector2D Column3
         {
-            get => new(M13, M23);
+            readonly get => new(M13, M23);
             set
             {
                 M13 = value.X;
@@ -115,7 +115,7 @@ namespace NovaEngine.Maths
         /// <summary>The fourth column of the matrix.</summary>
         public Vector2D Column4
         {
-            get => new(M14, M24);
+            readonly get => new(M14, M24);
             set
             {
                 M14 = value.X;
@@ -131,7 +131,7 @@ namespace NovaEngine.Maths
         /// <returns>The value at the specified position.</returns>
         public double this[int index]
         {
-            get
+            readonly get
             {
                 if (index < 0 || index > 7)
                     throw new IndexOutOfRangeException($"{nameof(index)} must be between 0 => 7 (inclusive)");
@@ -173,7 +173,7 @@ namespace NovaEngine.Maths
         /// <returns>The value at the specified position.</returns>
         public double this[int rowIndex, int columnIndex]
         {
-            get
+            readonly get
             {
                 if (rowIndex < 0 || rowIndex > 1)
                     throw new IndexOutOfRangeException($"{nameof(rowIndex)} must be between 0 => 1 (inclusive)");
@@ -255,7 +255,7 @@ namespace NovaEngine.Maths
         /// <summary>Constructs an instance.</summary>
         /// <param name="row1">The first row of the matrix.</param>
         /// <param name="row2">The second row of the matrix.</param>
-        public Matrix2x4D(Vector4D row1, Vector4D row2)
+        public Matrix2x4D(in Vector4D row1, in Vector4D row2)
         {
             M11 = row1.X;
             M12 = row1.Y;
@@ -273,7 +273,7 @@ namespace NovaEngine.Maths
         /// <param name="m14">The fourth element of the first row.</param>
         /// <param name="m23">The third element of the second row.</param>
         /// <param name="m24">The fourth element of the second row.</param>
-        public Matrix2x4D(Matrix2x2D matrix, double m13 = 0, double m14 = 0, double m23 = 0, double m24 = 0)
+        public Matrix2x4D(in Matrix2x2D matrix, double m13 = 0, double m14 = 0, double m23 = 0, double m24 = 0)
         {
             M11 = matrix.M11;
             M12 = matrix.M12;
@@ -289,7 +289,7 @@ namespace NovaEngine.Maths
         /// <param name="matrix">The top left 2x3 matrix.</param>
         /// <param name="m14">The fourth element of the first row.</param>
         /// <param name="m24">The fourth element of the second row.</param>
-        public Matrix2x4D(Matrix2x3D matrix, double m14 = 0, double m24 = 0)
+        public Matrix2x4D(in Matrix2x3D matrix, double m14 = 0, double m24 = 0)
         {
             M11 = matrix.M11;
             M12 = matrix.M12;
@@ -303,19 +303,19 @@ namespace NovaEngine.Maths
 
         /// <summary>Gets the matrix as a <see cref="Matrix2x4"/>.</summary>
         /// <returns>The matrix as a <see cref="Matrix2x4"/>.</returns>
-        public Matrix2x4 ToMatrix2x4() => new((float)M11, (float)M12, (float)M13, (float)M14, (float)M21, (float)M22, (float)M23, (float)M24);
+        public readonly Matrix2x4 ToMatrix2x4() => new((float)M11, (float)M12, (float)M13, (float)M14, (float)M21, (float)M22, (float)M23, (float)M24);
 
         /// <inheritdoc/>
-        public bool Equals(Matrix2x4D other) => this == other;
+        public readonly bool Equals(Matrix2x4D other) => this == other;
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj) => obj is Matrix2x4D matrix && this == matrix;
+        public readonly override bool Equals(object? obj) => obj is Matrix2x4D matrix && this == matrix;
 
         /// <inheritdoc/>
-        public override int GetHashCode() => (M11, M12, M13, M14, M21, M22, M23, M24).GetHashCode();
+        public readonly override int GetHashCode() => (M11, M12, M13, M14, M21, M22, M23, M24).GetHashCode();
 
         /// <inheritdoc/>
-        public override string ToString() => $"<M11: {M11}, M12: {M12}, M13: {M13}, M14: {M14}, M21: {M21}, M22: {M22}, M23: {M23}, M24: {M24}>";
+        public readonly override string ToString() => $"<M11: {M11}, M12: {M12}, M13: {M13}, M14: {M14}, M21: {M21}, M22: {M22}, M23: {M23}, M24: {M24}>";
 
         /// <summary>Creates a rotation matrix.</summary>
         /// <param name="angle">The anti-clockwise angle, in degrees.</param>

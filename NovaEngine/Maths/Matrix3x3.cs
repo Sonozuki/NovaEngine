@@ -40,19 +40,19 @@ namespace NovaEngine.Maths
         ** Accessors
         *********/
         /// <summary>Whether the matrix is an identity matrix.</summary>
-        public bool IsIdentity => this == Identity;
+        public readonly bool IsIdentity => this == Identity;
 
         /// <summary>The determinant of the matrix.</summary>
-        public float Determinant => M11 * M22 * M33 + M12 * M23 * M31 + M13 * M21 * M32
+        public readonly float Determinant => M11 * M22 * M33 + M12 * M23 * M31 + M13 * M21 * M32
                                   - M13 * M22 * M31 - M11 * M23 * M32 - M12 * M21 * M33;
 
         /// <summary>The trace of the matrix (the sum of the values along the diagonal).</summary>
-        public float Trace => M11 + M22 + M33;
+        public readonly float Trace => M11 + M22 + M33;
 
         /// <summary>The diagonal of the matrix.</summary>
         public Vector3 Diagonal
         {
-            get => new(M11, M22, M33);
+            readonly get => new(M11, M22, M33);
             set
             {
                 M11 = value.X;
@@ -62,7 +62,7 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>The transposed matrix.</summary>
-        public Matrix3x3 Transposed
+        public readonly Matrix3x3 Transposed
         {
             get
             {
@@ -73,7 +73,7 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>The inverse of the matrix.</summary>
-        public Matrix3x3 Inverse
+        public readonly Matrix3x3 Inverse
         {
             get
             {
@@ -84,7 +84,7 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>The matrix without the rotation.</summary>
-        public Matrix3x3 RotationRemoved
+        public readonly Matrix3x3 RotationRemoved
         {
             get
             {
@@ -95,7 +95,7 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>The matrix without the scale.</summary>
-        public Matrix3x3 ScaleRemoved
+        public readonly Matrix3x3 ScaleRemoved
         {
             get
             {
@@ -106,7 +106,7 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>The rotation of the matrix.</summary>
-        public Quaternion Rotation
+        public readonly Quaternion Rotation
         {
             get
             {
@@ -152,12 +152,12 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>The scale of the matrix.</summary>
-        public Vector3 Scale => new(Row1.Length, Row2.Length, Row3.Length);
+        public readonly Vector3 Scale => new(Row1.Length, Row2.Length, Row3.Length);
 
         /// <summary>The first row of the matrix.</summary>
         public Vector3 Row1
         {
-            get => new(M11, M12, M13);
+            readonly get => new(M11, M12, M13);
             set
             {
                 M11 = value.X;
@@ -169,7 +169,7 @@ namespace NovaEngine.Maths
         /// <summary>The second row of the matrix.</summary>
         public Vector3 Row2
         {
-            get => new(M21, M22, M23);
+            readonly get => new(M21, M22, M23);
             set
             {
                 M21 = value.X;
@@ -181,7 +181,7 @@ namespace NovaEngine.Maths
         /// <summary>The third row of the matrix.</summary>
         public Vector3 Row3
         {
-            get => new(M31, M32, M33);
+            readonly get => new(M31, M32, M33);
             set
             {
                 M31 = value.X;
@@ -193,7 +193,7 @@ namespace NovaEngine.Maths
         /// <summary>The first column of the matrix.</summary>
         public Vector3 Column1
         {
-            get => new(M11, M21, M31);
+            readonly get => new(M11, M21, M31);
             set
             {
                 M11 = value.X;
@@ -205,7 +205,7 @@ namespace NovaEngine.Maths
         /// <summary>The second column of the matrix.</summary>
         public Vector3 Column2
         {
-            get => new(M12, M22, M32);
+            readonly get => new(M12, M22, M32);
             set
             {
                 M12 = value.X;
@@ -217,7 +217,7 @@ namespace NovaEngine.Maths
         /// <summary>The third column of the matrix.</summary>
         public Vector3 Column3
         {
-            get => new(M13, M23, M33);
+            readonly get => new(M13, M23, M33);
             set
             {
                 M13 = value.X;
@@ -237,7 +237,7 @@ namespace NovaEngine.Maths
         /// <returns>The value at the specified position.</returns>
         public float this[int index]
         {
-            get
+            readonly get
             {
                 if (index < 0 || index > 8)
                     throw new IndexOutOfRangeException($"{nameof(index)} must be between 0 => 8 (inclusive)");
@@ -281,7 +281,7 @@ namespace NovaEngine.Maths
         /// <returns>The value at the specified position.</returns>
         public float this[int rowIndex, int columnIndex]
         {
-            get
+            readonly get
             {
                 if (rowIndex < 0 || rowIndex > 2)
                     throw new IndexOutOfRangeException($"{nameof(rowIndex)} must be between 0 => 2 (inclusive)");
@@ -369,7 +369,7 @@ namespace NovaEngine.Maths
         /// <param name="row1">The first row of the matrix.</param>
         /// <param name="row2">The second row of the matrix.</param>
         /// <param name="row3">The third row of the matrix.</param>
-        public Matrix3x3(Vector3 row1, Vector3 row2, Vector3 row3)
+        public Matrix3x3(in Vector3 row1, in Vector3 row2, in Vector3 row3)
         {
             M11 = row1.X;
             M12 = row1.Y;
@@ -389,7 +389,7 @@ namespace NovaEngine.Maths
         /// <param name="m31">The first element of the third row.</param>
         /// <param name="m32">The second element of the third row.</param>
         /// <param name="m33">The third element of the third row.</param>
-        public Matrix3x3(Matrix2x2 matrix, float m13 = 0, float m23 = 0, float m31 = 0, float m32 = 0, float m33 = 1)
+        public Matrix3x3(in Matrix2x2 matrix, float m13 = 0, float m23 = 0, float m31 = 0, float m32 = 0, float m33 = 1)
         {
             M11 = matrix.M11;
             M12 = matrix.M12;
@@ -407,7 +407,7 @@ namespace NovaEngine.Maths
         /// <param name="m31">The first element of the third row.</param>
         /// <param name="m32">The second element of the third row.</param>
         /// <param name="m33">The third element of the third row.</param>
-        public Matrix3x3(Matrix2x3 matrix, float m31 = 0, float m32 = 0, float m33 = 1)
+        public Matrix3x3(in Matrix2x3 matrix, float m31 = 0, float m32 = 0, float m33 = 1)
         {
             M11 = matrix.M11;
             M12 = matrix.M12;
@@ -425,7 +425,7 @@ namespace NovaEngine.Maths
         /// <param name="m13">The third element of the first row.</param>
         /// <param name="m23">The third element of the second row.</param>
         /// <param name="m33">The third element of the third row.</param>
-        public Matrix3x3(Matrix3x2 matrix, float m13 = 0, float m23 = 0, float m33 = 1)
+        public Matrix3x3(in Matrix3x2 matrix, float m13 = 0, float m23 = 0, float m33 = 1)
         {
             M11 = matrix.M11;
             M12 = matrix.M12;
@@ -501,19 +501,19 @@ namespace NovaEngine.Maths
 
         /// <summary>Gets the matrix as a <see cref="Matrix3x3D"/>.</summary>
         /// <returns>The matrix as a <see cref="Matrix3x3D"/>.</returns>
-        public Matrix3x3D ToMatrix3x3D() => new(M11, M12, M13, M21, M22, M23, M31, M32, M33);
+        public readonly Matrix3x3D ToMatrix3x3D() => new(M11, M12, M13, M21, M22, M23, M31, M32, M33);
 
         /// <inheritdoc/>
-        public bool Equals(Matrix3x3 other) => this == other;
+        public readonly bool Equals(Matrix3x3 other) => this == other;
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj) => obj is Matrix3x3 matrix && this == matrix;
+        public readonly override bool Equals(object? obj) => obj is Matrix3x3 matrix && this == matrix;
 
         /// <inheritdoc/>
-        public override int GetHashCode() => (M11, M12, M13, M21, M22, M23, M31, M32, M33).GetHashCode();
+        public readonly override int GetHashCode() => (M11, M12, M13, M21, M22, M23, M31, M32, M33).GetHashCode();
 
         /// <inheritdoc/>
-        public override string ToString() => $"<M11: {M11}, M12: {M12}, M13: {M13}, M21: {M21}, M22: {M22}, M23: {M23}, M31: {M31}, M32: {M32}, M33: {M33}>";
+        public readonly override string ToString() => $"<M11: {M11}, M12: {M12}, M13: {M13}, M21: {M21}, M22: {M22}, M23: {M23}, M31: {M31}, M32: {M32}, M33: {M33}>";
 
         /// <summary>Creates a rotation matrix from an axis and an angle.</summary>
         /// <param name="axis">The axis to rotate around.</param>
