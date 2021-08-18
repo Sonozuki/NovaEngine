@@ -3,7 +3,7 @@ using System;
 
 namespace NovaEngine.Core.Components
 {
-    /// <summary>Represents a 'camera'.</summary>
+    /// <summary>Represents a camera.</summary>
     public class Camera : ComponentBase
     {
         /*********
