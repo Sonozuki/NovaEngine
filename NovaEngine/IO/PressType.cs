@@ -1,10 +1,13 @@
 ﻿namespace NovaEngine.IO
 {
     /// <summary>The type of press for input events.</summary>
-    public enum PressType // TODO: add a double press
+    public enum PressType
     {
         /// <summary>The event will be invoked the tick a button is pressed.</summary>
         Press,
+
+        /// <summary>The event will be invoked the tick a button is pressed twice concurrently.</summary>
+        DoublePress,
 
         /// <summary>The event will be invoked the tick a button is released.</summary>
         Release,
