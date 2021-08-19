@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31025.194
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31606.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NovaEngine", "NovaEngine\NovaEngine.csproj", "{C218B284-18B4-4000-9B3D-30AE21DB1981}"
 EndProject
@@ -13,7 +13,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Renderers", "Renderers", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NovaEngine.Renderer.Vulkan", "NovaEngine.Renderer.Vulkan\NovaEngine.Renderer.Vulkan.csproj", "{7FF94E8D-3C82-466A-B87E-CA60C515B4C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaEngine.Tests", "NovaEngine.Tests\NovaEngine.Tests.csproj", "{74CF1B79-4C8F-4A81-9BE2-17A5F914AC85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NovaEngine.Tests", "NovaEngine.Tests\NovaEngine.Tests.csproj", "{74CF1B79-4C8F-4A81-9BE2-17A5F914AC85}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InputHandlers", "InputHandlers", "{F701256F-3A98-40E8-AB55-ACE2CD370D1B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaEngine.Input.RawWindows", "NovaEngine.Input.RawWindows\NovaEngine.Input.RawWindows.csproj", "{F6901FE1-99C4-4894-B614-15AF9C98C1B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +41,10 @@ Global
 		{74CF1B79-4C8F-4A81-9BE2-17A5F914AC85}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74CF1B79-4C8F-4A81-9BE2-17A5F914AC85}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74CF1B79-4C8F-4A81-9BE2-17A5F914AC85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6901FE1-99C4-4894-B614-15AF9C98C1B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6901FE1-99C4-4894-B614-15AF9C98C1B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6901FE1-99C4-4894-B614-15AF9C98C1B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6901FE1-99C4-4894-B614-15AF9C98C1B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +52,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{3BCFDBBA-1024-4085-9CA7-6C22F72D9897} = {892C2AD6-81E2-4427-A6AA-30763A5562C9}
 		{7FF94E8D-3C82-466A-B87E-CA60C515B4C4} = {44C1471E-EC53-4AA3-B48C-B1B258FD63E4}
+		{F6901FE1-99C4-4894-B614-15AF9C98C1B8} = {F701256F-3A98-40E8-AB55-ACE2CD370D1B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FB5216DF-1DDA-4736-9880-BC678B5892FB}
