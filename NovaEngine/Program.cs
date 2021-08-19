@@ -74,8 +74,6 @@ namespace NovaEngine
                 {
                     while (!MainWindow!.HasClosed)
                     {
-                        Input.Update();
-
                         RendererManager.CurrentRenderer.OnRenderFrame();
 
                         MainWindow.ProcessEvents();
