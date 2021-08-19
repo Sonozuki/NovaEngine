@@ -1,5 +1,6 @@
-﻿using NovaEngine.Maths;
-using NovaEngine.Windowing.Events;
+﻿using NovaEngine.External.Platform;
+using NovaEngine.Maths;
+using NovaEngine.Windowing;
 using System;
 
 namespace NovaEngine.Platform.Fake

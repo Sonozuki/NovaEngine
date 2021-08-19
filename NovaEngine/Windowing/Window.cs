@@ -1,6 +1,6 @@
-﻿using NovaEngine.Maths;
+﻿using NovaEngine.External.Platform;
+using NovaEngine.Maths;
 using NovaEngine.Platform;
-using NovaEngine.Windowing.Events;
 using System;
 
 namespace NovaEngine.Windowing

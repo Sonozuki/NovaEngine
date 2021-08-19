@@ -1,6 +1,5 @@
 ﻿using NovaEngine.Content;
 using NovaEngine.Rendering;
-using System.IO;
 
 namespace NovaEngine.Graphics
 {

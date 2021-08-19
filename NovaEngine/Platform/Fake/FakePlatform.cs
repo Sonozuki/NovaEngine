@@ -1,4 +1,5 @@
-﻿using NovaEngine.Maths;
+﻿using NovaEngine.External.Platform;
+using NovaEngine.Maths;
 
 namespace NovaEngine.Platform.Fake
 {

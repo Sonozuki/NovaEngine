@@ -1,7 +1,8 @@
-﻿using NovaEngine.Logging;
+﻿using NovaEngine.External.Platform;
+using NovaEngine.Logging;
 using NovaEngine.Maths;
 using NovaEngine.Platform.Windows.Api;
-using NovaEngine.Windowing.Events;
+using NovaEngine.Windowing;
 using System;
 
 namespace NovaEngine.Platform.Windows.Windowing

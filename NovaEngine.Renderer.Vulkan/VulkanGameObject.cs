@@ -1,5 +1,6 @@
 ﻿using NovaEngine.Core;
 using NovaEngine.Core.Components;
+using NovaEngine.External.Rendering;
 using NovaEngine.Graphics;
 using NovaEngine.Maths;
 using NovaEngine.Rendering;

@@ -1,6 +1,6 @@
 ﻿using NovaEngine.Maths;
 
-namespace NovaEngine.Platform
+namespace NovaEngine.External.Platform
 {
     /// <summary>Represents a platform.</summary>
     public interface IPlatform
@@ -20,9 +20,5 @@ namespace NovaEngine.Platform
         /// <param name="size">The size of the window.</param>
         /// <returns>A platform specific window.</returns>
         public PlatformWindowBase CreatePlatformWindow(string title, Size size);
-
-        /// <summary>Retrieves the position of the mouse cursor, relative to the window.</summary>
-        /// <returns>The current position of the mouse cursor, relative to the window.</returns>
-        public Vector2I GetCursorPosition();
     }
 }

@@ -2,7 +2,7 @@
 using System;
 using System.Reflection;
 
-namespace NovaEngine.Rendering
+namespace NovaEngine.External.Rendering
 {
     /// <summary>Represents a renderer texture.</summary>
     public abstract class RendererTextureBase : IDisposable
@@ -15,44 +15,44 @@ namespace NovaEngine.Rendering
 
         /// <summary>The width of the texture.</summary>
         public uint Width { get; }
-        
+
         /// <summary>The height of the texture.</summary>
         public uint Height { get; }
-        
+
         /// <summary>The depth of the texture.</summary>
         public uint Depth { get; }
-        
+
         /// <summary>The mip LOD (level of detail) bias of the texture.</summary>
         public float MipLodBias { get; }
-        
+
         /// <summary>Whether the texture has anisotropic filtering enabled.</summary>
         public bool AnisotropicFilteringEnabled { get; }
-        
+
         /// <summary>The max anisotropic filtering level of the texture.</summary>
         public float MaxAnisotropicFilteringLevel { get; }
-        
+
         /// <summary>The number of mip levels the texture has.</summary>
         public uint MipLevels
         {
-            get => this.BaseTexture.MipLevels;
-            set => typeof(TextureBase).GetField("_MipLevels", BindingFlags.NonPublic | BindingFlags.Instance)!.SetValue(this.BaseTexture, value);
+            get => BaseTexture.MipLevels;
+            set => typeof(TextureBase).GetField("_MipLevels", BindingFlags.NonPublic | BindingFlags.Instance)!.SetValue(BaseTexture, value);
         }
-        
+
         /// <summary>The number of layers the texture has.</summary>
         public uint LayerCount { get; }
-        
+
         /// <summary>The usage of the texture.</summary>
         public TextureUsage Usage { get; }
-        
+
         /// <summary>The type of the texture.</summary>
         public TextureType Type { get; }
-        
+
         /// <summary>The texture wrap mode of the U axis.</summary>
         public TextureWrapMode WrapModeU { get; }
-        
+
         /// <summary>The texture wrap mode of the V axis.</summary>
         public TextureWrapMode WrapModeV { get; }
-        
+
         /// <summary>The texture wrap mode of the W axis.</summary>
         public TextureWrapMode WrapModeW { get; }
 
@@ -67,18 +67,18 @@ namespace NovaEngine.Rendering
             BaseTexture = baseTexture;
 
             // fill in convenience properties. reflection is used instead of changing the accessibility as exposing these would lead to rather confusing Texture types (for example, having a '_Height' and 'Height' members, both of which would be public).
-            Width = this.BaseTexture.Width;
-            Height = (uint?)typeof(TextureBase).GetField("_Height", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(this.BaseTexture) ?? throw new MissingMemberException("Couldn't find '_Height' field.");
-            Depth = (uint?)typeof(TextureBase).GetField("_Depth", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(this.BaseTexture) ?? throw new MissingMemberException("Couldn't find '_Depth' field.");
-            MipLodBias = this.BaseTexture.MipLodBias;
-            AnisotropicFilteringEnabled = this.BaseTexture.AnisotropicFilteringEnabled;
-            MaxAnisotropicFilteringLevel = this.BaseTexture.MaxAnisotropicFilteringLevel;
-            LayerCount = (uint?)typeof(TextureBase).GetField("_LayerCount", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(this.BaseTexture) ?? throw new MissingMemberException("Couldn't find '_LayerCount' field.");
-            Usage = (TextureUsage?)typeof(TextureBase).GetProperty("Usage", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(this.BaseTexture) ?? throw new MissingMemberException("Couldn't find 'Usage' property.");
-            Type = (TextureType?)typeof(TextureBase).GetProperty("Type", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(this.BaseTexture) ?? throw new MissingMemberException("Couldn't find 'Type' property.");
-            WrapModeU = this.BaseTexture.WrapModeU;
-            WrapModeV = (TextureWrapMode?)typeof(TextureBase).GetField("_WrapModeV", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(this.BaseTexture) ?? throw new MissingMemberException("Couldn't find '_WrapModeV' field.");
-            WrapModeW = (TextureWrapMode?)typeof(TextureBase).GetField("_WrapModeW", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(this.BaseTexture) ?? throw new MissingMemberException("Couldn't find '_WrapModeW' field.");
+            Width = BaseTexture.Width;
+            Height = (uint?)typeof(TextureBase).GetField("_Height", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(BaseTexture) ?? throw new MissingMemberException("Couldn't find '_Height' field.");
+            Depth = (uint?)typeof(TextureBase).GetField("_Depth", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(BaseTexture) ?? throw new MissingMemberException("Couldn't find '_Depth' field.");
+            MipLodBias = BaseTexture.MipLodBias;
+            AnisotropicFilteringEnabled = BaseTexture.AnisotropicFilteringEnabled;
+            MaxAnisotropicFilteringLevel = BaseTexture.MaxAnisotropicFilteringLevel;
+            LayerCount = (uint?)typeof(TextureBase).GetField("_LayerCount", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(BaseTexture) ?? throw new MissingMemberException("Couldn't find '_LayerCount' field.");
+            Usage = (TextureUsage?)typeof(TextureBase).GetProperty("Usage", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(BaseTexture) ?? throw new MissingMemberException("Couldn't find 'Usage' property.");
+            Type = (TextureType?)typeof(TextureBase).GetProperty("Type", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(BaseTexture) ?? throw new MissingMemberException("Couldn't find 'Type' property.");
+            WrapModeU = BaseTexture.WrapModeU;
+            WrapModeV = (TextureWrapMode?)typeof(TextureBase).GetField("_WrapModeV", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(BaseTexture) ?? throw new MissingMemberException("Couldn't find '_WrapModeV' field.");
+            WrapModeW = (TextureWrapMode?)typeof(TextureBase).GetField("_WrapModeW", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(BaseTexture) ?? throw new MissingMemberException("Couldn't find '_WrapModeW' field.");
         }
 
         /// <summary>Sets pixels specific colours when the texture is a one-dimensional texture.</summary>
