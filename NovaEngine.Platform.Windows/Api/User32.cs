@@ -91,6 +91,14 @@ namespace NovaEngine.Platform.Windows.Api
         [DllImport("User32.dll", SetLastError = true)]
         public static extern uint GetRawInputData(IntPtr rawInput, GetRawInputDataCommand command, [Out] IntPtr data, ref uint size, uint sizeHeader);
 
+        /// <summary>Retrieves the text of the specified window's title bar (if it has one).</summary>
+        /// <param name="windowHandle">A handle to the window whose title is to be retrieved.</param>
+        /// <param name="text">The window title.</param>
+        /// <param name="maxCount">The max length of <paramref name="text"/>.</param>
+        /// <returns>The length of the text, if the call was successful; otherwise, 0.</returns>
+        [DllImport("User32.dll", SetLastError = true)]
+        public static extern int GetWindowText(IntPtr windowHandle, out string text, int maxCount);
+
         /// <summary>Loads the specified cursor resource.</summary>
         /// <param name="handle">A handle to an instance of the module whose executable file contains the cursor to be loaded.<br/>To use a system cursor, <see cref="IntPtr.Zero"/> must be specified.</param>
         /// <param name="cursorName">The name of the cursor resource to be loaded.</param>
