@@ -1,4 +1,4 @@
-﻿namespace NovaEngine.IO
+﻿namespace NovaEngine.External.Input
 {
     /// <summary>The usage pages for a Human Interface Device (HID).</summary>
     /// <remarks>Not all usage pages are defined here, for a full list go to: <see href="https://www.usb.org/sites/default/files/hut1_21.pdf#page=16"/>.</remarks>

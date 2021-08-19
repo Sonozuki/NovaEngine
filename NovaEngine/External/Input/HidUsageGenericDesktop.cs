@@ -1,4 +1,4 @@
-﻿namespace NovaEngine.IO
+﻿namespace NovaEngine.External.Input
 {
     /// <summary>The uses of a <see cref="HidUsagePage.GenericDesktop"/> device.</summary>
     /// <remarks>Not all usages are defined here, for a full list go to: <see href="https://www.usb.org/sites/default/files/hut1_21.pdf#page=34"/>.</remarks>
