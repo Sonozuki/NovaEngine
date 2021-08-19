@@ -1,7 +1,6 @@
-﻿using NovaEngine.Platform.Windows.Api;
-using System;
+﻿using System;
 
-namespace NovaEngine.Platform.Windows.Windowing
+namespace NovaEngine.Platform.Windows
 {
     /// <summary>Contains the window class attributes that are registered by the <see cref="User32.RegisterClass(in NativeWindowClass)"/> method.</summary>
     public struct NativeWindowClass

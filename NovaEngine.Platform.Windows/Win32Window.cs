@@ -1,11 +1,10 @@
 ﻿using NovaEngine.External.Platform;
 using NovaEngine.Logging;
 using NovaEngine.Maths;
-using NovaEngine.Platform.Windows.Api;
 using NovaEngine.Windowing;
 using System;
 
-namespace NovaEngine.Platform.Windows.Windowing
+namespace NovaEngine.Platform.Windows
 {
     /// <summary>Represents a Win32 window.</summary>
     public class Win32Window : PlatformWindowBase

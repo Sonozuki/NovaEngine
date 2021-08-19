@@ -7,9 +7,6 @@
         Destroy = 0x0002,
 
         /// <summary>Sent to a window after its size has changed.</summary>
-        Size = 0x0005,
-
-        /// <summary>Sent to the window when input is received.</summary>
-        Input = 0x00FF
+        Size = 0x0005
     }
 }

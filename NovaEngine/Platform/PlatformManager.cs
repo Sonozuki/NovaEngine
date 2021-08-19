@@ -1,5 +1,4 @@
-﻿using NovaEngine.Extensions;
-using NovaEngine.External.Platform;
+﻿using NovaEngine.External.Platform;
 using NovaEngine.Logging;
 using NovaEngine.Platform.Fake;
 using System;

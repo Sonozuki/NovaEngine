@@ -1,4 +1,4 @@
-﻿namespace NovaEngine.Platform.Windows.Windowing
+﻿namespace NovaEngine.Platform.Windows
 {
     /// <summary>Controls how a window should be shown.</summary>
     public enum CommandShow

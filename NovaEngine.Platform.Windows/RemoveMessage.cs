@@ -1,4 +1,4 @@
-﻿namespace NovaEngine.Platform.Windows.Windowing
+﻿namespace NovaEngine.Platform.Windows
 {
     /// <summary>Specifies how messages are to be handled.</summary>
     public enum RemoveMessage

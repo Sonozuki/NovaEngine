@@ -1,48 +1,15 @@
 ﻿using NovaEngine.Maths;
-using NovaEngine.Platform.Windows.Input;
-using NovaEngine.Platform.Windows.Windowing;
 using System;
 using System.Runtime.InteropServices;
 
-namespace NovaEngine.Platform.Windows.Api
+namespace NovaEngine.Platform.Windows
 {
-    /// <summary>Exposes User32.dll apis.</summary>
+    /// <summary>Exposes neccessary User32.dll apis.</summary>
     internal static class User32
     {
         /*********
-        ** Constants
-        *********/
-        /// <summary>Determines whether a <see cref="VirtualKey.Shift"/> is a <see cref="Key.LeftShift"/> or <see cref="Key.RightShift"/>.</summary>
-        public const ushort ShiftRight = 0x36;
-
-
-        /*********
         ** Public Methods
         *********/
-        /// <summary>Retrieves the raw input from the specified device.</summary>
-        /// <param name="rawInput">A handle to the <see cref="RawInput"/> structure. This comes from the lParam in <see cref="Message.Input"/>.</param>
-        /// <param name="data">The raw input data.</param>
-        /// <returns>The size, in <see langword="byte"/>s, of the data in <paramref name="data"/>.</returns>
-        public unsafe static uint GetRawInputData(IntPtr rawInput, out RawInput data)
-        {
-            var size = (uint)Marshal.SizeOf<RawInput>();
-            fixed (RawInput* dataPointer = &data)
-                GetRawInputData(rawInput, GetRawInputDataCommand.Input, (IntPtr)dataPointer, ref size, (uint)Marshal.SizeOf<RawInputHeader>());
-            return size;
-        }
-
-        /// <summary>Retreives the raw input header from the specified device.</summary>
-        /// <param name="rawInput">A handle to the <see cref="RawInput"/> structure. This comes from the lParam in <see cref="Message.Input"/>.</param>
-        /// <param name="header">The raw header data.</param>
-        /// <returns>The size, in <see langword="byte"/>s, of the data in <paramref name="header"/>.</returns>
-        public unsafe static uint GetRawInputData(IntPtr rawInput, out RawInputHeader header)
-        {
-            var size = (uint)Marshal.SizeOf<RawInputHeader>();
-            fixed (RawInputHeader* headerPointer = &header)
-                GetRawInputData(rawInput, GetRawInputDataCommand.Header, (IntPtr)headerPointer, ref size, (uint)Marshal.SizeOf<RawInputHeader>());
-            return size;
-        }
-
         /// <summary>Creates a window with an extended window style.</summary>
         /// <param name="exStyle">The extended window style of the window being created.</param>
         /// <param name="className">A class name that has previously been registered using the <see cref="RegisterClass(in NativeWindowClass)"/> method.</param>
@@ -81,16 +48,6 @@ namespace NovaEngine.Platform.Windows.Api
         [DllImport("User32", SetLastError = true)]
         public static extern bool GetCursorPos(ref Vector2I point);
 
-        /// <summary>Retreives the raw input from the specified device.</summary>
-        /// <param name="rawInput">A handle to the <see cref="RawInput"/> structure. This comes from the lParam in WM_INPUT.</param>
-        /// <param name="command">The command flag.</param>
-        /// <param name="data">A pointer to the data that comes from the <see cref="RawInput"/> structure. This depends on the value of <paramref name="command"/>. If <paramref name="data"/> is <see langword="null"/>, the required size of the butter is returning in <paramref name="size"/>.</param>
-        /// <param name="size">The size, in <see langword="byte"/>s, of the data in <paramref name="data"/>.</param>
-        /// <param name="sizeHeader">The size, in <see langword="byte"/>s, of the <see cref="RawInputHeader"/> structure.</param>
-        /// <returns>If <paramref name="data"/> is <see langword="null"/> and the function is successful, the return value is 0. If <paramref name="data"/> is not <see langword="null"/> and the function is successful, the return value is the number of <see langword="byte"/>s copied into <paramref name="data"/>.</returns>
-        [DllImport("User32.dll", SetLastError = true)]
-        public static extern uint GetRawInputData(IntPtr rawInput, GetRawInputDataCommand command, [Out] IntPtr data, ref uint size, uint sizeHeader);
-
         /// <summary>Retrieves the text of the specified window's title bar (if it has one).</summary>
         /// <param name="windowHandle">A handle to the window whose title is to be retrieved.</param>
         /// <param name="text">The window title.</param>
@@ -126,14 +83,6 @@ namespace NovaEngine.Platform.Windows.Api
         /// <returns>If the function succeeds, the return value is a class atom that uniquely identifies the class being registered; otherwise, zero is returned.</returns>
         [DllImport("User32", SetLastError = true)]
         public static extern ushort RegisterClass(in NativeWindowClass windowClass);
-
-        /// <summary>Registers the devices that supply the raw input data.</summary>
-        /// <param name="rawInputDevices">The devices that represent the raw input.</param>
-        /// <param name="numDevices">The number of <see cref="RawInputDevice"/> strucures in <paramref name="rawInputDevices"/>.</param>
-        /// <param name="size">The size, in <see langword="byte"/>s, of a <see cref="RawInputDevice"/> structure.</param>
-        /// <returns><see langword="true"/> is the function succeeds; otherwise, <see langword="false"/>.</returns>
-        [DllImport("User32.dll", SetLastError = true)]
-        public static extern bool RegisterRawInputDevices(RawInputDevice[] rawInputDevices, uint numDevices, uint size);
 
         /// <summary>Converts the screen coordinates of a specified point on the screen to lcient-area coordinates.</summary>
         /// <param name="window">A handle to the window whose client area will be used for the conversion.</param>

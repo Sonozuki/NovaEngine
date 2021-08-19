@@ -1,7 +1,7 @@
 ﻿using NovaEngine.Maths;
 using System;
 
-namespace NovaEngine.Platform.Windows.Windowing
+namespace NovaEngine.Platform.Windows
 {
     /// <summary>Contains message information from a thread's message queue.</summary>
     public struct NativeMessage
