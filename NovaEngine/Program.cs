@@ -57,6 +57,10 @@ namespace NovaEngine
                 MainWindow = new Window("NovaEngine", new Size(1280, 720)); // TODO: don't hardcode
                 MainWindow.Resize += (e) => RendererManager.CurrentRenderer.OnWindowResize(e.NewSize);
 
+                // ensure an input handler exists
+                if (InputHandlerManager.CurrentInputHandler == null)
+                    return; // fatal log has already been created at this point
+
                 // initialise renderer
                 if (RendererManager.CurrentRenderer == null)
                     return; // fatal log has already been created at this point

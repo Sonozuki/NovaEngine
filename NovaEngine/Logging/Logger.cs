@@ -19,6 +19,9 @@ namespace NovaEngine.Logging
         /// <summary>The pattern used for determining if an assembly is a renderer assembly.</summary>
         private static readonly Regex RendererAssemblyPattern = new("^NovaEngine.Renderer.*", RegexOptions.Compiled);
 
+        /// <summary>The pattern used for determining if an assembly is an input handler.</summary>
+        private static readonly Regex InputHandlerAssemblyPattern = new("^NovaEngine.Input.*", RegexOptions.Compiled);
+
 
         /*********
         ** Accessors
@@ -57,6 +60,7 @@ namespace NovaEngine.Logging
                 "NovaEngine" => new("Engine", true),
                 var assembly when PlatformAssemblyPattern.IsMatch(assembly) => new("Platform", true),
                 var assembly when RendererAssemblyPattern.IsMatch(assembly) => new("Renderer", true),
+                var assembly when InputHandlerAssemblyPattern.IsMatch(assembly) => new("Input Handler", true),
                 var assembly => new(assembly, false)
             };
 
