@@ -1,4 +1,4 @@
-﻿namespace NovaEngine.Input.RawWindows
+﻿namespace NovaEngine.InputHandler.RawWindows
 {
     /// <summary>Describes the format of the raw input from a Human Interface Device (HID).</summary>
     internal struct RawHid

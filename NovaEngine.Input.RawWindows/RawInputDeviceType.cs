@@ -1,4 +1,4 @@
-﻿namespace NovaEngine.Input.RawWindows
+﻿namespace NovaEngine.InputHandler.RawWindows
 {
     /// <summary>The types of a raw input device.</summary>
     internal enum RawInputDeviceType

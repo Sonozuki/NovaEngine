@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace NovaEngine.Input.RawWindows
+namespace NovaEngine.InputHandler.RawWindows
 {
     /// <summary>Contains information about the state of the mouse.</summary>
     [StructLayout(LayoutKind.Explicit)]

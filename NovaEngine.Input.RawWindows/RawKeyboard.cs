@@ -1,4 +1,4 @@
-﻿namespace NovaEngine.Input.RawWindows
+﻿namespace NovaEngine.InputHandler.RawWindows
 {
     /// <summary>Contains information about the state of a keyboard.</summary>
     internal struct RawKeyboard

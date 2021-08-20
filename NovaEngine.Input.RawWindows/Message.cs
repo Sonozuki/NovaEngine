@@ -1,4 +1,4 @@
-﻿namespace NovaEngine.Input.RawWindows
+﻿namespace NovaEngine.InputHandler.RawWindows
 {
     /// <summary>The messages a window procedure can receive.</summary>
     public enum Message

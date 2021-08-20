@@ -20,7 +20,7 @@ namespace NovaEngine.Logging
         private static readonly Regex RendererAssemblyPattern = new("^NovaEngine.Renderer.*", RegexOptions.Compiled);
 
         /// <summary>The pattern used for determining if an assembly is an input handler.</summary>
-        private static readonly Regex InputHandlerAssemblyPattern = new("^NovaEngine.Input.*", RegexOptions.Compiled);
+        private static readonly Regex InputHandlerAssemblyPattern = new("^NovaEngine.InputHandler.*", RegexOptions.Compiled);
 
 
         /*********

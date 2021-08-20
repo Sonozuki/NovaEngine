@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NovaEngine.Input.RawWindows
+namespace NovaEngine.InputHandler.RawWindows
 {
     /// <summary>Flags for scan code information.</summary>
     [Flags]

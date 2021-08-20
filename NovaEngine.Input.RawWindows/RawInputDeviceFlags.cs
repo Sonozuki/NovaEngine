@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NovaEngine.Input.RawWindows
+namespace NovaEngine.InputHandler.RawWindows
 {
     /// <summary>The flags a <see cref="RawInputDevice"/> can have.</summary>
     [Flags]

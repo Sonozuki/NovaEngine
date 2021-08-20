@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NovaEngine.Input.RawWindows
+namespace NovaEngine.InputHandler.RawWindows
 {
     /// <summary>Mouse indicator flags.</summary>
     [Flags]

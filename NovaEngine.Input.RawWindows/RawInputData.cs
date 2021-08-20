@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace NovaEngine.Input.RawWindows
+namespace NovaEngine.InputHandler.RawWindows
 {
     /// <summary>A structure that can be used to store one of: <see cref="RawMouse"/>, <see cref="RawKeyboard"/>, or <see cref="RawHid"/>.</summary>
     [StructLayout(LayoutKind.Explicit)]

@@ -3,7 +3,7 @@
 namespace NovaEngine.IO.Fake
 {
     /// <summary>Represents an input handler that is only used when nova is being used without a program instance.</summary>
-    internal class FakeInputHandler : IInput
+    internal class FakeInputHandler : IInputHandler
     {
         /*********
         ** Accessors

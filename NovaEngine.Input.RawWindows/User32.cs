@@ -3,7 +3,7 @@ using NovaEngine.Maths;
 using System;
 using System.Runtime.InteropServices;
 
-namespace NovaEngine.Input.RawWindows
+namespace NovaEngine.InputHandler.RawWindows
 {
     /// <summary>Exposes neccessary User32.dll apis.</summary>
     internal static class User32

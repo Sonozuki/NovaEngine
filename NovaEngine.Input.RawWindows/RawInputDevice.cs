@@ -1,7 +1,7 @@
 ﻿using NovaEngine.External.Input;
 using System;
 
-namespace NovaEngine.Input.RawWindows
+namespace NovaEngine.InputHandler.RawWindows
 {
     /// <summary>Defines information for the raw input device.</summary>
     internal struct RawInputDevice

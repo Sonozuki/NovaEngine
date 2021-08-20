@@ -1,4 +1,4 @@
-﻿namespace NovaEngine.Input.RawWindows
+﻿namespace NovaEngine.InputHandler.RawWindows
 {
     /// <summary>The virtual key codes used by the system.</summary>
     internal enum VirtualKey : ushort

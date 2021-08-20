@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NovaEngine.Input.RawWindows
+namespace NovaEngine.InputHandler.RawWindows
 {
     /// <summary>Contains the header information that is part of the raw input data.</summary>
     internal struct RawInputHeader

@@ -15,7 +15,7 @@ namespace NovaEngine.IO
         ** Accessors
         *********/
         /// <summary>The input handler that is currently being used.</summary>
-        public static IInput CurrentInputHandler { get; }
+        public static IInputHandler CurrentInputHandler { get; }
 
 
         /*********
@@ -34,7 +34,7 @@ namespace NovaEngine.IO
             }
 
             // get the current input handler object
-            var inputHandlerFiles = Directory.GetFiles(Environment.CurrentDirectory, "NovaEngine.Input.*.dll");
+            var inputHandlerFiles = Directory.GetFiles(Environment.CurrentDirectory, "NovaEngine.InputHandler.*.dll");
             var types = inputHandlerFiles
                 .Select(inputHandlerFile => Assembly.LoadFrom(inputHandlerFile))
                 .SelectMany(assembly => assembly.GetExportedTypes())
@@ -43,19 +43,19 @@ namespace NovaEngine.IO
             foreach (var type in types)
             {
                 // ensure type is a renderer
-                if (!type.GetInterfaces().Contains(typeof(IInput)))
+                if (!type.GetInterfaces().Contains(typeof(IInputHandler)))
                     continue;
 
                 // try to create an instance
-                var inputHnadler = (IInput?)Activator.CreateInstance(type);
-                if (inputHnadler == null)
+                var inputHandler = (IInputHandler?)Activator.CreateInstance(type);
+                if (inputHandler == null)
                     continue;
 
                 // set to the current input handler if it's usable
-                if (!inputHnadler.CanUseOnPlatform)
+                if (!inputHandler.CanUseOnPlatform)
                     continue;
 
-                CurrentInputHandler = inputHnadler;
+                CurrentInputHandler = inputHandler;
                 Logger.Log($"Using input handler: {type.Assembly.ManifestModule.Name}", LogSeverity.Debug);
                 break;
             }
