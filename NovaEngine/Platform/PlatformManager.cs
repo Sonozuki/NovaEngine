@@ -9,7 +9,7 @@ using System.Reflection;
 namespace NovaEngine.Platform
 {
     /// <summary>Handles running on difference enironment platforms.</summary>
-    public static class PlatformManager
+    internal static class PlatformManager
     {
         /*********
         ** Accessors

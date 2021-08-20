@@ -9,7 +9,7 @@ using System.Reflection;
 namespace NovaEngine.Rendering
 {
     /// <summary>Handles using difference renderers.</summary>
-    public abstract class RendererManager
+    internal static class RendererManager
     {
         /*********
         ** Accessors
