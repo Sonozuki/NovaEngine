@@ -1,4 +1,5 @@
 ﻿using NovaEngine.External.Input;
+using NovaEngine.Maths;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,16 @@ namespace NovaEngine.IO
 
         /// <summary>The keyboard input event handlers.</summary>
         private static readonly Dictionary<KeyEventListenerInfo, List<Action>> KeyEventHandlers = new();
+
+
+        /*********
+        ** Accessors
+        *********/
+        /// <summary>The position of the mouse.</summary>
+        public static Vector2I MousePosition => CurrentMouseState.Position;
+
+        /// <summary>The delta of the mouse position.</summary>
+        public static Vector2I MouseDelta => CurrentMouseState.Position - PreviousMouseState.Position;
 
 
         /*********
