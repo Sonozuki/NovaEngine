@@ -2,7 +2,7 @@
 
 namespace NovaEngine.InputHandler.RawWindows
 {
-    /// <summary>Exposes neccessary User32.dll apis.</summary>
+    /// <summary>Exposes neccessary Kernel.dll apis.</summary>
     internal static class Kernel32
     {
         /*********
