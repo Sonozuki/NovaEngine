@@ -59,6 +59,9 @@ namespace NovaEngine.Maths
         /// <summary>The conjugate of the quaternion.</summary>
         public readonly QuaternionD Conjugate => new(-X, -Y, -Z, W);
 
+        /// <summary>The <see cref="X"/>, <see cref="Y"/>, and <see cref="Z"/> components.</summary>
+        public readonly Vector3D XYZ => new(X, Y, Z);
+
         /// <summary>Gets a quaternion with (X, Y, Z, W) = (0, 0, 0, 1), which represents no rotation.</summary>
         public static QuaternionD Identity => new(0, 0, 0, 1);
 
@@ -167,7 +170,7 @@ namespace NovaEngine.Maths
             if (denominator == 0)
                 axis = Vector3D.UnitX;
             else
-                axis = new Vector3D(quaternion.X, quaternion.Y, quaternion.Z) / denominator;
+                axis = quaternion.XYZ / denominator;
         }
 
         /// <summary>Gets the quaternion as a <see cref="Quaternion"/>.</summary>
@@ -251,7 +254,7 @@ namespace NovaEngine.Maths
         /// <param name="axis">The axis to rotate around.</param>
         /// <param name="angle">The angle, in degrees, to rotate around the axis.</param>
         /// <returns>The created quaternion.</returns>
-        public static QuaternionD CreateFromAxisAngle(in Vector3D axis, double angle)
+        public static QuaternionD CreateFromAxisAngle(Vector3D axis, double angle)
         {
             // validate axis
             if (axis.LengthSquared == 0)
@@ -263,12 +266,7 @@ namespace NovaEngine.Maths
             var sinHalfAngle = Math.Sin(halfAngle);
             var cosHalfAngle = Math.Cos(halfAngle);
 
-            return new(
-                x: axis.X * sinHalfAngle,
-                y: axis.Y * sinHalfAngle,
-                z: axis.Z * sinHalfAngle,
-                w: cosHalfAngle
-            );
+            return new QuaternionD(axis * sinHalfAngle, cosHalfAngle).Normalised;
         }
 
         /// <summary>Creates a quaternion from euler angles.</summary>
@@ -306,51 +304,14 @@ namespace NovaEngine.Maths
         /*********
         ** Operators
         *********/
-        /// <summary>Adds two quaternions together.</summary>
-        /// <param name="left">The left operand.</param>
-        /// <param name="right">The right operand.</param>
-        /// <returns>The result of the addition.</returns>
-        public static QuaternionD operator +(QuaternionD left, QuaternionD right)
-        {
-            return new(
-                x: left.X + right.X,
-                y: left.Y + right.Y,
-                z: left.Z + right.Z,
-                w: left.W + right.W
-            );
-        }
-
-        /// <summary>Subtracts a quaternion from another quaternion.</summary>
-        /// <param name="left">The left operand.</param>
-        /// <param name="right">The right operand.</param>
-        /// <returns>The result of the subtraction.</returns>
-        public static QuaternionD operator -(QuaternionD left, QuaternionD right) => new(left.X - right.X, left.Y - right.Y, left.Z - right.Z, left.W - right.W);
-
-        /// <summary>Flips the sign of each component of a quaternion.</summary>
-        /// <param name="quaternion">The quaternion to flip the component signs of.</param>
-        /// <returns><paramref name="quaternion"/> with the sign of its components flipped.</returns>
-        public static QuaternionD operator -(QuaternionD quaternion) => quaternion * -1;
-
-        /// <summary>Multiplies a quaternion by a scalar.</summary>
-        /// <param name="left">The left operand.</param>
-        /// <param name="right">The right operand.</param>
-        /// <returns>The result of the multiplication.</returns>
-        public static QuaternionD operator *(QuaternionD left, double right) => new(left.X * right, left.Y * right, left.Z * right, left.W * right);
-
-        /// <summary>Multiplies a quaternion by a scalar.</summary>
-        /// <param name="left">The left operand.</param>
-        /// <param name="right">The right operand.</param>
-        /// <returns>The result of the multiplication.</returns>
-        public static QuaternionD operator *(double left, QuaternionD right) => right * left;
-
         /// <summary>Multiplies two quaternions together.</summary>
         /// <param name="left">The left operand.</param>
         /// <param name="right">The right operand.</param>
         /// <returns>The result of the multiplication.</returns>
         public static QuaternionD operator *(QuaternionD left, QuaternionD right)
         {
-            var cross = Vector3D.Cross(new(left.X, left.Y, left.Z), new(right.X, right.Y, right.Z));
-            var dot = QuaternionD.Dot(left, right);
+            var cross = Vector3D.Cross(left.XYZ, right.XYZ);
+            var dot = Vector3D.Dot(left.XYZ, right.XYZ);
 
             return new(
                 x: left.X * right.W + right.X * left.W + cross.X,
