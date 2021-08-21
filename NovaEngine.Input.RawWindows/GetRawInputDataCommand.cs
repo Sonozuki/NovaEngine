@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NovaEngine.Input.RawWindows
+namespace NovaEngine.InputHandler.RawWindows
 {
     /// <summary>Specifies what data will be returned in the 'data' paramater of <see cref="User32.GetRawInputData(IntPtr, GetRawInputDataCommand, IntPtr, ref uint, uint)"/>.</summary>
     internal enum GetRawInputDataCommand

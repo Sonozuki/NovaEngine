@@ -57,14 +57,15 @@ namespace NovaEngine
                 MainWindow = new Window("NovaEngine", new Size(1280, 720)); // TODO: don't hardcode
                 MainWindow.Resize += (e) => RendererManager.CurrentRenderer.OnWindowResize(e.NewSize);
 
-                // ensure an input handler exists
+                // initialise input handler
                 if (InputHandlerManager.CurrentInputHandler == null)
                     return; // fatal log has already been created at this point
+                InputHandlerManager.CurrentInputHandler.OnInitialise(MainWindow.Handle);
 
                 // initialise renderer
                 if (RendererManager.CurrentRenderer == null)
                     return; // fatal log has already been created at this point
-                RendererManager.CurrentRenderer.OnInitialise(MainWindow!.Handle);
+                RendererManager.CurrentRenderer.OnInitialise(MainWindow.Handle);
 
                 // initialise initial scenes
                 var initialScenes = ContentLoader.Load<List<string>>("InitialScenes");
@@ -78,6 +79,8 @@ namespace NovaEngine
                 {
                     while (!MainWindow!.HasClosed)
                     {
+                        Input.Update();
+
                         RendererManager.CurrentRenderer.OnRenderFrame();
 
                         MainWindow.ProcessEvents();

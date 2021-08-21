@@ -1,4 +1,5 @@
 ﻿using NovaEngine.External.Input;
+using System;
 
 namespace NovaEngine.IO.Fake
 {
@@ -16,5 +17,12 @@ namespace NovaEngine.IO.Fake
 
         /// <inheritdoc/>
         public KeyboardState KeyboardState => new();
+
+
+        /*********
+        ** Public Methods
+        *********/
+        /// <inheritdoc/>
+        public void OnInitialise(IntPtr windowHandle) { }
     }
 }
