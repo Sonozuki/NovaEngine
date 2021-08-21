@@ -32,7 +32,7 @@ namespace NovaEngine.Platform.Windows
         /// <param name="message">The message.</param>
         /// <param name="wParam">Additional message information. The content of this parameter depends on the value of the <paramref name="message"/> parameter.</param>
         /// <param name="lParam">Additional message information. The content of this parameter depends on the value of the <paramref name="message"/> parameter.</param>
-        /// <returns>The result of the message processing which depends on the message.</returns>
+        /// <returns>TThe result of the message processing, which depends on the message sent.</returns>
         [DllImport("User32", SetLastError = true)]
         public static extern IntPtr DefWindowProc(IntPtr window, Message message, IntPtr wParam, IntPtr lParam);
 

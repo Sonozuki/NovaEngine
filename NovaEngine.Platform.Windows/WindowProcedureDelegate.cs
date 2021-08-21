@@ -7,6 +7,6 @@ namespace NovaEngine.Platform.Windows
     /// <param name="message">The message.</param>
     /// <param name="wParam">Additional message information. The contents of this parameter depend on the value of the <paramref name="message"/> parameter.</param>
     /// <param name="lParam">Additional message information. The contents of this parameter depend on the value of the <paramref name="message"/> parameter.</param>
-    /// <returns>The result of the message processing and depends on the message sent.</returns>
+    /// <returns>The result of the message processing, which depends on the message sent.</returns>
     public delegate IntPtr WindowProcedureDelegate(IntPtr window, Message message, IntPtr wParam, IntPtr lParam);
 }
