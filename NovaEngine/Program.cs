@@ -81,6 +81,8 @@ namespace NovaEngine
                     {
                         Input.Update();
 
+                        SceneManager.LoadedScenes.ForEach(scene => scene.Update());
+
                         RendererManager.CurrentRenderer.OnRenderFrame();
 
                         MainWindow.ProcessEvents();

@@ -32,6 +32,9 @@ namespace NovaEngine.SceneManagement
             IsActive = isActive;
         }
 
+        /// <summary>Updates the scene.</summary>
+        public void Update() => RootGameObjects.ForEach(gameObject => gameObject.Update());
+
         /// <inheritdoc/>
         public void Dispose()
         {
