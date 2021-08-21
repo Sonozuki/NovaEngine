@@ -12,7 +12,7 @@ namespace NovaEngine.Core
         public Vector3 LocalPosition;
 
         /// <summary>The rotation of the object relative to the object's parent.</summary>
-        public Quaternion LocalRotation;
+        public Quaternion LocalRotation = Quaternion.Identity;
 
         /// <summary>The scale of the object relative to the object's parent.</summary>
         public Vector3 LocalScale = Vector3.One;
@@ -32,23 +32,19 @@ namespace NovaEngine.Core
         }
 
         /// <summary>The world rotation of the object.</summary>
-        public Quaternion GlobalRotation
-        {
-            get => ParentRotation + LocalRotation;
-            set => LocalRotation = value - ParentRotation;
-        }
+        public Quaternion GlobalRotation => ParentRotation * LocalRotation; // TODO: add setter
 
         /// <summary>The world scale of the object.</summary>
         public Vector3 GlobalScale
         {
             get => ParentScale * LocalScale;
-            set => LocalScale = value - ParentScale;
+            set => LocalScale = value / ParentScale;
         }
 
         /// <summary>The transform matrix.</summary>
         public Matrix4x4 Matrix => Matrix4x4.CreateScale(GlobalScale)
-                                 * Matrix4x4.CreateFromQuaternion(GlobalRotation)
-                                 * Matrix4x4.CreateTranslation(GlobalPosition.X, GlobalPosition.Y, -GlobalPosition.Z);
+                                 * Matrix4x4.CreateTranslation(GlobalPosition.X, GlobalPosition.Y, -GlobalPosition.Z)
+                                 * Matrix4x4.CreateFromQuaternion(GlobalRotation);
 
         /// <summary>The transform of the parent object.</summary>
         private Transform? ParentTransform => GameObject.Parent?.Transform;
