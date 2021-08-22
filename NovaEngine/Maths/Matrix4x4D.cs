@@ -844,17 +844,17 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>Creates a rotation matrix for a rotation about the X axis.</summary>
-        /// <param name="angle">The anti-clockwise angle, in degrees.</param>
+        /// <param name="angle">The clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix4x4D CreateRotationX(double angle) => new(Matrix3x3D.CreateRotationX(angle));
 
         /// <summary>Creates a rotation matrix for a rotation about the Y axis.</summary>
-        /// <param name="angle">The anti-clockwise angle, in degrees.</param>
+        /// <param name="angle">The clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix4x4D CreateRotationY(double angle) => new(Matrix3x3D.CreateRotationY(angle));
 
         /// <summary>Creates a rotation matrix for a rotation about the Z axis.</summary>
-        /// <param name="angle">The anti-clockwise angle, in degrees.</param>
+        /// <param name="angle">The clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix4x4D CreateRotationZ(double angle) => new(Matrix3x3D.CreateRotationZ(angle));
 

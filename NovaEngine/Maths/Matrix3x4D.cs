@@ -570,7 +570,7 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>Creates a rotation matrix for a rotation about the X axis.</summary>
-        /// <param name="angle">The anti-clockwise angle, in degrees.</param>
+        /// <param name="angle">The clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix3x4D CreateRotationX(double angle)
         {
@@ -582,14 +582,14 @@ namespace NovaEngine.Maths
             {
                 M11 = 1,
                 M22 = cosAngle,
-                M23 = sinAngle,
-                M32 = -sinAngle,
+                M23 = -sinAngle,
+                M32 = sinAngle,
                 M33 = cosAngle
             };
         }
 
         /// <summary>Creates a rotation matrix for a rotation about the Y axis.</summary>
-        /// <param name="angle">The anti-clockwise angle, in degrees.</param>
+        /// <param name="angle">The clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix3x4D CreateRotationY(double angle)
         {
@@ -600,15 +600,15 @@ namespace NovaEngine.Maths
             return new()
             {
                 M11 = cosAngle,
-                M13 = -sinAngle,
+                M13 = sinAngle,
                 M22 = 1,
-                M31 = sinAngle,
+                M31 = -sinAngle,
                 M33 = cosAngle
             };
         }
 
         /// <summary>Creates a rotation matrix for a rotation about the Z axis.</summary>
-        /// <param name="angle">The anti-clockwise angle, in degrees.</param>
+        /// <param name="angle">The clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix3x4D CreateRotationZ(double angle)
         {
@@ -619,8 +619,8 @@ namespace NovaEngine.Maths
             return new()
             {
                 M11 = cosAngle,
-                M12 = sinAngle,
-                M21 = -sinAngle,
+                M12 = -sinAngle,
+                M21 = sinAngle,
                 M22 = cosAngle,
                 M33 = 1
             };

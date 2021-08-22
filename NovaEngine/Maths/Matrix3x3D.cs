@@ -575,7 +575,7 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>Creates a rotation matrix for a rotation about the X axis.</summary>
-        /// <param name="angle">The anti-clockwise angle, in degrees.</param>
+        /// <param name="angle">The clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix3x3D CreateRotationX(double angle)
         {
@@ -585,14 +585,14 @@ namespace NovaEngine.Maths
 
             var result = Matrix3x3D.Identity;
             result.M22 = cosAngle;
-            result.M23 = sinAngle;
-            result.M32 = -sinAngle;
+            result.M23 = -sinAngle;
+            result.M32 = sinAngle;
             result.M33 = cosAngle;
             return result;
         }
 
         /// <summary>Creates a rotation matrix for a rotation about the Y axis.</summary>
-        /// <param name="angle">The anti-clockwise angle, in degrees.</param>
+        /// <param name="angle">The clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix3x3D CreateRotationY(double angle)
         {
@@ -602,14 +602,14 @@ namespace NovaEngine.Maths
 
             var result = Matrix3x3D.Identity;
             result.M11 = cosAngle;
-            result.M13 = -sinAngle;
-            result.M31 = sinAngle;
+            result.M13 = sinAngle;
+            result.M31 = -sinAngle;
             result.M33 = cosAngle;
             return result;
         }
 
         /// <summary>Creates a rotation matrix for a rotation about the Z axis.</summary>
-        /// <param name="angle">The anti-clockwise angle, in degrees.</param>
+        /// <param name="angle">The clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
         public static Matrix3x3D CreateRotationZ(double angle)
         {
@@ -619,8 +619,8 @@ namespace NovaEngine.Maths
 
             var result = Matrix3x3D.Identity;
             result.M11 = cosAngle;
-            result.M12 = sinAngle;
-            result.M21 = -sinAngle;
+            result.M12 = -sinAngle;
+            result.M21 = sinAngle;
             result.M22 = cosAngle;
             return result;
         }
