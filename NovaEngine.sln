@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NovaEngine.Tests", "NovaEng
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InputHandlers", "InputHandlers", "{F701256F-3A98-40E8-AB55-ACE2CD370D1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaEngine.InputHandler.RawWindows", "NovaEngine.Input.RawWindows\NovaEngine.InputHandler.RawWindows.csproj", "{F6901FE1-99C4-4894-B614-15AF9C98C1B8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaEngine.InputHandler.RawWindows", "NovaEngine.InputHandler.RawWindows\NovaEngine.InputHandler.RawWindows.csproj", "{F6901FE1-99C4-4894-B614-15AF9C98C1B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
