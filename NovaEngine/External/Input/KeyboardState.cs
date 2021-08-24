@@ -20,7 +20,7 @@ namespace NovaEngine.External.Input
         ** Accessors
         *********/
         /// <summary>Gets or sets the pressed state of a specified button.</summary>
-        /// <param name="button">The button whose state to get or set.</param>
+        /// <param name="key">The key whose state to get or set.</param>
         /// <returns>The pressed state of the specified button.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if the specified key isn't a valid key.</exception>
         public bool this[Key key]
