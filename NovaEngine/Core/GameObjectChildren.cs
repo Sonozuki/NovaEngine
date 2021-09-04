@@ -40,6 +40,10 @@ namespace NovaEngine.Core
             }
         }
 
+
+        /*********
+        ** Public Methods
+        *********/
         /// <inheritdoc/>
         public void Add(GameObject item)
         {
