@@ -50,12 +50,12 @@ namespace NovaEngine.Renderer.Vulkan
             if (VertexBuffer == null)
                 VertexBuffer = VulkanUtilities.CreateVertexBuffer(vertices);
             else
-                VertexBuffer.CopyFrom(vertices.AsSpan());
+                VertexBuffer.CopyFrom(vertices.AsSpan(), true);
 
             if (IndexBuffer == null)
                 IndexBuffer = VulkanUtilities.CreateIndexBuffer(indices);
             else
-                IndexBuffer.CopyFrom(indices.AsSpan());
+                IndexBuffer.CopyFrom(indices.AsSpan(), true);
         }
 
         /// <inheritdoc/>
