@@ -150,10 +150,10 @@ namespace NovaEngine.Maths
         public void Invert()
         {
             var invertedLengthSquared = 1 / LengthSquared;
-            X = -X * invertedLengthSquared;
-            Y = -Y * invertedLengthSquared;
-            Z = -Z * invertedLengthSquared;
-            W = -W * invertedLengthSquared;
+            X *= -invertedLengthSquared;
+            Y *= -invertedLengthSquared;
+            Z *= -invertedLengthSquared;
+            W *= invertedLengthSquared;
         }
 
         /// <summary>Gets the axis and angle that the quaternion represents.</summary>
