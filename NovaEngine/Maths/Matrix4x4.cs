@@ -828,20 +828,12 @@ namespace NovaEngine.Maths
         /// <param name="axis">The axis to rotate around.</param>
         /// <param name="angle">The angle, in degrees, to rotate around the axis.</param>
         /// <returns>The created matrix.</returns>
-        public static Matrix4x4 CreateFromAxisAngle(Vector3 axis, float angle)
-        {
-            var rotationMatrix = Matrix3x3.CreateFromAxisAngle(axis, angle);
-            return new(rotationMatrix);
-        }
+        public static Matrix4x4 CreateFromAxisAngle(Vector3 axis, float angle) => new(Matrix3x3.CreateFromAxisAngle(axis, angle));
 
         /// <summary>Creates a rotation matrix from a quaternion.</summary>
         /// <param name="quaternion">The quaternion to create a rotation matrix from.</param>
         /// <returns>The created matrix.</returns>
-        public static Matrix4x4 CreateFromQuaternion(Quaternion quaternion)
-        {
-            quaternion.GetAxisAngle(out var axis, out var angle);
-            return Matrix4x4.CreateFromAxisAngle(axis, angle);
-        }
+        public static Matrix4x4 CreateFromQuaternion(Quaternion quaternion) => new(Matrix3x3.CreateFromQuaternion(quaternion));
 
         /// <summary>Creates a rotation matrix for a rotation about the X axis.</summary>
         /// <param name="angle">The clockwise angle, in degrees.</param>

@@ -550,8 +550,20 @@ namespace NovaEngine.Maths
         /// <returns>The created matrix.</returns>
         public static Matrix3x3 CreateFromQuaternion(Quaternion quaternion)
         {
-            quaternion.GetAxisAngle(out var axis, out var angle);
-            return Matrix3x3.CreateFromAxisAngle(axis, angle);
+            var xx = quaternion.X * quaternion.X;
+            var yy = quaternion.Y * quaternion.Y;
+            var zz = quaternion.Z * quaternion.Z;
+
+            var xy = quaternion.X * quaternion.Y;
+            var wz = quaternion.Z * quaternion.W;
+            var xz = quaternion.Z * quaternion.X;
+            var wy = quaternion.Y * quaternion.W;
+            var yz = quaternion.Y * quaternion.Z;
+            var wx = quaternion.X * quaternion.W;
+
+            return new(1.0f - 2.0f * (yy + zz), 2.0f * (xy + wz),        2.0f * (xz - wy),
+                       2.0f * (xy - wz),        1.0f - 2.0f * (zz + xx), 2.0f * (yz + wx),
+                       2.0f * (xz + wy),        2.0f * (yz - wx),        1.0f - 2.0f * (yy + xx));
         }
 
         /// <summary>Creates a rotation matrix from euler angles.</summary>
