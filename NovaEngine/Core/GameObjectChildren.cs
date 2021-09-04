@@ -6,7 +6,7 @@ namespace NovaEngine.Core
 {
     /// <summary>Represents a collection of child <see cref="GameObject"/>s for use in <see cref="GameObject.Children"/>.</summary>
     /// <remarks>This automatically sets/unsets the parent of children where necessary.</remarks>
-    public class ChildrenCollection : IList<GameObject>
+    public class GameObjectChildren : IList<GameObject>
     {
         /*********
         ** Fields
@@ -97,7 +97,7 @@ namespace NovaEngine.Core
         *********/
         /// <summary>Constructs an instance.</summary>
         /// <param name="parent">The game object whose children this collection is.</param>
-        internal ChildrenCollection(GameObject parent)
+        internal GameObjectChildren(GameObject parent)
         {
             Parent = parent;
         }
@@ -108,7 +108,7 @@ namespace NovaEngine.Core
         *********/
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         /// <summary>Constructs an instance.</summary>
-        private ChildrenCollection() { }
+        private GameObjectChildren() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     }
 }

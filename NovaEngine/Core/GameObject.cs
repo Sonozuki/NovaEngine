@@ -37,7 +37,7 @@ namespace NovaEngine.Core
         public GameObject? Parent { get; internal set; } // TODO: make a public setter for this note: scene root objects will need to be updated etc
 
         /// <summary>The children of the game object.</summary>
-        public ChildrenCollection Children { get; }
+        public GameObjectChildren Children { get; }
 
         /// <summary>The transform component of the game object.</summary>
         public Transform Transform { get; }
