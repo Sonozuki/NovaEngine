@@ -36,7 +36,7 @@ namespace NovaEngine.Content.Readers
             foreach (var meshContent in modelContent.Meshes)
             {
                 var meshGameObject = new GameObject(meshContent.Name);
-                meshGameObject.AddComponent(new MeshRenderer(new(meshContent.Name, meshContent.Vertices.ToArray(), meshContent.Indices.ToArray())));
+                meshGameObject.Components.Add(new MeshRenderer(new(meshContent.Name, meshContent.Vertices.ToArray(), meshContent.Indices.ToArray())));
                 parentGameObject.Children.Add(meshGameObject);
             }
 
