@@ -429,6 +429,16 @@ namespace NovaEngine.Maths
         /// <returns>The result of the multiplication.</returns>
         public static Vector3 operator *(Vector3 left, Vector3 right) => new(left.X * right.X, left.Y * right.Y, left.Z * right.Z);
 
+        /// <summary>Multiplies a vector by a quaternion.</summary>
+        /// <param name="left">The left operand.</param>
+        /// <param name="right">The right operand.</param>
+        /// <returns>The result of the multiplication.</returns>
+        public static Vector3 operator *(Vector3 left, Quaternion right)
+        {
+            var vector = right.XYZ;
+            return left + ((Vector3.Cross(vector, left) * right.W) + Vector3.Cross(vector, Vector3.Cross(vector, left))) * 2;
+        }
+
         /// <summary>Divides a vector by a scalar.</summary>
         /// <param name="left">The left operand.</param>
         /// <param name="right">The right operand.</param>
