@@ -27,8 +27,21 @@ namespace NovaEngine.Core.Components
         /// <summary>The far clipping plane of the camera.</summary>
         public float FarClippingPlane { get; set; }
 
+        /// <summary>The view matrix of the camera.</summary>
+        public Matrix4x4 ViewMatrix
+        {
+            get
+            {
+                if (Transform == null)
+                    return Matrix4x4.Identity;
+
+                return Matrix4x4.CreateTranslation(-Transform.GlobalPosition.X, -Transform.GlobalPosition.Y, Transform.GlobalPosition.Z)
+                     * Matrix4x4.CreateFromQuaternion(Transform.GlobalRotation.Inverted);
+            }
+        }
+
         /// <summary>The projection matrix of the camera.</summary>
-        public Matrix4x4 Matrix
+        public Matrix4x4 ProjectionMatrix
         {
             get
             {

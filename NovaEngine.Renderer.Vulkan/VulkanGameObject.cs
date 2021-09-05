@@ -65,8 +65,8 @@ namespace NovaEngine.Renderer.Vulkan
             var ubo = new UniformBufferObject()
             {
                 Model = BaseGameObject.Transform.Matrix,
-                View = camera.Transform?.Matrix ?? Matrix4x4.Identity,
-                Projection = camera.Matrix
+                View = camera.ViewMatrix,
+                Projection = camera.ProjectionMatrix
             };
             ubo.Projection.M22 *= -1;
 
