@@ -24,6 +24,24 @@ namespace NovaEngine.Core
         /// <summary>The game object the transform belongs to.</summary>
         public GameObject GameObject { get; }
 
+        /// <summary>The forward direction of the tranform in world space.</summary>
+        public Vector3 Forward => Vector3.UnitZ * GlobalRotation;
+
+        /// <summary>The backward direction of the tranform in world space.</summary>
+        public Vector3 Backward => (-Vector3.UnitZ) * GlobalRotation;
+
+        /// <summary>The up direction of the tranform in world space.</summary>
+        public Vector3 Up => Vector3.UnitY * GlobalRotation;
+
+        /// <summary>The down direction of the tranform in world space.</summary>
+        public Vector3 Down => (-Vector3.UnitY) * GlobalRotation;
+
+        /// <summary>The left direction of the tranform in world space.</summary>
+        public Vector3 Left => (-Vector3.UnitX) * GlobalRotation;
+
+        /// <summary>The right direction of the tranform in world space.</summary>
+        public Vector3 Right => Vector3.UnitX * GlobalRotation;
+
         /// <summary>The world position of the object.</summary>
         public Vector3 GlobalPosition
         {
