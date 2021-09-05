@@ -50,7 +50,11 @@ namespace NovaEngine.Core
         }
 
         /// <summary>The world rotation of the object.</summary>
-        public Quaternion GlobalRotation => ParentRotation * LocalRotation; // TODO: add setter
+        public Quaternion GlobalRotation
+        {
+            get => ParentRotation * LocalRotation;
+            set => LocalRotation = value * ParentRotation.Inverted;
+        }
 
         /// <summary>The world scale of the object.</summary>
         public Vector3 GlobalScale
