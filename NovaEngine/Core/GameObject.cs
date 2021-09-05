@@ -1,8 +1,11 @@
-﻿using NovaEngine.External.Rendering;
+﻿using NovaEngine.Components;
+using NovaEngine.External.Rendering;
 using NovaEngine.Logging;
 using NovaEngine.Rendering;
 using NovaEngine.Serialisation;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace NovaEngine.Core
 {
@@ -78,42 +81,20 @@ namespace NovaEngine.Core
         /*********
         ** Internal Methods
         *********/
-        /// <summary>Starts the game object.</summary>
-        internal void Start()
+        /// <summary>Retrieves the components of this game object and all children recursively.</summary>
+        /// <param name="includeDisabled">Where disabled components and components from disabled game objects should get retrieved.</param>
+        /// <returns>The components of this game object and all children recursively.</returns>
+        internal List<ComponentBase> GetAllComponents(bool includeDisabled)
         {
-            // for loops here so the objects can freely edit themselves
-            for (int i = 0; i < Components.Count; i++)
-                try
-                {
-                    Components[i].OnStart();
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log($"Component crashed on start. Technical details:\n{ex}", LogSeverity.Error);
-                }
+            var components = new List<ComponentBase>(Components);
+            if (!includeDisabled)
+                components = components.Where(component => component.IsEnabled).ToList();
+            
+            foreach (var child in Children)
+                if (includeDisabled || child.IsEnabled)
+                    components.AddRange(child.GetAllComponents(includeDisabled));
 
-            for (int i = 0; i < Children.Count; i++)
-                Children[i].Start();
-        }
-
-        /// <summary>Updates the game object.</summary>
-        internal void Update()
-        {
-            // for loops here so the objects can freely edit themselves
-            for (int i = 0; i < Components.Count; i++)
-                try
-                {
-                    if (Components[i].IsEnabled)
-                        Components[i].OnUpdate();
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log($"Component crashed on update. Technical detailed:\n{ex}", LogSeverity.Error);
-                }
-
-            for (int i = 0; i < Children.Count; i++)
-                if (Children[i].IsEnabled)
-                    Children[i].Update();
+            return components;
         }
 
 

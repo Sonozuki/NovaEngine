@@ -1,6 +1,9 @@
 ﻿using NovaEngine.Core;
+using NovaEngine.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace NovaEngine.SceneManagement
 {
@@ -32,8 +35,39 @@ namespace NovaEngine.SceneManagement
             IsActive = isActive;
         }
 
+        /// <summary>Starts the scene.</summary>
+        public void Start()
+        {
+            var components = RootGameObjects.SelectMany(gameObject => gameObject.GetAllComponents(true));
+            Parallel.ForEach(components, component =>
+            {
+                try
+                {
+                    component.OnStart();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log($"Component crashed on start. Technical details:\n{ex}", LogSeverity.Error);
+                }
+            });
+        }
+
         /// <summary>Updates the scene.</summary>
-        public void Update() => RootGameObjects.ForEach(gameObject => gameObject.Update());
+        public void Update()
+        {
+            var components = RootGameObjects.SelectMany(gameObject => gameObject.GetAllComponents(false));
+            Parallel.ForEach(components, component =>
+            {
+                try
+                {
+                    component.OnUpdate();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log($"Component crashed on update. Technical details:\n{ex}", LogSeverity.Error);
+                }
+            });
+        }
 
         /// <inheritdoc/>
         public void Dispose()

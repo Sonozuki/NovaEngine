@@ -25,9 +25,7 @@ namespace NovaEngine.SceneManagement
         {
             var loadedScene = ContentLoader.Load<Scene>(Path.Combine(Constants.RelativeSceneDirectory, name + Constants.SceneFileExtension));
             LoadedScenes.Add(loadedScene);
-
-            foreach (var rootObject in loadedScene.RootGameObjects)
-                rootObject.Start();
+            loadedScene.Start();
         }
 
         /// <summary>Unloads a scene.</summary>
