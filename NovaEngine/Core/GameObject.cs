@@ -1,11 +1,8 @@
-﻿using NovaEngine.Core.Components;
-using NovaEngine.External.Rendering;
+﻿using NovaEngine.External.Rendering;
 using NovaEngine.Logging;
 using NovaEngine.Rendering;
 using NovaEngine.Serialisation;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace NovaEngine.Core
 {

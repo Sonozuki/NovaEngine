@@ -1,4 +1,6 @@
-﻿namespace NovaEngine.Core.Components
+﻿using NovaEngine.Core;
+
+namespace NovaEngine.Components
 {
     /// <summary>Represents a component used for rendering a mesh.</summary>
     public class MeshRenderer : ComponentBase

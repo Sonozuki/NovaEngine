@@ -1,7 +1,7 @@
 ﻿using NovaEngine.Content.Attributes;
 using NovaEngine.Content.Models;
 using NovaEngine.Core;
-using NovaEngine.Core.Components;
+using NovaEngine.Components;
 using NovaEngine.Serialisation;
 using System;
 using System.IO;

@@ -1,6 +1,7 @@
-﻿using System;
+﻿using NovaEngine.Core;
+using System;
 
-namespace NovaEngine.Core.Components
+namespace NovaEngine.Components
 {
     /// <summary>Represents the base of a <see cref="Core.GameObject"/> component.</summary>
     /// <remarks>A component refers to some scriptable behaviour.</remarks>

@@ -1,5 +1,5 @@
-﻿using NovaEngine.Core;
-using NovaEngine.Core.Components;
+﻿using NovaEngine.Components;
+using NovaEngine.Core;
 using NovaEngine.External.Rendering;
 using NovaEngine.Graphics;
 using NovaEngine.Maths;

@@ -1,7 +1,8 @@
-﻿using NovaEngine.Maths;
+﻿using NovaEngine.Core;
+using NovaEngine.Maths;
 using System;
 
-namespace NovaEngine.Core.Components
+namespace NovaEngine.Components
 {
     /// <summary>Represents a camera.</summary>
     public class Camera : ComponentBase
@@ -109,7 +110,7 @@ namespace NovaEngine.Core.Components
             FarClippingPlane = farClippingPlane;
 
             if (setMainCamera)
-                Camera.Main = this;
+                Main = this;
         }
     }
 }

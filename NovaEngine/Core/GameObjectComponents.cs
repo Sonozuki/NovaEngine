@@ -1,4 +1,4 @@
-﻿using NovaEngine.Core.Components;
+﻿using NovaEngine.Components;
 using NovaEngine.Serialisation;
 using System.Collections;
 using System.Collections.Generic;
