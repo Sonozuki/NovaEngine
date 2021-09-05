@@ -18,6 +18,9 @@ namespace NovaEngine.Renderer.Vulkan
         /// <summary>The memory for <see cref="NativeBuffer"/>.</summary>
         private readonly VkDeviceMemory NativeMemory;
 
+        /// <summary>The properties of the buffer memory.</summary>
+        private readonly VkMemoryPropertyFlags MemoryProperties;
+
         /// <summary>The command pool that will be used for the transfer operations.</summary>
         private readonly VulkanCommandPool TransferCommandPool;
 
@@ -45,6 +48,7 @@ namespace NovaEngine.Renderer.Vulkan
                 throw new ArgumentOutOfRangeException(nameof(size), "Must be atleast 1");
 
             Size = size;
+            MemoryProperties = memoryProperties;
 
             // create buffer
             var bufferCreateInfo = new VkBufferCreateInfo()
@@ -66,7 +70,7 @@ namespace NovaEngine.Renderer.Vulkan
             {
                 SType = VkStructureType.MemoryAllocateInfo,
                 AllocationSize = memoryRequirements.Size,
-                MemoryTypeIndex = VulkanRenderer.Instance.Device.GetMemoryTypeIndex(memoryRequirements.MemoryTypeBits, memoryProperties)
+                MemoryTypeIndex = VulkanRenderer.Instance.Device.GetMemoryTypeIndex(memoryRequirements.MemoryTypeBits, MemoryProperties)
             };
 
             if (VK.AllocateMemory(VulkanRenderer.Instance.Device.NativeDevice, ref memoryAllocateInfo, null, out NativeMemory) != VkResult.Success)
@@ -89,33 +93,35 @@ namespace NovaEngine.Renderer.Vulkan
             if (sizeof(T) > Size)
                 throw new InvalidOperationException($"{nameof(data)} is bigger (byte size) than the buffer.");
 
-            // copy data to buffer
-            void* bufferPointer;
-            VK.MapMemory(VulkanRenderer.Instance.Device.NativeDevice, NativeMemory, 0, sizeof(T), 0, &bufferPointer);
-            Marshal.StructureToPtr(data, (IntPtr)bufferPointer, false);
-            VK.UnmapMemory(VulkanRenderer.Instance.Device.NativeDevice, NativeMemory);
+            if (MemoryProperties.HasFlag(VkMemoryPropertyFlags.HostVisible))
+            {
+                // copy data to buffer
+                void* bufferPointer;
+                VK.MapMemory(VulkanRenderer.Instance.Device.NativeDevice, NativeMemory, 0, sizeof(T), 0, &bufferPointer);
+                Marshal.StructureToPtr(data, (IntPtr)bufferPointer, false);
+                VK.UnmapMemory(VulkanRenderer.Instance.Device.NativeDevice, NativeMemory);
+            }
+            else
+            {
+                // copy data to buffer using a staging buffer
+                using var stagingBuffer = new VulkanBuffer(sizeof(T), VkBufferUsageFlags.TransferSource, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
+                stagingBuffer.CopyFrom(data);
+                stagingBuffer.CopyTo(this);
+            }
         }
 
         /// <summary>Copies data to the buffer.</summary>
         /// <typeparam name="T">The type of the data to copy to the buffer.</typeparam>
         /// <param name="data">The data to copy to the buffer.</param>
-        /// <param name="useStagingBuffer">Whether <paramref name="data"/> should be copied to a staging buffer before being copied to this buffer.</param>
         /// <exception cref="InvalidOperationException">Thrown if <paramref name="data"/> is bigger (<see langword="byte"/> size) than the buffer.</exception>
-        public void CopyFrom<T>(Span<T> data, bool useStagingBuffer = false)
+        public void CopyFrom<T>(Span<T> data)
             where T : unmanaged
         {
             // validate
             if (data.Length * sizeof(T) > Size)
                 throw new InvalidOperationException($"{nameof(data)} is bigger (byte size) than the buffer.");
 
-            if (useStagingBuffer)
-            {
-                // copy data to buffer using staging buffer
-                using var stagingBuffer = new VulkanBuffer(data.Length * sizeof(T), VkBufferUsageFlags.TransferSource, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
-                stagingBuffer.CopyFrom(data);
-                stagingBuffer.CopyTo(this);
-            }
-            else
+            if (MemoryProperties.HasFlag(VkMemoryPropertyFlags.HostVisible))
             {
                 // copy data to buffer
                 void* bufferPointer;
@@ -123,6 +129,13 @@ namespace NovaEngine.Renderer.Vulkan
                 fixed (void* dataPointer = &data.GetPinnableReference())
                     Buffer.MemoryCopy(dataPointer, bufferPointer, Size, data.Length * sizeof(T));
                 VK.UnmapMemory(VulkanRenderer.Instance.Device.NativeDevice, NativeMemory);
+            }
+            else
+            {
+                // copy data to buffer using staging buffer
+                using var stagingBuffer = new VulkanBuffer(data.Length * sizeof(T), VkBufferUsageFlags.TransferSource, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
+                stagingBuffer.CopyFrom(data);
+                stagingBuffer.CopyTo(this);
             }
         }
 
@@ -170,12 +183,22 @@ namespace NovaEngine.Renderer.Vulkan
             if (data.Length * sizeof(T) < Size)
                 throw new InvalidOperationException($"{nameof(data)} is smaller (byte size) than the buffer.");
 
-            // copy data to buffer
-            void* bufferPointer;
-            VK.MapMemory(VulkanRenderer.Instance.Device.NativeDevice, NativeMemory, 0, data.Length * sizeof(T), 0, &bufferPointer);
-            fixed (void* dataPointer = &data.GetPinnableReference())
-                Buffer.MemoryCopy(bufferPointer, dataPointer, data.Length * sizeof(T), Size);
-            VK.UnmapMemory(VulkanRenderer.Instance.Device.NativeDevice, NativeMemory);
+            if (MemoryProperties.HasFlag(VkMemoryPropertyFlags.HostVisible))
+            {
+                // copy data from buffer
+                void* bufferPointer;
+                VK.MapMemory(VulkanRenderer.Instance.Device.NativeDevice, NativeMemory, 0, data.Length * sizeof(T), 0, &bufferPointer);
+                fixed (void* dataPointer = &data.GetPinnableReference())
+                    Buffer.MemoryCopy(bufferPointer, dataPointer, data.Length * sizeof(T), Size);
+                VK.UnmapMemory(VulkanRenderer.Instance.Device.NativeDevice, NativeMemory);
+            }
+            else
+            {
+                // copy data from buffer using staging buffer
+                using var stagingBuffer = new VulkanBuffer(data.Length * sizeof(T), VkBufferUsageFlags.TransferSource, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
+                stagingBuffer.CopyFrom(this);
+                stagingBuffer.CopyTo(data);
+            }
         }
 
         /// <summary>Copies the buffer to another <see cref="VulkanBuffer"/>.</summary>
