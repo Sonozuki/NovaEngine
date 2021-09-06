@@ -41,14 +41,14 @@ namespace NovaEngine.Platform.Windows
         }
 
         /// <inheritdoc/>
-        public override Size Size {  get; set; }
+        public override Vector2I Size {  get; set; }
 
 
         /*********
         ** Public Methods
         *********/
         /// <inheritdoc/>
-        public Win32Window(string title, Size size)
+        public Win32Window(string title, Vector2I size)
             : base(title, size)
         {
             WindowProcedure = Procedure;
@@ -65,7 +65,7 @@ namespace NovaEngine.Platform.Windows
 
             User32.RegisterClass(in windowClass);
 
-            this.Handle = User32.CreateWindowEx(0, className, Title, WindowStyle.OverlappedWindow, 0, 0, Size.Width, Size.Height, IntPtr.Zero, IntPtr.Zero, Program.Handle, IntPtr.Zero);
+            this.Handle = User32.CreateWindowEx(0, className, Title, WindowStyle.OverlappedWindow, 0, 0, Size.X, Size.Y, IntPtr.Zero, IntPtr.Zero, Program.Handle, IntPtr.Zero);
             if (this.Handle == IntPtr.Zero)
                 return;
         }

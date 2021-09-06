@@ -19,6 +19,6 @@ namespace NovaEngine.External.Platform
         /// <param name="title">The title of the window.</param>
         /// <param name="size">The size of the window.</param>
         /// <returns>A platform specific window.</returns>
-        public PlatformWindowBase CreatePlatformWindow(string title, Size size);
+        public PlatformWindowBase CreatePlatformWindow(string title, Vector2I size);
     }
 }

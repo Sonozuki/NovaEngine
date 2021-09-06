@@ -36,7 +36,7 @@ namespace NovaEngine.Windowing
         }
 
         /// <summary>The size of the window.</summary>
-        public Size Size
+        public Vector2I Size
         {
             get => PlatformWindow.Size;
             set => PlatformWindow.Size = value;
@@ -52,7 +52,7 @@ namespace NovaEngine.Windowing
         /// <summary>Constructs an instance.</summary>
         /// <param name="title">The title of the window.</param>
         /// <param name="size">The size of the window.</param>
-        public Window(string title, Size size)
+        public Window(string title, Vector2I size)
         {
             PlatformWindow = PlatformManager.CurrentPlatform.CreatePlatformWindow(title, size);
 

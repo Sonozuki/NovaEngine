@@ -10,10 +10,10 @@ namespace NovaEngine.Windowing
         ** Accessors
         *********/
         /// <summary>The old size of the window.</summary>
-        public Size OldSize { get; }
+        public Vector2I OldSize { get; }
 
         /// <summary>The new size of the window.</summary>
-        public Size NewSize { get; }
+        public Vector2I NewSize { get; }
 
 
         /*********
@@ -22,7 +22,7 @@ namespace NovaEngine.Windowing
         /// <summary>Constructs an instance.</summary>
         /// <param name="oldSize">The old size of the window.</param>
         /// <param name="newSize">The new size of the window.</param>
-        public ResizeEventArgs(Size oldSize, Size newSize)
+        public ResizeEventArgs(Vector2I oldSize, Vector2I newSize)
         {
             OldSize = oldSize;
             NewSize = newSize;

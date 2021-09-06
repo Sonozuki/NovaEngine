@@ -18,7 +18,7 @@ namespace NovaEngine.Platform.Windows
         ** Public Methods
         *********/
         /// <inheritdoc/>
-        public PlatformWindowBase CreatePlatformWindow(string title, Size size) => new Win32Window(title, size);
+        public PlatformWindowBase CreatePlatformWindow(string title, Vector2I size) => new Win32Window(title, size);
 
         /// <inheritdoc/>
         public Vector2I GetCursorPosition()

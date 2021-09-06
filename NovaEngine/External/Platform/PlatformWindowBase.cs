@@ -27,7 +27,7 @@ namespace NovaEngine.External.Platform
         public abstract string Title { get; set; }
 
         /// <summary>The size of the window.</summary>
-        public abstract Size Size { get; set; }
+        public abstract Vector2I Size { get; set; }
 
 
         /*********
@@ -36,7 +36,7 @@ namespace NovaEngine.External.Platform
         /// <summary>Constructs an instance.</summary>
         /// <param name="title">The title of the window.</param>
         /// <param name="size">The size of the window.</param>
-        public PlatformWindowBase(string title, Size size)
+        public PlatformWindowBase(string title, Vector2I size)
         {
             Title = title;
             Size = size;
