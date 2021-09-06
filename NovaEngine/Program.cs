@@ -1,4 +1,5 @@
-﻿using NovaEngine.Content;
+﻿using NovaEngine.Components;
+using NovaEngine.Content;
 using NovaEngine.Graphics;
 using NovaEngine.IO;
 using NovaEngine.Logging;
@@ -54,8 +55,7 @@ namespace NovaEngine
                 // initialise window
                 if (PlatformManager.CurrentPlatform == null)
                     return; // fatal log has already been created at this point
-                MainWindow = new Window("NovaEngine", new Size(1280, 720)); // TODO: don't hardcode
-                MainWindow.Resize += (e) => RendererManager.CurrentRenderer.OnWindowResize(e.NewSize);
+                MainWindow = new Window("NovaEngine", new(1280, 720)); // TODO: don't hardcode
 
                 // initialise input handler
                 if (InputHandlerManager.CurrentInputHandler == null)
@@ -83,7 +83,7 @@ namespace NovaEngine
 
                         SceneManager.LoadedScenes.ForEach(scene => scene.Update());
 
-                        RendererManager.CurrentRenderer.OnRenderFrame();
+                        Camera.Main?.Render(true);
 
                         MainWindow.ProcessEvents();
                     }

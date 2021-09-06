@@ -48,29 +48,31 @@ namespace NovaEngine.Renderer.Vulkan
         *********/
         /// <summary>Constructs an instance.</summary>
         /// <param name="vsync">Whether vsync should be used when presenting.</param>
-        /// <param name="undefinedExtent">The extent to set the swapchain if it's undefined (in the surface capabilities).</param>
+        /// <param name="extent">The extent to set the swapchain.</param>
         /// <exception cref="InvalidOperationException">Thrown if the physical device doesn't support the surface.</exception>
         /// <exception cref="ApplicationException">Thrown if the swapchain or swapchain image views couldn't be created.</exception>
-        public VulkanSwapchain(bool vsync, VkExtent2D undefinedExtent)
+        public VulkanSwapchain(bool vsync, VkExtent2D extent)
         {
             // get the swapchain details
             var swapchainSupport = new SwapchainSupportDetails(VulkanRenderer.Instance.Device.NativePhysicalDevice, VulkanRenderer.Instance.NativeSurface);
 
             var surfaceFormat = ChooseSurfaceFormat(swapchainSupport.Formats);
             var presentationMode = ChoosePresentationMode(swapchainSupport.PresentationModes, vsync);
-            Extent = ChooseExtent(swapchainSupport.Capabilities, undefinedExtent);
+
             ImageFormat = surfaceFormat.Format;
+            Extent = new VkExtent2D(
+                width: MathsHelper.Clamp(extent.Width, swapchainSupport.Capabilities.MinImageExtent.Width, swapchainSupport.Capabilities.MaxImageExtent.Width),
+                height: MathsHelper.Clamp(extent.Height, swapchainSupport.Capabilities.MinImageExtent.Height, swapchainSupport.Capabilities.MaxImageExtent.Height)
+            );
 
             // determine the number of images in the swapchain
-            var imageCount = swapchainSupport.Capabilities.MinImageCount + 1;
-            if (swapchainSupport.Capabilities.MaxImageCount > 0 && imageCount > swapchainSupport.Capabilities.MaxImageCount) // if the MaxImageCount is zero, then there is no limit
-                imageCount = swapchainSupport.Capabilities.MaxImageCount;
+            var imageCount = MathsHelper.Clamp(swapchainSupport.Capabilities.MinImageCount + 1, swapchainSupport.Capabilities.MinImageCount, swapchainSupport.Capabilities.MaxImageCount);
 
             // create the image usage based on what the surface can support
             var imageUsage = VkImageUsageFlags.ColorAttachment;
-            if ((swapchainSupport.Capabilities.SupportedUsageFlags & VkImageUsageFlags.TransferSource) != 0)
+            if (swapchainSupport.Capabilities.SupportedUsageFlags.HasFlag(VkImageUsageFlags.TransferSource))
                 imageUsage |= VkImageUsageFlags.TransferSource;
-            if ((swapchainSupport.Capabilities.SupportedUsageFlags & VkImageUsageFlags.TransferDestination) != 0)
+            if (swapchainSupport.Capabilities.SupportedUsageFlags.HasFlag(VkImageUsageFlags.TransferDestination))
                 imageUsage |= VkImageUsageFlags.TransferDestination;
 
             // find a supported composite alpha format (not all devices support CompositeAlphaFlags.Opaque)
@@ -268,24 +270,6 @@ namespace NovaEngine.Renderer.Vulkan
 
             // otherwise, just return fifo. fifo waits for the vertical blank (vsync) and is always present as per spec
             return VkPresentModeKHR.FifoKhr;
-        }
-
-        /// <summary>Chooses the extent (resolution).</summary>
-        /// <param name="capabilities">The surface capabilities.</param>
-        /// <param name="undefinedExtent">The extent to use if the surface extent is undefined.</param>
-        /// <returns>The correct swapchain extent.</returns>
-        private static VkExtent2D ChooseExtent(VkSurfaceCapabilitiesKHR capabilities, VkExtent2D undefinedExtent)
-        {
-            // return the current extent if it's already defined
-            if (capabilities.CurrentExtent.Width != uint.MaxValue)
-                return capabilities.CurrentExtent;
-
-            // otherwise, return the undefinedExtent (clamped)
-            return new VkExtent2D()
-            {
-                Width = MathsHelper.Clamp(undefinedExtent.Width, capabilities.MinImageExtent.Width, capabilities.MaxImageExtent.Width),
-                Height = MathsHelper.Clamp(undefinedExtent.Height, capabilities.MinImageExtent.Height, capabilities.MaxImageExtent.Height)
-            };
         }
 
         /// <summary>Gets the first format with the specified features.</summary>

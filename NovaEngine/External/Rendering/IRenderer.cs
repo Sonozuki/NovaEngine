@@ -1,6 +1,6 @@
-﻿using NovaEngine.Core;
+﻿using NovaEngine.Components;
+using NovaEngine.Core;
 using NovaEngine.Graphics;
-using NovaEngine.Maths;
 using NovaEngine.Rendering;
 using System;
 
@@ -33,15 +33,13 @@ namespace NovaEngine.External.Rendering
         /// <returns>A renderer specific game object.</returns>
         public RendererGameObjectBase CreateRendererGameObject(GameObject baseGameObject);
 
+        /// <summary>Creates a renderer specific camera.</summary>
+        /// <param name="baseCamera">The underlying camera.</param>
+        /// <returns>A renderer specific camera.</returns>
+        public RendererCameraBase CreateRendererCamera(Camera baseCamera);
+
         /// <summary>Invoked when the renderer should initialise itself.</summary>
         /// <param name="windowHandle">The handle to the application window.</param>
         public void OnInitialise(IntPtr windowHandle);
-
-        /// <summary>Invoked when the window gets resized.</summary>
-        /// <param name="newSize">The new size of the window.</param>
-        public void OnWindowResize(Size newSize);
-
-        /// <summary>Invoked when the renderer should render a frame.</summary>
-        public void OnRenderFrame();
     }
 }

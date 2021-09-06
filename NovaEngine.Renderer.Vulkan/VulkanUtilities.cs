@@ -36,9 +36,8 @@ namespace NovaEngine.Renderer.Vulkan
         /// <summary>Converts a <see cref="SampleCount"/> to the corresponding <see cref="VkSampleCountFlags"/>.</summary>
         /// <param name="sampleCount">The sample count to convert.</param>
         /// <returns>The converted <paramref name="sampleCount"/>.</returns>
-        public static VkSampleCountFlags ConvertSampleCount(SampleCount sampleCount)
-        {
-            return sampleCount switch
+        public static VkSampleCountFlags ConvertSampleCount(SampleCount sampleCount) =>
+            sampleCount switch
             {
                 SampleCount.Count64 => VkSampleCountFlags.Count64,
                 SampleCount.Count32 => VkSampleCountFlags.Count32,
@@ -48,7 +47,21 @@ namespace NovaEngine.Renderer.Vulkan
                 SampleCount.Count2 => VkSampleCountFlags.Count2,
                 _ => VkSampleCountFlags.Count1,
             };
-        }
+
+        /// <summary>Converts a <see cref="VkSampleCountFlags"/> to the corresponding <see cref="SampleCount"/>.</summary>
+        /// <param name="sampleCount">The sample count to convert.</param>
+        /// <returns>The converted <paramref name="sampleCount"/>.</returns>
+        public static SampleCount ConvertSampleCount(VkSampleCountFlags sampleCount) =>
+            sampleCount switch
+            {
+                VkSampleCountFlags when sampleCount.HasFlag(VkSampleCountFlags.Count64) => SampleCount.Count64,
+                VkSampleCountFlags when sampleCount.HasFlag(VkSampleCountFlags.Count32) => SampleCount.Count32,
+                VkSampleCountFlags when sampleCount.HasFlag(VkSampleCountFlags.Count16) => SampleCount.Count16,
+                VkSampleCountFlags when sampleCount.HasFlag(VkSampleCountFlags.Count8) => SampleCount.Count8,
+                VkSampleCountFlags when sampleCount.HasFlag(VkSampleCountFlags.Count4) => SampleCount.Count4,
+                VkSampleCountFlags when sampleCount.HasFlag(VkSampleCountFlags.Count2) => SampleCount.Count2,
+                _ => SampleCount.Count1
+            };
 
         /// <summary>Creates a vertex buffer.</summary>
         /// <param name="vertices">The vertex data to populate the vertex buffer with.</param>

@@ -15,6 +15,9 @@ namespace NovaEngine.Renderer.Vulkan
         /*********
         ** Fields
         *********/
+        /// <summary>The camera whichthe pipelines belong to.</summary>
+        private VulkanCamera Camera;
+
         /// <summary>A pointer to a <see langword="string"/> containing "main", specifying the name of a shader entry point.</summary>
         private IntPtr ShaderEntryPointNamePointer;
 
@@ -39,11 +42,14 @@ namespace NovaEngine.Renderer.Vulkan
         ** Public Methods
         *********/
         /// <summary>Constructs an instance.</summary>
+        /// <param name="camera">The camera which the pipelines belong to.</param>
         /// <exception cref="ApplicationException">Thrown if the pipeline layout or a pipeline couldn't be created.</exception>
-        public VulkanPipelines()
+        public VulkanPipelines(VulkanCamera camera)
         {
             try
             {
+                Camera = camera;
+
                 CreateShaderStages();
 
                 CreateGraphicsPipelines();
@@ -108,13 +114,13 @@ namespace NovaEngine.Renderer.Vulkan
                 {
                     X = 0,
                     Y = 0,
-                    Width = VulkanRenderer.Instance.Swapchain.Extent.Width,
-                    Height = VulkanRenderer.Instance.Swapchain.Extent.Height,
+                    Width = Camera.Swapchain.Extent.Width,
+                    Height = Camera.Swapchain.Extent.Height,
                     MinDepth = 0,
                     MaxDepth = 1
                 };
 
-                var scissorRectangle = new VkRect2D(VkOffset2D.Zero, VulkanRenderer.Instance.Swapchain.Extent);
+                var scissorRectangle = new VkRect2D(VkOffset2D.Zero, Camera.Swapchain.Extent);
 
                 var viewportState = new VkPipelineViewportStateCreateInfo()
                 {
@@ -217,7 +223,7 @@ namespace NovaEngine.Renderer.Vulkan
                     DepthStencilState = &depthStencilState,
                     ColorBlendState = &colourBlendState,
                     Layout = GraphicsPipelineLayout,
-                    RenderPass = VulkanRenderer.Instance.NativeRenderPass,
+                    RenderPass = Camera.NativeRenderPass,
                     Subpass = 0
                 };
 

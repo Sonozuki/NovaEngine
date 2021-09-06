@@ -1,4 +1,5 @@
-﻿using NovaEngine.Core;
+﻿using NovaEngine.Components;
+using NovaEngine.Core;
 using NovaEngine.External.Rendering;
 using NovaEngine.Graphics;
 using NovaEngine.Maths;
@@ -23,21 +24,18 @@ namespace NovaEngine.Rendering.Fake
         ** Public Methods
         *********/
         /// <inheritdoc/>
-        public RendererGameObjectBase CreateRendererGameObject(GameObject baseGameObject) => new FakeGameObject(baseGameObject);
-
-        /// <inheritdoc/>
         public RendererTextureBase CreateRendererTexture(TextureBase baseTexture, bool generateMipChain) => new FakeTexture(baseTexture);
 
         /// <inheritdoc/>
-        public void Dispose() { }
+        public RendererGameObjectBase CreateRendererGameObject(GameObject baseGameObject) => new FakeGameObject(baseGameObject);
+
+        /// <inheritdoc/>
+        public RendererCameraBase CreateRendererCamera(Camera baseCamera) => new FakeCamera(baseCamera);
 
         /// <inheritdoc/>
         public void OnInitialise(IntPtr windowHandle) { }
 
         /// <inheritdoc/>
-        public void OnRenderFrame() { }
-
-        /// <inheritdoc/>
-        public void OnWindowResize(Size newSize) { }
+        public void Dispose() { }
     }
 }
