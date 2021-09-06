@@ -26,6 +26,7 @@ namespace NovaEngine.Graphics
         /*********
         ** Public Methods
         *********/
+        /// <summary>Initialises the class.</summary>
         static Texture2D()
         {
             Undefined = ContentLoader.Load<Texture2D>("Textures/Undefined");
