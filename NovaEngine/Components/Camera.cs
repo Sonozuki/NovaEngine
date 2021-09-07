@@ -62,7 +62,7 @@ namespace NovaEngine.Components
                     return Matrix4x4.Identity;
 
                 return Matrix4x4.CreateTranslation(-Transform.GlobalPosition.X, -Transform.GlobalPosition.Y, Transform.GlobalPosition.Z)
-                     * Matrix4x4.CreateFromQuaternion(Transform.GlobalRotation.Inverted);
+                     * Matrix4x4.CreateFromQuaternion(Transform.GlobalRotation.Inverse);
             }
         }
 

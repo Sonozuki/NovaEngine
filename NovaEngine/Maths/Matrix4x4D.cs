@@ -97,7 +97,7 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>The inverse of the matrix.</summary>
-        public readonly Matrix4x4D Inverted
+        public readonly Matrix4x4D Inverse
         {
             get
             {

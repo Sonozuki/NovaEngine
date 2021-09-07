@@ -46,7 +46,7 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>The inverse of the quaternion.</summary>
-        public readonly Quaternion Inverted
+        public readonly Quaternion Inverse
         {
             get
             {

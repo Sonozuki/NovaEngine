@@ -79,23 +79,23 @@ namespace NovaEngine.Tests.Maths
             Assert.AreEqual(new Matrix2x2(1, 3, 2, 4), transposed);
         }
 
-        /// <summary>Tests <see cref="Matrix2x2.Inverted"/>.</summary>
+        /// <summary>Tests <see cref="Matrix2x2.Inverse"/>.</summary>
         /// <remarks>This tests that the unchanged matrix is returned when the determinant is '0'.</remarks>
         [Test]
         public void Inverted_DeterminantIsZero_ReturnsUnchangedMatrix()
         {
             var matrix = Matrix2x2.Identity;
-            var inverted = matrix.Inverted;
+            var inverted = matrix.Inverse;
             Assert.AreEqual(matrix, inverted);
         }
 
-        /// <summary>Tests <see cref="Matrix2x2.Inverted"/>.</summary>
+        /// <summary>Tests <see cref="Matrix2x2.Inverse"/>.</summary>
         /// <remarks>This tests that the inverse of the matrix is returned when the determinant is not '0'.</remarks>
         [Test]
         public void Inverted_DeterminantIsNotZero_ReturnsInvertedMatrix()
         {
             var matrix = new Matrix2x2(1, 2, 3, 4);
-            var inverted = matrix.Inverted;
+            var inverted = matrix.Inverse;
             Assert.AreEqual(new Matrix2x2(-2, 1, 1.5f, -.5f), inverted);
         }
 
