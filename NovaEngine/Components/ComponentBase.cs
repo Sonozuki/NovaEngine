@@ -13,6 +13,9 @@ namespace NovaEngine.Components
         /// <summary>Whether the component is enabled.</summary>
         public bool IsEnabled { get; set; }
 
+        /// <summary>Whether this component is affected by <see cref="ApplicationLoop.IsComponentUpdatingPaused"/>.</summary>
+        public bool IsPausable { get; set; } = true;
+
         /// <summary>The game object the component is currently on.</summary>
         public GameObject? GameObject { get; internal set; }
 

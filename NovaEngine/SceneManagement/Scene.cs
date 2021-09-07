@@ -60,6 +60,9 @@ namespace NovaEngine.SceneManagement
             {
                 try
                 {
+                    if (ApplicationLoop.IsComponentUpdatingPaused && component.IsPausable)
+                        return;
+
                     component.OnUpdate();
                 }
                 catch (Exception ex)
