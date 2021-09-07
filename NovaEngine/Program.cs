@@ -1,9 +1,7 @@
-﻿using NovaEngine.Components;
-using NovaEngine.Content;
+﻿using NovaEngine.Content;
 using NovaEngine.Graphics;
 using NovaEngine.IO;
 using NovaEngine.Logging;
-using NovaEngine.Maths;
 using NovaEngine.Platform;
 using NovaEngine.Rendering;
 using NovaEngine.SceneManagement;
@@ -75,23 +73,7 @@ namespace NovaEngine
                 MainWindow.Show();
 
                 // main loop
-                try
-                {
-                    while (!MainWindow!.HasClosed)
-                    {
-                        Input.Update();
-
-                        SceneManager.LoadedScenes.ForEach(scene => scene.Update());
-
-                        Camera.Main?.Render(true);
-
-                        MainWindow.ProcessEvents();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log($"Unrecoverable error occured inside the main loop: {ex}", LogSeverity.Fatal);
-                }
+                ApplicationLoop.Run();
 
                 // clean up
                 foreach (var scene in SceneManager.LoadedScenes)
