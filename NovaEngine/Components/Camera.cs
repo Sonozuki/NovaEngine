@@ -80,7 +80,7 @@ namespace NovaEngine.Components
 
         /// <summary>The renderer specific camera.</summary>
         [NonSerialisable]
-        public RendererCameraBase RendererCamera { get; }
+        public RendererCameraBase RendererCamera { get; private set; }
 
         /// <summary>The camera to use when rendering.</summary>
         public static Camera? Main { get; set; }
@@ -92,7 +92,7 @@ namespace NovaEngine.Components
         /// <summary>Constructs an instance.</summary>
         /// <param name="resolution">The resolution of the camera's render target; specifying <see langword="null"/> will automatically update the resolution to be the same as the window's.</param>
         /// <param name="setMainCamera">Whether <see cref="Main"/> should be set to this camera.</param>
-        public Camera(Vector2I resolution, bool setMainCamera)
+        public Camera(Vector2I? resolution, bool setMainCamera)
             : this(90, .01f, 1000, resolution, setMainCamera) { }
 
         /// <summary>Constructs a perspective instance.</summary>
@@ -118,10 +118,7 @@ namespace NovaEngine.Components
         public void Render(bool presentRenderTarget) => RendererCamera.Render(presentRenderTarget);
 
         /// <inheritdoc/>
-        public override void Dispose()
-        {
-            RendererCamera.Dispose();
-        }
+        public override void Dispose() => RendererCamera.Dispose();
 
 
         /*********
@@ -130,12 +127,7 @@ namespace NovaEngine.Components
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         /// <summary>Constructs an instance.</summary>
-        private Camera()
-        {
-            RendererCamera = RendererManager.CurrentRenderer.CreateRendererCamera(this);
-        }
-
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        private Camera() { }
 
         /// <summary>Constructs an instance.</summary>
         /// <param name="projection"></param>
@@ -147,7 +139,6 @@ namespace NovaEngine.Components
         /// <param name="resolution">The resolution of the camera's render target; specifying <see langword="null"/> will automatically update the resolution to be the same as the window's.</param>
         /// <param name="setMainCamera">Whether <see cref="Main"/> should be set to this camnera.</param>
         private Camera(CameraProjection projection, float fieldOfView, float width, float height, float nearClippingPlane, float farClippingPlane, Vector2I? resolution, bool setMainCamera)
-            : this()
         {
             Projection = projection;
             FieldOfView = fieldOfView;
@@ -155,16 +146,24 @@ namespace NovaEngine.Components
             Height = height;
             NearClippingPlane = nearClippingPlane;
             FarClippingPlane = farClippingPlane;
-
-            if (resolution == null)
-            {
-                Program.MainWindow.Resize += e => Resolution = e.NewSize;
-                resolution = Program.MainWindow.Size;
-            }
-            Resolution = Vector2I.ComponentMax(Vector2I.One, resolution.Value);
+            _Resolution = resolution;
 
             if (setMainCamera)
                 Main = this;
+
+            RunSharedLogic();
+        }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+        /// <summary>Runs logic that is used when constructing the object manually, and when constructing the object through the serialiser.</summary>
+        [SerialiserCalled]
+        private void RunSharedLogic()
+        {
+            if (_Resolution == null && Program.HasProgramInstance)
+                Program.MainWindow.Resize += e => Resolution = e.NewSize;
+
+            RendererCamera = RendererManager.CurrentRenderer.CreateRendererCamera(this);
         }
     }
 }
