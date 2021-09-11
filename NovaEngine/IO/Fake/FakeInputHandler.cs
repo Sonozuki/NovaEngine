@@ -13,10 +13,10 @@ namespace NovaEngine.IO.Fake
         public bool CanUseOnPlatform => true;
 
         /// <inheritdoc/>
-        public MouseState MouseState => new();
+        public MouseState MouseState { get; set; }
 
         /// <inheritdoc/>
-        public KeyboardState KeyboardState => new();
+        public KeyboardState KeyboardState { get; set; }
 
 
         /*********

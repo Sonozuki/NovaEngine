@@ -201,6 +201,13 @@ namespace NovaEngine.IO
             });
         }
 
+        /// <summary>Resets the state of the input handler.</summary>
+        internal static void ResetInputState()
+        {
+            CurrentMouseState = InputHandlerManager.CurrentInputHandler.MouseState = new();
+            CurrentKeyboardState = InputHandlerManager.CurrentInputHandler.KeyboardState = new();
+        }
+
 
         /*********
         ** Private Methods

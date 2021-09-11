@@ -1,4 +1,5 @@
 ﻿using NovaEngine.External.Platform;
+using NovaEngine.IO;
 using NovaEngine.Maths;
 using NovaEngine.Platform;
 using System;
@@ -57,6 +58,7 @@ namespace NovaEngine.Windowing
             PlatformWindow = PlatformManager.CurrentPlatform.CreatePlatformWindow(title, size);
 
             PlatformWindow.Resize += (e) => Resize?.Invoke(e);
+            PlatformWindow.LostFocus += () => Input.ResetInputState();
             PlatformWindow.Closed += () => HasClosed = true;
         }
 

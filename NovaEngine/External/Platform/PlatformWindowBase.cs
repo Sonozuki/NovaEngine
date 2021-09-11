@@ -13,6 +13,9 @@ namespace NovaEngine.External.Platform
         /// <summary>Invoked when the window is resized.</summary>
         public abstract event Action<ResizeEventArgs>? Resize;
 
+        /// <summary>Invoked when the window loses focus.</summary>
+        public abstract event Action? LostFocus;
+
         /// <summary>Invoked when the window is closed.</summary>
         public abstract event Action? Closed;
 

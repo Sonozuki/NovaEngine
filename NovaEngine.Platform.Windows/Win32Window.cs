@@ -16,6 +16,9 @@ namespace NovaEngine.Platform.Windows
         public override event Action<ResizeEventArgs>? Resize;
 
         /// <inheritdoc/>
+        public override event Action? LostFocus;
+
+        /// <inheritdoc/>
         public override event Action? Closed;
 
 
@@ -104,7 +107,6 @@ namespace NovaEngine.Platform.Windows
                         {
                             Closed?.Invoke();
                             User32.PostQuitMessage(0);
-
                             return IntPtr.Zero;
                         }
                     case Message.Size:
@@ -112,8 +114,12 @@ namespace NovaEngine.Platform.Windows
                             var oldSize = Size;
                             var widthHeight = lParam.ToInt32();
                             Size = new(widthHeight & 0x0000FFFF, widthHeight >> 16);
-                            Resize?.Invoke(new ResizeEventArgs(oldSize, Size));
-
+                            Resize?.Invoke(new(oldSize, Size));
+                            return IntPtr.Zero;
+                        }
+                    case Message.KillFocus:
+                        {
+                            LostFocus?.Invoke();
                             return IntPtr.Zero;
                         }
                 }

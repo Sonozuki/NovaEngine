@@ -12,10 +12,10 @@ namespace NovaEngine.External.Input
         public bool CanUseOnPlatform { get; }
 
         /// <summary>The current state of the mouse.</summary>
-        public MouseState MouseState { get; }
+        public MouseState MouseState { get; set; }
 
         /// <summary>The current state of the keyboard.</summary>
-        public KeyboardState KeyboardState { get; }
+        public KeyboardState KeyboardState { get; set; }
 
 
         /*********

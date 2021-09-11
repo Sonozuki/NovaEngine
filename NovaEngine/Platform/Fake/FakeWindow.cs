@@ -15,6 +15,9 @@ namespace NovaEngine.Platform.Fake
         public override event Action<ResizeEventArgs>? Resize;
 
         /// <inheritdoc/>
+        public override event Action? LostFocus;
+
+        /// <inheritdoc/>
         public override event Action? Closed;
 
 

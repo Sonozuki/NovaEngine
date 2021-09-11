@@ -14,12 +14,6 @@ namespace NovaEngine.InputHandler.RawWindows
         /*********
         ** Fields
         *********/
-        /// <summary>The current state of the mouse.</summary>
-        private MouseState _MouseState;
-
-        /// <summary>The current state of the keyboard.</summary>
-        private KeyboardState _KeyboardState;
-
         /// <summary>The old procedure of the window.</summary>
         private IntPtr OldWindowProcedure;
 
@@ -39,10 +33,10 @@ namespace NovaEngine.InputHandler.RawWindows
         public bool CanUseOnPlatform => OperatingSystem.IsWindows();
 
         /// <inheritdoc/>
-        public MouseState MouseState => _MouseState;
+        public MouseState MouseState { get; set; }
 
         /// <inheritdoc/>
-        public KeyboardState KeyboardState => _KeyboardState;
+        public KeyboardState KeyboardState { get; set; }
 
 
         /*********
@@ -119,44 +113,47 @@ namespace NovaEngine.InputHandler.RawWindows
         private void ProcessMouseInput(RawInput rawInput)
         {
             var rawMouse = rawInput.Data.Mouse;
+            var mouseState = MouseState;
 
             // buttons
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.LeftButtonDown))
-                _MouseState[MouseButton.LeftButton] = true;
+                mouseState[MouseButton.LeftButton] = true;
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.LeftButtonUp))
-                _MouseState[MouseButton.LeftButton] = false;
+                mouseState[MouseButton.LeftButton] = false;
 
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.MiddleButtonDown))
-                _MouseState[MouseButton.MiddleButton] = true;
+                mouseState[MouseButton.MiddleButton] = true;
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.MiddleButtonUp))
-                _MouseState[MouseButton.MiddleButton] = false;
+                mouseState[MouseButton.MiddleButton] = false;
 
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.RightButtonDown))
-                _MouseState[MouseButton.RightButton] = true;
+                mouseState[MouseButton.RightButton] = true;
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.RightButtonUp))
-                _MouseState[MouseButton.RightButton] = false;
+                mouseState[MouseButton.RightButton] = false;
 
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.Button4Down))
-                _MouseState[MouseButton.BackButton] = true;
+                mouseState[MouseButton.BackButton] = true;
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.Button4Up))
-                _MouseState[MouseButton.BackButton] = false;
+                mouseState[MouseButton.BackButton] = false;
 
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.Button5Down))
-                _MouseState[MouseButton.ForwardButton] = true;
+                mouseState[MouseButton.ForwardButton] = true;
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.Button5Up))
-                _MouseState[MouseButton.ForwardButton] = false;
+                mouseState[MouseButton.ForwardButton] = false;
 
             // scroll wheels
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.Wheel))
-                _MouseState.Scroll += new Vector2(0, rawMouse.ButtonData / 120f);
+                mouseState.Scroll += new Vector2(0, rawMouse.ButtonData / 120f);
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.HWheel))
-                _MouseState.Scroll += new Vector2(rawMouse.ButtonData / 120f, 0);
+                mouseState.Scroll += new Vector2(rawMouse.ButtonData / 120f, 0);
 
             // position
             if (rawMouse.Flags.HasFlag(RawMouseFlags.MoveAbsolute))
-                _MouseState.Position = new(rawMouse.LastX, rawMouse.LastY);
+                mouseState.Position = new(rawMouse.LastX, rawMouse.LastY);
             else
-                _MouseState.Position += new Vector2I(rawMouse.LastX, rawMouse.LastY);
+                mouseState.Position += new Vector2I(rawMouse.LastX, rawMouse.LastY);
+
+            MouseState = mouseState;
         }
 
         /// <summary>Process a keyboard input event.</summary>
@@ -167,7 +164,9 @@ namespace NovaEngine.InputHandler.RawWindows
             var isE0BitSet = rawKeyboard.Flags.HasFlag(RawInputKeyboardDataFlags.E0);
             var convertedKey = Win32Utilities.ConvertVirtualKey(rawKeyboard.VirtualKey, isE0BitSet, rawKeyboard.MakeCode);
 
-            _KeyboardState[convertedKey] = !rawKeyboard.Flags.HasFlag(RawInputKeyboardDataFlags.Break);
+            var keyboardState = KeyboardState;
+            keyboardState[convertedKey] = !rawKeyboard.Flags.HasFlag(RawInputKeyboardDataFlags.Break);
+            KeyboardState = keyboardState;
         }
 
         /// <summary>Process a hid input event.</summary>
