@@ -24,7 +24,7 @@ namespace NovaEngine.Rendering.Fake
         ** Public Methods
         *********/
         /// <inheritdoc/>
-        public RendererTextureBase CreateRendererTexture(TextureBase baseTexture, bool generateMipChain) => new FakeTexture(baseTexture);
+        public RendererTextureBase CreateRendererTexture(TextureBase baseTexture) => new FakeTexture(baseTexture);
 
         /// <inheritdoc/>
         public RendererGameObjectBase CreateRendererGameObject(GameObject baseGameObject) => new FakeGameObject(baseGameObject);

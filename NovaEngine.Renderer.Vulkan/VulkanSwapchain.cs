@@ -139,7 +139,7 @@ namespace NovaEngine.Renderer.Vulkan
             }
 
             // create the colour and depth attachments
-            ColourTexture = new Texture2D(Extent.Width, Extent.Height, generateMipChain: false, sampleCount: RenderingSettings.Instance.SampleCount);
+            ColourTexture = new Texture2D(Extent.Width, Extent.Height, automaticallyGenerateMipChain: false, sampleCount: RenderingSettings.Instance.SampleCount);
             DepthTexture = new DepthTexture(Extent.Width, Extent.Height, RenderingSettings.Instance.SampleCount);
         }
 

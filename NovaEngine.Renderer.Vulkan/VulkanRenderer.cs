@@ -85,7 +85,7 @@ namespace NovaEngine.Renderer.Vulkan
         ** Public Methods
         *********/
         /// <inheritdoc/>
-        public RendererTextureBase CreateRendererTexture(TextureBase baseTexture, bool generateMipChain) => new VulkanTexture(baseTexture, generateMipChain);
+        public RendererTextureBase CreateRendererTexture(TextureBase baseTexture) => new VulkanTexture(baseTexture);
 
         /// <inheritdoc/>
         public RendererGameObjectBase CreateRendererGameObject(GameObject baseGameObject) => new VulkanGameObject(baseGameObject);

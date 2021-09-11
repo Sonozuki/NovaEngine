@@ -1,6 +1,5 @@
 ﻿using NovaEngine.Components;
 using NovaEngine.External.Rendering;
-using NovaEngine.Logging;
 using NovaEngine.Rendering;
 using NovaEngine.Serialisation;
 using System;
@@ -36,7 +35,7 @@ namespace NovaEngine.Core
 
         /// <summary>The renderer specific game object.</summary>
         [NonSerialisable]
-        public RendererGameObjectBase RendererGameObject { get; }
+        public RendererGameObjectBase RendererGameObject { get; private set; }
 
 
         /*********
@@ -48,13 +47,13 @@ namespace NovaEngine.Core
         /// <param name="sceneName">The name of the scene to add the game object to.<br/>NOTE: this is only used when <paramref name="parent"/> is <see langword="null"/>.<br/>If this is <see langword="null"/>, empty, or is an invalid scene name, then the game object will not be added to a scene.</param>
         /// <param name="isEnabled">Whether the game object is enabled.</param>
         public GameObject(string name, GameObject? parent = null, string? sceneName = null, bool isEnabled = true)
+            : this()
         {
             Name = name;
             Children = new(this);
             Components = new(this);
             Transform = new(this);
             IsEnabled = isEnabled;
-            RendererGameObject = RendererManager.CurrentRenderer.CreateRendererGameObject(this);
 
             // add the gameobject to the parent or as a scene root object
             if (parent != null)
@@ -102,11 +101,16 @@ namespace NovaEngine.Core
         ** Private Methods
         *********/
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        
         /// <summary>Constructs an instance.</summary>
         private GameObject()
         {
+            // technically, this should be ran in a [SerialiserCalled] method, however, because Components.MeshRenderer.set requires
+            // the RendererGameObject to be non null, it has be populated here. this will only be a problem if the RendererGameObject
+            // requires the members of this object to be filled, which isn't the case for the Vulkan renderer and hopefully not others
             RendererGameObject = RendererManager.CurrentRenderer.CreateRendererGameObject(this);
         }
+
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     }
 }

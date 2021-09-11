@@ -1,6 +1,7 @@
 ﻿using NovaEngine.External.Rendering;
 using NovaEngine.Maths;
 using NovaEngine.Rendering;
+using NovaEngine.Serialisation;
 using NovaEngine.Settings;
 using System;
 
@@ -58,8 +59,11 @@ namespace NovaEngine.Graphics
         /// <summary>The filter mode of the texture.</summary>
         public TextureFilter Filter { get; }
 
+        /// <summary>Whether a mip chain will be generated for the texture and automatically regenerated when the texture is changed.</summary>
+        public bool AutomaticallyGenerateMipChain { get; }
+
         /// <summary>The renderer specific texture.</summary>
-        public RendererTextureBase RendererTexture { get; }
+        public RendererTextureBase RendererTexture { get; private set; }
 
         /// <summary>The usage of the texture.</summary>
         internal abstract TextureUsage Usage { get; }
@@ -71,11 +75,13 @@ namespace NovaEngine.Graphics
         /*********
         ** Public Methods
         *********/
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.s
+
         /// <summary>Constructs an instance.</summary>
         /// <param name="width">The width of the texture.</param>
         /// <param name="height">The height of the texture.</param>
         /// <param name="depth">The depth of the texture.</param>
-        /// <param name="generateMipChain">Whether the mip chain should be generated.</param>
+        /// <param name="automaticallyGenerateMipChain">Whether a mip chain will be generated for the texture and automatically regenerated when the texture is changed.</param>
         /// <param name="mipLodBias">The mip LOD (level of detail) bias of the texture.</param>
         /// <param name="layerCount">The number of layers the texture has.</param>
         /// <param name="sampleCount">The number of samples per pixel of the texture.</param>
@@ -85,7 +91,7 @@ namespace NovaEngine.Graphics
         /// <param name="wrapModeV">The texture wrap mode of the V axis.</param>
         /// <param name="wrapModeW">The texture wrap mode of the W axis.</param>
         /// <param name="filter">The filter mode of the texture.</param>
-        public TextureBase(uint width, uint height, uint depth, bool generateMipChain, float mipLodBias, uint layerCount, SampleCount sampleCount, bool anisotropicFilteringEnabled, float maxAnisotropicFilteringLevel, TextureWrapMode wrapModeU, TextureWrapMode wrapModeV, TextureWrapMode wrapModeW, TextureFilter filter)
+        public TextureBase(uint width, uint height, uint depth, bool automaticallyGenerateMipChain, float mipLodBias, uint layerCount, SampleCount sampleCount, bool anisotropicFilteringEnabled, float maxAnisotropicFilteringLevel, TextureWrapMode wrapModeU, TextureWrapMode wrapModeV, TextureWrapMode wrapModeW, TextureFilter filter)
         {
             Width = width;
             _Height = height;
@@ -99,11 +105,22 @@ namespace NovaEngine.Graphics
             _WrapModeV = wrapModeV;
             _WrapModeW = wrapModeW;
             Filter = filter;
+            AutomaticallyGenerateMipChain = automaticallyGenerateMipChain;
 
-            RendererTexture = RendererManager.CurrentRenderer.CreateRendererTexture(this, generateMipChain);
+            RunSharedLogic();
         }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         /// <summary>Disposes unmanaged texture resources.</summary>
         public void Dispose() => RendererTexture.Dispose();
+
+
+        /*********
+        ** Private Methods
+        *********/
+        /// <summary>Runs logic that is used when constructing the object manually, and when constructing the object through the serialiser.</summary>
+        [SerialiserCalled]
+        private void RunSharedLogic() => RendererTexture = RendererManager.CurrentRenderer.CreateRendererTexture(this);
     }
 }

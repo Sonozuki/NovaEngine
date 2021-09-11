@@ -22,6 +22,9 @@ namespace NovaEngine.External.Rendering
         /// <summary>The depth of the texture.</summary>
         public uint Depth { get; }
 
+        /// <summary>Whether a mip chain will be generated for the texture and automatically regenerated when the texture is changed.</summary>
+        public bool AutomaticallyGenerateMipChain { get; }
+
         /// <summary>The mip LOD (level of detail) bias of the texture.</summary>
         public float MipLodBias { get; }
 
@@ -70,6 +73,7 @@ namespace NovaEngine.External.Rendering
             Width = BaseTexture.Width;
             Height = (uint?)typeof(TextureBase).GetField("_Height", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(BaseTexture) ?? throw new MissingMemberException("Couldn't find '_Height' field.");
             Depth = (uint?)typeof(TextureBase).GetField("_Depth", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(BaseTexture) ?? throw new MissingMemberException("Couldn't find '_Depth' field.");
+            AutomaticallyGenerateMipChain = BaseTexture.AutomaticallyGenerateMipChain;
             MipLodBias = BaseTexture.MipLodBias;
             AnisotropicFilteringEnabled = BaseTexture.AnisotropicFilteringEnabled;
             MaxAnisotropicFilteringLevel = BaseTexture.MaxAnisotropicFilteringLevel;

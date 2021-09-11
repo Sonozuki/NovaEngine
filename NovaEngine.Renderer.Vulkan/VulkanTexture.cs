@@ -47,17 +47,16 @@ namespace NovaEngine.Renderer.Vulkan
         *********/
         /// <summary>Constructs an instance.</summary>
         /// <param name="baseTexture">The underlying texture.</param>
-        /// <param name="generateMipChain">Whether the mip chain should be generated for the texture.</param>
         /// <exception cref="ApplicationException">Thrown if the image, image view, or sampler couldn't be created or the memory couldn't be allocated or bound.</exception>
-        public VulkanTexture(TextureBase baseTexture, bool generateMipChain)
-            : base(baseTexture) 
+        public VulkanTexture(TextureBase baseTexture)
+            : base(baseTexture)
         {
             // calculate the number of mip levels for the texture
-            if (generateMipChain)
+            if (this.AutomaticallyGenerateMipChain)
                 this.MipLevels = (uint)Math.Floor(MathF.Log2(Math.Max(this.Width, this.Height))) + 1; // +1 so original image has a mip level
 
             // convert generic texture types to Vulkan specific ones
-            SampleCount = VulkanUtilities.ConvertSampleCount(BaseTexture.SampleCount);
+            SampleCount = VulkanUtilities.ConvertSampleCount(this.BaseTexture.SampleCount);
 
             Format = this.Usage switch
             {
@@ -95,7 +94,7 @@ namespace NovaEngine.Renderer.Vulkan
                 SType = VkStructureType.ImageCreateInfo,
                 ImageType = imageType,
                 Format = Format,
-                Extent = new VkExtent3D(this.Width, this.Height, this.Depth),
+                Extent = new(this.Width, this.Height, this.Depth),
                 MipLevels = this.MipLevels,
                 ArrayLayers = this.LayerCount,
                 Samples = SampleCount,
