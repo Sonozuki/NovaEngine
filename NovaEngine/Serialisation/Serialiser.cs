@@ -1,4 +1,5 @@
 ﻿using NovaEngine.Extensions;
+using NovaEngine.Logging;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -117,6 +118,20 @@ namespace NovaEngine.Serialisation
                                 );
                                 break;
                         }
+                    }
+
+                    // call all methods that are indicated to be called
+                    var methodsToCall = objectInfo.Value!.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                        .Where(method => method.CustomAttributes.Any(attribute => attribute.AttributeType == typeof(SerialiserCalledAttribute)));
+                    foreach (var method in methodsToCall)
+                    {
+                        if (method.GetParameters().Length != 0)
+                        {
+                            Logger.Log($"Serialiser: Method: {method.GetFullName()} is marked to be called by the serialiser, however, it has parameters.", LogSeverity.Error);
+                            continue;
+                        }
+
+                        method.Invoke(objectInfo.Value, null);
                     }
                 }
 
