@@ -158,7 +158,7 @@ namespace NovaEngine.Maths
 
         /// <summary>Gets the axis and angle that the quaternion represents.</summary>
         /// <param name="axis">The axis.</param>
-        /// <param name="angle">The angle, in degrees.</param>
+        /// <param name="angle">The clockwise angle, in degrees.</param>
         public void GetAxisAngle(out Vector3D axis, out double angle)
         {
             var quaternion = this;
@@ -252,7 +252,7 @@ namespace NovaEngine.Maths
 
         /// <summary>Creates a quaternion from an axis and an angle.</summary>
         /// <param name="axis">The axis to rotate around.</param>
-        /// <param name="angle">The angle, in degrees, to rotate around the axis.</param>
+        /// <param name="angle">The clockwise angle, in degrees, to rotate around the axis.</param>
         /// <returns>The created quaternion.</returns>
         public static QuaternionD CreateFromAxisAngle(Vector3D axis, double angle)
         {
@@ -270,14 +270,14 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>Creates a quaternion from euler angles.</summary>
-        /// <param name="eulerAngles">The euler angles, in degrees.</param>
+        /// <param name="eulerAngles">The clockwise euler angles, in degrees.</param>
         /// <returns>The created quaternion.</returns>
         public static QuaternionD CreateFromEulerAngles(in Vector3D eulerAngles) => QuaternionD.CreateFromEulerAngles(eulerAngles.X, eulerAngles.Y, eulerAngles.Z);
 
         /// <summary>Creates a quaternion from euler angles.</summary>
-        /// <param name="x">The angle, in degrees, around the X axis.</param>
-        /// <param name="y">The angle, in degrees, around the Y axis.</param>
-        /// <param name="z">The angle, in degrees, around the Z axis.</param>
+        /// <param name="x">The clockwise angle, in degrees, around the X axis.</param>
+        /// <param name="y">The clockwise angle, in degrees, around the Y axis.</param>
+        /// <param name="z">The clockwise angle, in degrees, around the Z axis.</param>
         /// <returns>The created quaternion.</returns>
         public static QuaternionD CreateFromEulerAngles(double x, double y, double z)
         {
@@ -293,10 +293,10 @@ namespace NovaEngine.Maths
             var cosHalfZ = Math.Cos(halfZ);
 
             return new(
-                x: cosHalfY * sinHalfX * cosHalfZ + sinHalfY * cosHalfX * sinHalfZ,
-                y: sinHalfY * cosHalfX * cosHalfZ - cosHalfY * sinHalfX * sinHalfZ,
-                z: cosHalfY * cosHalfX * sinHalfZ - sinHalfY * sinHalfX * cosHalfZ,
-                w: cosHalfY * cosHalfX * cosHalfZ + sinHalfY * sinHalfX * sinHalfZ
+                x: sinHalfX * cosHalfY * cosHalfZ + cosHalfX * sinHalfY * sinHalfZ,
+                y: cosHalfX * sinHalfY * cosHalfZ - sinHalfX * cosHalfY * sinHalfZ,
+                z: cosHalfX * cosHalfY * sinHalfZ + sinHalfX * sinHalfY * cosHalfZ,
+                w: cosHalfX * cosHalfY * cosHalfZ - sinHalfX * sinHalfY * sinHalfZ
             );
         }
 
