@@ -8,7 +8,7 @@ namespace NovaEngine.Rendering.Fake
     internal class FakeCamera : RendererCameraBase
     {
         /*********
-        ** Public Methods
+        ** Accessors
         *********/
         /// <inheritdoc/>
         public override Texture2D RenderTarget => Texture2D.Undefined;
