@@ -2,7 +2,6 @@
 using NovaEngine.Core;
 using NovaEngine.External.Rendering;
 using NovaEngine.Graphics;
-using NovaEngine.Maths;
 using System;
 
 namespace NovaEngine.Rendering.Fake
@@ -15,6 +14,9 @@ namespace NovaEngine.Rendering.Fake
         *********/
         /// <inheritdoc/>
         public bool CanUseOnPlatform => true;
+
+        /// <inheritdoc/>
+        public MVPSettings MVPSettings { get; } = new(false, false, false, false);
 
         /// <inheritdoc/>
         public SampleCount MaxSampleCount => SampleCount.Count1;

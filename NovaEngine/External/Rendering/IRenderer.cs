@@ -15,6 +15,9 @@ namespace NovaEngine.External.Rendering
         /// <summary>Whether the renderer can be used on the current environment platform.</summary>
         public bool CanUseOnPlatform { get; }
 
+        /// <summary>The settings defining how MVP matrices will be calculated.</summary>
+        public MVPSettings MVPSettings { get; }
+
         /// <summary>The max supported sample count.</summary>
         public SampleCount MaxSampleCount { get; }
 

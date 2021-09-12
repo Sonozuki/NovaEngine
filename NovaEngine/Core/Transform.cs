@@ -1,4 +1,5 @@
 ﻿using NovaEngine.Maths;
+using NovaEngine.Rendering;
 
 namespace NovaEngine.Core
 {
@@ -65,8 +66,11 @@ namespace NovaEngine.Core
 
         /// <summary>The transform matrix.</summary>
         public Matrix4x4 Matrix => Matrix4x4.CreateScale(GlobalScale)
-                                 * Matrix4x4.CreateTranslation(GlobalPosition.X, GlobalPosition.Y, -GlobalPosition.Z)
-                                 * Matrix4x4.CreateFromQuaternion(GlobalRotation);
+                                 * Matrix4x4.CreateTranslation(
+                                       GlobalPosition.X * (RendererManager.MVPSettings.InvertX ? -1 : 1),
+                                       GlobalPosition.Y * (RendererManager.MVPSettings.InvertY ? -1 : 1),
+                                       GlobalPosition.Z * (RendererManager.MVPSettings.InvertZ ? -1 : 1))
+                                 * Matrix4x4.CreateFromQuaternion(RendererManager.MVPSettings.InvertRotation ? GlobalRotation.Inverse : GlobalRotation);
 
         /// <summary>The transform of the parent object.</summary>
         private Transform? ParentTransform => GameObject.Parent?.Transform;

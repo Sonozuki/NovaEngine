@@ -51,6 +51,9 @@ namespace NovaEngine.Renderer.Vulkan
         public bool CanUseOnPlatform => OperatingSystem.IsWindows();
 
         /// <inheritdoc/>
+        public MVPSettings MVPSettings { get; } = new(false, false, true, true);
+
+        /// <inheritdoc/>
         public SampleCount MaxSampleCount
         {
             get
