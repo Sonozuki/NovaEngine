@@ -50,7 +50,7 @@ namespace NovaEngine.Logging
         /// <param name="message">The message to log.</param>
         /// <param name="severity">The severity of the log.</param>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void Log(string? message, LogSeverity severity = LogSeverity.Info)
+        public static void Log(string? message = "", LogSeverity severity = LogSeverity.Info)
         {
             // get the log creator
             var callingAssembly = Assembly.GetCallingAssembly();

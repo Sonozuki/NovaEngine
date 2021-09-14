@@ -9,6 +9,10 @@ namespace NovaEngine.Logging
         [LogSeverityInfo("DEBUG", ConsoleColor.DarkGray, ConsoleColor.DarkGray)]
         Debug,
 
+        /// <summary>Information to help players.</summary>
+        [LogSeverityInfo("HELP ", ConsoleColor.Blue, ConsoleColor.White)]
+        Help,
+
         /// <summary>Information relavant to players.</summary>
         [LogSeverityInfo("INFO ", ConsoleColor.DarkGreen, ConsoleColor.White)]
         Info,

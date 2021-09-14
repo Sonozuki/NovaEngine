@@ -9,6 +9,7 @@ using NovaEngine.Windowing;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace NovaEngine
 {
@@ -64,6 +65,9 @@ namespace NovaEngine
                 if (RendererManager.CurrentRenderer == null)
                     return; // fatal log has already been created at this point
                 RendererManager.CurrentRenderer.OnInitialise(MainWindow.Handle);
+
+                // force run some class initialisers to add their commands / event handlers
+                RuntimeHelpers.RunClassConstructor(typeof(CommandManager).TypeHandle);
 
                 // initialise initial scenes
                 var initialScenes = ContentLoader.Load<List<string>>("InitialScenes");
