@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
+using Debugger = NovaEngine.Debugging.Debugger;
+
 namespace NovaEngine
 {
     /// <summary>The application entry point.</summary>
@@ -68,6 +70,7 @@ namespace NovaEngine
 
                 // force run some class initialisers to add their commands / event handlers
                 RuntimeHelpers.RunClassConstructor(typeof(CommandManager).TypeHandle);
+                RuntimeHelpers.RunClassConstructor(typeof(Debugger).TypeHandle);
 
                 // initialise initial scenes
                 var initialScenes = ContentLoader.Load<List<string>>("InitialScenes");
