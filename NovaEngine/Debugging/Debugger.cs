@@ -39,7 +39,7 @@ namespace NovaEngine.Debugging
             // ensure debug value doesn't already exist
             if (DebugValues.Any(value => value.Name.ToLower() == debugValue.Name.ToLower()))
             {
-                Logger.Log($"Cannot add debug value: '{debugValue.Name}' as it already exists.", LogSeverity.Error);
+                Logger.LogError($"Cannot add debug value: '{debugValue.Name}' as it already exists.");
                 return false;
             }
 
@@ -62,18 +62,18 @@ namespace NovaEngine.Debugging
             // parse arguments
             if (trimmedArguments.Length == 0) // write out debug values list
             {
-                Logger.Log("All registered debug values are:", LogSeverity.Help);
+                Logger.LogHelp("All registered debug values are:");
                 foreach (var debugValue in DebugValues)
-                    Logger.Log($"  {debugValue.Name}", LogSeverity.Help);
-                Logger.Log(severity: LogSeverity.Help);
-                Logger.Log("For more information about a debug value, type: \"debug debug_value\".", LogSeverity.Help);
+                    Logger.LogHelp($"  {debugValue.Name}");
+                Logger.LogHelp();
+                Logger.LogHelp("For more information about a debug value, type: \"debug debug_value\".");
             }
             else if (trimmedArguments.Length == 1) // write the documentation of a specified debug value
             {
                 if (!TryGetDebugValueByName(trimmedArguments[0], out var debugValue))
                     return;
 
-                Logger.Log($"{debugValue!.Name}: {debugValue.Documentation}", LogSeverity.Help);
+                Logger.LogHelp($"{debugValue!.Name}: {debugValue.Documentation}");
             }
             else // set value of command
             {
@@ -96,8 +96,8 @@ namespace NovaEngine.Debugging
                 // ensure debug value exists
                 if (debugValue == null)
                 {
-                    Logger.Log($"No debug value with the name: '{name}' could be found.", LogSeverity.Error);
-                    Logger.Log($"Type 'debug' for a list of available debug values.", LogSeverity.Help);
+                    Logger.LogError($"No debug value with the name: '{name}' could be found.");
+                    Logger.LogHelp($"Type 'debug' for a list of available debug values.");
                     return false;
                 }
 
