@@ -46,7 +46,7 @@ namespace NovaEngine
             // ensure command doesn't already exist
             if (Commands.Any(c => c.Name.ToLower() == command.Name.ToLower()))
             {
-                Logger.Log($"Cannot add command: '{command.Name}' as it already exists.", LogSeverity.Error);
+                Logger.LogError($"Cannot add command: '{command.Name}' as it already exists.");
                 return false;
             }
 
@@ -79,8 +79,8 @@ namespace NovaEngine
                 var command = Commands.FirstOrDefault(command => command.Name.ToLower() == commandName.ToLower());
                 if (command == null)
                 {
-                    Logger.Log($"No command with the name: '{commandName}' could be found.", LogSeverity.Error);
-                    Logger.Log("Type 'help' for a list of available commands.", LogSeverity.Help);
+                    Logger.LogError($"No command with the name: '{commandName}' could be found.");
+                    Logger.LogHelp("Type 'help' for a list of available commands.");
                     continue;
                 }
 
@@ -104,20 +104,20 @@ namespace NovaEngine
                 // ensure command exists
                 if (command == null)
                 {
-                    Logger.Log($"No command with the name: '{requestedCommand}' could be found.", LogSeverity.Error);
-                    Logger.Log("Type 'help' for a list of available commands.", LogSeverity.Help);
+                    Logger.LogError($"No command with the name: '{requestedCommand}' could be found.");
+                    Logger.LogHelp("Type 'help' for a list of available commands.");
                     return;
                 }
 
-                Logger.Log($"{command.Name}: {command.Documentation}", LogSeverity.Help);
+                Logger.LogHelp($"{command.Name}: {command.Documentation}");
             }
             else // write out command list
             {
-                Logger.Log("All registered commands are:", LogSeverity.Help);
+                Logger.LogHelp("All registered commands are:");
                 foreach (var command in Commands)
-                    Logger.Log($"  {command.Name}", LogSeverity.Help);
-                Logger.Log(severity: LogSeverity.Help);
-                Logger.Log("For more information about a command, type: \"help command_name\".", LogSeverity.Help);
+                    Logger.LogHelp($"  {command.Name}");
+                Logger.LogHelp();
+                Logger.LogHelp("For more information about a command, type: \"help command_name\".");
             }
         }
     }
