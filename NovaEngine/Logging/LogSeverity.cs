@@ -17,6 +17,10 @@ namespace NovaEngine.Logging
         [LogSeverityInfo("INFO ", ConsoleColor.DarkGreen, ConsoleColor.White)]
         Info,
 
+        /// <summary>Important information relavant to players.</summary>
+        [LogSeverityInfo("ALERT", ConsoleColor.Magenta, ConsoleColor.Magenta)]
+        Alert,
+
         /// <summary>An issue the the player should be aware of.</summary>
         [LogSeverityInfo("WARN ", ConsoleColor.DarkYellow, ConsoleColor.DarkYellow)]
         Warning,

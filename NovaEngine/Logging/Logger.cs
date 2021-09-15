@@ -113,6 +113,22 @@ namespace NovaEngine.Logging
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void LogInfo(object? @object) => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Info, @object?.ToString());
 
+        /// <summary>Logs a message with <see cref="LogSeverity.Alert"/>.</summary>
+        /// <param name="message">The message to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogAlert(string? message = "") => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Alert, message);
+
+        /// <summary>Logs a collection with <see cref="LogSeverity.Alert"/>.</summary>
+        /// <typeparam name="T">The type of the collection.</typeparam>
+        /// <param name="collection">The collection to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogAlert<T>(IEnumerable<T> collection) => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Alert, $"[{string.Join(", ", collection)}]");
+
+        /// <summary>Logs an object with <see cref="LogSeverity.Alert"/>.</summary>
+        /// <param name="object">The object to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogAlert(object? @object) => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Alert, @object?.ToString());
+
         /// <summary>Logs a message with <see cref="LogSeverity.Warning"/>.</summary>
         /// <param name="message">The message to log.</param>
         [MethodImpl(MethodImplOptions.NoInlining)]
