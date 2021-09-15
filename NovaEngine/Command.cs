@@ -3,7 +3,7 @@
 namespace NovaEngine
 {
     /// <summary>Represents a console command.</summary>
-    public class Command
+    internal class Command
     {
         /*********
         ** Accessors

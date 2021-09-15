@@ -33,13 +33,15 @@ namespace NovaEngine
         }
 
         /// <summary>Adds a command.</summary>
-        /// <param name="command">The command to add.</param>
+        /// <param name="name">The name of the command.</param>
+        /// <param name="documentation">The documentation of the command.</param>
+        /// <param name="callback">The callback of the command.</param>
         /// <returns><see langword="true"/>, if the command was added successfully; otherwise, <see langword="false"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown is <paramref name="command"/> is <see langword="null"/>.</exception>
-        public static bool Add(Command command)
+        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is <see langword="null"/> or white space.</exception>
+        /// <exception cref="ArgumentNullException">Thrown is <paramref name="callback"/> is <see langword="null"/>.</exception>
+        public static bool Add(string name, string documentation, Action<string[]> callback)
         {
-            if (command == null)
-                throw new ArgumentNullException(nameof(command));
+            var command = new Command(name, documentation, callback);
 
             // ensure command doesn't already exist
             if (Commands.Any(c => c.Name.ToLower() == command.Name.ToLower()))
@@ -52,15 +54,6 @@ namespace NovaEngine
             Commands.Add(command);
             return true;
         }
-
-        /// <summary>Adds a command.</summary>
-        /// <param name="name">The name of the command.</param>
-        /// <param name="documentation">The documentation of the command.</param>
-        /// <param name="callback">The callback of the command.</param>
-        /// <returns><see langword="true"/>, if the command was added successfully; otherwise, <see langword="false"/>.</returns>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is <see langword="null"/> or white space.</exception>
-        /// <exception cref="ArgumentNullException">Thrown is <paramref name="callback"/> is <see langword="null"/>.</exception>
-        public static bool Add(string name, string documentation, Action<string[]> callback) => Add(new(name, documentation, callback));
 
 
         /*********
@@ -106,7 +99,7 @@ namespace NovaEngine
             {
                 // get the command being requested
                 var requestedCommand = args[0];
-                var command = Commands.Where(command => command.Name.ToLower() == requestedCommand.ToLower()).FirstOrDefault();
+                var command = Commands.FirstOrDefault(command => command.Name.ToLower() == requestedCommand.ToLower());
 
                 // ensure command exists
                 if (command == null)
@@ -116,7 +109,6 @@ namespace NovaEngine
                     return;
                 }
 
-                // log command documentation
                 Logger.Log($"{command.Name}: {command.Documentation}", LogSeverity.Help);
             }
             else // write out command list
