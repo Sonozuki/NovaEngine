@@ -50,12 +50,129 @@ namespace NovaEngine.Logging
         /// <param name="message">The message to log.</param>
         /// <param name="severity">The severity of the log.</param>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void Log(string? message = "", LogSeverity severity = LogSeverity.Info)
+        public static void Log(string? message = "", LogSeverity severity = LogSeverity.Info) => Logger.Log(Assembly.GetCallingAssembly(), severity, message);
+
+        /// <summary>Logs a collection.</summary>
+        /// <typeparam name="T">The type of the collection.</typeparam>
+        /// <param name="collection">The collection to log.</param>
+        /// <param name="severity">The severity of the log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void Log<T>(IEnumerable<T> collection, LogSeverity severity = LogSeverity.Info) => Logger.Log(Assembly.GetCallingAssembly(), severity, $"[{string.Join(", ", collection)}]");
+
+        /// <summary>Logs an object.</summary>
+        /// <param name="object">The object to log.</param>
+        /// <param name="severity">The severity of the log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void Log(object? @object, LogSeverity severity = LogSeverity.Info) => Logger.Log(Assembly.GetCallingAssembly(), severity, @object?.ToString());
+
+        /// <summary>Logs a message with <see cref="LogSeverity.Debug"/>.</summary>
+        /// <param name="message">The message to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogDebug(string? message = "") => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Debug, message);
+
+        /// <summary>Logs a collection with <see cref="LogSeverity.Debug"/>.</summary>
+        /// <typeparam name="T">The type of the collection.</typeparam>
+        /// <param name="collection">The collection to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogDebug<T>(IEnumerable<T> collection) => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Debug, $"[{string.Join(", ", collection)}]");
+
+        /// <summary>Logs an object with <see cref="LogSeverity.Debug"/>.</summary>
+        /// <param name="object">The object to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogDebug(object? @object) => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Debug, @object?.ToString());
+
+        /// <summary>Logs a message with <see cref="LogSeverity.Help"/>.</summary>
+        /// <param name="message">The message to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogHelp(string? message = "") => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Help, message);
+
+        /// <summary>Logs a collection with <see cref="LogSeverity.Help"/>.</summary>
+        /// <typeparam name="T">The type of the collection.</typeparam>
+        /// <param name="collection">The collection to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogHelp<T>(IEnumerable<T> collection) => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Help, $"[{string.Join(", ", collection)}]");
+
+        /// <summary>Logs an object with <see cref="LogSeverity.Help"/>.</summary>
+        /// <param name="object">The object to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogHelp(object? @object) => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Help, @object?.ToString());
+
+        /// <summary>Logs a message with <see cref="LogSeverity.Info"/>.</summary>
+        /// <param name="message">The message to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogInfo(string? message = "") => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Info, message);
+
+        /// <summary>Logs a collection with <see cref="LogSeverity.Info"/>.</summary>
+        /// <typeparam name="T">The type of the collection.</typeparam>
+        /// <param name="collection">The collection to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogInfo<T>(IEnumerable<T> collection) => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Info, $"[{string.Join(", ", collection)}]");
+
+        /// <summary>Logs an object with <see cref="LogSeverity.Info"/>.</summary>
+        /// <param name="object">The object to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogInfo(object? @object) => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Info, @object?.ToString());
+
+        /// <summary>Logs a message with <see cref="LogSeverity.Warning"/>.</summary>
+        /// <param name="message">The message to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogWarning(string? message = "") => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Warning, message);
+
+        /// <summary>Logs a collection with <see cref="LogSeverity.Warning"/>.</summary>
+        /// <typeparam name="T">The type of the collection.</typeparam>
+        /// <param name="collection">The collection to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogWarning<T>(IEnumerable<T> collection) => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Warning, $"[{string.Join(", ", collection)}]");
+
+        /// <summary>Logs an object with <see cref="LogSeverity.Warning"/>.</summary>
+        /// <param name="object">The object to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogWarning(object? @object) => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Warning, @object?.ToString());
+
+        /// <summary>Logs a message with <see cref="LogSeverity.Error"/>.</summary>
+        /// <param name="message">The message to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogError(string? message = "") => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Error, message);
+
+        /// <summary>Logs a collection with <see cref="LogSeverity.Error"/>.</summary>
+        /// <typeparam name="T">The type of the collection.</typeparam>
+        /// <param name="collection">The collection to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogError<T>(IEnumerable<T> collection) => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Error, $"[{string.Join(", ", collection)}]");
+
+        /// <summary>Logs an object with <see cref="LogSeverity.Error"/>.</summary>
+        /// <param name="object">The object to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogError(object? @object) => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Error, @object?.ToString());
+
+        /// <summary>Logs a message with <see cref="LogSeverity.Fatal"/>.</summary>
+        /// <param name="message">The message to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogFatal(string? message = "") => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Fatal, message);
+
+        /// <summary>Logs a collection with <see cref="LogSeverity.Fatal"/>.</summary>
+        /// <typeparam name="T">The type of the collection.</typeparam>
+        /// <param name="collection">The collection to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogFatal<T>(IEnumerable<T> collection) => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Fatal, $"[{string.Join(", ", collection)}]");
+
+        /// <summary>Logs an object with <see cref="LogSeverity.Fatal"/>.</summary>
+        /// <param name="object">The object to log.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void LogFatal(object? @object) => Logger.Log(Assembly.GetCallingAssembly(), LogSeverity.Fatal, @object?.ToString());
+
+
+        /*********
+        ** Internal Methods
+        *********/
+        /// <summary>Logs a message as an assembly.</summary>
+        /// <param name="callingAssembly">The assembly to log the message as.</param>
+        /// <param name="severity">The severity of the log.</param>
+        /// <param name="message">The message to log.</param>
+        internal static void Log(Assembly callingAssembly, LogSeverity severity, string? message)
         {
-            // get the log creator
-            var callingAssembly = Assembly.GetCallingAssembly();
-            var callingLibraryName = Path.GetFileNameWithoutExtension(callingAssembly.ManifestModule.Name);
-            LogCreator creator = callingLibraryName switch // TODO: mods
+            var callingAssemblyName = Path.GetFileNameWithoutExtension(callingAssembly.ManifestModule.Name);
+            LogCreator creator = callingAssemblyName switch // TODO: mods
             {
                 "NovaEngine" => new("Engine", true),
                 var assembly when PlatformAssemblyPattern.IsMatch(assembly) => new("Platform", true),
@@ -64,31 +181,25 @@ namespace NovaEngine.Logging
                 var assembly => new(assembly, false)
             };
 
-            // create a log
-            var log = new Log(creator, severity, message ?? "");
-            log.WriteToConsole();
-            log.WriteToStream(LogFileStream);
+            Logger.Log(creator, severity, message);
         }
-
-        /// <summary>Logs a collection.</summary>
-        /// <typeparam name="T">The type of the collection.</typeparam>
-        /// <param name="collection">The collection to log.</param>
-        /// <param name="severity">The sevirity of the log.</param>
-        public static void Log<T>(IEnumerable<T> collection, LogSeverity severity = LogSeverity.Info) => Logger.Log($"[{string.Join(", ", collection)}]", severity);
-
-        /// <summary>Logs an object.</summary>
-        /// <param name="object">The object to log.</param>
-        /// <param name="severity">The severity of the log.</param>
-        public static void Log(object? @object, LogSeverity severity = LogSeverity.Info) => Logger.Log(@object?.ToString(), severity);
 
 
         /*********
         ** Private Methods
         *********/
         /// <summary>Logs the general engine and system details.</summary>
-        private static void LogHeader()
+        private static void LogHeader() => Logger.Log($"{Constants.EngineName} {Constants.EngineVersion} running {Program.Name} on {Environment.OSVersion}");
+
+        /// <summary>Logs a message as a creator.</summary>
+        /// <param name="creator">The creator to log the message as.</param>
+        /// <param name="severity">The severity of the log.</param>
+        /// <param name="message">The message to log.</param>
+        private static void Log(LogCreator creator, LogSeverity severity, string? message)
         {
-            Logger.Log($"{Constants.EngineName} {Constants.EngineVersion} running {Program.Name} on {Environment.OSVersion}");
+            var log = new Log(creator, severity, message ?? "");
+            log.WriteToConsole();
+            log.WriteToStream(LogFileStream);
         }
     }
 }
