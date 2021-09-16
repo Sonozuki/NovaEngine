@@ -198,7 +198,7 @@ namespace NovaEngine.Maths
         /// <summary>Interpolates between two values, using spherical linear interpolation.</summary>
         /// <param name="quaternion1">The source value.</param>
         /// <param name="quaternion2">The destination value.</param>
-        /// <param name="amount">The amount to interpolate between <paramref name="value1"/> and <paramref name="value2"/>.</param>
+        /// <param name="amount">The amount to interpolate between <paramref name="quaternion1"/> and <paramref name="quaternion2"/>.</param>
         /// <returns>The interpolated value.</returns>
         public static QuaternionD Slerp(in QuaternionD quaternion1, in QuaternionD quaternion2, double amount)
         {

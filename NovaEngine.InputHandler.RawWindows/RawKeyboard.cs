@@ -15,7 +15,7 @@
         /// <summary>Reserved; must be zero.</summary>
         private ushort Reserved;
 
-        /// <summary>The corresponding <see cref="Input.VirtualKey"/> code.</summary>
+        /// <summary>The corresponding <see cref="RawWindows.VirtualKey"/> code.</summary>
         public VirtualKey VirtualKey;
 
         /// <summary>Corresponding window message, for example WM_KEYDOWN, WM_SYSKEYDOWN, and so forth.</summary>

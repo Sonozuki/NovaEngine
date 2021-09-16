@@ -259,6 +259,7 @@ namespace NovaEngine.Renderer.Vulkan
 
         /// <summary>Loads a shader.</summary>
         /// <param name="path">The path to the compiled shader file.</param>
+        /// <param name="stage">The stage the shader will be used at.</param>
         private VkPipelineShaderStageCreateInfo LoadShader(string path, VkShaderStageFlags stage)
         {
             // create shader module

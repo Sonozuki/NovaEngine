@@ -265,7 +265,7 @@ namespace NovaEngine.Maths
         public readonly Vector3I ToRoundedVector3I() => new((int)Math.Round(X), (int)Math.Round(Y), (int)Math.Round(Z));
 
         /// <summary>Gets the vector as a <see cref="Vector3I"/> by rounding the components up.</summary>
-        /// <returns>The rounded up vector as a <see cref="Vector32I"/>.</returns>
+        /// <returns>The rounded up vector as a <see cref="Vector3I"/>.</returns>
         public readonly Vector3I ToCeilingedVector3I() => new((int)Math.Ceiling(X), (int)Math.Ceiling(Y), (int)Math.Ceiling(Z));
 
         /// <inheritdoc/>

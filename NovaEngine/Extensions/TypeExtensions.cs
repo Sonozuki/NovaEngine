@@ -11,7 +11,7 @@ namespace NovaEngine.Extensions
         *********/
         /// <summary>Gets whether the type is <see langword="unmanaged"/>.</summary>
         /// <param name="type">The type to check.</param>
-        /// <returns><see langword="true"/>, if the type is <see cref="unmanaged"/>; otherwise, <see langword="false"/>.</returns>
+        /// <returns><see langword="true"/>, if the type is <see langword="unmanaged"/>; otherwise, <see langword="false"/>.</returns>
         public static bool IsUnmanaged(this Type type)
         {
             try { typeof(U<>).MakeGenericType(type); return true; }

@@ -72,7 +72,7 @@ namespace NovaEngine.Renderer.Vulkan
         /// <summary>The <see cref="VkPhysicalDevice"/> and it's logical <see cref="VkDevice"/> representation.</summary>
         internal VulkanDevice Device { get; private set; }
 
-        /// <summary>The descriptor set layout for <see cref="NativeDescriptorPool"/>.</summary>
+        /// <summary>The descriptor set layout for <see cref="DescriptorPool"/>.</summary>
         internal VkDescriptorSetLayout NativeDescriptorSetLayout { get; private set; }
 
         /// <summary>The descriptor pool.</summary>

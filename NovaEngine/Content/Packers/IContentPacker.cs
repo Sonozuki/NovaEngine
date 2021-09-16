@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using NovaEngine.Content.Readers;
+using System.IO;
 
 namespace NovaEngine.Content.Packers
 {

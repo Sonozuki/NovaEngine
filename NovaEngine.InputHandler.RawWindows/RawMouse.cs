@@ -17,7 +17,7 @@ namespace NovaEngine.InputHandler.RawWindows
         [FieldOffset(4)]
         public RawInputMouseState ButtonFlags;
 
-        /// <summary>If <see cref="ButtonFlags"/> has <see cref="RawInputMouseState.MouseWheel"/> or <see cref="RawInputMouseState.MouseHWheel"/>, this member specifies the distance the wheel is rotated.</summary>
+        /// <summary>If <see cref="ButtonFlags"/> has <see cref="RawInputMouseState.Wheel"/> or <see cref="RawInputMouseState.HWheel"/>, this member specifies the distance the wheel is rotated.</summary>
         [FieldOffset(6)]
         public ushort ButtonData;
 

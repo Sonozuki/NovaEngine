@@ -26,7 +26,7 @@ namespace NovaEngine.Content.Models
         public MeshContent()
             : this("") { }
 
-        /// <summary>Constructs an instance./summary>
+        /// <summary>Constructs an instance.</summary>
         /// <param name="name">The name of the mesh.</param>
         public MeshContent(string name)
         {

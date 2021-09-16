@@ -62,7 +62,7 @@ namespace NovaEngine.Content
         /// <param name="returnType">The return type to load the file to.</param>
         /// <returns>The loaded file.</returns>
         /// <exception cref="FileNotFoundException">Thrown if <paramref name="path"/> doesn't exist.</exception>
-        /// <exception cref="ContentException">Thrown if a content reader for <typeparamref name="T"/> couldn't be found, or if the file was invalid.</exception>
+        /// <exception cref="ContentException">Thrown if a content reader for <paramref name="returnType"/> couldn't be found, or if the file was invalid.</exception>
         public static object Load(string path, Type returnType)
         {
             // convert path from relative to absolute

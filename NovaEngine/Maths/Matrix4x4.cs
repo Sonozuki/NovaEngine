@@ -939,8 +939,8 @@ namespace NovaEngine.Maths
         /// <param name="right">The maximum X value of the view volume.</param>
         /// <param name="bottom">The minimum Y value of the view volume.</param>
         /// <param name="top">The maximum Y value of the view volume.</param>
-        /// <param name="zNearPlane">The minimum Z value of the view volume.</param>
-        /// <param name="zFarPlane">The maximum Z value of the view volume.</param>
+        /// <param name="nearClippingPlane">The minimum Z value of the view volume.</param>
+        /// <param name="farClippingPlane">The maximum Z value of the view volume.</param>
         /// <returns>The created matrix.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="nearClippingPlane"/> or <paramref name="farClippingPlane"/> are less than zero, or if <paramref name="farClippingPlane"/> is less than or equal to <paramref name="nearClippingPlane"/>.</exception>
         public static Matrix4x4 CreatePerspectiveOffCentre(float left, float right, float bottom, float top, float nearClippingPlane, float farClippingPlane)
