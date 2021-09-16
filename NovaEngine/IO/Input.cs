@@ -47,22 +47,22 @@ namespace NovaEngine.IO
         /// <summary>Gets whether the mouse button was pressed this frame.</summary>
         /// <param name="button">The mouse button to check.</param>
         /// <returns><see langword="true"/>, if the mouse button was pressed this frame; otherwise, <see langword="false"/>.</returns>
-        public static bool WasMouseButtonPressed(MouseButton button) => !PreviousMouseState[button] && CurrentMouseState[button];
+        public static bool WasButtonPressed(MouseButton button) => !PreviousMouseState[button] && CurrentMouseState[button];
 
         /// <summary>Gets whether the mouse button is currently pressed.</summary>
         /// <param name="button">The mouse button to check.</param>
         /// <returns><see langword="true"/>, if the mouse button is currently pressed; otherwise, <see langword="false"/>.</returns>
-        public static bool IsMouseButtonPressed(MouseButton button) => CurrentMouseState[button];
+        public static bool IsButtonPressed(MouseButton button) => CurrentMouseState[button];
 
         /// <summary>Gets whether the mouse button was released this frame.</summary>
         /// <param name="button">The mouse button to check.</param>
         /// <returns><see langword="true"/>, if the mouse button was released this frame; otherwise, <see langword="false"/>.</returns>
-        public static bool WasMouseButtonReleased(MouseButton button) => PreviousMouseState[button] && !CurrentMouseState[button];
+        public static bool WasButtonReleased(MouseButton button) => PreviousMouseState[button] && !CurrentMouseState[button];
 
         /// <summary>Gets whether the mouse button was is currently released.</summary>
         /// <param name="button">The mouse button to check.</param>
         /// <returns><see langword="true"/>, if the mouse button is currently released; otherwise, <see langword="false"/>.</returns>
-        public static bool IsMouseButtonReleased(MouseButton button) => !CurrentMouseState[button];
+        public static bool IsButtonReleased(MouseButton button) => !CurrentMouseState[button];
 
         /// <summary>Gets whether the key was pressed this frame.</summary>
         /// <param name="key">The key to check.</param>
@@ -183,9 +183,9 @@ namespace NovaEngine.IO
             {
                 switch (button)
                 {
-                    case MouseButton when WasMouseButtonPressed(button): InvokeMouseButtonEventHandlers(button, PressType.Press); break;
-                    case MouseButton when IsMouseButtonPressed(button): InvokeMouseButtonEventHandlers(button, PressType.Hold); break;
-                    case MouseButton when WasMouseButtonReleased(button): InvokeMouseButtonEventHandlers(button, PressType.Release); break;
+                    case MouseButton when WasButtonPressed(button): InvokeMouseButtonEventHandlers(button, PressType.Press); break;
+                    case MouseButton when IsButtonPressed(button): InvokeMouseButtonEventHandlers(button, PressType.Hold); break;
+                    case MouseButton when WasButtonReleased(button): InvokeMouseButtonEventHandlers(button, PressType.Release); break;
                 }
             });
 
