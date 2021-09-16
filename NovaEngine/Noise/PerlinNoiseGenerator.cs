@@ -13,6 +13,9 @@ namespace NovaEngine.Noise
         /// <summary>The permutation table.</summary>
         private readonly int[] Permutation = new int[512];
 
+        /// <summary>The gradients used for calculating 2D noise.</summary>
+        private readonly static Vector2I[] Gradients2D = new Vector2I[] { new(0, 1), new(1, 1), new(1, 0), new(1, -1), new(0, -1), new(-1, -1), new(-1, 0), new(-1, 1) };
+
 
         /*********
         ** Public Methods
@@ -39,6 +42,44 @@ namespace NovaEngine.Noise
                 Permutation[i] = Permutation[i + 256] = shortPermutation[i];
 
             static void Swap(ref int a, ref int b) => (a, b) = (b, a);
+        }
+
+        /// <summary>Evaluates a point in space.</summary>
+        /// <param name="x">The X position to evaluate.</param>
+        /// <param name="y">The Y position to evaluate.</param>
+        /// <returns>The value of the specified point.</returns>
+        public float Evaluate(float x, float y)
+        {
+            // calculate the unit square that contains the point being evaluated
+            var xi = (int)x & 255;
+            var yi = (int)y & 255;
+
+            var xf = x - (int)x;
+            var yf = y - (int)y;
+
+            var u = Fade(xf);
+            var v = Fade(yf);
+
+            // calculate the hashes
+            var pyia = Permutation[yi];
+            var pyib = Permutation[yi + 1];
+
+            var aa = Permutation[xi +     pyia];
+            var ba = Permutation[xi + 1 + pyia];
+            var ab = Permutation[xi +     pyib];
+            var bb = Permutation[xi + 1 + pyib];
+
+            // interpolate between the 4 points being evaluated
+            var x1 = MathsHelper.Lerp(
+                Gradient(aa, xf, yf),
+                Gradient(ba, xf - 1, yf),
+                u);
+            var x2 = MathsHelper.Lerp(
+                Gradient(ab, xf, yf - 1),
+                Gradient(bb, xf - 1, yf - 1),
+                u);
+
+            return (MathsHelper.Lerp(x1, x2, v) + 1) / 2;
         }
 
         /// <summary>Evaluates a point in space.</summary>
@@ -97,7 +138,7 @@ namespace NovaEngine.Noise
                 u);
             var y2 = MathsHelper.Lerp(x1, x2, v);
 
-            return (MathsHelper.Lerp(y1, y2, w) + 1) / 2; // rebind to be 0 to 1 (instead of -1 to 1)
+            return (MathsHelper.Lerp(y1, y2, w) + 1) / 2;
         }
 
 
@@ -109,8 +150,19 @@ namespace NovaEngine.Noise
         /// <returns>The value, faded.</returns>
         private static float Fade(float t) => t * t * t * (t * (t * 6 - 15) + 10);
 
+        /// <summary>Calculates a dot product between (<paramref name="x"/>, <paramref name="y"/>) and a pseudo random gradient vector.</summary>
+        /// <param name="hash">The psuedo random gradient vector.</param>
+        /// <param name="x">The X component of the vector.</param>
+        /// <param name="y">The Y component of the vector.</param>
+        /// <returns>The calculates dot product.</returns>
+        private static float Gradient(int hash, float x, float y)
+        {
+            var gradient = Gradients2D[hash & 7];
+            return gradient.X * x + gradient.Y * y;
+        }
+
         /// <summary>Calculates a dot product between (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>) and a pseudo random gradient vector.</summary>
-        /// <param name="hash">The psuedo random gradient vector..</param>
+        /// <param name="hash">The psuedo random gradient vector.</param>
         /// <param name="x">The X component of the vector.</param>
         /// <param name="y">The Y component of the vector.</param>
         /// <param name="z">The Z component of the vector.</param>
