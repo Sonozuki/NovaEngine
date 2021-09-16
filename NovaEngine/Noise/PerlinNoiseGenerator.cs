@@ -102,13 +102,7 @@ namespace NovaEngine.Noise
             var v = Fade(yf);
             var w = Fade(zf);
 
-            // calculate hashes. this is done by taking xi (between 0 and 255 because of the mask) and get the corresponding permutation
-            // then add yi to it, then get the corresponding permutation of that and add zi to it
-
-            // then, we get another value by adding 1 and getting the corresponding permutation of that, and add zi
-            // this is repeated with xi+1 to get another set
-
-            // another set will be calculated later on by using aa, ab, ba, and bb and with +1 to create a set of 8 values, representing the corners of the unit cube
+            // calculate the hashes
             var a = Permutation[xi] + yi;
             var aa = Permutation[a] + zi;
             var ab = Permutation[a + 1] + zi;
@@ -117,7 +111,7 @@ namespace NovaEngine.Noise
             var ba = Permutation[b] + zi;
             var bb = Permutation[b + 1] + zi;
 
-            // using the above set, calculate a new set and use that to get our final gradient values, then interpolate between all 8 values to get the point being evaluated
+            // interpolate between the 8 points being evaluated
             var x1 = MathsHelper.Lerp(
                 Gradient(Permutation[aa], xf, yf, zf),
                 Gradient(Permutation[ba], xf - 1, yf, zf),
@@ -129,12 +123,12 @@ namespace NovaEngine.Noise
             var y1 = MathsHelper.Lerp(x1, x2, v);
 
             x1 = MathsHelper.Lerp(
-                Gradient(Permutation[aa], xf, yf, zf - 1),
-                Gradient(Permutation[ba], xf - 1, yf, zf - 1),
+                Gradient(Permutation[aa + 1], xf, yf, zf - 1),
+                Gradient(Permutation[ba + 1], xf - 1, yf, zf - 1),
                 u);
             x2 = MathsHelper.Lerp(
-                Gradient(Permutation[ab], xf, yf - 1, zf - 1),
-                Gradient(Permutation[bb], xf - 1, yf - 1, zf - 1),
+                Gradient(Permutation[ab + 1], xf, yf - 1, zf - 1),
+                Gradient(Permutation[bb + 1], xf - 1, yf - 1, zf - 1),
                 u);
             var y2 = MathsHelper.Lerp(x1, x2, v);
 
