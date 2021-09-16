@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <WarningsAsErrors>CS8600;CS8601;CS8602;CS8603;CS8604;CS8613;CS8618;CS8625</WarningsAsErrors>
+    <WarningsAsErrors>CS8600;CS8601;CS8602;CS8603;CS8604;CS8613;CS8618;CS8625;CS1570;CS1571;CS1572;CS1573;CS1574;CS1580;CS1581;CS1584;CS1587;CS1589;CS1590;CS1591;CS1592</WarningsAsErrors>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
