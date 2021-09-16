@@ -3,6 +3,7 @@ using NovaEngine.IO;
 using NovaEngine.Logging;
 using NovaEngine.SceneManagement;
 using System;
+using System.Diagnostics;
 
 namespace NovaEngine
 {
@@ -24,8 +25,13 @@ namespace NovaEngine
         {
             try
             {
+                var stopwatch = Stopwatch.StartNew();
                 while (!Program.MainWindow!.HasClosed)
                 {
+                    Time.DeltaTime = (float)stopwatch.Elapsed.TotalSeconds;
+                    stopwatch.Restart();
+                    Time.TotalTime += Time.DeltaTime;
+
                     Input.Update();
 
                     SceneManager.LoadedScenes.ForEach(scene => scene.Update());
@@ -33,6 +39,8 @@ namespace NovaEngine
                     Camera.Main?.Render(true);
 
                     Program.MainWindow.ProcessEvents();
+
+                    Time.FrameCount++;
                 }
             }
             catch (Exception ex)
