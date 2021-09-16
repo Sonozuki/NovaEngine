@@ -33,13 +33,17 @@ namespace NovaEngine.Components
             IsEnabled = isEnabled;
         }
 
-        /// <summary>Invoked when the game starts (before the first tick).</summary>
-        public virtual void OnStart() { }
-
-        /// <summary>Invoked when the component should get updated (once per tick).</summary>
-        public virtual void OnUpdate() { }
-
         /// <inheritdoc/>
         public virtual void Dispose() { }
+
+
+        /*********
+        ** Protected Internal Methods
+        *********/
+        /// <summary>Invoked when the game starts (before the first tick).</summary>
+        protected internal virtual void OnStart() { }
+
+        /// <summary>Invoked when the component should get updated (once per tick).</summary>
+        protected internal virtual void OnUpdate() { }
     }
 }
