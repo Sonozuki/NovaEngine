@@ -282,7 +282,7 @@ namespace NovaEngine.Maths
         /// <param name="min">The minimum value.</param>
         /// <param name="max">The maximum value.</param>
         /// <returns>The clamped value.</returns>
-        public static Vector3I Clamp(in Vector3I value, in Vector3I min, in Vector3I max) => new(MathsHelper.Clamp(value.X, min.X, max.X), MathsHelper.Clamp(value.Y, min.Y, max.Y), MathsHelper.Clamp(value.Z, min.Z, max.Z));
+        public static Vector3I Clamp(in Vector3I value, in Vector3I min, in Vector3I max) => new(Math.Clamp(value.X, min.X, max.X), Math.Clamp(value.Y, min.Y, max.Y), Math.Clamp(value.Z, min.Z, max.Z));
 
 
         /*********

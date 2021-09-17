@@ -1,6 +1,6 @@
 ﻿using NovaEngine.Logging;
-using NovaEngine.Maths;
 using NovaEngine.Rendering;
+using System;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -29,7 +29,7 @@ namespace NovaEngine.Settings
         public SampleCount SampleCount
         {
             get => _SampleCount;
-            set => _SampleCount = (SampleCount)MathsHelper.Clamp((int)value, 0, (int)MaxSampleCount);
+            set => _SampleCount = (SampleCount)Math.Clamp((int)value, 0, (int)MaxSampleCount);
         }
 
         /// <summary>The singleton <see cref="RenderingSettings"/> instance.</summary>

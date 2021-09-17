@@ -322,7 +322,7 @@ namespace NovaEngine.Maths
         /// <param name="min">The minimum value.</param>
         /// <param name="max">The maximum value.</param>
         /// <returns>The clamped value.</returns>
-        public static Vector3D Clamp(in Vector3D value, in Vector3D min, in Vector3D max) => new(MathsHelper.Clamp(value.X, min.X, max.X), MathsHelper.Clamp(value.Y, min.Y, max.Y), MathsHelper.Clamp(value.Z, min.Z, max.Z));
+        public static Vector3D Clamp(in Vector3D value, in Vector3D min, in Vector3D max) => new(Math.Clamp(value.X, min.X, max.X), Math.Clamp(value.Y, min.Y, max.Y), Math.Clamp(value.Z, min.Z, max.Z));
 
         /// <summary>Linearly interpolates between two values.</summary>
         /// <param name="value1">The source value.</param>

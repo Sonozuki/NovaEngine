@@ -1,7 +1,6 @@
 ﻿using NovaEngine.Extensions;
 using NovaEngine.Graphics;
 using NovaEngine.Logging;
-using NovaEngine.Maths;
 using NovaEngine.Settings;
 using System;
 using Vulkan;
@@ -61,12 +60,12 @@ namespace NovaEngine.Renderer.Vulkan
 
             ImageFormat = surfaceFormat.Format;
             Extent = new VkExtent2D(
-                width: MathsHelper.Clamp(extent.Width, swapchainSupport.Capabilities.MinImageExtent.Width, swapchainSupport.Capabilities.MaxImageExtent.Width),
-                height: MathsHelper.Clamp(extent.Height, swapchainSupport.Capabilities.MinImageExtent.Height, swapchainSupport.Capabilities.MaxImageExtent.Height)
+                width: Math.Clamp(extent.Width, swapchainSupport.Capabilities.MinImageExtent.Width, swapchainSupport.Capabilities.MaxImageExtent.Width),
+                height: Math.Clamp(extent.Height, swapchainSupport.Capabilities.MinImageExtent.Height, swapchainSupport.Capabilities.MaxImageExtent.Height)
             );
 
             // determine the number of images in the swapchain
-            var imageCount = MathsHelper.Clamp(swapchainSupport.Capabilities.MinImageCount + 1, swapchainSupport.Capabilities.MinImageCount, swapchainSupport.Capabilities.MaxImageCount);
+            var imageCount = Math.Clamp(swapchainSupport.Capabilities.MinImageCount + 1, swapchainSupport.Capabilities.MinImageCount, swapchainSupport.Capabilities.MaxImageCount);
 
             // create the image usage based on what the surface can support
             var imageUsage = VkImageUsageFlags.ColorAttachment;

@@ -1,5 +1,4 @@
 ﻿using NovaEngine.External.Rendering;
-using NovaEngine.Maths;
 using NovaEngine.Rendering;
 using NovaEngine.Serialisation;
 using NovaEngine.Settings;
@@ -98,7 +97,7 @@ namespace NovaEngine.Graphics
             _Depth = depth;
             MipLodBias = mipLodBias;
             _LayerCount = layerCount;
-            SampleCount = (SampleCount)MathsHelper.Clamp((int)sampleCount, 0, (int)RenderingSettings.Instance.MaxSampleCount);
+            SampleCount = (SampleCount)Math.Clamp((int)sampleCount, 0, (int)RenderingSettings.Instance.MaxSampleCount);
             AnisotropicFilteringEnabled = anisotropicFilteringEnabled;
             MaxAnisotropicFilteringLevel = maxAnisotropicFilteringLevel;
             WrapModeU = wrapModeU;
