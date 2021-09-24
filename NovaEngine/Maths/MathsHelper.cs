@@ -6,6 +6,16 @@ namespace NovaEngine.Maths
     public static class MathsHelper
     {
         /*********
+        ** Constants
+        *********/
+        /// <summary>Degrees to radians conversion constant.</summary>
+        public const float DegToRad = MathF.PI / 180;
+
+        /// <summary>Radians to degrees conversion constant.</summary>
+        public const float RadToDeg = 180 / MathF.PI;
+
+
+        /*********
         ** Public Methods
         *********/
         /// <summary>Linearly interpolates between two values.</summary>
