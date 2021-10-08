@@ -3,7 +3,9 @@ using NovaEngine.External.Rendering;
 using NovaEngine.Graphics;
 using NovaEngine.Maths;
 using NovaEngine.Rendering;
+using NovaEngine.SceneManagement;
 using NovaEngine.Serialisation;
+using System.Linq;
 
 namespace NovaEngine.Components
 {
@@ -114,7 +116,17 @@ namespace NovaEngine.Components
             : this(CameraProjection.Othographic, 0, width, height, nearClippingPlane, farClippingPlane, resolution, setMainCamera) { }
 
         /// <summary>Renders a frame using the camera.</summary>
-        public void Render(bool presentRenderTarget) => RendererCamera.Render(presentRenderTarget);
+        public void Render(bool presentRenderTarget)
+        {
+            // TODO: create a separate system for retrieving objects to render after frustum culling etc
+            var gameObjects = SceneManager.LoadedScenes
+                .SelectMany(scene => scene.RootGameObjects)
+                .SelectMany(gameObject => gameObject.GetAllGameObjects(false))
+                .Where(gameObject => gameObject.Components.MeshRenderer != null)
+                .Select(gameObject => gameObject.RendererGameObject);
+
+            RendererCamera.Render(gameObjects, presentRenderTarget);
+        }
 
         /// <inheritdoc/>
         public override void Dispose() => RendererCamera.Dispose();

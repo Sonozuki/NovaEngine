@@ -121,6 +121,20 @@ namespace NovaEngine.Core
             return components;
         }
 
+        /// <summary>Retrieves this game object and all children recursively.</summary>
+        /// <param name="includeDisabled">Whether disabled game objects should be retrieved.</param>
+        /// <returns>This game object and all children recursively.</returns>
+        internal List<GameObject> GetAllGameObjects(bool includeDisabled)
+        {
+            var gameObjects = new List<GameObject>();
+            if (!IsEnabled && !includeDisabled)
+                return gameObjects;
+
+            gameObjects.Add(this);
+            gameObjects.AddRange(Children.SelectMany(child => child.GetAllGameObjects(includeDisabled)));
+            return gameObjects;
+        }
+
 
         /*********
         ** Private Methods

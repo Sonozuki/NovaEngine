@@ -1,6 +1,7 @@
 ﻿using NovaEngine.Components;
 using NovaEngine.External.Rendering;
 using NovaEngine.Graphics;
+using System.Collections.Generic;
 
 namespace NovaEngine.Rendering.Fake
 {
@@ -25,7 +26,7 @@ namespace NovaEngine.Rendering.Fake
         public override void OnResolutionChange() { }
 
         /// <inheritdoc/>
-        public override void Render(bool presentRenderTarget) { }
+        public override void Render(IEnumerable<RendererGameObjectBase> gameObjects, bool presentRenderTarget) { }
 
         /// <inheritdoc/>
         public override void Dispose() { }

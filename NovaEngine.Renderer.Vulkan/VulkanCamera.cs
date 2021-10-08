@@ -3,9 +3,9 @@ using NovaEngine.Extensions;
 using NovaEngine.External.Rendering;
 using NovaEngine.Graphics;
 using NovaEngine.Logging;
-using NovaEngine.SceneManagement;
 using NovaEngine.Settings;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Vulkan;
 
@@ -86,11 +86,12 @@ namespace NovaEngine.Renderer.Vulkan
         public override void OnResolutionChange() => RecreateSwapchain();
 
         /// <inheritdoc/>
-        public override void Render(bool presentRenderTarget)
+        public override void Render(IEnumerable<RendererGameObjectBase> gameObjects, bool presentRenderTarget)
         {
-            // TODO: temp
-            foreach (var meshObject in SceneManager.LoadedScenes.SelectMany(scene => scene.RootGameObjects).SelectMany(gameObject => gameObject.Children))
-                (meshObject.RendererGameObject as VulkanGameObject)!.UpdateUBO(this.BaseCamera);
+            var vulkanGameObjects = gameObjects.Cast<VulkanGameObject>();
+
+            foreach (var vulkanGameObject in vulkanGameObjects)
+                vulkanGameObject.UpdateUBO(this.BaseCamera);
 
             VK.WaitForFences(VulkanRenderer.Instance.Device.NativeDevice, 1, new[] { InFlightFences[CurrentFrameIndex] }, true, ulong.MaxValue);
 
@@ -123,8 +124,6 @@ namespace NovaEngine.Renderer.Vulkan
                 VK.CommandBeginRenderPass(commandBuffer, ref renderPassBeginInfo, VkSubpassContents.Inline);
                 VK.CommandBindPipeline(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.GraphicsPipeline);
 
-                // TODO: get a reference to each game object recursively, not just the first level
-                var vulkanGameObjects = SceneManager.LoadedScenes.SelectMany(scene => scene.RootGameObjects).SelectMany(gameObject => gameObject.Children).Select(meshObject => meshObject.RendererGameObject).Cast<VulkanGameObject>();
                 foreach (var vulkanGameObject in vulkanGameObjects)
                 {
                     VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.GraphicsPipelineLayout, 0, 1, new[] { vulkanGameObject.DescriptorSet.NativeDescriptorSet }, 0, null);
