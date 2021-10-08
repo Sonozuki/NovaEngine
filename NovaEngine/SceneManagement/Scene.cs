@@ -35,8 +35,19 @@ namespace NovaEngine.SceneManagement
             IsActive = isActive;
         }
 
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            foreach (var gameObject in RootGameObjects)
+                gameObject.Dispose();
+        }
+
+
+        /*********
+        ** Internal Methods
+        *********/
         /// <summary>Starts the scene.</summary>
-        public void Start()
+        internal void Start()
         {
             var components = RootGameObjects.SelectMany(gameObject => gameObject.GetAllComponents(true));
             Parallel.ForEach(components, component =>
@@ -53,7 +64,7 @@ namespace NovaEngine.SceneManagement
         }
 
         /// <summary>Updates the scene.</summary>
-        public void Update()
+        internal void Update()
         {
             var components = RootGameObjects.SelectMany(gameObject => gameObject.GetAllComponents(false));
             Parallel.ForEach(components, component =>
@@ -72,20 +83,15 @@ namespace NovaEngine.SceneManagement
             });
         }
 
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            foreach (var gameObject in RootGameObjects)
-                gameObject.Dispose();
-        }
-
 
         /*********
         ** Private Methods
         *********/
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        
         /// <summary>Constructs an instance.</summary>
         private Scene() { }
+
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     }
 }
