@@ -61,11 +61,7 @@ namespace NovaEngine.Components
                 if (Transform == null)
                     return Matrix4x4.Identity;
 
-                return Matrix4x4.CreateTranslation(
-                           Transform.GlobalPosition.X * (RendererManager.MVPSettings.InvertX ? 1 : -1),
-                           Transform.GlobalPosition.Y * (RendererManager.MVPSettings.InvertY ? 1 : -1),
-                           Transform.GlobalPosition.Z * (RendererManager.MVPSettings.InvertZ ? 1 : -1))
-                     * Matrix4x4.CreateFromQuaternion(RendererManager.MVPSettings.InvertRotation ? Transform.GlobalRotation : Transform.GlobalRotation.Inverse);
+                return Utilities.CreateViewMatrix(Transform.GlobalPosition, Transform.GlobalRotation);
             }
         }
 

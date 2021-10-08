@@ -117,12 +117,7 @@ namespace NovaEngine.Core
         public Vector3 Right => Vector3.UnitX * GlobalRotation;
 
         /// <summary>The transform matrix.</summary>
-        public Matrix4x4 Matrix => Matrix4x4.CreateScale(GlobalScale)
-                                 * Matrix4x4.CreateTranslation(
-                                       GlobalPosition.X * (RendererManager.MVPSettings.InvertX ? -1 : 1),
-                                       GlobalPosition.Y * (RendererManager.MVPSettings.InvertY ? -1 : 1),
-                                       GlobalPosition.Z * (RendererManager.MVPSettings.InvertZ ? -1 : 1))
-                                 * Matrix4x4.CreateFromQuaternion(RendererManager.MVPSettings.InvertRotation ? GlobalRotation.Inverse : GlobalRotation);
+        public Matrix4x4 Matrix => Utilities.CreateModelMatrix(GlobalPosition, GlobalRotation, GlobalScale);
 
         /// <summary>The global position of the parent object.</summary>
         internal Vector3 ParentPosition
