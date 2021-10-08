@@ -39,5 +39,16 @@ namespace NovaEngine.SceneManagement
             foreach (var rootObject in sceneToUnload.RootGameObjects)
                 rootObject.Dispose();
         }
+
+
+        /*********
+        ** Internal Methods
+        *********/
+        /// <summary>Updates all the loaded scenes.</summary>
+        internal static void Update()
+        {
+            foreach (var scene in LoadedScenes)
+                scene.Update();
+        }
     }
 }

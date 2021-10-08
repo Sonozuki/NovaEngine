@@ -33,8 +33,7 @@ namespace NovaEngine
                     Time.TotalTime += Time.DeltaTime;
 
                     Input.Update();
-
-                    SceneManager.LoadedScenes.ForEach(scene => scene.Update());
+                    SceneManager.Update();
 
                     Camera.Main?.Render(true);
 
