@@ -1,7 +1,6 @@
 ﻿using NovaEngine.Serialisation;
-using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
 
 namespace NovaEngine.Extensions
 {
@@ -11,61 +10,60 @@ namespace NovaEngine.Extensions
         /*********
         ** Internal Methods
         *********/
-        /// <summary>Reads an object from the current stream and advances the stream position.</summary>
-        /// <param name="binaryReader">The <see cref="BinaryReader"/> to read from.</param>
-        /// <returns>The read <see langword="object"/>.</returns>
-        internal static object? ReadObject(this BinaryReader binaryReader)
+        /// <summary>Writes a collection of inlinable object buffers to the current stream and advances the position.</summary>
+        /// <param name="binaryReader">The binary reader to read from.</param>
+        /// <returns>The read inlinable object buffers.</returns>
+        internal static List<object?> ReadInlinableObjects(this BinaryReader binaryReader)
         {
-            if (binaryReader.ReadBoolean())
-                return null;
+            var list = new List<object?>();
 
-            switch ((InlinedValueType)binaryReader.ReadByte())
-            {
-                case InlinedValueType.Bool:    return binaryReader.ReadBoolean();
-                case InlinedValueType.SByte:   return binaryReader.ReadSByte();
-                case InlinedValueType.Byte:    return binaryReader.ReadByte();
-                case InlinedValueType.Char:    return binaryReader.ReadChar();
-                case InlinedValueType.Short:   return binaryReader.ReadInt16();
-                case InlinedValueType.UShort:  return binaryReader.ReadUInt16();
-                case InlinedValueType.Int:     return binaryReader.ReadInt32();
-                case InlinedValueType.UInt:    return binaryReader.ReadUInt32();
-                case InlinedValueType.Long:    return binaryReader.ReadInt64();
-                case InlinedValueType.ULong:   return binaryReader.ReadUInt64();
-                case InlinedValueType.Float:   return binaryReader.ReadSingle();
-                case InlinedValueType.Double:  return binaryReader.ReadDouble();
-                case InlinedValueType.Decimal: return binaryReader.ReadDecimal();
-                case InlinedValueType.String:  return binaryReader.ReadString();
-                case InlinedValueType.Enum:    return Enum.Parse(Type.GetType(binaryReader.ReadString())!, binaryReader.ReadString());
-                case InlinedValueType.Unmanaged:
-                    {
-                        var typeName = binaryReader.ReadString();
-                        var size = binaryReader.ReadInt32();
-                        var buffer = binaryReader.ReadBytes(size);
-                        var pointer = IntPtr.Zero;
+            var count = binaryReader.ReadUInt16();
+            for (int i = 0; i < count; i++)
+                list.Add(SerialiserUtilities.ReadInlinedValueFromStream(binaryReader));
 
-                        try
-                        {
-                            pointer = Marshal.AllocHGlobal(size);
-                            Marshal.Copy(buffer, 0, pointer, size);
+            return list;
+        }
 
-                            var type = Type.GetType(typeName);
-                            if (type == null)
-                                throw new SerialisationException($"Failed to create type: {typeName}");
+        /// <summary>Writes a collection of non inlinable object ids to the current stream and advances the position.</summary>
+        /// <param name="binaryReader">The binary reader to read from.</param>
+        /// <returns>The read non inlinable object ids.</returns>
+        internal static List<uint> ReadNonInlinableObjects(this BinaryReader binaryReader)
+        {
+            var list = new List<uint>();
 
-                            var @object = Marshal.PtrToStructure(pointer, type);
-                            if (@object == null)
-                                throw new SerialisationException($"Failed to create instance of type: {typeName}");
+            var count = binaryReader.ReadUInt16();
+            for (int i = 0; i < count; i++)
+                list.Add(binaryReader.ReadUInt32());
 
-                            return @object;
-                        }
-                        finally
-                        {
-                            if (pointer != IntPtr.Zero)
-                                Marshal.FreeHGlobal(pointer);
-                        }
-                    }
-                case var valueType: throw new SerialisationException($"Invalid inlined value type found ({(int)valueType})");
-            };
+            return list;
+        }
+
+        /// <summary>Writes a collection of inlinable members to the current stream and advances the position.</summary>
+        /// <param name="binaryReader">The binary reader to read from.</param>
+        /// <returns>The read inlinable members.</returns>
+        internal static Dictionary<string, object?> ReadInlinableMembers(this BinaryReader binaryReader)
+        {
+            var dictionary = new Dictionary<string, object?>();
+            
+            var count = binaryReader.ReadUInt16();
+            for (int i = 0; i < count; i++)
+                dictionary[binaryReader.ReadString()] = SerialiserUtilities.ReadInlinedValueFromStream(binaryReader);
+
+            return dictionary;
+        }
+
+        /// <summary>Writes a collection of non inlinable members to the current stream and advances the position.</summary>
+        /// <param name="binaryReader">The binary reader to read from.</param>
+        /// <returns>The read non inlinable members.</returns>
+        internal static Dictionary<string, uint> ReadNonInlinableMembers(this BinaryReader binaryReader)
+        {
+            var dictionary = new Dictionary<string, uint>();
+
+            var count = binaryReader.ReadUInt16();
+            for (int i = 0; i < count; i++)
+                dictionary[binaryReader.ReadString()] = binaryReader.ReadUInt32();
+
+            return dictionary;
         }
     }
 }

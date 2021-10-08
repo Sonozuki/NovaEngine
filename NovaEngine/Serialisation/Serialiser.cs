@@ -1,11 +1,6 @@
-﻿using NovaEngine.Extensions;
-using NovaEngine.Logging;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace NovaEngine.Serialisation
@@ -16,23 +11,41 @@ namespace NovaEngine.Serialisation
         /*********
         ** Public Methods
         *********/
+        /// <summary>Serialises an object to a byte array.</summary>
+        /// <param name="object">The object to serialise to a byte array.</param>
+        /// <returns><paramref name="object"/>, serialised as a byte array.</returns>
+        public static byte[] Serialise(object @object)
+        {
+            var memoryStream = new MemoryStream();
+            Serialise(memoryStream, @object);
+            return memoryStream.ToArray();
+        }
+
         /// <summary>Serialises an object to a stream.</summary>
         /// <param name="stream">The stream to serialise <paramref name="object"/> to.</param>
         /// <param name="object">The object to serialise to <paramref name="stream"/>.</param>
-        public static void Serialise(Stream stream, object @object)
+        public static void Serialise(Stream stream, object? @object)
         {
             try
             {
-                var allObjectInfos = new List<ObjectInfo>();
-                _ = new ObjectInfo(@object, allObjectInfos); // this is only used to populate the object infos collection
+                using var binaryWriter = new BinaryWriter(stream, Encoding.UTF8, true);
+                binaryWriter.Write((byte)1); // version
 
-                // write objects to stream
-                using (var binaryWriter = new BinaryWriter(stream, Encoding.UTF8, true))
+                // check if the root object can be inlined
+                TypeInfo? objectTypeInfo = null;
+                var isRootValueInlinable = @object == null || (objectTypeInfo = new TypeInfo(@object.GetType())).IsInlinable;
+                binaryWriter.Write(isRootValueInlinable);
+                
+                if (isRootValueInlinable)
+                    binaryWriter.Write(SerialiserUtilities.ConvertInlinableValueToBuffer(@object, objectTypeInfo!)); // ignoring that objectTypeInfo can be null, it's only null if @object is too (in which case it isn't used, so doesn't matter)
+                else
                 {
-                    var nonInlinableObjectInfos = allObjectInfos.Where(objectInfo => !objectInfo.IsInlinable); // inlinable object infos shouldn't be written to the stream
-                    binaryWriter.Write(nonInlinableObjectInfos.Count());
-                    foreach (var objectInfo in nonInlinableObjectInfos)
-                        objectInfo.Write(binaryWriter, allObjectInfos);
+                    // write all object infos to the stream
+                    var allObjectInfos = new List<ObjectInfo>();
+                    SerialiserUtilities.FlattenObject(@object!, allObjectInfos, new());
+
+                    binaryWriter.Write(allObjectInfos.Count);
+                    allObjectInfos.ForEach(objectInfo => objectInfo.Write(binaryWriter));
                 }
             }
             catch (Exception ex)
@@ -40,6 +53,17 @@ namespace NovaEngine.Serialisation
                 throw new SerialisationException("Error occured when serialising the object.", ex);
             }
         }
+
+        /// <summary>Deserialises an object from a byte array.</summary>
+        /// <typeparam name="T">The type of the object to deserialise.</typeparam>
+        /// <param name="array">The byte array to deserialise the object from.</param>
+        /// <returns>The deserialised object.</returns>
+        public static T? Deserialise<T>(byte[] array) => Deserialise<T>(new MemoryStream(array));
+
+        /// <summary>Deserialises an object from a byte array.</summary>
+        /// <param name="array">The byte array to deserialise the object from.</param>
+        /// <returns>The deserialised object.</returns>
+        public static object? Deserialise(byte[] array) => Deserialise(new MemoryStream(array));
 
         /// <summary>Deserialises an object from a stream.</summary>
         /// <typeparam name="T">The type of the object to deserialise.</typeparam>
@@ -54,88 +78,24 @@ namespace NovaEngine.Serialisation
         {
             try
             {
+                using var binaryReader = new BinaryReader(stream);
+                binaryReader.ReadByte(); // version (always 1)
+
+                // check if the root object has been inlined
+                if (binaryReader.ReadBoolean())
+                    return SerialiserUtilities.ReadInlinedValueFromStream(binaryReader);
+
+                // reconstruct the non inlined object
                 var allObjectInfos = new List<ObjectInfo>();
+                var allTypeInfos = new TypeInfos();
 
-                // create all objects
-                using (var binaryReader = new BinaryReader(stream, Encoding.UTF8, true))
-                {
-                    var length = binaryReader.ReadInt32();
-                    for (int i = 0; i < length; i++)
-                        ObjectInfo.Read(binaryReader, allObjectInfos);
-                }
-                allObjectInfos.Reverse(); // reverse to populate the members for dependencies first
+                var count = binaryReader.ReadInt32();
+                for (int i = 0; i < count; i++)
+                    allObjectInfos.Add(ObjectInfo.Read(binaryReader, allTypeInfos));
 
-                // populate objects, this isn't done when creating the objects to ensure every object has been created (needed when linking the references)
-                foreach (var objectInfo in allObjectInfos.Where(objectInfo => objectInfo.Members.Count > 0 || objectInfo.Collection.Count > 0))
-                {
-                    // populate members
-                    foreach (var member in objectInfo.Members)
-                    {
-                        // get the object to set from the file
-                        var objectInfoToSet = allObjectInfos.FirstOrDefault(objectInfo => objectInfo.Id == member.Value);
-                        if (objectInfoToSet == null)
-                            throw new SerialisationException($"File doesn't contain an object with an id of: {member.Value}. File seems to be corrupt.");
-                        var objectToSetMemberValueTo = objectInfoToSet.Value;
-
-                        // set the member to the retrieved object
-                        var fieldInfo = objectInfo.Value!.GetType().GetFieldRecursive(member.Key, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-                        var propertyInfo = objectInfo.Value!.GetType().GetPropertyRecursive(member.Key, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-                        if (fieldInfo != null)
-                            fieldInfo.SetValue(objectInfo.Value, objectToSetMemberValueTo);
-                        else if (propertyInfo != null)
-                            propertyInfo.SetValue(objectInfo.Value, objectToSetMemberValueTo);
-                        else
-                            throw new MissingMemberException(objectInfo.Value.GetType().FullName, member.Key);
-                    }
-
-                    // add objects to the collection (if the object being populated is a collection)
-                    for (int i = 0; i < objectInfo.Collection.Count; i++)
-                    {
-                        var item = objectInfo.Collection[i];
-
-                        // get the object to set from the file
-                        var objectInfoToSet = allObjectInfos.FirstOrDefault(objectInfo => objectInfo.Id == item);
-                        if (objectInfoToSet == null)
-                            throw new SerialisationException($"File doesn't contain an object with an id of: {item}. File seems to be corrupt.");
-                        var objectToSetMemberValueTo = objectInfoToSet.Value;
-
-                        switch (objectInfo.CollectionType)
-                        {
-                            case CollectionType.Array:
-                                (objectInfo.Value as Array)!.SetValue(objectToSetMemberValueTo, i);
-                                break;
-                            case CollectionType.GenericList:
-                            case CollectionType.GenericDictionary:
-                                objectInfo.Value!.GetType().GetInterfaces().Single(@interface => @interface.Name == "ICollection`1").GetMethod("Add")!.Invoke(objectInfo.Value, new[] { objectToSetMemberValueTo });
-                                break;
-                            case CollectionType.List:
-                                (objectInfo.Value as IList)!.Add(objectToSetMemberValueTo);
-                                break;
-                            case CollectionType.Dictionary:
-                                (objectInfo.Value as IDictionary)!.Add(
-                                    objectToSetMemberValueTo!.GetType().GetProperty("Key")!.GetValue(objectToSetMemberValueTo)!, 
-                                    objectToSetMemberValueTo!.GetType().GetProperty("Value")!.GetValue(objectToSetMemberValueTo)
-                                );
-                                break;
-                        }
-                    }
-
-                    // call all methods that are indicated to be called
-                    var methodsToCall = objectInfo.Value!.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                        .Where(method => method.CustomAttributes.Any(attribute => attribute.AttributeType == typeof(SerialiserCalledAttribute)));
-                    foreach (var method in methodsToCall)
-                    {
-                        if (method.GetParameters().Length != 0)
-                        {
-                            Logger.Log($"Serialiser: Method: {method.GetFullName()} is marked to be called by the serialiser, however, it has parameters.", LogSeverity.Error);
-                            continue;
-                        }
-
-                        method.Invoke(objectInfo.Value, null);
-                    }
-                }
-
-                return allObjectInfos.Last().Value; // the root object is last as the collection was reversed
+                // link references of and retrieve root object
+                allObjectInfos[0].LinkReferences(allObjectInfos); // this will link all references of child objects as required
+                return allObjectInfos[0].UnderlyingObject;
             }
             catch (Exception ex)
             {

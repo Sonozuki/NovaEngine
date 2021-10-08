@@ -4,7 +4,7 @@
     internal enum InlinedValueType
     {
         /// <summary>A one-byte boolean value.</summary>
-        Bool,
+        Bool = 1,
 
         /// <summary>A signed byte.</summary>
         SByte,
@@ -15,31 +15,31 @@
         /// <summary>A unicode character.</summary>
         Char,
 
-        /// <summary>A two-byte signed integer.</summary>
+        /// <summary>A 16-bit signed integer.</summary>
         Short,
 
-        /// <summary>A two-byte unsigned integer.</summary>
+        /// <summary>A 16-bit unsigned integer.</summary>
         UShort,
 
-        /// <summary>A four-byte signed integer.</summary>
+        /// <summary>A 32-bit signed integer.</summary>
         Int,
 
-        /// <summary>A four-byte unsigned integer.</summary>
+        /// <summary>A 32-bit unsigned integer.</summary>
         UInt,
 
-        /// <summary>An eight-byte signed integer.</summary>
+        /// <summary>An 64-bit signed integer.</summary>
         Long,
 
-        /// <summary>An eight-byte unsigned integer.</summary>
+        /// <summary>An 64-bit unsigned integer.</summary>
         ULong,
 
-        /// <summary>A four-byte floating-point number.</summary>
+        /// <summary>A 32-bit floating-point number.</summary>
         Float,
 
-        /// <summary>An eight-byte floating-point number.</summary>
+        /// <summary>An 64-bit floating-point number.</summary>
         Double,
 
-        /// <summary>A decimal number.</summary>
+        /// <summary>A 128-bit floating-point number.</summary>
         Decimal,
 
         /// <summary>A length-prefixed string.</summary>
