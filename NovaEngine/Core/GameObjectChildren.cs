@@ -47,6 +47,8 @@ namespace NovaEngine.Core
         /// <inheritdoc/>
         public void Add(GameObject item)
         {
+            // TODO: ensure the game object isn't already a child
+
             Children.Add(item);
             item.Parent = Parent;
         }
