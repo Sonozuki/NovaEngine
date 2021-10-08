@@ -1,5 +1,6 @@
 ﻿using NovaEngine.Components;
 using NovaEngine.External.Rendering;
+using NovaEngine.Maths;
 using NovaEngine.Rendering;
 using NovaEngine.Serialisation;
 using System;
@@ -12,6 +13,15 @@ namespace NovaEngine.Core
     public class GameObject : IDisposable
     {
         /*********
+        ** Fields
+        *********/
+        /// <summary>The parent of the game object.</summary>
+        /// <remarks>This is <see langword="null"/> when it's a root game object.</remarks>
+        [Serialisable]
+        private GameObject? _Parent;
+
+
+        /*********
         ** Accessors
         *********/
         /// <summary>The name of the game object.</summary>
@@ -20,18 +30,33 @@ namespace NovaEngine.Core
         /// <summary>Whether the game object is enabled.</summary>
         public bool IsEnabled { get; set; }
 
+        /// <summary>The transform component of the game object.</summary>
+        public Transform Transform { get; }
+
         /// <summary>The parent of the game object.</summary>
         /// <remarks>This is <see langword="null"/> when it's a root game object.</remarks>
-        public GameObject? Parent { get; internal set; } // TODO: make a public setter for this note: scene root objects will need to be updated etc
+        public GameObject? Parent
+        {
+            get => _Parent;
+            set
+            {
+                // TODO: ensure the new parent isn't a recursive child of this object
+                // TODO: remove the object as a child from it's current parent
+                // TODO: if the game object isn't already a child add it as a child
+
+                _Parent = value;
+
+                Transform.ParentPosition = Parent?.Transform.GlobalPosition ?? Vector3.Zero;
+                Transform.ParentRotation = Parent?.Transform.GlobalRotation ?? Quaternion.Identity;
+                Transform.ParentScale = Parent?.Transform.GlobalScale ?? Vector3.One;
+            }
+        }
 
         /// <summary>The children of the game object.</summary>
         public GameObjectChildren Children { get; }
 
         /// <summary>The components of the game object.</summary>
         public GameObjectComponents Components { get; }
-
-        /// <summary>The transform component of the game object.</summary>
-        public Transform Transform { get; }
 
         /// <summary>The renderer specific game object.</summary>
         [NonSerialisable]

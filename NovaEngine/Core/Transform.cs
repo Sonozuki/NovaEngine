@@ -1,5 +1,6 @@
 ﻿using NovaEngine.Maths;
 using NovaEngine.Rendering;
+using NovaEngine.Serialisation;
 
 namespace NovaEngine.Core
 {
@@ -10,38 +11,68 @@ namespace NovaEngine.Core
         ** Fields
         *********/
         /// <summary>The position of the object relative to the object's parent.</summary>
-        public Vector3 LocalPosition;
+        [Serialisable]
+        private Vector3 _LocalPosition;
 
         /// <summary>The rotation of the object relative to the object's parent.</summary>
-        public Quaternion LocalRotation = Quaternion.Identity;
+        [Serialisable]
+        private Quaternion _LocalRotation = Quaternion.Identity;
 
         /// <summary>The scale of the object relative to the object's parent.</summary>
-        public Vector3 LocalScale = Vector3.One;
+        [Serialisable]
+        private Vector3 _LocalScale = Vector3.One;
+
+        /// <summary>The global position of the parent object.</summary>
+        [Serialisable]
+        private Vector3 _ParentPosition;
+
+        /// <summary>The global rotation of the parent object.</summary>
+        [Serialisable]
+        private Quaternion _ParentRotation = Quaternion.Identity;
+
+        /// <summary>The global scale of the parent object.</summary>
+        [Serialisable]
+        private Vector3 _ParentScale = Vector3.One;
 
 
         /*********
         ** Accessors
         *********/
-        /// <summary>The game object the transform belongs to.</summary>
-        public GameObject GameObject { get; }
+        /// <summary>The position of the object relative to the object's parent.</summary>
+        public Vector3 LocalPosition
+        {
+            get => _LocalPosition;
+            set
+            {
+                _LocalPosition = value;
+                foreach (var child in GameObject.Children)
+                    child.Transform.ParentPosition = GlobalPosition;
+            }
+        }
 
-        /// <summary>The forward direction of the tranform in world space.</summary>
-        public Vector3 Forward => Vector3.UnitZ * GlobalRotation;
+        /// <summary>The rotation of the object relative to the object's parent.</summary>
+        public Quaternion LocalRotation
+        {
+            get => _LocalRotation;
+            set
+            {
+                _LocalRotation = value;
+                foreach (var child in GameObject.Children)
+                    child.Transform.ParentRotation = GlobalRotation;
+            }
+        }
 
-        /// <summary>The backward direction of the tranform in world space.</summary>
-        public Vector3 Backward => (-Vector3.UnitZ) * GlobalRotation;
-
-        /// <summary>The up direction of the tranform in world space.</summary>
-        public Vector3 Up => Vector3.UnitY * GlobalRotation;
-
-        /// <summary>The down direction of the tranform in world space.</summary>
-        public Vector3 Down => (-Vector3.UnitY) * GlobalRotation;
-
-        /// <summary>The left direction of the tranform in world space.</summary>
-        public Vector3 Left => (-Vector3.UnitX) * GlobalRotation;
-
-        /// <summary>The right direction of the tranform in world space.</summary>
-        public Vector3 Right => Vector3.UnitX * GlobalRotation;
+        /// <summary>The scale of the object relative to the object's parent.</summary>
+        public Vector3 LocalScale
+        {
+            get => _LocalScale;
+            set
+            {
+                _LocalScale = value;
+                foreach (var child in GameObject.Children)
+                    child.Transform.ParentScale = GlobalScale;
+            }
+        }
 
         /// <summary>The world position of the object.</summary>
         public Vector3 GlobalPosition
@@ -64,6 +95,27 @@ namespace NovaEngine.Core
             set => LocalScale = value / ParentScale;
         }
 
+        /// <summary>The game object the transform belongs to.</summary>
+        public GameObject GameObject { get; }
+
+        /// <summary>The forward direction of the tranform in world space.</summary>
+        public Vector3 Forward => Vector3.UnitZ * GlobalRotation;
+
+        /// <summary>The backward direction of the tranform in world space.</summary>
+        public Vector3 Backward => (-Vector3.UnitZ) * GlobalRotation;
+
+        /// <summary>The up direction of the tranform in world space.</summary>
+        public Vector3 Up => Vector3.UnitY * GlobalRotation;
+
+        /// <summary>The down direction of the tranform in world space.</summary>
+        public Vector3 Down => (-Vector3.UnitY) * GlobalRotation;
+
+        /// <summary>The left direction of the tranform in world space.</summary>
+        public Vector3 Left => (-Vector3.UnitX) * GlobalRotation;
+
+        /// <summary>The right direction of the tranform in world space.</summary>
+        public Vector3 Right => Vector3.UnitX * GlobalRotation;
+
         /// <summary>The transform matrix.</summary>
         public Matrix4x4 Matrix => Matrix4x4.CreateScale(GlobalScale)
                                  * Matrix4x4.CreateTranslation(
@@ -72,17 +124,41 @@ namespace NovaEngine.Core
                                        GlobalPosition.Z * (RendererManager.MVPSettings.InvertZ ? -1 : 1))
                                  * Matrix4x4.CreateFromQuaternion(RendererManager.MVPSettings.InvertRotation ? GlobalRotation.Inverse : GlobalRotation);
 
-        /// <summary>The transform of the parent object.</summary>
-        private Transform? ParentTransform => GameObject.Parent?.Transform;
-
         /// <summary>The global position of the parent object.</summary>
-        private Vector3 ParentPosition => ParentTransform?.GlobalPosition ?? Vector3.Zero;
+        internal Vector3 ParentPosition
+        {
+            get => _ParentPosition;
+            set
+            {
+                _ParentPosition = value;
+                foreach (var child in GameObject.Children)
+                    child.Transform.ParentPosition = GlobalPosition;
+            }
+        }
 
         /// <summary>The global rotation of the parent object.</summary>
-        private Quaternion ParentRotation => ParentTransform?.GlobalRotation ?? Quaternion.Identity;
+        internal Quaternion ParentRotation
+        {
+            get => _ParentRotation;
+            set
+            {
+                _ParentRotation = value;
+                foreach (var child in GameObject.Children)
+                    child.Transform.ParentRotation = GlobalRotation;
+            }
+        }
 
         /// <summary>The global scale of the parent object.</summary>
-        private Vector3 ParentScale => ParentTransform?.GlobalScale ?? Vector3.One;
+        internal Vector3 ParentScale
+        {
+            get => _ParentScale;
+            set
+            {
+                _ParentScale = value;
+                foreach (var child in GameObject.Children)
+                    child.Transform.ParentScale = GlobalScale;
+            }
+        }
 
 
         /*********
