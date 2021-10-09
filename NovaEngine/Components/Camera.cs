@@ -132,7 +132,7 @@ namespace NovaEngine.Components
         private Camera() { }
 
         /// <summary>Constructs an instance.</summary>
-        /// <param name="projection"></param>
+        /// <param name="projection">The projection to use for the camera.</param>
         /// <param name="fieldOfView">The field of view of the camera, in degrees (perspective projection only).</param>
         /// <param name="width">The width of the view frustum, in units (orthograhic projection only).</param>
         /// <param name="height">The height of the view frustum, in units (orthograhic projection only).</param>
