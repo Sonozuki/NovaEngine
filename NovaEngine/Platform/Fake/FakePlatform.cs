@@ -21,8 +21,5 @@ namespace NovaEngine.Platform.Fake
         *********/
         /// <inheritdoc/>
         public PlatformWindowBase CreatePlatformWindow(string title, Vector2I size) => new FakeWindow(title, size);
-
-        /// <inheritdoc/>
-        public Vector2I GetCursorPosition() => new();
     }
 }

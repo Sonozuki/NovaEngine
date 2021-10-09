@@ -48,12 +48,6 @@ namespace NovaEngine.Platform.Windows
         [DllImport("User32", SetLastError = true)]
         public static extern bool GetCursorInfo(ref NativeCursorInfo cursorInfo);
 
-        /// <summary>Retrieves the position of the mouse cursor, in screen coordinates.</summary>
-        /// <param name="point">The structure to populate with the screen coordinates of the cursor.</param>
-        /// <returns><see langword="true"/>, if the call succeeds; otherwise, <see langword="false"/>.</returns>
-        [DllImport("User32", SetLastError = true)]
-        public static extern bool GetCursorPos(ref Vector2I point);
-
         /// <summary>Retrieves the text of the specified window's title bar (if it has one).</summary>
         /// <param name="windowHandle">A handle to the window whose title is to be retrieved.</param>
         /// <param name="text">The window title.</param>
@@ -89,13 +83,6 @@ namespace NovaEngine.Platform.Windows
         /// <returns>If the function succeeds, the return value is a class atom that uniquely identifies the class being registered; otherwise, zero is returned.</returns>
         [DllImport("User32", SetLastError = true)]
         public static extern ushort RegisterClass(in NativeWindowClass windowClass);
-
-        /// <summary>Converts the screen coordinates of a specified point on the screen to lcient-area coordinates.</summary>
-        /// <param name="window">A handle to the window whose client area will be used for the conversion.</param>
-        /// <param name="point">The structure containing the screen point to convert.</param>
-        /// <returns><see langword="true"/> is the function succeeds; otherwise, <see langword="false"/>.</returns>
-        [DllImport("User32.dll", SetLastError = true)]
-        public static extern bool ScreenToClient(IntPtr window, ref Vector2I point);
 
         /// <summary>Changes the text of the specified window's title bar (if it has one).</summary>
         /// <param name="windowHandle">A handle to the window whose title is to be changed.</param>
