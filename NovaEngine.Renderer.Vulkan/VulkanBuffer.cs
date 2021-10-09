@@ -43,7 +43,6 @@ namespace NovaEngine.Renderer.Vulkan
         /// <exception cref="ApplicationException">Thrown if the buffer couldn't be created or the memory couldn't be allocated or bound.</exception>
         public VulkanBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryProperties)
         {
-            // validate
             if (size == 0)
                 throw new ArgumentOutOfRangeException(nameof(size), "Must be atleast 1");
 
@@ -89,7 +88,6 @@ namespace NovaEngine.Renderer.Vulkan
         public void CopyFrom<T>(T data)
             where T : unmanaged
         {
-            // validate
             if (sizeof(T) > Size)
                 throw new InvalidOperationException($"{nameof(data)} is bigger (byte size) than the buffer.");
 
@@ -117,7 +115,6 @@ namespace NovaEngine.Renderer.Vulkan
         public void CopyFrom<T>(Span<T> data)
             where T : unmanaged
         {
-            // validate
             if (data.Length * sizeof(T) > Size)
                 throw new InvalidOperationException($"{nameof(data)} is bigger (byte size) than the buffer.");
 
@@ -179,7 +176,6 @@ namespace NovaEngine.Renderer.Vulkan
         public void CopyTo<T>(Span<T> data)
             where T : unmanaged
         {
-            // validate
             if (data.Length * sizeof(T) < Size)
                 throw new InvalidOperationException($"{nameof(data)} is smaller (byte size) than the buffer.");
 

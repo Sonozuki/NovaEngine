@@ -912,13 +912,10 @@ namespace NovaEngine.Maths
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="nearClippingPlane"/> or <paramref name="farClippingPlane"/> are less than zero, or if <paramref name="farClippingPlane"/> is less than or equal to <paramref name="nearClippingPlane"/>.</exception>
         public static Matrix4x4 CreatePerspective(float width, float height, float nearClippingPlane, float farClippingPlane)
         {
-            // validate
             if (nearClippingPlane <= 0)
                 throw new ArgumentOutOfRangeException(nameof(nearClippingPlane), "Must be more than zero");
-
             if (farClippingPlane <= 0)
                 throw new ArgumentOutOfRangeException(nameof(farClippingPlane), "Must be more than zero");
-
             if (nearClippingPlane >= farClippingPlane)
                 throw new ArgumentOutOfRangeException(nameof(nearClippingPlane), $"Must be more than {nameof(farClippingPlane)}");
 
@@ -945,13 +942,10 @@ namespace NovaEngine.Maths
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="nearClippingPlane"/> or <paramref name="farClippingPlane"/> are less than zero, or if <paramref name="farClippingPlane"/> is less than or equal to <paramref name="nearClippingPlane"/>.</exception>
         public static Matrix4x4 CreatePerspectiveOffCentre(float left, float right, float bottom, float top, float nearClippingPlane, float farClippingPlane)
         {
-            // validate
             if (nearClippingPlane <= 0)
                 throw new ArgumentOutOfRangeException(nameof(nearClippingPlane), "Must be more than zero");
-
             if (farClippingPlane <= 0)
                 throw new ArgumentOutOfRangeException(nameof(farClippingPlane), "Must be more than zero");
-
             if (nearClippingPlane >= farClippingPlane)
                 throw new ArgumentOutOfRangeException(nameof(nearClippingPlane), $"Must be more than {nameof(farClippingPlane)}");
 
@@ -978,16 +972,12 @@ namespace NovaEngine.Maths
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="fieldOfView"/> is less than zero and less than PI, or if <paramref name="nearClippingPlane"/> or <paramref name="farClippingPlane"/> are less than zero, or if <paramref name="farClippingPlane"/> is less than or equal to <paramref name="nearClippingPlane"/>.</exception>
         public static Matrix4x4 CreatePerspectiveFieldOfView(float fieldOfView, float aspectRatio, float nearClippingPlane, float farClippingPlane)
         {
-            // validate
             if (fieldOfView <= 0)
                 throw new ArgumentOutOfRangeException(nameof(fieldOfView), "Must be more than zero.");
-
             if (nearClippingPlane <= 0)
                 throw new ArgumentOutOfRangeException(nameof(nearClippingPlane), "Must be more than zero.");
-
             if (farClippingPlane <= 0)
                 throw new ArgumentOutOfRangeException(nameof(farClippingPlane), "Must be more than zero.");
-
             if (nearClippingPlane >= farClippingPlane)
                 throw new ArgumentOutOfRangeException(nameof(nearClippingPlane), $"Must be more than {nameof(farClippingPlane)}");
 
