@@ -89,6 +89,11 @@ namespace NovaEngine.Core
             // TODO: add game object to scene
         }
 
+        /// <summary>Deep copies the game object, meaning it will clone all value and reference types.</summary>
+        /// <returns>A clone of the object.</returns>
+        /// <remarks>This relies on the serialiser, any members that don't get serialised won't get cloned.</remarks>
+        public GameObject Clone() => Serialiser.Deserialise<GameObject>(Serialiser.Serialise(this))!;
+
         /// <inheritdoc/>
         public void Dispose()
         {
