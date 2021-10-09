@@ -1,6 +1,7 @@
 ﻿using NovaEngine.External.Platform;
 using NovaEngine.Maths;
 using System;
+using System.Runtime.InteropServices;
 
 namespace NovaEngine.Platform.Windows
 {
@@ -12,6 +13,28 @@ namespace NovaEngine.Platform.Windows
         *********/
         /// <inheritdoc/>
         public bool IsCurrentPlatform => OperatingSystem.IsWindows();
+
+        /// <inheritdoc/>
+        public bool IsCursorVisible
+        {
+            get
+            {
+                var cursorInfo = new NativeCursorInfo();
+                cursorInfo.Size = (uint)Marshal.SizeOf<NativeCursorInfo>();
+                User32.GetCursorInfo(ref cursorInfo);
+                return cursorInfo.Flags == CursorState.Showing;
+            }
+            set
+            {
+                var displayCounter = User32.ShowCursor(value);
+                if (value)
+                    while (displayCounter < 0)
+                        displayCounter = User32.ShowCursor(true);
+                else
+                    while (displayCounter >= 0)
+                        displayCounter = User32.ShowCursor(false);
+            }
+        }
 
 
         /*********

@@ -42,6 +42,12 @@ namespace NovaEngine.Platform.Windows
         [DllImport("User32", SetLastError = true)]
         public static extern IntPtr DispatchMessage(in NativeMessage message);
 
+        /// <summary>Retrieves information about the global cursor.</summary>
+        /// <param name="cursorInfo">The structure to populate with the cursor infomation.</param>
+        /// <returns><see langword="true"/>, if the call succeeds; otherwise, <see langword="false"/>.</returns>
+        [DllImport("User32", SetLastError = true)]
+        public static extern bool GetCursorInfo(ref NativeCursorInfo cursorInfo);
+
         /// <summary>Retrieves the position of the mouse cursor, in screen coordinates.</summary>
         /// <param name="point">The structure to populate with the screen coordinates of the cursor.</param>
         /// <returns><see langword="true"/>, if the call succeeds; otherwise, <see langword="false"/>.</returns>
@@ -97,6 +103,13 @@ namespace NovaEngine.Platform.Windows
         /// <returns><see langword="true"/> if the title was changed successfully; otherwise, <see langword="false"/>.</returns>
         [DllImport("User32", SetLastError = true)]
         public static extern bool SetWindowText(IntPtr windowHandle, string text);
+
+        /// <summary>Displays or hides the cursor.</summary>
+        /// <param name="show"><see langword="true"/>, to increase the internal display count by one; otherwise, decrement by one.</param>
+        /// <returns>The new display count.</returns>
+        /// <remarks>Whether the cursor is shown depends on the value of the internal display count, this means this may need to be called multiple times.</remarks>
+        [DllImport("User32", SetLastError = true)]
+        public static extern int ShowCursor(bool show);
 
         /// <summary>Sets the specified window's show state.</summary>
         /// <param name="window">A handle to the window.</param>

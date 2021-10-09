@@ -12,6 +12,9 @@ namespace NovaEngine.Platform.Fake
         /// <inheritdoc/>
         public bool IsCurrentPlatform => true;
 
+        /// <inheritdoc/>
+        public bool IsCursorVisible { get; set; }
+
 
         /*********
         ** Public Methods

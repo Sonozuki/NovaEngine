@@ -1,5 +1,6 @@
 ﻿using NovaEngine.External.Input;
 using NovaEngine.Maths;
+using NovaEngine.Platform;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,13 @@ namespace NovaEngine.IO
         /*********
         ** Accessors
         *********/
+        /// <summary>Whether the cursor is currently visible.</summary>
+        public static bool IsCursorVisible
+        {
+            get => PlatformManager.CurrentPlatform.IsCursorVisible;
+            set => PlatformManager.CurrentPlatform.IsCursorVisible = value;
+        }
+
         /// <summary>The position of the mouse.</summary>
         public static Vector2I MousePosition => CurrentMouseState.Position;
 
