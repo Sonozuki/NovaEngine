@@ -52,8 +52,8 @@ namespace NovaEngine.Settings
 
                 if (instance == null)
                 {
-                    Logger.Log($"Failed to deserialise {nameof(RenderingSettings)}, reverting to default settings.", LogSeverity.Error);
-                    Logger.Log($"The invalid settings file has been moved to: \"{Constants.InvalidRenderingSettingsFilePath}\".", LogSeverity.Error);
+                    Logger.LogError($"Failed to deserialise {nameof(RenderingSettings)}, reverting to default settings.");
+                    Logger.LogError($"The invalid settings file has been moved to: \"{Constants.InvalidRenderingSettingsFilePath}\".");
                     File.Move(Constants.RenderingSettingsFilePath, Constants.InvalidRenderingSettingsFilePath, true);
                     instance = new();
                 }
@@ -61,7 +61,7 @@ namespace NovaEngine.Settings
 
             Instance = instance;
 
-            Logger.Log($"{nameof(RenderingSettings)}:\n{JsonSerializer.Serialize(Instance, new() { WriteIndented = true })}", LogSeverity.Debug);
+            Logger.LogDebug($"{nameof(RenderingSettings)}:\n{JsonSerializer.Serialize(Instance, new() { WriteIndented = true })}");
 
             // save settings, this adds any missing properties as well as creating the settings file if it doesn't exist
             Save();
@@ -76,7 +76,7 @@ namespace NovaEngine.Settings
 
             // serialise settings
             try { File.WriteAllText(Constants.RenderingSettingsFilePath, JsonSerializer.Serialize(Instance, new() { WriteIndented = true })); }
-            catch { Logger.Log($"Failed to serialise {nameof(RenderingSettings)}, settings won't persist between sessions.", LogSeverity.Error); }
+            catch { Logger.LogError($"Failed to serialise {nameof(RenderingSettings)}, settings won't persist between sessions."); }
         }
     }
 }

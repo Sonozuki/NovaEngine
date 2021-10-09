@@ -58,7 +58,7 @@ namespace NovaEngine.SceneManagement
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log($"Component crashed on start. Technical details:\n{ex}", LogSeverity.Error);
+                    Logger.LogError($"Component crashed on start. Technical details:\n{ex}");
                 }
             });
         }
@@ -78,7 +78,7 @@ namespace NovaEngine.SceneManagement
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log($"Component crashed on update. Technical details:\n{ex}", LogSeverity.Error);
+                    Logger.LogError($"Component crashed on update. Technical details:\n{ex}");
                 }
             });
         }

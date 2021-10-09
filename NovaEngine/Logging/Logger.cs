@@ -205,7 +205,7 @@ namespace NovaEngine.Logging
         ** Private Methods
         *********/
         /// <summary>Logs the general engine and system details.</summary>
-        private static void LogHeader() => Logger.Log($"{Constants.EngineName} {Constants.EngineVersion} running {Program.Name} on {Environment.OSVersion}");
+        private static void LogHeader() => Logger.LogInfo($"{Constants.EngineName} {Constants.EngineVersion} running {Program.Name} on {Environment.OSVersion}");
 
         /// <summary>Logs a message as a creator.</summary>
         /// <param name="creator">The creator to log the message as.</param>

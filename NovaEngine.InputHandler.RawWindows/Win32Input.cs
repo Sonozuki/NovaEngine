@@ -103,7 +103,7 @@ namespace NovaEngine.InputHandler.RawWindows
             }
             catch (Exception ex)
             {
-                Logger.Log($"Unhandled exception occured in window procedure: {ex}", LogSeverity.Fatal);
+                Logger.LogFatal($"Unhandled exception occured in window procedure: {ex}");
                 return IntPtr.Zero;
             }
         }

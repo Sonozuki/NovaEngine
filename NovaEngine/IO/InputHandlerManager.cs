@@ -56,12 +56,12 @@ namespace NovaEngine.IO
                     continue;
 
                 CurrentInputHandler = inputHandler;
-                Logger.Log($"Using input handler: {type.Assembly.ManifestModule.Name}", LogSeverity.Debug);
+                Logger.LogDebug($"Using input handler: {type.Assembly.ManifestModule.Name}");
                 break;
             }
 
             if (CurrentInputHandler == null)
-                Logger.Log("The environment operating system doesn't have a supported input handler.", LogSeverity.Fatal);
+                Logger.LogFatal("The environment operating system doesn't have a supported input handler.");
         }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor.

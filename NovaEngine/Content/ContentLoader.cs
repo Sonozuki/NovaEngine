@@ -38,7 +38,7 @@ namespace NovaEngine.Content
                 // ensure the attribute exists
                 if (!type.GetCustomAttributes(false).Any(attribute => attribute.GetType() == typeof(ContentReaderAttribute)))
                 {
-                    Logger.Log($"ContentReader: {type.FullName} doesn't have a {nameof(ContentReaderAttribute)}", LogSeverity.Error);
+                    Logger.LogError($"ContentReader: {type.FullName} doesn't have a {nameof(ContentReaderAttribute)}");
                     continue;
                 }
 

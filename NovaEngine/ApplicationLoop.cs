@@ -44,7 +44,7 @@ namespace NovaEngine
             }
             catch (Exception ex)
             {
-                Logger.Log($"Unrecoverable error occured inside the main loop: {ex}", LogSeverity.Fatal);
+                Logger.LogFatal($"Unrecoverable error occured inside the main loop: {ex}");
             }
         }
     }

@@ -56,12 +56,12 @@ namespace NovaEngine.Platform
                     continue;
             
                 CurrentPlatform = platform;
-                Logger.Log($"Using platform: {type.Assembly.ManifestModule.Name}", LogSeverity.Debug);
+                Logger.LogDebug($"Using platform: {type.Assembly.ManifestModule.Name}");
                 break;
             }
 
             if (CurrentPlatform == null)
-                Logger.Log("The environment operating system isn't supported.", LogSeverity.Fatal);
+                Logger.LogFatal("The environment operating system isn't supported.");
         }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

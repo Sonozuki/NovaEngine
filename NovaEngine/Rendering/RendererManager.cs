@@ -59,12 +59,12 @@ namespace NovaEngine.Rendering
                     continue;
 
                 CurrentRenderer = renderer;
-                Logger.Log($"Using renderer: {type.Assembly.ManifestModule.Name}", LogSeverity.Debug);
+                Logger.LogDebug($"Using renderer: {type.Assembly.ManifestModule.Name}");
                 break;
             }
 
             if (CurrentRenderer == null)
-                Logger.Log("The environment operating system doesn't have a supported renderer.", LogSeverity.Fatal);
+                Logger.LogFatal("The environment operating system doesn't have a supported renderer.");
         }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor.

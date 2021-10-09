@@ -40,7 +40,7 @@ namespace NovaEngine.Debugging
             }
             catch
             {
-                Logger.Log($"Cannot convert: '{value}' to type: {typeof(T)}.", LogSeverity.Error);
+                Logger.LogError($"Cannot convert: '{value}' to type: {typeof(T)}.");
             }
         }
     }
