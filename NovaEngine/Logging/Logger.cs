@@ -185,6 +185,7 @@ namespace NovaEngine.Logging
         /// <param name="callingAssembly">The assembly to log the message as.</param>
         /// <param name="severity">The severity of the log.</param>
         /// <param name="message">The message to log.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void Log(Assembly callingAssembly, LogSeverity severity, string? message)
         {
             var callingAssemblyName = Path.GetFileNameWithoutExtension(callingAssembly.ManifestModule.Name);
