@@ -56,16 +56,7 @@ namespace NovaEngine.Components
         public Texture2D RenderTarget => RendererCamera.RenderTarget;
 
         /// <summary>The view matrix of the camera.</summary>
-        public Matrix4x4 ViewMatrix
-        {
-            get
-            {
-                if (Transform == null)
-                    return Matrix4x4.Identity;
-
-                return Utilities.CreateViewMatrix(Transform.GlobalPosition, Transform.GlobalRotation);
-            }
-        }
+        public Matrix4x4 ViewMatrix => Utilities.CreateViewMatrix(this.Transform.GlobalPosition, Transform.GlobalRotation);
 
         /// <summary>The projection matrix of the camera.</summary>
         public Matrix4x4 ProjectionMatrix

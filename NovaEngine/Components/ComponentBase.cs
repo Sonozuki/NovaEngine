@@ -1,4 +1,5 @@
 ﻿using NovaEngine.Core;
+using NovaEngine.Serialisation;
 using System;
 
 namespace NovaEngine.Components
@@ -17,21 +18,27 @@ namespace NovaEngine.Components
         public bool IsPausable { get; set; } = true;
 
         /// <summary>The game object the component is currently on.</summary>
-        public GameObject? GameObject { get; internal set; }
+        [Serialisable]
+        protected internal GameObject GameObject { get; internal set; }
 
         /// <summary>The transform of the game object the component is currently attached to.</summary>
-        public Transform? Transform => GameObject?.Transform;
+        [Serialisable]
+        protected internal Transform Transform => GameObject.Transform;
 
 
         /*********
         ** Public Methods
         *********/
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
         /// <summary>Constructs an instance.</summary>
         /// <param name="isEnabled">Whether the component is enabled.</param>
         public ComponentBase(bool isEnabled = true)
         {
             IsEnabled = isEnabled;
         }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         /// <inheritdoc/>
         public virtual void Dispose() { }

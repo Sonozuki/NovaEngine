@@ -80,7 +80,7 @@ namespace NovaEngine.Core
             var wasRemoved = Components.Remove(item);
             if (wasRemoved)
             {
-                item.GameObject = null;
+                item.GameObject = null!; // setting this is null is fine as the no code will try to access it expecting a non null value
 
                 // update caches
                 if (item.GetType() == typeof(MeshRenderer))
@@ -102,7 +102,7 @@ namespace NovaEngine.Core
                 if (component.GetType() != typeof(T))
                     continue;
 
-                component.GameObject = null;
+                component.GameObject = null!; // setting this is null is fine as the no code will try to access it expecting a non null value
                 Components.RemoveAt(i--);
 
                 // exit early if only the first component should be removed
@@ -118,7 +118,7 @@ namespace NovaEngine.Core
         /// <inheritdoc/>
         public void RemoveAt(int index)
         {
-            Components[index].GameObject = null;
+            Components[index].GameObject = null!; // setting this is null is fine as the no code will try to access it expecting a non null value
             Components.RemoveAt(index);
         }
 
@@ -201,7 +201,7 @@ namespace NovaEngine.Core
         /// <inheritdoc/>
         public void Clear()
         {
-            Components.ForEach(component => component.GameObject = null);
+            Components.ForEach(component => component.GameObject = null!); // setting this is null is fine as the no code will try to access it expecting a non null value
             Components.Clear();
         }
 
