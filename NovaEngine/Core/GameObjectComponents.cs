@@ -236,12 +236,12 @@ namespace NovaEngine.Core
 
 
         /*********
-        ** Private Methods
+        ** Protected Methods
         *********/
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         
         /// <summary>Constructs an instance.</summary>
-        private GameObjectComponents() { } // required for serialiser
+        protected GameObjectComponents() { } // required for serialiser
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     }
