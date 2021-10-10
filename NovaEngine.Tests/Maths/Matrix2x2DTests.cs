@@ -9,6 +9,13 @@ namespace NovaEngine.Tests.Maths
     public class Matrix2x2DTests
     {
         /*********
+        ** Constants
+        *********/
+        /// <summary>The delta to use when checking if floating-point numbers are equal.</summary>
+        private const double FloatingPointEqualsDelta = .0000001;
+
+
+        /*********
         ** Public Methods
         *********/
         /// <summary>Tests <see cref="Matrix2x2D.IsIdentity"/>.</summary>
@@ -505,6 +512,85 @@ namespace NovaEngine.Tests.Maths
             var matrix2 = new Matrix2x2D();
             var areEqual = matrix1.Equals((object)matrix2);
             Assert.IsFalse(areEqual);
+        }
+
+        /// <summary>Tests <see cref="Matrix2x2D.CreateRotation(double)"/>.</summary>
+        /// <remarks>This tests that an identity matrix is returned when no rotation is specified.</remarks>
+        [Test]
+        public void CreateRotation_NoRotation_ReturnsIdentitiyMatrix()
+        {
+            var matrix = Matrix2x2D.CreateRotation(0);
+            Assert.AreEqual(Matrix2x2D.Identity, matrix);
+        }
+
+        /// <summary>Tests <see cref="Matrix2x2D.CreateRotation(double)"/>.</summary>
+        /// <remarks>This tests that a rotation matrix is correctly created with a specified rotation.</remarks>
+        [Test]
+        public void CreateRotation_WithRotation_ReturnsRotationMatrix()
+        {
+            var matrix = Matrix2x2D.CreateRotation(90);
+            var m11 = matrix.M11;
+            var m12 = matrix.M12;
+            var m21 = matrix.M21;
+            var m22 = matrix.M22;
+            Assert.AreEqual(0, m11, FloatingPointEqualsDelta);
+            Assert.AreEqual(-1, m12, FloatingPointEqualsDelta);
+            Assert.AreEqual(1, m21, FloatingPointEqualsDelta);
+            Assert.AreEqual(0, m22, FloatingPointEqualsDelta);
+        }
+
+        /// <summary>Tests <see cref="Matrix2x2D.CreateScale(double)"/>.</summary>
+        /// <remarks>This tests that an identitiy matrix is returned when a scale of '1' is specified.</remarks>
+        [Test]
+        public void CreateScaleFloat_ScaleOfOne_ReturnsIdentityMatrix()
+        {
+            var matrix = Matrix2x2D.CreateScale(1);
+            Assert.AreEqual(Matrix2x2D.Identity, matrix);
+        }
+
+        /// <summary>Tests <see cref="Matrix2x2D.CreateScale(double)"/>.</summary>
+        /// <remarks>This tests that a scale matrix is correctly created with the specified scale.</remarks>
+        [Test]
+        public void CreateScaleFloat_ScaleNotOne_ReturnsScaleMatrix()
+        {
+            var matrix = Matrix2x2D.CreateScale(5);
+            Assert.AreEqual(new Matrix2x2D(5, 0, 0, 5), matrix);
+        }
+
+        /// <summary>Tests <see cref="Matrix2x2D.CreateScale(double, double)"/>.</summary>
+        /// <remarks>This tests that an identitiy matrix is returned when a scale of '1' is specified for both parameters.</remarks>
+        [Test]
+        public void CreateScaleFloatFloat_XScaleOfOneAndYScaleOfOne_ReturnsIdentityMatrix()
+        {
+            var matrix = Matrix2x2D.CreateScale(1, 1);
+            Assert.AreEqual(Matrix2x2D.Identity, matrix);
+        }
+
+        /// <summary>Tests <see cref="Matrix2x2D.CreateScale(double, double)"/>.</summary>
+        /// <remarks>This tests that a scale matrix is correctly created with the specified scale.</remarks>
+        [Test]
+        public void CreateScaleFloatFloat_XYScaleNotOne_ReturnsScaleMatrix()
+        {
+            var matrix = Matrix2x2D.CreateScale(2, 3);
+            Assert.AreEqual(new Matrix2x2D(2, 0, 0, 3), matrix);
+        }
+
+        /// <summary>Tests <see cref="Matrix2x2D.CreateScale(Vector2D)"/>.</summary>
+        /// <remarks>This tests that an identitiy matrix is returned when a scale of '1' is specified for both parameters.</remarks>
+        [Test]
+        public void CreateScaleVector2_XScaleOfOneAndYScaleOfOne_ReturnsIdentityMatrix()
+        {
+            var matrix = Matrix2x2D.CreateScale(Vector2D.One);
+            Assert.AreEqual(Matrix2x2D.Identity, matrix);
+        }
+
+        /// <summary>Tests <see cref="Matrix2x2D.CreateScale(Vector2D)"/>.</summary>
+        /// <remarks>This tests that a scale matrix is correctly created with the specified scale.</remarks>
+        [Test]
+        public void CreateScaleVector2_XYScaleNotOne_ReturnsScaleMatrix()
+        {
+            var matrix = Matrix2x2D.CreateScale(new Vector2D(2, 3));
+            Assert.AreEqual(new Matrix2x2D(2, 0, 0, 3), matrix);
         }
 
         /// <summary>Tests <see cref="Matrix2x2D"/> + <see cref="Matrix2x2D"/>.</summary>

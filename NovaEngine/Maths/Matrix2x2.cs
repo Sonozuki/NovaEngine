@@ -260,6 +260,34 @@ namespace NovaEngine.Maths
         /// <inheritdoc/>
         public readonly override string ToString() => $"<M11: {M11}, M12: {M12}, M21: {M21}, M22: {M22}>";
 
+        /// <summary>Creates a rotation matrix.</summary>
+        /// <param name="angle">The clockwise angle, in degrees.</param>
+        /// <returns>The created matrix.</returns>
+        public static Matrix2x2 CreateRotation(float angle)
+        {
+            angle = MathsHelper.DegreesToRadians(angle);
+            var sinAngle = MathF.Sin(angle);
+            var cosAngle = MathF.Cos(angle);
+
+            return new(cosAngle, -sinAngle, sinAngle, cosAngle);
+        }
+
+        /// <summary>Creates a scale matrix.</summary>
+        /// <param name="scale">The uniform scale factor.</param>
+        /// <returns>The created matrix.</returns>
+        public static Matrix2x2 CreateScale(float scale) => new(scale, 0, 0, scale);
+
+        /// <summary>Creates a scale matrix.</summary>
+        /// <param name="xScale">The scale factor of the X axis.</param>
+        /// <param name="yScale">The scale factor of the Y axis.</param>
+        /// <returns>The created matrix.</returns>
+        public static Matrix2x2 CreateScale(float xScale, float yScale) => new(xScale, 0, 0, yScale);
+
+        /// <summary>Creates a scale matrix.</summary>
+        /// <param name="scale">The scale factor of the X and Y axis.</param>
+        /// <returns>The created matrix.</returns>
+        public static Matrix2x2 CreateScale(Vector2 scale) => new(scale.X, 0, 0, scale.Y);
+
 
         /*********
         ** Operators
