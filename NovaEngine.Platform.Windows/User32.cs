@@ -10,6 +10,19 @@ namespace NovaEngine.Platform.Windows
         /*********
         ** Public Methods
         *********/
+        /// <summary>Converts the client-area coordinates of the specified point to screen coordinates.</summary>
+        /// <param name="window">A handle to the window whose client area is used for the conversion.</param>
+        /// <param name="point">A reference to the structure that contains the client coordinates to be converted. The new screen coordinates are copied into this structure if the function succeeds.</param>
+        /// <returns><see langword="true"/>, if the call succeeds; otherwise, <see langword="false"/>.</returns>
+        [DllImport("User32", SetLastError = true)]
+        public static extern bool ClientToScreen(IntPtr window, ref Vector2I point);
+
+        /// <summary>Confines the cursor to a rectangular area on the screen.</summary>
+        /// <param name="rectangle">A pointer to the structure that contains the screen coordiantes of the upper-left and lower-right corners of the confining rectangle. If this parameter is <see langword="null"/>, the cursor is free to move anywhere on the screen.</param>
+        /// <returns><see langword="true"/>, if the call succeeds; otherwise, <see langword="false"/>.</returns>
+        [DllImport("User32", SetLastError = true)]
+        public unsafe static extern bool ClipCursor(NativeRectangle* rectangle);
+
         /// <summary>Creates a window with an extended window style.</summary>
         /// <param name="exStyle">The extended window style of the window being created.</param>
         /// <param name="className">A class name that has previously been registered using the <see cref="RegisterClass(in NativeWindowClass)"/> method.</param>
@@ -41,6 +54,12 @@ namespace NovaEngine.Platform.Windows
         /// <returns>The value returned by the window procedure, which depends on the message being dispatched.</returns>
         [DllImport("User32", SetLastError = true)]
         public static extern IntPtr DispatchMessage(in NativeMessage message);
+
+        /// <summary>Retrieves the screen coordinates of the rectangle area to which the cursor is confined.</summary>
+        /// <param name="rectangle">A reference to the <see cref="NativeRectangle"/> structure that receives the screen coordinates of the confining rectanlge. The structure receives the dimensions of the screen if the cursor is not confined to a rectangle.</param>
+        /// <returns><see langword="true"/>, if the call succeeds; otherwise, <see langword="false"/>.</returns>
+        [DllImport("User32", SetLastError = true)]
+        public static extern bool GetClipCursor(ref NativeRectangle rectangle);
 
         /// <summary>Retrieves information about the global cursor.</summary>
         /// <param name="cursorInfo">The structure to populate with the cursor infomation.</param>
@@ -83,6 +102,13 @@ namespace NovaEngine.Platform.Windows
         /// <returns>If the function succeeds, the return value is a class atom that uniquely identifies the class being registered; otherwise, zero is returned.</returns>
         [DllImport("User32", SetLastError = true)]
         public static extern ushort RegisterClass(in NativeWindowClass windowClass);
+
+        /// <summary>Converts the screen coordinates of the specified point to client-area coordinates.</summary>
+        /// <param name="window">A handle to the window whose client area is used for the conversion.</param>
+        /// <param name="point">A reference to the structure that contains the screen coordinates to be converted. The new client coordinates are copied into this structure if the function succeeds.</param>
+        /// <returns><see langword="true"/>, if the call succeeds; otherwise, <see langword="false"/>.</returns>
+        [DllImport("User32", SetLastError = true)]
+        public static extern bool ScreenToClient(IntPtr window, ref Vector2I point);
 
         /// <summary>Changes the text of the specified window's title bar (if it has one).</summary>
         /// <param name="windowHandle">A handle to the window whose title is to be changed.</param>

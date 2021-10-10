@@ -42,6 +42,14 @@ namespace NovaEngine.IO
             set => PlatformManager.CurrentPlatform.IsCursorVisible = value;
         }
 
+        /// <summary>Whether the cursor is currently locked.</summary>
+        /// <remarks>Locking the cursor will automatically centralise it.</remarks>
+        public static bool IsCursorLocked
+        {
+            get => PlatformManager.CurrentPlatform.IsCursorLocked;
+            set => PlatformManager.CurrentPlatform.IsCursorLocked = value;
+        }
+
         /// <summary>The position of the mouse.</summary>
         public static Vector2I MousePosition => CurrentMouseState.Position;
 

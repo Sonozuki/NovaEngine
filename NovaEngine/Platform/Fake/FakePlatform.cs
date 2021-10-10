@@ -15,6 +15,9 @@ namespace NovaEngine.Platform.Fake
         /// <inheritdoc/>
         public bool IsCursorVisible { get; set; }
 
+        /// <inheritdoc/>
+        public bool IsCursorLocked { get; set; }
+
 
         /*********
         ** Public Methods
