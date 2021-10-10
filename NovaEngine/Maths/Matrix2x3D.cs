@@ -265,30 +265,23 @@ namespace NovaEngine.Maths
         /// <summary>Creates a rotation matrix.</summary>
         /// <param name="angle">The clockwise angle, in degrees.</param>
         /// <returns>The created matrix.</returns>
-        public static Matrix2x3D CreateRotation(double angle)
-        {
-            angle = MathsHelper.DegreesToRadians(angle);
-            var sinAngle = Math.Sin(angle);
-            var cosAngle = Math.Cos(angle);
-
-            return new(cosAngle, -sinAngle, 0, sinAngle, cosAngle, 0);
-        }
+        public static Matrix2x3D CreateRotation(double angle) => new(Matrix2x2D.CreateRotation(angle));
 
         /// <summary>Creates a scale matrix.</summary>
         /// <param name="scale">The uniform scale factor.</param>
         /// <returns>The created matrix.</returns>
-        public static Matrix2x3D CreateScale(double scale) => new(scale, 0, 0, 0, scale, 0);
+        public static Matrix2x3D CreateScale(double scale) => new(Matrix2x2D.CreateScale(scale));
 
         /// <summary>Creates a scale matrix.</summary>
         /// <param name="xScale">The scale factor of the X axis.</param>
         /// <param name="yScale">The scale factor of the Y axis.</param>
         /// <returns>The created matrix.</returns>
-        public static Matrix2x3D CreateScale(double xScale, double yScale) => new(xScale, 0, 0, 0, yScale, 0);
+        public static Matrix2x3D CreateScale(double xScale, double yScale) => new(Matrix2x2D.CreateScale(xScale, yScale));
 
         /// <summary>Creates a scale matrix.</summary>
         /// <param name="scale">The scale factor of the X and Y axis.</param>
         /// <returns>The created matrix.</returns>
-        public static Matrix2x3D CreateScale(Vector2D scale) => new(scale.X, 0, 0, 0, scale.Y, 0);
+        public static Matrix2x3D CreateScale(Vector2D scale) => new(Matrix2x2D.CreateScale(scale));
 
 
         /*********
