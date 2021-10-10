@@ -226,11 +226,7 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>Transposes the matrix.</summary>
-        public void Transpose()
-        {
-            (Row1, Column1) = (Column1, Row1);
-            (Row2, Column2) = (Column2, Row1);
-        }
+        public void Transpose() => (M12, M21) = (M21, M12);
 
         /// <summary>Inverts the matrix.</summary>
         public void Invert()
@@ -241,10 +237,11 @@ namespace NovaEngine.Maths
 
             var inverseDeterminant = 1 / Determinant;
 
+            var oldM11 = M11;
             M11 = M22 * inverseDeterminant;
             M12 = -M12 * inverseDeterminant;
             M21 = -M21 * inverseDeterminant;
-            M22 = M11 * inverseDeterminant;
+            M22 = oldM11 * inverseDeterminant;
         }
 
         /// <summary>Gets the matrix as a <see cref="Matrix2x2"/>.</summary>
