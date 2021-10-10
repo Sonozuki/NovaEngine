@@ -5,6 +5,7 @@ using NovaEngine.Rendering;
 using NovaEngine.Serialisation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace NovaEngine.Core
@@ -59,6 +60,7 @@ namespace NovaEngine.Core
         public GameObjectComponents Components { get; }
 
         /// <summary>The renderer specific game object.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [NonSerialisable]
         public RendererGameObjectBase RendererGameObject { get; private set; }
 

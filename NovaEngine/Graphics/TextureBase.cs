@@ -3,6 +3,7 @@ using NovaEngine.Rendering;
 using NovaEngine.Serialisation;
 using NovaEngine.Settings;
 using System;
+using System.ComponentModel;
 
 namespace NovaEngine.Graphics
 {
@@ -62,6 +63,8 @@ namespace NovaEngine.Graphics
         public bool AutomaticallyGenerateMipChain { get; }
 
         /// <summary>The renderer specific texture.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [NonSerialisable]
         public RendererTextureBase RendererTexture { get; private set; }
 
         /// <summary>The usage of the texture.</summary>

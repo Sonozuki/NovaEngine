@@ -5,6 +5,7 @@ using NovaEngine.Maths;
 using NovaEngine.Rendering;
 using NovaEngine.SceneManagement;
 using NovaEngine.Serialisation;
+using System.ComponentModel;
 using System.Linq;
 
 namespace NovaEngine.Components
@@ -56,9 +57,11 @@ namespace NovaEngine.Components
         public Texture2D RenderTarget => RendererCamera.RenderTarget;
 
         /// <summary>The view matrix of the camera.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public Matrix4x4 ViewMatrix => Utilities.CreateViewMatrix(this.Transform.GlobalPosition, Transform.GlobalRotation);
 
         /// <summary>The projection matrix of the camera.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public Matrix4x4 ProjectionMatrix
         {
             get
@@ -71,6 +74,7 @@ namespace NovaEngine.Components
         }
 
         /// <summary>The renderer specific camera.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [NonSerialisable]
         public RendererCameraBase RendererCamera { get; private set; }
 

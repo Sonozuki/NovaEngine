@@ -1,6 +1,7 @@
 ﻿using NovaEngine.Maths;
 using NovaEngine.Rendering;
 using NovaEngine.Serialisation;
+using System.ComponentModel;
 
 namespace NovaEngine.Core
 {
@@ -117,6 +118,7 @@ namespace NovaEngine.Core
         public Vector3 Right => Vector3.UnitX * GlobalRotation;
 
         /// <summary>The transform matrix.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public Matrix4x4 Matrix => Utilities.CreateModelMatrix(GlobalPosition, GlobalRotation, GlobalScale);
 
         /// <summary>The global position of the parent object.</summary>
