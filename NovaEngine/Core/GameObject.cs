@@ -149,7 +149,7 @@ namespace NovaEngine.Core
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         
         /// <summary>Constructs an instance.</summary>
-        private GameObject()
+        private GameObject() // required for serialiser
         {
             // technically, this should be ran in a [SerialiserCalled] method, however, because Components.MeshRenderer.set requires
             // the RendererGameObject to be non null, it has be populated here. this will only be a problem if the RendererGameObject
