@@ -24,8 +24,6 @@ namespace NovaEngine
         {
             // set console input stream to read commands
             var standardInput = new StreamReader(Console.OpenStandardInput());
-            Console.SetIn(standardInput);
-
             ReadCommands(standardInput);
 
             // add help command
@@ -61,6 +59,7 @@ namespace NovaEngine
         *********/
         /// <summary>Reads a <see cref="StreamReader"/> and executes commands written to it.</summary>
         /// <param name="streamReader">The <see cref="StreamReader"/> to listen for commands on.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="streamReader"/> is <see langword="null"/>.</exception>
         private static async void ReadCommands(StreamReader streamReader)
         {
             if (streamReader == null)
