@@ -67,7 +67,7 @@ namespace NovaEngine.Renderer.Vulkan
         /// <summary>The window surface Vulkan will draw to.</summary>
         internal VkSurfaceKHR NativeSurface { get; private set; }
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. (When these are actually used, they'll never be null.)
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 
         /// <summary>The <see cref="VkPhysicalDevice"/> and it's logical <see cref="VkDevice"/> representation.</summary>
         internal VulkanDevice Device { get; private set; }

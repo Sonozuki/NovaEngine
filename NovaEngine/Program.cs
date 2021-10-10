@@ -28,7 +28,7 @@ namespace NovaEngine
         /// <summary>The name of the application, more specifically the name of the executable, without the extension.</summary>
         public static string Name { get; private set; } = "Unknown";
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. (When these are actually used, they'll never be null.)
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 
         /// <summary>The main window of the application.</summary>
         public static Window MainWindow { get; private set; }

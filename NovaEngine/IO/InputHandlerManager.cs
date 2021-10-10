@@ -21,7 +21,7 @@ namespace NovaEngine.IO
         /*********
         ** Public Methods
         *********/
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. (If the current input handler is null, it's handled and the program is killed before it could cause any null references.)
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 
         /// <summary>Initialises the class.</summary>
         static InputHandlerManager()
