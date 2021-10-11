@@ -397,14 +397,14 @@ namespace NovaEngine.Maths
         public static Matrix2x4 operator *(float left, Matrix2x4 right)
         {
             return new(
-                m11: left + right.M11,
-                m12: left + right.M12,
-                m13: left + right.M13,
-                m14: left + right.M14,
-                m21: left + right.M21,
-                m22: left + right.M22,
-                m23: left + right.M23,
-                m24: left + right.M24
+                m11: left * right.M11,
+                m12: left * right.M12,
+                m13: left * right.M13,
+                m14: left * right.M14,
+                m21: left * right.M21,
+                m22: left * right.M22,
+                m23: left * right.M23,
+                m24: left * right.M24
             );
         }
 
