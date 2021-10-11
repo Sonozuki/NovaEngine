@@ -45,7 +45,7 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>The transposed matrix.</summary>
-        public readonly Matrix2x3D Transposed => new(M11, M21, M31, M21, M22, M32);
+        public readonly Matrix2x3D Transposed => new(M11, M21, M31, M12, M22, M32);
 
         /// <summary>The first row of the matrix.</summary>
         public Vector2D Row1
