@@ -97,6 +97,7 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>The inverse of the matrix.</summary>
+        /// <remarks>If the matrix can't be inverted (<see cref="Determinant"/> is 0), then the matrix will be unchanged.</remarks>
         public readonly Matrix4x4D Inverse
         {
             get
@@ -720,17 +721,16 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>Transposes the matrix.</summary>
-        public void Transpose()
-        {
-            (Row1, Column1) = (Column1, Row1);
-            (Row2, Column2) = (Column2, Row2);
-            (Row3, Column3) = (Column3, Row3);
-            (Row4, Column4) = (Column4, Row4);
-        }
+        public void Transpose() => (M12, M13, M14, M21, M23, M24, M31, M32, M34, M41, M42, M43) = (M21, M31, M41, M12, M32, M42, M13, M23, M43, M14, M24, M34);
 
         /// <summary>Inverts the matrix.</summary>
+        /// <remarks>If the matrix can't be inverted (<see cref="Determinant"/> is 0), then the matrix will be unchanged.</remarks>
         public void Invert()
         {
+            // ensure matrix can be inverted
+            if (Determinant == 0)
+                return;
+
             // create matrix of minors
             var minorsMatrix = new Matrix4x4D();
             for (int row = 0; row < 4; row++)
@@ -753,11 +753,11 @@ namespace NovaEngine.Maths
                 }
 
             // create matrix of cofactors
-            var cofactorsMatrix = new Matrix4x4D();
+            var cofactorsMatrix = minorsMatrix;
             for (int row = 0; row < 4; row++)
                 for (int column = 0; column < 4; column++)
                     if (row + column % 2 != 0)
-                        cofactorsMatrix[row, column] = minorsMatrix[row, column] * -1;
+                        cofactorsMatrix[row, column] *= -1;
 
             // get the inverted matrix
             var invertedMatrix = cofactorsMatrix.Transposed * (1 / Determinant);

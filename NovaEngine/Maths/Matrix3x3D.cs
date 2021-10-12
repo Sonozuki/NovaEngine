@@ -73,6 +73,7 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>The inverse of the matrix.</summary>
+        /// <remarks>If the matrix can't be inverted (<see cref="Determinant"/> is 0), then the matrix will be the same as this one.</remarks>
         public readonly Matrix3x3D Inverse
         {
             get
@@ -117,10 +118,10 @@ namespace NovaEngine.Maths
                 if (Trace > 0)
                 {
                     var sq = .5f / Math.Sqrt(Trace + 1);
-                    quaternion.W = .25f / sq;
                     quaternion.X = (M31 - M23) * sq;
                     quaternion.Y = (M13 - M31) * sq;
                     quaternion.Z = (M21 - M12) * sq;
+                    quaternion.W = .25f / sq;
                 }
                 else if (M11 > M22 && M11 > M33)
                 {
@@ -439,16 +440,16 @@ namespace NovaEngine.Maths
         }
 
         /// <summary>Transposes the matrix.</summary>
-        public void Transpose()
-        {
-            (Row1, Column1) = (Column1, Row1);
-            (Row2, Column2) = (Column2, Row2);
-            (Row3, Column3) = (Column3, Row3);
-        }
+        public void Transpose() => (M12, M13, M21, M23, M31, M32) = (M21, M31, M12, M32, M13, M23);
 
         /// <summary>Inverts the matrix.</summary>
+        /// <remarks>If the matrix can't be inverted (<see cref="Determinant"/> is 0), then the matrix will be unchanged.</remarks>
         public void Invert()
         {
+            // ensure matrix can be inverted
+            if (Determinant == 0)
+                return;
+
             // create matrix of minors
             var minorsMatrix = new Matrix3x3D();
             for (int row = 0; row < 3; row++)
@@ -471,9 +472,9 @@ namespace NovaEngine.Maths
                 }
 
             // create matrix of cofactors
-            var cofactorsMatrix = new Matrix3x3D();
-            for (int i = 1; i < 4; i += 2)
-                cofactorsMatrix[i] = minorsMatrix[i] * -1;
+            var cofactorsMatrix = minorsMatrix;
+            for (int i = 1; i < 9; i += 2)
+                cofactorsMatrix[i] *= -1;
 
             // get the inverted matrix
             var invertedMatrix = cofactorsMatrix.Transposed * (1 / Determinant);
