@@ -71,9 +71,8 @@ namespace NovaEngine.Core
         /// <summary>Constructs an instance.</summary>
         /// <param name="name">The name of the game object.</param>
         /// <param name="parent">The parent of the game object.</param>
-        /// <param name="sceneName">The name of the scene to add the game object to.<br/>NOTE: this is only used when <paramref name="parent"/> is <see langword="null"/>.<br/>If this is <see langword="null"/>, empty, or is an invalid scene name, then the game object will not be added to a scene.</param>
         /// <param name="isEnabled">Whether the game object is enabled.</param>
-        public GameObject(string name, GameObject? parent = null, string? sceneName = null, bool isEnabled = true)
+        public GameObject(string name, GameObject? parent = null, bool isEnabled = true)
             : this()
         {
             Name = name;
@@ -82,13 +81,8 @@ namespace NovaEngine.Core
             Transform = new(this);
             IsEnabled = isEnabled;
 
-            // add the gameobject to the parent or as a scene root object
             if (parent != null)
-            {
                 Parent = parent;
-                Parent.Children.Add(this);
-            }
-            // TODO: add game object to scene
         }
 
         /// <summary>Deep copies the game object, meaning it will clone all value and reference types.</summary>
