@@ -14,6 +14,12 @@ namespace NovaEngine.Maths
         /// <summary>Radians to degrees conversion constant.</summary>
         public const float RadToDeg = 180 / MathF.PI;
 
+        /// <summary>Degrees to radians conversion constant.</summary>
+        private const double DegToRadD = Math.PI / 180;
+
+        /// <summary>Radians to degrees conversion constant.</summary>
+        private const double RadToDegD = 180 / Math.PI;
+
 
         /*********
         ** Public Methods
@@ -59,21 +65,21 @@ namespace NovaEngine.Maths
         /// <summary>Converts degrees to radians.</summary>
         /// <param name="degrees">The angle, in degrees.</param>
         /// <returns>The angle, in radians.</returns>
-        public static float DegreesToRadians(float degrees) => degrees * MathF.PI / 180;
+        public static float DegreesToRadians(float degrees) => degrees * DegToRad;
 
         /// <summary>Converts degrees to radians.</summary>
         /// <param name="degrees">The angle, in degrees.</param>
         /// <returns>The angle, in radians.</returns>
-        public static double DegreesToRadians(double degrees) => degrees * Math.PI / 180;
+        public static double DegreesToRadians(double degrees) => degrees * DegToRadD;
 
         /// <summary>Converts radians to degrees.</summary>
         /// <param name="radians">The angle, in radians.</param>
         /// <returns>The angle, in degrees.</returns>
-        public static float RadiansToDegrees(float radians) => radians * 180 / MathF.PI;
+        public static float RadiansToDegrees(float radians) => radians * RadToDeg;
 
         /// <summary>Converts radians to degrees.</summary>
         /// <param name="radians">The angle, in radians.</param>
         /// <returns>The angle, in degrees.</returns>
-        public static double RadiansToDegrees(double radians) => radians * 180 / Math.PI;
+        public static double RadiansToDegrees(double radians) => radians * RadToDegD;
     }
 }
