@@ -64,6 +64,10 @@ namespace NovaEngine.Core
         [NonSerialisable]
         public RendererGameObjectBase RendererGameObject { get; private set; }
 
+        /// <summary>A game object with a mesh renderer containing a mesh of a unit size cube.</summary>
+        /// <remarks>The same instance is always returned. Make sure to clone the object if using it in a scene.</remarks>
+        internal static GameObject Cube { get; } = new("Cube", components: new[] { new MeshRenderer(Mesh.Cube) });
+
 
         /*********
         ** Public Methods
