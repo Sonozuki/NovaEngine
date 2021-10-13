@@ -87,8 +87,39 @@ namespace NovaEngine.Core
 
         /// <summary>Deep copies the game object, meaning it will clone all value and reference types.</summary>
         /// <returns>A clone of the object.</returns>
-        /// <remarks>This relies on the serialiser, any members that don't get serialised won't get cloned.</remarks>
+        /// <remarks>This relies on the serialiser, any members that don't get serialised won't get cloned.<br/>The cloned object will be a sibling of the original object.</remarks>
         public GameObject Clone() => Serialiser.Deserialise<GameObject>(Serialiser.Serialise(this))!;
+
+        /// <summary>Deep copies the game object, meaning it will clone all value and reference types.</summary>
+        /// <param name="position">The position of the cloned object.</param>
+        /// <param name="rotation">The rotation of the cloned object. If <see langword="null"/> is specified, the rotation will be set to <see cref="Quaternion.Identity"/>.</param>
+        /// <param name="scale">The scale of the cloned object. If <see langword="null"/> is specified, the scale will be set to <see cref="Vector3.One"/>.</param>
+        /// <param name="coordinateSpace">The space the <paramref name="position"/>, <paramref name="rotation"/>, and <paramref name="scale"/> should be set as.</param>
+        /// <returns>A clone of the object with the specified transform.</returns>
+        /// <remarks>This relies on the serialiser, any members that don't get serialised won't get cloned.<br/>The cloned object will be a sibling of the original object.</remarks>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="coordinateSpace"/> is an invalid value.</exception>
+        public GameObject Clone(Vector3 position, Quaternion? rotation = null, Vector3? scale = null, Space coordinateSpace = Space.Global)
+        {
+            var clone = Clone();
+
+            switch (coordinateSpace)
+            {
+                case Space.Local:
+                    clone.Transform.LocalPosition = position;
+                    clone.Transform.LocalRotation = rotation ?? Quaternion.Identity;
+                    clone.Transform.LocalScale = scale ?? Vector3.One;
+                    break;
+                case Space.Global:
+                    clone.Transform.GlobalPosition = position;
+                    clone.Transform.GlobalRotation = rotation ?? Quaternion.Identity;
+                    clone.Transform.GlobalScale = scale ?? Vector3.One;
+                    break;
+                default:
+                    throw new ArgumentException("Not a valid enumeration value.", nameof(coordinateSpace));
+            }
+
+            return clone;
+        }
 
         /// <inheritdoc/>
         public void Dispose()
