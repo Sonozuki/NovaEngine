@@ -50,7 +50,7 @@ namespace NovaEngine.Core
             // TODO: ensure the game object isn't already a child
 
             Children.Add(item);
-            item.Parent = Parent;
+            item.Parent = Parent; // this will remove the child from it's current parent (if it has one)
         }
 
         /// <inheritdoc/>
@@ -103,9 +103,14 @@ namespace NovaEngine.Core
         *********/
         /// <summary>Constructs an instance.</summary>
         /// <param name="parent">The game object whose children this collection is.</param>
-        internal GameObjectChildren(GameObject parent)
+        /// <param name="children">The initial children to add.</param>
+        internal GameObjectChildren(GameObject parent, IEnumerable<GameObject>? children)
         {
             Parent = parent;
+
+            if (children != null)
+                foreach (var child in children)
+                    Add(child);
         }
 
 

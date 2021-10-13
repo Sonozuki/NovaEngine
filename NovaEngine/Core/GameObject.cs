@@ -72,12 +72,14 @@ namespace NovaEngine.Core
         /// <param name="name">The name of the game object.</param>
         /// <param name="parent">The parent of the game object.</param>
         /// <param name="isEnabled">Whether the game object is enabled.</param>
-        public GameObject(string name, GameObject? parent = null, bool isEnabled = true)
+        /// <param name="components">The components to add to the game object.</param>
+        /// <param name="children">The children to add to the game object.</param>
+        public GameObject(string name, GameObject? parent = null, bool isEnabled = true, IEnumerable<ComponentBase>? components = null, IEnumerable<GameObject>? children = null)
             : this()
         {
             Name = name;
-            Children = new(this);
-            Components = new(this);
+            Children = new(this, children);
+            Components = new(this, components);
             Transform = new(this);
             IsEnabled = isEnabled;
 

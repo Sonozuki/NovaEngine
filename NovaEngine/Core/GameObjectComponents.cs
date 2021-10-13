@@ -65,6 +65,8 @@ namespace NovaEngine.Core
         /// <inheritdoc/>
         public void Add(ComponentBase component)
         {
+            // TODO: remove component from current gameobject, if it's attached to one, so it doesn't get updated twice
+
             // add component
             component.GameObject = GameObject;
             Components.Add(component);
@@ -229,9 +231,14 @@ namespace NovaEngine.Core
         *********/
         /// <summary>Constructs an instance.</summary>
         /// <param name="parent">The game object whose components this collection is.</param>
-        internal GameObjectComponents(GameObject parent)
+        /// <param name="components">The initial components to add.</param>
+        internal GameObjectComponents(GameObject parent, IEnumerable<ComponentBase>? components)
         {
             GameObject = parent;
+
+            if (components != null)
+                foreach (var component in components)
+                    Add(component);
         }
 
 
