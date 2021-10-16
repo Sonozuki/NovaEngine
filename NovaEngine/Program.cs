@@ -83,6 +83,7 @@ namespace NovaEngine
                 ApplicationLoop.Run();
 
                 // clean up
+                SceneManager.GizmosScene.Dispose();
                 foreach (var scene in SceneManager.LoadedScenes)
                     scene.Dispose();
 

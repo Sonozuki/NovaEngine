@@ -36,7 +36,7 @@ namespace NovaEngine.SceneManagement
         }
 
         /// <inheritdoc/>
-        public void Dispose()
+        public virtual void Dispose()
         {
             foreach (var gameObject in RootGameObjects)
                 gameObject.Dispose();

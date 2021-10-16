@@ -15,6 +15,9 @@ namespace NovaEngine.SceneManagement
         /// <summary>The currently loaded scenes.</summary>
         public static List<Scene> LoadedScenes { get; } = new();
 
+        /// <summary>The scene responsible for storing gizmos.</summary>
+        internal static GizmosScene GizmosScene { get; } = new();
+
 
         /*********
         ** Public Methods
@@ -47,6 +50,8 @@ namespace NovaEngine.SceneManagement
         /// <summary>Updates all the loaded scenes.</summary>
         internal static void Update()
         {
+            GizmosScene.Update();
+
             foreach (var scene in LoadedScenes)
                 scene.Update();
         }
