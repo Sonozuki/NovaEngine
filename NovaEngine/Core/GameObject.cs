@@ -65,8 +65,10 @@ namespace NovaEngine.Core
         public RendererGameObjectBase RendererGameObject { get; private set; }
 
         /// <summary>A game object with a mesh renderer containing a mesh of a unit size cube.</summary>
-        /// <remarks>The same instance is always returned. Make sure to clone the object if using it in a scene.</remarks>
         internal static GameObject Cube => new("Cube", components: new[] { new MeshRenderer(Meshes.Cube) });
+
+        /// <summary>A game object with a mesh renderer containing a mesh of a sphere with unit radius.</summary>
+        internal static GameObject Sphere => new("Sphere", components: new[] { new MeshRenderer(Meshes.Sphere) });
 
 
         /*********
