@@ -22,6 +22,12 @@ namespace NovaEngine.SceneManagement
         /*********
         ** Public Methods
         *********/
+        /// <summary>Initialises the class.</summary>
+        static SceneManager()
+        {
+            GizmosScene.Start();
+        }
+
         /// <summary>Loads a scene.</summary>
         /// <param name="name">The name of the scene to load.</param>
         public static void LoadScene(string name)

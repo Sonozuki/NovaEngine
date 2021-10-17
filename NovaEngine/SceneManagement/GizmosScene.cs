@@ -2,7 +2,6 @@
 using NovaEngine.DataStructures;
 using NovaEngine.Graphics;
 using NovaEngine.Maths;
-using System;
 
 namespace NovaEngine.SceneManagement
 {
@@ -12,8 +11,21 @@ namespace NovaEngine.SceneManagement
         /*********
         ** Fields
         *********/
-        //// <summary>The pool of cube game objects.</summary>
-        private ObjectPool<GameObject> CubeGameObjects = new(() => GameObject.Cube, gameObject => gameObject.IsEnabled = false);
+        /// <summary>The pool of cube game objects.</summary>
+        private readonly ObjectPool<GameObject> CubeGameObjects = new(() => GameObject.Cube, gameObject => gameObject.IsEnabled = false);
+
+        /// <summary>The pool of sphere game objects.</summary>
+        private readonly ObjectPool<GameObject> SphereGameObjects = new(() => GameObject.Sphere, gameObject => gameObject.IsEnabled = false);
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+        /// <summary>The game object that contains all the cubes as children.</summary>
+        private GameObject CubesParent;
+
+        /// <summary>The game object that contains all the spheres as children.</summary>
+        private GameObject SpheresParent;
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 
         /*********
@@ -32,7 +44,23 @@ namespace NovaEngine.SceneManagement
             gameObject.Transform.LocalScale = scale;
             gameObject.Components.MeshRenderer!.Material.Tint = colour;
 
-            RootGameObjects.Add(gameObject);
+            CubesParent.Children.Add(gameObject);
+        }
+
+        /// <summary>Adds a sphere gizmo to the scene.</summary>
+        /// <param name="position">The position of the sphere.</param>
+        /// <param name="radius">The radius of the sphere.</param>
+        /// <param name="colour">The colour of the sphere.</param>
+        public void AddSphere(Vector3 position, float radius, Colour colour)
+        {
+            var gameObject = SphereGameObjects.GetObject();
+            gameObject.IsEnabled = true;
+
+            gameObject.Transform.LocalPosition = position;
+            gameObject.Transform.LocalScale = new(radius);
+            gameObject.Components.MeshRenderer!.Material.Tint = colour;
+
+            SpheresParent.Children.Add(gameObject);
         }
 
         /// <inheritdoc/>
@@ -40,6 +68,7 @@ namespace NovaEngine.SceneManagement
         {
             base.Dispose();
             CubeGameObjects.Dispose();
+            SphereGameObjects.Dispose();
         }
 
 
@@ -47,17 +76,32 @@ namespace NovaEngine.SceneManagement
         ** Internal Methods
         *********/
         /// <inheritdoc/>
-        internal override void Start() { }
+        internal override void Start()
+        {
+            CubesParent = new GameObject("Cubes");
+            SpheresParent = new GameObject("Spheres");
+
+            RootGameObjects.Add(CubesParent);
+            RootGameObjects.Add(SpheresParent);
+        }
 
         /// <inheritdoc/>
         internal override void Update()
         {
-            while (RootGameObjects.Count > 0)
+            // cubes
+            while (CubesParent.Children.Count > 0)
             {
-                var gameObject = RootGameObjects[0];
-                RootGameObjects.RemoveAt(0);
+                var cube = CubesParent.Children[0];
+                CubesParent.Children.RemoveAt(0);
+                CubeGameObjects.ReturnObject(cube);
+            }
 
-                CubeGameObjects.ReturnObject(gameObject);
+            // spheres
+            while (SpheresParent.Children.Count > 0)
+            {
+                var sphere = SpheresParent.Children[0];
+                SpheresParent.Children.RemoveAt(0);
+                SphereGameObjects.ReturnObject(sphere);
             }
         }
     }

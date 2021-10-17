@@ -22,5 +22,11 @@ namespace NovaEngine.Debugging
         /// <param name="scale">The scale of the cube.</param>
         /// <param name="colour">The colour of the cube. If <see langword="null"/>, then <see cref="DefaultColour"/> will be used.</param>
         public static void DrawCube(Vector3 position, Vector3 scale, Colour? colour = null) => SceneManager.GizmosScene.AddCube(position, scale, colour ?? DefaultColour);
+
+        /// <summary>Draws a sphere.</summary>
+        /// <param name="position">The position of the centre of the sphere.</param>
+        /// <param name="radius">The radius of the sphere.</param>
+        /// <param name="colour">The colour of the sphere. If <see langword="null"/>, then <see cref="DefaultColour"/> will be used.</param>
+        public static void DrawSphere(Vector3 position, float radius, Colour? colour = null) => SceneManager.GizmosScene.AddSphere(position, radius, colour ?? DefaultColour);
     }
 }

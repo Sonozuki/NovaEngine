@@ -120,7 +120,9 @@ namespace NovaEngine.Components
                 .Where(gameObject => gameObject.Components.MeshRenderer != null)
                 .Select(gameObject => gameObject.RendererGameObject)
                 .ToList();
-            gameObjects.AddRange(SceneManager.GizmosScene.RootGameObjects.Select(gameObject => gameObject.RendererGameObject));
+            gameObjects.AddRange(SceneManager.GizmosScene.RootGameObjects
+                .SelectMany(gameObject => gameObject.Children)
+                .Select(gameObject => gameObject.RendererGameObject));
 
             RendererCamera.Render(gameObjects, presentRenderTarget);
         }
