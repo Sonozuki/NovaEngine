@@ -28,6 +28,9 @@ namespace NovaEngine.Renderer.Vulkan
         /// <summary>The number of indices in the index buffer.</summary>
         internal int IndexCount { get; private set; }
 
+        /// <summary>The type of the mesh.</summary>
+        internal MeshType MeshType { get; private set; }
+
         /// <summary>The Vulkan vertex buffer.</summary>
         internal VulkanBuffer? VertexBuffer { get; private set; }
 
@@ -42,10 +45,11 @@ namespace NovaEngine.Renderer.Vulkan
         ** Public Methods
         *********/
         /// <inheritdoc/>
-        public override void UpdateMesh(Vertex[] vertices, uint[] indices)
+        public override void UpdateMesh(Vertex[] vertices, uint[] indices, MeshType meshType)
         {
             VertexCount = vertices.Length;
             IndexCount = indices.Length;
+            MeshType = meshType;
 
             if (VertexBuffer == null)
                 VertexBuffer = VulkanUtilities.CreateVertexBuffer(vertices);

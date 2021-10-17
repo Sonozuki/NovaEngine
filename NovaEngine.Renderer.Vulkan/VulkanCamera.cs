@@ -1,4 +1,5 @@
 ﻿using NovaEngine.Components;
+using NovaEngine.Core;
 using NovaEngine.Extensions;
 using NovaEngine.External.Rendering;
 using NovaEngine.Graphics;
@@ -89,6 +90,8 @@ namespace NovaEngine.Renderer.Vulkan
         public override void Render(IEnumerable<RendererGameObjectBase> gameObjects, bool presentRenderTarget)
         {
             var vulkanGameObjects = gameObjects.Cast<VulkanGameObject>();
+            var triangleVulkanGameObjects = vulkanGameObjects.Where(vulkanGameObject => vulkanGameObject.MeshType == MeshType.TriangleList).ToList();
+            var lineVulkanGameObjects = vulkanGameObjects.Where(vulkanGameObject => vulkanGameObject.MeshType == MeshType.LineList).ToList();
 
             foreach (var vulkanGameObject in vulkanGameObjects)
                 vulkanGameObject.UpdateUBO(this.BaseCamera);
@@ -122,18 +125,35 @@ namespace NovaEngine.Renderer.Vulkan
                 };
 
                 VK.CommandBeginRenderPass(commandBuffer, ref renderPassBeginInfo, VkSubpassContents.Inline);
-                VK.CommandBindPipeline(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.GraphicsPipeline);
 
-                foreach (var vulkanGameObject in vulkanGameObjects)
+                if (triangleVulkanGameObjects.Count > 0)
                 {
-                    VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.GraphicsPipelineLayout, 0, 1, new[] { vulkanGameObject.DescriptorSet.NativeDescriptorSet }, 0, null);
-                    var vertexBuffer = vulkanGameObject.VertexBuffer!.NativeBuffer;
-                    var offsets = (VkDeviceSize)0;
-                    VK.CommandBindVertexBuffers(commandBuffer, 0, 1, ref vertexBuffer, &offsets);
-                    VK.CommandBindIndexBuffer(commandBuffer, vulkanGameObject.IndexBuffer!.NativeBuffer, 0, VkIndexType.Uint32);
-                    VK.CommandDrawIndexed(commandBuffer, (uint)vulkanGameObject.IndexCount, 1, 0, 0, 0);
+                    VK.CommandBindPipeline(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.TriangleGraphicsPipeline);
+                    foreach (var triangleVulkanGameObject in triangleVulkanGameObjects)
+                    {
+                        VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.TriangleGraphicsPipelineLayout, 0, 1, new[] { triangleVulkanGameObject.DescriptorSet.NativeDescriptorSet }, 0, null);
+                        var vertexBuffer = triangleVulkanGameObject.VertexBuffer!.NativeBuffer;
+                        var offsets = (VkDeviceSize)0;
+                        VK.CommandBindVertexBuffers(commandBuffer, 0, 1, ref vertexBuffer, &offsets);
+                        VK.CommandBindIndexBuffer(commandBuffer, triangleVulkanGameObject.IndexBuffer!.NativeBuffer, 0, VkIndexType.Uint32);
+                        VK.CommandDrawIndexed(commandBuffer, (uint)triangleVulkanGameObject.IndexCount, 1, 0, 0, 0);
+                    }
                 }
 
+                if (lineVulkanGameObjects.Count > 0)
+                {
+                    VK.CommandBindPipeline(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.LineGraphicsPipeline);
+                    foreach (var lineVulkanGameObject in lineVulkanGameObjects)
+                    {
+                        VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.LineGraphicsPipelineLayout, 0, 1, new[] { lineVulkanGameObject.DescriptorSet.NativeDescriptorSet }, 0, null);
+                        var vertexBuffer = lineVulkanGameObject.VertexBuffer!.NativeBuffer;
+                        var offsets = (VkDeviceSize)0;
+                        VK.CommandBindVertexBuffers(commandBuffer, 0, 1, ref vertexBuffer, &offsets);
+                        VK.CommandBindIndexBuffer(commandBuffer, lineVulkanGameObject.IndexBuffer!.NativeBuffer, 0, VkIndexType.Uint32);
+                        VK.CommandDrawIndexed(commandBuffer, (uint)lineVulkanGameObject.IndexCount, 1, 0, 0, 0);
+                    }
+                }
+                
                 VK.CommandEndRenderPass(commandBuffer);
                 VK.EndCommandBuffer(commandBuffer);
 

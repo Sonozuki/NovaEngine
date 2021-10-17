@@ -16,7 +16,7 @@ namespace NovaEngine.Rendering.Fake
             : base(baseGameObject) { }
 
         /// <inheritdoc/>
-        public override void UpdateMesh(Vertex[] vertices, uint[] indices) { }
+        public override void UpdateMesh(Vertex[] vertices, uint[] indices, MeshType meshType) { }
 
         /// <inheritdoc/>
         public override void UpdateUBO(Camera camera) { }
