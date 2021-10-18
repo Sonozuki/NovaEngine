@@ -25,10 +25,8 @@ namespace NovaEngine.External.Rendering
         }
 
         /// <summary>Invoked whenever the mesh of a game object gets updated.</summary>
-        /// <param name="vertices">The vertices of the new mesh.</param>
-        /// <param name="indices">The indices of the new mesh.</param>
-        /// <param name="meshType">The type of the mesh.</param>
-        public abstract void UpdateMesh(Vertex[] vertices, uint[] indices, MeshType meshType);
+        /// <param name="mesh">The updated mesh.</param>
+        public abstract void UpdateMesh(Mesh mesh);
 
         /// <summary>Invoked every tick to update the game object for a specified camera, to update a UBO.</summary>
         /// <param name="camera">The camera to update the game object UBO with.</param>

@@ -2,7 +2,6 @@
 using NovaEngine.Core;
 using NovaEngine.External.Rendering;
 using NovaEngine.Graphics;
-using NovaEngine.Maths;
 using NovaEngine.Rendering;
 using System;
 using Vulkan;
@@ -45,21 +44,21 @@ namespace NovaEngine.Renderer.Vulkan
         ** Public Methods
         *********/
         /// <inheritdoc/>
-        public override void UpdateMesh(Vertex[] vertices, uint[] indices, MeshType meshType)
+        public override void UpdateMesh(Mesh mesh)
         {
-            VertexCount = vertices.Length;
-            IndexCount = indices.Length;
-            MeshType = meshType;
+            VertexCount = mesh.VertexData.Length;
+            IndexCount = mesh.IndexData.Length;
+            MeshType = mesh.Type;
 
             if (VertexBuffer == null)
-                VertexBuffer = VulkanUtilities.CreateVertexBuffer(vertices);
+                VertexBuffer = VulkanUtilities.CreateVertexBuffer(mesh.VertexData);
             else
-                VertexBuffer.CopyFrom(vertices.AsSpan());
+                VertexBuffer.CopyFrom(mesh.VertexData.AsSpan());
 
             if (IndexBuffer == null)
-                IndexBuffer = VulkanUtilities.CreateIndexBuffer(indices);
+                IndexBuffer = VulkanUtilities.CreateIndexBuffer(mesh.IndexData);
             else
-                IndexBuffer.CopyFrom(indices.AsSpan());
+                IndexBuffer.CopyFrom(mesh.IndexData.AsSpan());
         }
 
         /// <inheritdoc/>

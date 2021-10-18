@@ -1,7 +1,6 @@
 ﻿using NovaEngine.Components;
 using NovaEngine.Core;
 using NovaEngine.External.Rendering;
-using NovaEngine.Graphics;
 
 namespace NovaEngine.Rendering.Fake
 {
@@ -16,7 +15,7 @@ namespace NovaEngine.Rendering.Fake
             : base(baseGameObject) { }
 
         /// <inheritdoc/>
-        public override void UpdateMesh(Vertex[] vertices, uint[] indices, MeshType meshType) { }
+        public override void UpdateMesh(Mesh mesh) { }
 
         /// <inheritdoc/>
         public override void UpdateUBO(Camera camera) { }
