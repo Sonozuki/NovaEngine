@@ -28,5 +28,18 @@ namespace NovaEngine.Debugging
         /// <param name="radius">The radius of the sphere.</param>
         /// <param name="colour">The colour of the sphere. If <see langword="null"/>, then <see cref="DefaultColour"/> will be used.</param>
         public static void DrawSphere(Vector3 position, float radius, Colour? colour = null) => SceneManager.GizmosScene.AddSphere(position, radius, colour ?? DefaultColour);
+
+        /// <summary>Draws a line.</summary>
+        /// <param name="point1">The first point of the line.</param>
+        /// <param name="point2">The second point of the line.</param>
+        /// <param name="colour">The colour of the line. If <see langword="null"/>, then <see cref="DefaultColour"/> will be used.</param>
+        public static void DrawLine(Vector3 point1, Vector3 point2, Colour? colour = null) => SceneManager.GizmosScene.AddLine(point1, point2, colour ?? DefaultColour);
+
+        /// <summary>Draws a line.</summary>
+        /// <param name="position">The position of the first point of the line.</param>
+        /// <param name="direction">The direction from <paramref name="position"/> to the second point.</param>
+        /// <param name="distance">The distance between the two points.</param>
+        /// <param name="colour">The colour of the line. If <see langword="null"/>, then <see cref="DefaultColour"/> will be used.</param>
+        public static void DrawLine(Vector3 position, Vector3 direction, float distance, Colour? colour = null) => DrawLine(position, position + direction.Normalised * distance, colour);
     }
 }

@@ -53,8 +53,7 @@ namespace NovaEngine.Core
             private set
             {
                 _MeshRenderer = value;
-                if (_MeshRenderer != null)
-                    GameObject.RendererGameObject.UpdateMesh(_MeshRenderer!.Mesh.VertexData, _MeshRenderer.Mesh.IndexData, _MeshRenderer.Mesh.Type);
+                _MeshRenderer?.UpdateMesh();
             }
         }
 
