@@ -70,15 +70,12 @@ namespace NovaEngine.Renderer.Vulkan
             var bufferSize = vertices.Length * sizeof(Vertex);
 
             // create staging buffer and copy verex data to it
-            var stagingBuffer = new VulkanBuffer(bufferSize, VkBufferUsageFlags.TransferSource, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
+            using var stagingBuffer = new VulkanBuffer(bufferSize, VkBufferUsageFlags.TransferSource, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
             stagingBuffer.CopyFrom(vertices);
 
             // create vertex buffer and copy staging buffer to it
             var vertexBuffer = new VulkanBuffer(bufferSize, VkBufferUsageFlags.TransferDestination | VkBufferUsageFlags.VertexBuffer, VkMemoryPropertyFlags.DeviceLocal);
             vertexBuffer.CopyFrom(stagingBuffer);
-
-            // clean up staging buffer
-            stagingBuffer.Dispose();
 
             return vertexBuffer;
         }
@@ -90,15 +87,12 @@ namespace NovaEngine.Renderer.Vulkan
             var bufferSize = indices.Length * sizeof(uint);
 
             // create staging buffer and copy index data to it
-            var stagingBuffer = new VulkanBuffer(bufferSize, VkBufferUsageFlags.TransferSource, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
+            using var stagingBuffer = new VulkanBuffer(bufferSize, VkBufferUsageFlags.TransferSource, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
             stagingBuffer.CopyFrom(indices);
 
             // create index buffer and copy staging buffer to it
             var indexBuffer = new VulkanBuffer(bufferSize, VkBufferUsageFlags.TransferDestination | VkBufferUsageFlags.IndexBuffer, VkMemoryPropertyFlags.DeviceLocal);
             indexBuffer.CopyFrom(stagingBuffer);
-
-            // clean up staging buffer
-            stagingBuffer.Dispose();
 
             return indexBuffer;
         }
