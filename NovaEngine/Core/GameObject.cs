@@ -70,6 +70,9 @@ namespace NovaEngine.Core
         /// <summary>A game object with a mesh renderer containing a mesh of a sphere with unit radius.</summary>
         internal static GameObject Sphere => new("Sphere", components: new[] { new MeshRenderer(Meshes.Sphere) });
 
+        /// <summary>A game object with a mesh renderer containing a mesh of a line with the points (0, 0, 0) and (0, 1, 0).</summary>
+        internal static GameObject Line => new("Line", components: new[] { new MeshRenderer(Meshes.Line) });
+
 
         /*********
         ** Public Methods

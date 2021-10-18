@@ -8,6 +8,9 @@ namespace NovaEngine.Core
         /*********
         ** Accessors
         *********/
+        /// <summary>An empty mesh.</summary>
+        public static Mesh Empty { get; } = new("Empty", new Vertex[0], new uint[0]);
+
         /// <summary>The mesh for a unit size cube.</summary>
         public static Mesh Cube { get; } = new("Cube",
             vertexData: new Vertex[]
@@ -36,6 +39,19 @@ namespace NovaEngine.Core
                 7, 3, 1,
                 7, 6, 2
             });
+
+        /// <summary>The mesh of a line between the points (0, 0, 0) and (0, 1, 0).</summary>
+        public static Mesh Line { get; } = new("Line",
+            vertexData: new Vertex[]
+            {
+                new(new(0, 0, 0)),
+                new(new(0, 1, 0))
+            },
+            indexData: new uint[]
+            {
+                0, 1
+            },
+            MeshType.LineList);
 
         /// <summary>The mesh for a sphere with unit radius.</summary>
         public static Mesh Sphere { get; } = new("Sphere",
