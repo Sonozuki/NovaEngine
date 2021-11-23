@@ -20,6 +20,10 @@ namespace NovaEngine.Components
         [Serialisable]
         private Vector2I? _Resolution;
 
+        /// <summary>The aspect ratio of the camera (width / height).</summary>
+        [Serialisable]
+        private float? _AspectRatio;
+
 
         /*********
         ** Acecssors
@@ -53,6 +57,13 @@ namespace NovaEngine.Components
             }
         }
 
+        /// <summary>The aspect ratio of the camera (width / height).</summary>
+        public float AspectRatio
+        {
+            get => _AspectRatio ?? Program.MainWindow.Size.X / (float)Program.MainWindow.Size.Y;
+            set => _AspectRatio = value;
+        }
+
         /// <summary>The texture the camera will render to.</summary>
         public Texture2D RenderTarget => RendererCamera.RenderTarget;
 
@@ -67,7 +78,7 @@ namespace NovaEngine.Components
             get
             {
                 if (Projection == CameraProjection.Perspective)
-                    return Matrix4x4.CreatePerspectiveFieldOfView(FieldOfView, Program.MainWindow.Size.X / (float)Program.MainWindow.Size.Y, NearClippingPlane, FarClippingPlane);
+                    return Matrix4x4.CreatePerspectiveFieldOfView(FieldOfView, AspectRatio, NearClippingPlane, FarClippingPlane);
                 else
                     return Matrix4x4.CreateOrthographic(Width, Height, NearClippingPlane, FarClippingPlane);
             }
@@ -89,16 +100,17 @@ namespace NovaEngine.Components
         /// <param name="resolution">The resolution of the camera's render target; specifying <see langword="null"/> will automatically update the resolution to be the same as the window's.</param>
         /// <param name="setMainCamera">Whether <see cref="Main"/> should be set to this camera.</param>
         public Camera(Vector2I? resolution, bool setMainCamera)
-            : this(90, .01f, 1000, resolution, setMainCamera) { }
+            : this(90, .01f, 1000, resolution, null, setMainCamera) { }
 
         /// <summary>Constructs a perspective instance.</summary>
         /// <param name="fieldOfView">The field of view of the camera, in degrees.</param>
         /// <param name="nearClippingPlane">The near clipping plane of the camera.</param>
         /// <param name="farClippingPlane">The far clipping plane of the camera.</param>
         /// <param name="resolution">The resolution of the camera's render target; specifying <see langword="null"/> will automatically update the resolution to be the same as the window's.</param>
+        /// <param name="aspectRatio">The aspect ratio of the camera (width / height); specifying <see langword="null"/> will automatically update the aspect ratio to be the same as the window's.</param>
         /// <param name="setMainCamera">Whether <see cref="Main"/> should be set to this camnera.</param>
-        public Camera(float fieldOfView, float nearClippingPlane, float farClippingPlane, Vector2I? resolution, bool setMainCamera)
-            : this(CameraProjection.Perspective, fieldOfView, 0, 0, nearClippingPlane, farClippingPlane, resolution, setMainCamera) { }
+        public Camera(float fieldOfView, float nearClippingPlane, float farClippingPlane, Vector2I? resolution, float? aspectRatio, bool setMainCamera)
+            : this(CameraProjection.Perspective, fieldOfView, 0, 0, nearClippingPlane, farClippingPlane, resolution, aspectRatio, setMainCamera) { }
 
         /// <summary>Constructs an orthographic instance.</summary>
         /// <param name="width">The width of the view frustum, in units.</param>
@@ -108,7 +120,7 @@ namespace NovaEngine.Components
         /// <param name="resolution">The resolution of the camera's render target; specifying <see langword="null"/> will automatically update the resolution to be the same as the window's.</param>
         /// <param name="setMainCamera">Whether <see cref="Main"/> should be set to this camnera.</param>
         public Camera(float width, float height, float nearClippingPlane, float farClippingPlane, Vector2I? resolution, bool setMainCamera)
-            : this(CameraProjection.Othographic, 0, width, height, nearClippingPlane, farClippingPlane, resolution, setMainCamera) { }
+            : this(CameraProjection.Othographic, 0, width, height, nearClippingPlane, farClippingPlane, resolution, null, setMainCamera) { }
 
         /// <summary>Renders a frame using the camera.</summary>
         public void Render(bool presentRenderTarget)
@@ -150,8 +162,9 @@ namespace NovaEngine.Components
         /// <param name="nearClippingPlane">The near clipping place of the camera.</param>
         /// <param name="farClippingPlane">The far clipping place of the camera.</param>
         /// <param name="resolution">The resolution of the camera's render target; specifying <see langword="null"/> will automatically update the resolution to be the same as the window's.</param>
+        /// <param name="aspectRatio">The aspect ratio of the camera (width / height).</param>
         /// <param name="setMainCamera">Whether <see cref="Main"/> should be set to this camnera.</param>
-        private Camera(CameraProjection projection, float fieldOfView, float width, float height, float nearClippingPlane, float farClippingPlane, Vector2I? resolution, bool setMainCamera)
+        private Camera(CameraProjection projection, float fieldOfView, float width, float height, float nearClippingPlane, float farClippingPlane, Vector2I? resolution, float? aspectRatio, bool setMainCamera)
         {
             Projection = projection;
             FieldOfView = fieldOfView;
@@ -160,6 +173,7 @@ namespace NovaEngine.Components
             NearClippingPlane = nearClippingPlane;
             FarClippingPlane = farClippingPlane;
             _Resolution = resolution;
+            _AspectRatio = aspectRatio;
 
             if (setMainCamera)
                 Main = this;
