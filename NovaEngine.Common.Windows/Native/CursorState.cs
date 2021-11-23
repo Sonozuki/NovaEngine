@@ -1,7 +1,7 @@
-﻿namespace NovaEngine.Platform.Windows
+﻿namespace NovaEngine.Common.Windows.Native
 {
     /// <summary>The state of the cursor.</summary>
-    internal enum CursorState
+    public enum CursorState
     {
         /// <summary>The cursor is hidden.</summary>
         Hidden,

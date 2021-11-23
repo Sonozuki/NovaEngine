@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace NovaEngine.InputHandler.RawWindows
+namespace NovaEngine.Common.Windows.Native
 {
     /// <summary>The flags a <see cref="RawInputDevice"/> can have.</summary>
     [Flags]
-    internal enum RawInputDeviceFlags
+    public enum RawInputDeviceFlags
     {
         /// <summary>Removes the top level collection from the inclusion list. This tell the OS to stop reading from a device which matches the top level collection/</summary>
         Remove = 0x00000001,

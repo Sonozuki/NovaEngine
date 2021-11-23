@@ -1,4 +1,4 @@
-﻿namespace NovaEngine.Platform.Windows
+﻿namespace NovaEngine.Common.Windows.Native
 {
     /// <summary>The messages a window procedure can receive.</summary>
     public enum Message
@@ -10,6 +10,9 @@
         Size = 0x0005,
 
         /// <summary>Sent to a window immediately before it loses the keyboard focus.</summary>
-        KillFocus = 0x0008
+        KillFocus = 0x0008,
+
+        /// <summary>Sent to the window when input is received.</summary>
+        Input = 0x00FF
     }
 }

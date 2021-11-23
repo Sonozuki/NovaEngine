@@ -1,6 +1,7 @@
-﻿using System;
+﻿using NovaEngine.Common.Windows.Native;
+using System;
 
-namespace NovaEngine.InputHandler.RawWindows
+namespace NovaEngine.Common.Windows
 {
     /// <summary>An application-defined method that processess messges sent to a window.</summary>
     /// <param name="window">A handle to the window.</param>

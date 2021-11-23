@@ -1,7 +1,7 @@
-﻿namespace NovaEngine.InputHandler.RawWindows
+﻿namespace NovaEngine.Common.Windows.Native
 {
     /// <summary>The types of a raw input device.</summary>
-    internal enum RawInputDeviceType
+    public enum RawInputDeviceType
     {
         /// <summary>Raw input comes from a mouse.</summary>
         Mouse,

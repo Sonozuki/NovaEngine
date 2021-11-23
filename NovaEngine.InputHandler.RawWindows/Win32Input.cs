@@ -1,4 +1,7 @@
-﻿using NovaEngine.Extensions;
+﻿using NovaEngine.Common.Windows;
+using NovaEngine.Common.Windows.Api;
+using NovaEngine.Common.Windows.Native;
+using NovaEngine.Extensions;
 using NovaEngine.External.Input;
 using NovaEngine.IO;
 using NovaEngine.Logging;

@@ -1,10 +1,10 @@
 ﻿using NovaEngine.Maths;
 using System;
 
-namespace NovaEngine.Platform.Windows
+namespace NovaEngine.Common.Windows.Native
 {
     /// <summary>Contains message information from a thread's message queue.</summary>
-    public struct NativeMessage
+    public struct Msg
     {
         /*********
         ** Fields

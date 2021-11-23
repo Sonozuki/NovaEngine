@@ -1,9 +1,9 @@
 ﻿using NovaEngine.Maths;
 
-namespace NovaEngine.Platform.Windows
+namespace NovaEngine.Common.Windows.Native
 {
     /// <summary>Contains a rectangle defined by its upper-left and lower-right corners.</summary>
-    internal struct NativeRectangle
+    public struct Rectangle
     {
         /*********
         ** Fields
@@ -27,7 +27,7 @@ namespace NovaEngine.Platform.Windows
         /// <summary>Constructs an instance.</summary>
         /// <param name="topLeft">The coordinates of the upper-left corner of the rectangle.</param>
         /// <param name="bottomRight">The coordinates of the lower-right corner of the rectangle.</param>
-        public NativeRectangle(Vector2I topLeft, Vector2I bottomRight)
+        public Rectangle(Vector2I topLeft, Vector2I bottomRight)
         {
             Left = topLeft.X;
             Top = topLeft.Y;
@@ -43,13 +43,13 @@ namespace NovaEngine.Platform.Windows
         /// <param name="rectangle1">The first rectangle.</param>
         /// <param name="rectangle2">The second rectangle.</param>
         /// <returns><see langword="true"/>, if the rectangles are equal; otherwise, <see langword="false"/>.</returns>
-        public static bool operator ==(NativeRectangle rectangle1, NativeRectangle rectangle2) => rectangle1.Left == rectangle2.Left && rectangle1.Top == rectangle2.Top && rectangle1.Right == rectangle2.Right && rectangle1.Bottom == rectangle2.Bottom;
+        public static bool operator ==(Rectangle rectangle1, Rectangle rectangle2) => rectangle1.Left == rectangle2.Left && rectangle1.Top == rectangle2.Top && rectangle1.Right == rectangle2.Right && rectangle1.Bottom == rectangle2.Bottom;
 
         /// <summary>Checks two rectangles for inequality.</summary>
         /// <param name="rectangle1">The first rectangle.</param>
         /// <param name="rectangle2">The second rectangle.</param>
         /// <returns><see langword="true"/>, if the rectangles are not equal; otherwise, <see langword="false"/>.</returns>
-        public static bool operator !=(NativeRectangle rectangle1, NativeRectangle rectangle2) => !(rectangle1 == rectangle2);
+        public static bool operator !=(Rectangle rectangle1, Rectangle rectangle2) => !(rectangle1 == rectangle2);
 
     }
 }

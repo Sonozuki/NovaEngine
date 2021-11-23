@@ -1,7 +1,7 @@
-﻿namespace NovaEngine.InputHandler.RawWindows
+﻿namespace NovaEngine.Common.Windows.Native
 {
     /// <summary>Contains information about the state of a keyboard.</summary>
-    internal struct RawKeyboard
+    public struct RawKeyboard
     {
         /*********
         ** Fields
@@ -15,7 +15,7 @@
         /// <summary>Reserved; must be zero.</summary>
         private ushort Reserved;
 
-        /// <summary>The corresponding <see cref="RawWindows.VirtualKey"/> code.</summary>
+        /// <summary>The corresponding <see cref="Native.VirtualKey"/> code.</summary>
         public VirtualKey VirtualKey;
 
         /// <summary>Corresponding window message, for example WM_KEYDOWN, WM_SYSKEYDOWN, and so forth.</summary>

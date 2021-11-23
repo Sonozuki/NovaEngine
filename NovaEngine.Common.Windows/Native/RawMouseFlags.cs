@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace NovaEngine.InputHandler.RawWindows
+namespace NovaEngine.Common.Windows.Native
 {
     /// <summary>Mouse indicator flags.</summary>
     [Flags]
-    internal enum RawMouseFlags : ushort
+    public enum RawMouseFlags : ushort
     {
         /// <summary>Mouse movement data is relativie to the last mouse position.</summary>
         MoveRelative = 0x00,

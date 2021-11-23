@@ -1,7 +1,7 @@
-﻿namespace NovaEngine.InputHandler.RawWindows
+﻿namespace NovaEngine.Common.Windows.Native
 {
     /// <summary>The virtual key codes used by the system.</summary>
-    internal enum VirtualKey : ushort
+    public enum VirtualKey : ushort
     {
         /// <summary>Left mouse button.</summary>
         LButton = 0x01,

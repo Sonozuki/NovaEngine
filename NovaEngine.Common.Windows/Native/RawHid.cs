@@ -1,7 +1,7 @@
-﻿namespace NovaEngine.InputHandler.RawWindows
+﻿namespace NovaEngine.Common.Windows.Native
 {
     /// <summary>Describes the format of the raw input from a Human Interface Device (HID).</summary>
-    internal struct RawHid
+    public struct RawHid
     {
         /*********
         ** Fields

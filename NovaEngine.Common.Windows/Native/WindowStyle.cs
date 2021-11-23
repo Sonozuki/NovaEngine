@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NovaEngine.Platform.Windows
+namespace NovaEngine.Common.Windows.Native
 {
     /// <summary>The styles a window can have.</summary>
     [Flags]

@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace NovaEngine.InputHandler.RawWindows
+namespace NovaEngine.Common.Windows.Native
 {
     /// <summary>Contains the header information that is part of the raw input data.</summary>
-    internal struct RawInputHeader
+    public struct RawInputHeader
     {
         /*********
         ** Fields

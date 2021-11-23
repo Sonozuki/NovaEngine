@@ -1,9 +1,9 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace NovaEngine.InputHandler.RawWindows
+namespace NovaEngine.Common.Windows.Api
 {
     /// <summary>Exposes neccessary Kernel.dll apis.</summary>
-    internal static class Kernel32
+    public static class Kernel32
     {
         /*********
         ** Public Methods

@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace NovaEngine.InputHandler.RawWindows
+namespace NovaEngine.Common.Windows.Native
 {
     /// <summary>The transitions state of the mouse buttons.</summary>
     [Flags]
-    internal enum RawInputMouseState : ushort
+    public enum RawInputMouseState : ushort
     {
         /// <summary>Left button changed to down.</summary>
         LeftButtonDown = 0x0001,

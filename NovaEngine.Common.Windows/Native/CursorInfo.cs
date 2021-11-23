@@ -1,10 +1,10 @@
 ﻿using NovaEngine.Maths;
 using System;
 
-namespace NovaEngine.Platform.Windows
+namespace NovaEngine.Common.Windows.Native
 {
     /// <summary>Constains global cursor information.</summary>
-    internal struct NativeCursorInfo
+    public struct CursorInfo
     {
         /*********
         ** Fields

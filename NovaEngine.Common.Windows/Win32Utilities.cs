@@ -1,9 +1,11 @@
-﻿using NovaEngine.IO;
+﻿using NovaEngine.Common.Windows.Api;
+using NovaEngine.Common.Windows.Native;
+using NovaEngine.IO;
 
-namespace NovaEngine.InputHandler.RawWindows
+namespace NovaEngine.Common.Windows
 {
     /// <summary>Contains useful miscellaneous methods for the Win32 platform.</summary>
-    internal static class Win32Utilities
+    public static class Win32Utilities
     {
         /// <summary>Converts a <see cref="VirtualKey"/> to a <see cref="Key"/>.</summary>
         /// <param name="virtualKey">The virtual key to convert.</param>

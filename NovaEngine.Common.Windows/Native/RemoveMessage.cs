@@ -1,4 +1,4 @@
-﻿namespace NovaEngine.Platform.Windows
+﻿namespace NovaEngine.Common.Windows.Native
 {
     /// <summary>Specifies how messages are to be handled.</summary>
     public enum RemoveMessage
@@ -10,7 +10,7 @@
         Remove,
 
         /// <summary>Prevents the system from releasing any thread that is waiting for the called to go idle.</summary>
-        /// <remarks>Combine this valud with either <see cref="NoRemove"/> or <see cref="Remove"/>.</remarks>
+        /// <remarks>Combine this value with either <see cref="NoRemove"/> or <see cref="Remove"/>.</remarks>
         NoYield
     }
 }

@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace NovaEngine.InputHandler.RawWindows
+namespace NovaEngine.Common.Windows.Native
 {
     /// <summary>Flags for scan code information.</summary>
     [Flags]
-    internal enum RawInputKeyboardDataFlags : ushort
+    public enum RawInputKeyboardDataFlags : ushort
     {
         /// <summary>The key is down.</summary>
         Make = 0x00,

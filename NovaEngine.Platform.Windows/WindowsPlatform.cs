@@ -1,4 +1,6 @@
-﻿using NovaEngine.External.Platform;
+﻿using NovaEngine.Common.Windows.Api;
+using NovaEngine.Common.Windows.Native;
+using NovaEngine.External.Platform;
 using NovaEngine.Maths;
 using System;
 using System.Runtime.InteropServices;
@@ -19,8 +21,8 @@ namespace NovaEngine.Platform.Windows
         {
             get
             {
-                var cursorInfo = new NativeCursorInfo();
-                cursorInfo.Size = (uint)Marshal.SizeOf<NativeCursorInfo>();
+                var cursorInfo = new CursorInfo();
+                cursorInfo.Size = (uint)Marshal.SizeOf<CursorInfo>();
                 User32.GetCursorInfo(ref cursorInfo);
                 return cursorInfo.Flags == CursorState.Showing;
             }
@@ -41,7 +43,7 @@ namespace NovaEngine.Platform.Windows
         {
             get
             {
-                var clipRectangle = new NativeRectangle();
+                var clipRectangle = new Rectangle();
                 User32.GetClipCursor(ref clipRectangle);
 
                 var clientCoordinatesTopLeft = new Vector2I(clipRectangle.Left, clipRectangle.Top);
@@ -57,7 +59,7 @@ namespace NovaEngine.Platform.Windows
                     User32.ClientToScreen(Program.MainWindow.Handle, ref screenCoordinatesTopLeft);
                     var screenCoordinatesBottomRight = screenCoordinatesTopLeft + Vector2I.One;
 
-                    var clipRectangle = new NativeRectangle(screenCoordinatesTopLeft, screenCoordinatesBottomRight);
+                    var clipRectangle = new Rectangle(screenCoordinatesTopLeft, screenCoordinatesBottomRight);
                     User32.ClipCursor(&clipRectangle);
                 }
                 else

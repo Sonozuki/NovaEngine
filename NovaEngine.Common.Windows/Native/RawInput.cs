@@ -1,7 +1,7 @@
-﻿namespace NovaEngine.InputHandler.RawWindows
+﻿namespace NovaEngine.Common.Windows.Native
 {
     /// <summary>Contains the raw input from a device.</summary>
-    internal struct RawInput
+    public struct RawInput
     {
         /*********
         ** Fields

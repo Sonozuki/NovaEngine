@@ -1,4 +1,7 @@
-﻿using NovaEngine.External.Platform;
+﻿using NovaEngine.Common.Windows;
+using NovaEngine.Common.Windows.Api;
+using NovaEngine.Common.Windows.Native;
+using NovaEngine.External.Platform;
 using NovaEngine.Logging;
 using NovaEngine.Maths;
 using NovaEngine.Windowing;
@@ -58,7 +61,7 @@ namespace NovaEngine.Platform.Windows
 
             var className = "NovaWindowClass";
 
-            var windowClass = new NativeWindowClass()
+            var windowClass = new WindowClass()
             {
                 WindowProcedure = WindowProcedure,
                 Handle = Program.Handle,
@@ -76,7 +79,7 @@ namespace NovaEngine.Platform.Windows
         /// <inheritdoc/>
         public override void ProcessEvents()
         {
-            NativeMessage message;
+            Msg message;
             while (User32.PeekMessage(out message, IntPtr.Zero, 0, 0, RemoveMessage.Remove))
             {
                 User32.TranslateMessage(in message);

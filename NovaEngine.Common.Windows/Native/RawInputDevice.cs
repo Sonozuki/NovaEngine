@@ -1,10 +1,10 @@
 ﻿using NovaEngine.External.Input;
 using System;
 
-namespace NovaEngine.InputHandler.RawWindows
+namespace NovaEngine.Common.Windows.Native
 {
     /// <summary>Defines information for the raw input device.</summary>
-    internal struct RawInputDevice
+    public struct RawInputDevice
     {
         /*********
         ** Fields

@@ -1,7 +1,7 @@
-﻿namespace NovaEngine.InputHandler.RawWindows
+﻿namespace NovaEngine.Common.Windows.Native
 {
     /// <summary>Other valid values for the indexes in the SetWindowLong methods.</summary>
-    internal enum WindowLongOffset
+    public enum WindowLongOffset
     {
         /// <summary>Sets a new extended window style.</summary>
         ExStyle = -20,

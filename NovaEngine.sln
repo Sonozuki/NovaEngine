@@ -17,7 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NovaEngine.Tests", "NovaEng
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InputHandlers", "InputHandlers", "{F701256F-3A98-40E8-AB55-ACE2CD370D1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaEngine.InputHandler.RawWindows", "NovaEngine.InputHandler.RawWindows\NovaEngine.InputHandler.RawWindows.csproj", "{F6901FE1-99C4-4894-B614-15AF9C98C1B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NovaEngine.InputHandler.RawWindows", "NovaEngine.InputHandler.RawWindows\NovaEngine.InputHandler.RawWindows.csproj", "{F6901FE1-99C4-4894-B614-15AF9C98C1B8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{2C16C474-32CE-45E5-A7B8-2DF27B01B0BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaEngine.Common.Windows", "NovaEngine.Common.Windows\NovaEngine.Common.Windows.csproj", "{AEB9737B-FA24-46A7-9F9B-4DA513774D14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +49,10 @@ Global
 		{F6901FE1-99C4-4894-B614-15AF9C98C1B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6901FE1-99C4-4894-B614-15AF9C98C1B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6901FE1-99C4-4894-B614-15AF9C98C1B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEB9737B-FA24-46A7-9F9B-4DA513774D14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEB9737B-FA24-46A7-9F9B-4DA513774D14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEB9737B-FA24-46A7-9F9B-4DA513774D14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEB9737B-FA24-46A7-9F9B-4DA513774D14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +61,7 @@ Global
 		{3BCFDBBA-1024-4085-9CA7-6C22F72D9897} = {892C2AD6-81E2-4427-A6AA-30763A5562C9}
 		{7FF94E8D-3C82-466A-B87E-CA60C515B4C4} = {44C1471E-EC53-4AA3-B48C-B1B258FD63E4}
 		{F6901FE1-99C4-4894-B614-15AF9C98C1B8} = {F701256F-3A98-40E8-AB55-ACE2CD370D1B}
+		{AEB9737B-FA24-46A7-9F9B-4DA513774D14} = {2C16C474-32CE-45E5-A7B8-2DF27B01B0BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FB5216DF-1DDA-4736-9880-BC678B5892FB}

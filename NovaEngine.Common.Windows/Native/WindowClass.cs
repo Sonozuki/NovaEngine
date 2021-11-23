@@ -1,9 +1,10 @@
-﻿using System;
+﻿using NovaEngine.Common.Windows.Api;
+using System;
 
-namespace NovaEngine.Platform.Windows
+namespace NovaEngine.Common.Windows.Native
 {
-    /// <summary>Contains the window class attributes that are registered by the <see cref="User32.RegisterClass(in NativeWindowClass)"/> method.</summary>
-    public struct NativeWindowClass
+    /// <summary>Contains the window class attributes that are registered by the <see cref="User32.RegisterClass(in WindowClass)"/> method.</summary>
+    public struct WindowClass
     {
         /*********
         ** Fields
