@@ -34,22 +34,5 @@ namespace NovaEngine.Common.Windows.Native
             Right = bottomRight.X;
             Bottom = bottomRight.Y;
         }
-
-
-        /*********
-        ** Operators
-        *********/
-        /// <summary>Checks two rectangles for equality.</summary>
-        /// <param name="rectangle1">The first rectangle.</param>
-        /// <param name="rectangle2">The second rectangle.</param>
-        /// <returns><see langword="true"/>, if the rectangles are equal; otherwise, <see langword="false"/>.</returns>
-        public static bool operator ==(Rectangle rectangle1, Rectangle rectangle2) => rectangle1.Left == rectangle2.Left && rectangle1.Top == rectangle2.Top && rectangle1.Right == rectangle2.Right && rectangle1.Bottom == rectangle2.Bottom;
-
-        /// <summary>Checks two rectangles for inequality.</summary>
-        /// <param name="rectangle1">The first rectangle.</param>
-        /// <param name="rectangle2">The second rectangle.</param>
-        /// <returns><see langword="true"/>, if the rectangles are not equal; otherwise, <see langword="false"/>.</returns>
-        public static bool operator !=(Rectangle rectangle1, Rectangle rectangle2) => !(rectangle1 == rectangle2);
-
     }
 }
