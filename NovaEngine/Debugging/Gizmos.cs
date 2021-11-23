@@ -11,7 +11,7 @@ namespace NovaEngine.Debugging
         ** Accessors
         *********/
         /// <summary>The colour that is used to render the gizmos when a 'colour' parameter isn't specified.</summary>
-        public static Colour DefaultColour { get; } = Colour.DarkGray;
+        public static Colour DefaultColour { get; set; } = Colour.DarkGray;
 
 
         /*********
