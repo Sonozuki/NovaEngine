@@ -121,7 +121,7 @@ namespace NovaEngine
             else // write out command list
             {
                 Logger.LogHelp("All registered commands are:");
-                foreach (var command in Commands)
+                foreach (var command in Commands.OrderBy(command => command.Name))
                     Logger.LogHelp($"  {command.Name}");
                 Logger.LogHelp();
                 Logger.LogHelp("For more information about a command, type: \"help command_name\".");

@@ -63,7 +63,7 @@ namespace NovaEngine.Debugging
             if (trimmedArguments.Length == 0) // write out debug values list
             {
                 Logger.LogHelp("All registered debug values are:");
-                foreach (var debugValue in DebugValues)
+                foreach (var debugValue in DebugValues.OrderBy(debugValue => debugValue.Name))
                     Logger.LogHelp($"  {debugValue.Name}");
                 Logger.LogHelp();
                 Logger.LogHelp("For more information about a debug value, type: \"debug debug_value\".");
