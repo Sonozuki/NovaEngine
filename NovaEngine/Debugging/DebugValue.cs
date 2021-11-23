@@ -33,15 +33,19 @@ namespace NovaEngine.Debugging
         /// <inheritdoc/>
         public override void InvokeCallback(string value)
         {
+            T parsedValue;
+
             try
             {
-                var parsedValue = (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(value);
-                Callback.Invoke(parsedValue);
+                parsedValue = (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(value);
             }
             catch
             {
                 Logger.LogError($"Cannot convert: '{value}' to type: {typeof(T)}.");
+                return;
             }
+
+            Callback.Invoke(parsedValue);
         }
     }
 }
