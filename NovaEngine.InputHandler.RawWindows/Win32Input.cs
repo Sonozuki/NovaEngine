@@ -17,6 +17,9 @@ namespace NovaEngine.InputHandler.RawWindows
         /*********
         ** Fields
         *********/
+        /// <summary>The current state of the mouse.</summary>
+        private MouseState _MouseState;
+
         /// <summary>The old procedure of the window.</summary>
         private IntPtr OldWindowProcedure;
 
@@ -35,7 +38,16 @@ namespace NovaEngine.InputHandler.RawWindows
         public bool CanUseOnPlatform => OperatingSystem.IsWindows();
 
         /// <inheritdoc/>
-        public MouseState MouseState { get; set; }
+        public MouseState MouseState
+        {
+            get
+            {
+                var mouseState = _MouseState;
+                _MouseState.PositionDelta = new(); // reset this as otherwise each frame will have the delta from when the mouse last moved, not the last frame
+                return mouseState;
+            }
+            set => _MouseState = value;
+        }
 
         /// <inheritdoc/>
         public KeyboardState KeyboardState { get; set; }
@@ -169,46 +181,43 @@ namespace NovaEngine.InputHandler.RawWindows
         private void ProcessMouseInput(RawInput rawInput)
         {
             var rawMouse = rawInput.Data.Mouse;
-            var mouseState = MouseState;
 
             // buttons
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.LeftButtonDown))
-                mouseState[MouseButton.LeftButton] = true;
+                _MouseState[MouseButton.LeftButton] = true;
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.LeftButtonUp))
-                mouseState[MouseButton.LeftButton] = false;
+                _MouseState[MouseButton.LeftButton] = false;
 
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.MiddleButtonDown))
-                mouseState[MouseButton.MiddleButton] = true;
+                _MouseState[MouseButton.MiddleButton] = true;
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.MiddleButtonUp))
-                mouseState[MouseButton.MiddleButton] = false;
+                _MouseState[MouseButton.MiddleButton] = false;
 
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.RightButtonDown))
-                mouseState[MouseButton.RightButton] = true;
+                _MouseState[MouseButton.RightButton] = true;
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.RightButtonUp))
-                mouseState[MouseButton.RightButton] = false;
+                _MouseState[MouseButton.RightButton] = false;
 
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.Button4Down))
-                mouseState[MouseButton.BackButton] = true;
+                _MouseState[MouseButton.BackButton] = true;
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.Button4Up))
-                mouseState[MouseButton.BackButton] = false;
+                _MouseState[MouseButton.BackButton] = false;
 
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.Button5Down))
-                mouseState[MouseButton.ForwardButton] = true;
+                _MouseState[MouseButton.ForwardButton] = true;
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.Button5Up))
-                mouseState[MouseButton.ForwardButton] = false;
+                _MouseState[MouseButton.ForwardButton] = false;
 
             // scroll wheels
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.Wheel))
-                mouseState.Scroll += new Vector2(0, rawMouse.ButtonData / 120f);
+                _MouseState.Scroll += new Vector2(0, rawMouse.ButtonData / 120f);
             if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.HWheel))
-                mouseState.Scroll += new Vector2(rawMouse.ButtonData / 120f, 0);
+                _MouseState.Scroll += new Vector2(rawMouse.ButtonData / 120f, 0);
 
             // position
-            mouseState.PositionDelta = new Vector2I(rawMouse.LastX, rawMouse.LastY);
-            User32.GetCursorPos(ref mouseState.Position); // delta follows the raw input meaning it can go out of sync with the cursor position, so get the position from Windows instead
-            User32.ScreenToClient(Program.MainWindow.Handle, ref mouseState.Position);
-
-            MouseState = mouseState;
+            _MouseState.PositionDelta = new Vector2I(rawMouse.LastX, rawMouse.LastY);
+            User32.GetCursorPos(ref _MouseState.Position); // delta follows the raw input meaning it can go out of sync with the cursor position, so get the position from Windows instead
+            User32.ScreenToClient(Program.MainWindow.Handle, ref _MouseState.Position);
         }
 
         /// <summary>Process a keyboard input event.</summary>
