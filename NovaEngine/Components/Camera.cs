@@ -145,15 +145,11 @@ namespace NovaEngine.Components
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         /*********
-        ** Protected Methods
-        *********/
-        /// <summary>Constructs an instance.</summary>
-        protected Camera() { } // required for serialiser
-
-
-        /*********
         ** Private Methods
         *********/
+        /// <summary>Constructs an instance.</summary>
+        private Camera() { } // required for serialiser
+
         /// <summary>Constructs an instance.</summary>
         /// <param name="projection">The projection to use for the camera.</param>
         /// <param name="fieldOfView">The field of view of the camera, in degrees (perspective projection only).</param>
