@@ -80,7 +80,14 @@ namespace NovaEngine.Debugging
                 if (!TryGetDebugValueByName(trimmedArguments[0], out var debugValue))
                     return;
 
-                debugValue!.InvokeCallback(string.Join(" ", trimmedArguments[1..]));
+                try
+                {
+                    debugValue!.InvokeCallback(string.Join(" ", trimmedArguments[1..]));
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError($"Debug value crashed. Technical details:\n{ex}");
+                }
             }
 
             // Retrieves a debug value from a name.

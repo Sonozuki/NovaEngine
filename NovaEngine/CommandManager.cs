@@ -85,7 +85,15 @@ namespace NovaEngine
 
                 // execute command
                 var commandArgs = splitString[1..].Where(argument => !string.IsNullOrEmpty(argument));
-                command.Callback.Invoke(commandArgs.ToArray());
+
+                try
+                {
+                    command.Callback.Invoke(commandArgs.ToArray());
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError($"Command crashed. Technical details:\n{ex}");
+                }
             }
         }
 
