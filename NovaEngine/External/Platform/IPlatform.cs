@@ -11,12 +11,6 @@ namespace NovaEngine.External.Platform
         /// <summary>Whether this represents the current environment platform.</summary>
         public bool IsCurrentPlatform { get; }
 
-        /// <summary>Whether the cursor is currently visible.</summary>
-        public bool IsCursorVisible { get; set; }
-
-        /// <summary>Whether the cursor is currently locked.</summary>
-        public bool IsCursorLocked { get; set; }
-
 
         /*********
         ** Public Methods

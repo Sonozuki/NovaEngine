@@ -1,6 +1,5 @@
 ﻿using NovaEngine.External.Input;
 using NovaEngine.Maths;
-using NovaEngine.Platform;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,23 +37,24 @@ namespace NovaEngine.IO
         /// <summary>Whether the cursor is currently visible.</summary>
         public static bool IsCursorVisible
         {
-            get => PlatformManager.CurrentPlatform.IsCursorVisible;
-            set => PlatformManager.CurrentPlatform.IsCursorVisible = value;
+            get => InputHandlerManager.CurrentInputHandler.IsCursorVisible;
+            set => InputHandlerManager.CurrentInputHandler.IsCursorVisible = value;
         }
 
         /// <summary>Whether the cursor is currently locked.</summary>
         /// <remarks>Locking the cursor will automatically centralise it.</remarks>
         public static bool IsCursorLocked
         {
-            get => PlatformManager.CurrentPlatform.IsCursorLocked;
-            set => PlatformManager.CurrentPlatform.IsCursorLocked = value;
+            get => InputHandlerManager.CurrentInputHandler.IsCursorLocked;
+            set => InputHandlerManager.CurrentInputHandler.IsCursorLocked = value;
         }
 
-        /// <summary>The position of the mouse.</summary>
+        /// <summary>The position of the mouse, relative to the window.</summary>
         public static Vector2I MousePosition => CurrentMouseState.Position;
 
         /// <summary>The delta of the mouse position.</summary>
-        public static Vector2I MouseDelta => CurrentMouseState.Position - PreviousMouseState.Position;
+        /// <remarks>This does not necessarily line up with the cursor movement; for example, if the cursor is locked using <see cref="IsCursorLocked"/>, this will still record movements made despite the cursor not moving.</remarks>
+        public static Vector2I MouseDelta => CurrentMouseState.PositionDelta;
 
 
         /*********

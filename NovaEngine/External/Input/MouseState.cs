@@ -13,6 +13,10 @@ namespace NovaEngine.External.Input
         /// <summary>The position of the mouse, relative to the window.</summary>
         public Vector2I Position;
 
+        /// <summary>The amount the mouse has moved since the last update.</summary>
+        /// <remarks>This does not necessarily line up with the cursor movement; for example, if the cursor is locked using <see cref="IO.Input.IsCursorLocked"/>, this will still record movements made despite the cursor not moving.</remarks>
+        public Vector2I PositionDelta;
+
         /// <summary>The horizontal and vertical scroll values of the mouse.</summary>
         public Vector2 Scroll;
 

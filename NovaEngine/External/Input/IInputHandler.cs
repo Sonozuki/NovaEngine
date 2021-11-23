@@ -17,6 +17,12 @@ namespace NovaEngine.External.Input
         /// <summary>The current state of the keyboard.</summary>
         public KeyboardState KeyboardState { get; set; }
 
+        /// <summary>Whether the cursor is currently visible.</summary>
+        public bool IsCursorVisible { get; set; }
+
+        /// <summary>Whether the cursor is currently locked.</summary>
+        public bool IsCursorLocked { get; set; }
+
 
         /*********
         ** Public Methods

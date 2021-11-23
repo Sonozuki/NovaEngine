@@ -40,6 +40,60 @@ namespace NovaEngine.InputHandler.RawWindows
         /// <inheritdoc/>
         public KeyboardState KeyboardState { get; set; }
 
+        /// <inheritdoc/>
+        public bool IsCursorVisible
+        {
+            get
+            {
+                var cursorInfo = new CursorInfo();
+                cursorInfo.Size = (uint)Marshal.SizeOf<CursorInfo>();
+                User32.GetCursorInfo(ref cursorInfo);
+                return cursorInfo.Flags == CursorState.Showing;
+            }
+            set
+            {
+                var displayCounter = User32.ShowCursor(value);
+                if (value)
+                    while (displayCounter < 0)
+                        displayCounter = User32.ShowCursor(true);
+                else
+                    while (displayCounter >= 0)
+                        displayCounter = User32.ShowCursor(false);
+            }
+        }
+
+        /// <inheritdoc/>
+        public unsafe bool IsCursorLocked
+        {
+            get
+            {
+                var clipRectangle = new Rectangle();
+                User32.GetClipCursor(ref clipRectangle);
+
+                var clientCoordinatesTopLeft = new Vector2I(clipRectangle.Left, clipRectangle.Top);
+                User32.ScreenToClient(Program.MainWindow.Handle, ref clientCoordinatesTopLeft);
+
+                return clientCoordinatesTopLeft == CursorClipTopLeft;
+            }
+            set
+            {
+                if (value)
+                {
+                    var screenCoordinatesTopLeft = CursorClipTopLeft;
+                    User32.ClientToScreen(Program.MainWindow.Handle, ref screenCoordinatesTopLeft);
+                    var screenCoordinatesBottomRight = screenCoordinatesTopLeft + Vector2I.One;
+
+                    var clipRectangle = new Rectangle(screenCoordinatesTopLeft, screenCoordinatesBottomRight);
+                    User32.ClipCursor(&clipRectangle);
+                }
+                else
+                    User32.ClipCursor(null);
+            }
+        }
+
+        /// <summary>The top left position of the clip rectangle, in client-area coordinates.</summary>
+        private Vector2I CursorClipTopLeft => (Vector2I)((Vector2)Program.MainWindow.Size / 2f);
+
 
         /*********
         ** Public Methods
@@ -150,10 +204,9 @@ namespace NovaEngine.InputHandler.RawWindows
                 mouseState.Scroll += new Vector2(rawMouse.ButtonData / 120f, 0);
 
             // position
-            if (rawMouse.Flags.HasFlag(RawMouseFlags.MoveAbsolute))
-                mouseState.Position = new(rawMouse.LastX, rawMouse.LastY);
-            else
-                mouseState.Position += new Vector2I(rawMouse.LastX, rawMouse.LastY);
+            mouseState.PositionDelta = new Vector2I(rawMouse.LastX, rawMouse.LastY);
+            User32.GetCursorPos(ref mouseState.Position); // delta follows the raw input meaning it can go out of sync with the cursor position, so get the position from Windows instead
+            User32.ScreenToClient(Program.MainWindow.Handle, ref mouseState.Position);
 
             MouseState = mouseState;
         }

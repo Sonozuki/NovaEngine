@@ -18,6 +18,12 @@ namespace NovaEngine.IO.Fake
         /// <inheritdoc/>
         public KeyboardState KeyboardState { get; set; }
 
+        /// <inheritdoc/>
+        public bool IsCursorVisible { get; set; }
+
+        /// <inheritdoc/>
+        public bool IsCursorLocked { get; set; }
+
 
         /*********
         ** Public Methods
