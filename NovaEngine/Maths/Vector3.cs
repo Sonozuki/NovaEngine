@@ -436,7 +436,11 @@ namespace NovaEngine.Maths
         public static Vector3 operator *(Vector3 left, Quaternion right)
         {
             var vector = right.XYZ;
-            return left + ((Vector3.Cross(vector, left) * right.W) + Vector3.Cross(vector, Vector3.Cross(vector, left))) * 2;
+
+            var vectorLeft = Vector3.Cross(vector, left);
+            var vectorVectorLeft = Vector3.Cross(vector, vectorLeft);
+
+            return left + ((vectorLeft * right.W) + vectorVectorLeft) * 2;
         }
 
         /// <summary>Divides a vector by a scalar.</summary>
