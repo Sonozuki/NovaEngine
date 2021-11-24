@@ -295,8 +295,8 @@ namespace NovaEngine.Maths
             return new(
                 x: sinHalfX * cosHalfY * cosHalfZ + cosHalfX * sinHalfY * sinHalfZ,
                 y: cosHalfX * sinHalfY * cosHalfZ - sinHalfX * cosHalfY * sinHalfZ,
-                z: cosHalfX * cosHalfY * sinHalfZ + sinHalfX * sinHalfY * cosHalfZ,
-                w: cosHalfX * cosHalfY * cosHalfZ - sinHalfX * sinHalfY * sinHalfZ
+                z: cosHalfX * cosHalfY * sinHalfZ - sinHalfX * sinHalfY * cosHalfZ,
+                w: cosHalfX * cosHalfY * cosHalfZ + sinHalfX * sinHalfY * sinHalfZ
             );
         }
 
