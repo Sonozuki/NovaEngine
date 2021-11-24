@@ -49,7 +49,7 @@ namespace NovaEngine.Common.Windows.Api
         /// <param name="window">A handle to the window and, indirectly, the class to which the window belongs.</param>
         /// <param name="index">The zero-based offset to the value to be set. Valid values are in the range zero through the number of <see langword="byte"/>s of extra window memory, minus the size of an <see langword="int"/>. To set any other value, specify one of the <see cref="WindowLongOffset"/> values.</param>
         /// <param name="newValue">The replacement value.</param>
-        /// <returns>If the method succeeds, the return value is the previous value of the specified offset; otherwise, zero.</returns>
+        /// <returns>The previous value of the specified offset, if the call succeeds; otherwise, 0.</returns>
         public static IntPtr SetWindowLong(IntPtr window, WindowLongOffset index, IntPtr newValue)
         {
             // set the last error to zero, this is because SetWindowLongPtr will return 0 in the case of an error *or* if the previous value of the specified int is 0
@@ -103,7 +103,7 @@ namespace NovaEngine.Common.Windows.Api
         /// <param name="menu">A handle to a menu.</param>
         /// <param name="handle">A handle to the application to be associated with the window.</param>
         /// <param name="lpParam">Pointer to a value to be passed to the window.</param>
-        /// <returns>If the function succeedsm, the return value is a handle to the new window; otherwise, <see cref="IntPtr.Zero"/> is returned.</returns>
+        /// <returns>A handle to the new window, if the call succeeds; otherwise, <see cref="IntPtr.Zero"/>.</returns>
         [DllImport("User32", SetLastError = true)]
         public static extern IntPtr CreateWindowEx(uint exStyle, string className, string windowName, WindowStyle style, int x, int y, int width, int height, IntPtr windowParent, IntPtr menu, IntPtr handle, IntPtr lpParam);
 
@@ -112,7 +112,7 @@ namespace NovaEngine.Common.Windows.Api
         /// <param name="message">The message.</param>
         /// <param name="wParam">Additional message information. The content of this parameter depends on the value of the <paramref name="message"/> parameter.</param>
         /// <param name="lParam">Additional message information. The content of this parameter depends on the value of the <paramref name="message"/> parameter.</param>
-        /// <returns>TThe result of the message processing, which depends on the message sent.</returns>
+        /// <returns>The result of the message processing, which depends on the message sent.</returns>
         [DllImport("User32", SetLastError = true)]
         public static extern IntPtr DefWindowProc(IntPtr window, Message message, IntPtr wParam, IntPtr lParam);
 
@@ -154,14 +154,14 @@ namespace NovaEngine.Common.Windows.Api
         /// <param name="windowHandle">A handle to the window whose title is to be retrieved.</param>
         /// <param name="text">The window title.</param>
         /// <param name="maxCount">The max length of <paramref name="text"/>.</param>
-        /// <returns>The length of the text, if the call was successful; otherwise, 0.</returns>
-        [DllImport("User32.dll", SetLastError = true)]
+        /// <returns>The length of the text, if the call succeeds; otherwise, 0.</returns>
+        [DllImport("User32", SetLastError = true)]
         public static extern int GetWindowText(IntPtr windowHandle, out string text, int maxCount);
 
         /// <summary>Loads the specified cursor resource.</summary>
         /// <param name="handle">A handle to an instance of the module whose executable file contains the cursor to be loaded.<br/>To use a system cursor, <see cref="IntPtr.Zero"/> must be specified.</param>
         /// <param name="cursorName">The name of the cursor resource to be loaded.</param>
-        /// <returns>A handle to the newly loaded cursor if successful; otherwise, <see cref="IntPtr.Zero"/>.</returns>
+        /// <returns>A handle to the newly loaded cursor, if the call succeeds; otherwise, <see cref="IntPtr.Zero"/>.</returns>
         [DllImport("User32", SetLastError = true)]
         public static extern IntPtr LoadCursor(IntPtr handle, int cursorName);
 
@@ -171,7 +171,7 @@ namespace NovaEngine.Common.Windows.Api
         /// <param name="messageFilterMin">The value of the first message in the range of messages to be examined.</param>
         /// <param name="messageFilterMax">The value of the last message in the range of messages to be examined.</param>
         /// <param name="removeMessage">How the messages are to be handled.</param>
-        /// <returns><see langword="true"/> if a message is available; otherwise, <see langword="false"/>.</returns>
+        /// <returns><see langword="true"/>, if a message is available; otherwise, <see langword="false"/>.</returns>
         [DllImport("User32", SetLastError = true)]
         public static extern bool PeekMessage(out Msg message, IntPtr window, uint messageFilterMin, uint messageFilterMax, RemoveMessage removeMessage);
 
@@ -182,7 +182,7 @@ namespace NovaEngine.Common.Windows.Api
 
         /// <summary>Registers a window class for subsequent calls to the <see cref="CreateWindowEx(uint, string, string, WindowStyle, int, int, int, int, IntPtr, IntPtr, IntPtr, IntPtr)"/> method.</summary>
         /// <param name="windowClass">The window class to register.</param>
-        /// <returns>If the function succeeds, the return value is a class atom that uniquely identifies the class being registered; otherwise, zero is returned.</returns>
+        /// <returns>A class atom that uniquely identifies the class being registered, if the call succeeds; otherwise, 0.</returns>
         [DllImport("User32", SetLastError = true)]
         public static extern ushort RegisterClass(in WindowClass windowClass);
 
@@ -190,7 +190,7 @@ namespace NovaEngine.Common.Windows.Api
         /// <param name="rawInputDevices">The devices that represent the raw input.</param>
         /// <param name="numDevices">The number of <see cref="RawInputDevice"/> strucures in <paramref name="rawInputDevices"/>.</param>
         /// <param name="size">The size, in <see langword="byte"/>s, of a <see cref="RawInputDevice"/> structure.</param>
-        /// <returns><see langword="true"/> is the function succeeds; otherwise, <see langword="false"/>.</returns>
+        /// <returns><see langword="true"/>, if the call succeeds; otherwise, <see langword="false"/>.</returns>
         [DllImport("User32", SetLastError = true)]
         public static extern bool RegisterRawInputDevices(RawInputDevice[] rawInputDevices, uint numDevices, uint size);
 
@@ -205,15 +205,15 @@ namespace NovaEngine.Common.Windows.Api
         /// <param name="window">A handle to the window and, indirectly, athe class to which the window belongs.</param>
         /// <param name="index">The zero-based offset to the value to be set. Valid values are in the range zero through the number of <see langword="byte"/>s of extra window memory, minus the size of am <see cref="IntPtr"/>. To set any other value, specify one of the <see cref="WindowLongOffset"/> values.</param>
         /// <param name="newValue">The replacement values.</param>
-        /// <returns>If the method succeeds, the return value is the previous value of the specified offset; otherwise, zero.</returns>
-        /// <remarks>This is only available on 64bit Windows.</remarks>
+        /// <returns>The previous value of the specified offset, if the call succeeds; otherwise, 0.</returns>
+        /// <remarks>This is only available on 64-bit Windows.</remarks>
         [DllImport("User32", SetLastError = true)]
         public static extern IntPtr SetWindowLongPtr(IntPtr window, WindowLongOffset index, IntPtr newValue);
 
         /// <summary>Changes the text of the specified window's title bar (if it has one).</summary>
         /// <param name="windowHandle">A handle to the window whose title is to be changed.</param>
         /// <param name="text">The new title.</param>
-        /// <returns><see langword="true"/> if the title was changed successfully; otherwise, <see langword="false"/>.</returns>
+        /// <returns><see langword="true"/>, if the title was changed successfully; otherwise, <see langword="false"/>.</returns>
         [DllImport("User32", SetLastError = true)]
         public static extern bool SetWindowText(IntPtr windowHandle, string text);
 
@@ -227,13 +227,13 @@ namespace NovaEngine.Common.Windows.Api
         /// <summary>Sets the specified window's show state.</summary>
         /// <param name="window">A handle to the window.</param>
         /// <param name="commandShow">The command to determine how the window is to be shown.</param>
-        /// <returns><see langword="true"/> if the window was previously visible; otherwise, <see langword="false"/>.</returns>
+        /// <returns><see langword="true"/>, if the window was previously visible; otherwise, <see langword="false"/>.</returns>
         [DllImport("User32", SetLastError = true)]
         public static extern bool ShowWindow(IntPtr window, CommandShow commandShow);
 
         /// <summary>Translates virtual-key messages into character messages.</summary>
         /// <param name="message">The message information that was retrieved from the calling thread's message queue by using the <see cref="PeekMessage(out Msg, IntPtr, uint, uint, RemoveMessage)"/> method.</param>
-        /// <returns><see langword="true"/> if the message is translated; otherwise, <see langword="false"/>.</returns>
+        /// <returns><see langword="true"/>, if the message is translated; otherwise, <see langword="false"/>.</returns>
         [DllImport("User32", SetLastError = true)]
         public static extern bool TranslateMessage(in Msg message);
     }
