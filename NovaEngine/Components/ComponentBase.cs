@@ -19,16 +19,16 @@ namespace NovaEngine.Components
 
         /// <summary>The game object the component is currently on.</summary>
         [Serialisable]
-        protected internal GameObject GameObject { get; internal set; }
+        public GameObject GameObject { get; internal set; }
 
         /// <summary>The transform of the game object the component is currently attached to.</summary>
-        protected internal Transform Transform => GameObject.Transform;
+        public Transform Transform => GameObject.Transform;
 
         /// <summary>The children of the game object that component is currently attached to.</summary>
-        protected internal GameObjectChildren Children => GameObject.Children;
+        public GameObjectChildren Children => GameObject.Children;
 
         /// <summary>The components of the game object the component is currently attached to.</summary>
-        protected internal GameObjectComponents Components => GameObject.Components;
+        public GameObjectComponents Components => GameObject.Components;
 
 
         /*********
