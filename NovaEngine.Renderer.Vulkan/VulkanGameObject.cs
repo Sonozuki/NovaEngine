@@ -2,6 +2,7 @@
 using NovaEngine.Core;
 using NovaEngine.External.Rendering;
 using NovaEngine.Graphics;
+using NovaEngine.Maths;
 using NovaEngine.Rendering;
 using System;
 using Vulkan;
@@ -65,12 +66,12 @@ namespace NovaEngine.Renderer.Vulkan
         public override void UpdateUBO(Camera camera)
         {
             // create UBO
-            var ubo = new UniformBufferObject()
-            {
-                Model = BaseGameObject.Transform.Matrix,
-                View = camera.ViewMatrix,
-                Projection = camera.ProjectionMatrix
-            };
+            var ubo = new UniformBufferObject(
+                model: BaseGameObject.Transform.Matrix,
+                view: camera.ViewMatrix,
+                projection: camera.ProjectionMatrix,
+                cameraPosition: Utilities.ConvertEngineCoordinatesToRendererCoordinates(camera.Transform?.GlobalPosition ?? Vector3.Zero)
+            );
             ubo.Projection.M22 *= -1;
 
             // copy UBO data to uniform buffer
@@ -98,24 +99,24 @@ namespace NovaEngine.Renderer.Vulkan
             UniformBuffer = new VulkanBuffer(sizeof(UniformBufferObject), VkBufferUsageFlags.UniformBuffer, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
 
             // create a descriptor set for the object
-            var bufferInfo = new VkDescriptorBufferInfo()
+            var bufferInfo1 = new VkDescriptorBufferInfo()
             {
                 Buffer = UniformBuffer.NativeBuffer,
                 Offset = 0,
                 Range = sizeof(UniformBufferObject)
             };
 
-            var imageInfo = new VkDescriptorImageInfo()
+            var bufferInfo2 = new VkDescriptorBufferInfo()
             {
-                ImageLayout = VkImageLayout.ShaderReadOnlyOptimal,
-                ImageView = (Texture2D.Undefined.RendererTexture as VulkanTexture)!.NativeImageView,
-                Sampler = (Texture2D.Undefined.RendererTexture as VulkanTexture)!.NativeSampler
+                Buffer = VulkanRenderer.Instance.LightsBuffer.NativeBuffer,
+                Offset = 0,
+                Range = sizeof(UniformBufferObjectLights)
             };
 
             DescriptorSet = VulkanRenderer.Instance.DescriptorPool.GetDescriptorSet();
             DescriptorSet
-                .Bind(0, &bufferInfo)
-                .Bind(1, &imageInfo)
+                .Bind(0, &bufferInfo1)
+                .Bind(1, &bufferInfo2)
                 .UpdateBindings();
         }
     }

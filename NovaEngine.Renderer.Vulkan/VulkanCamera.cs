@@ -4,6 +4,7 @@ using NovaEngine.Extensions;
 using NovaEngine.External.Rendering;
 using NovaEngine.Graphics;
 using NovaEngine.Logging;
+using NovaEngine.Maths;
 using NovaEngine.Settings;
 using System;
 using System.Collections.Generic;
@@ -86,6 +87,7 @@ namespace NovaEngine.Renderer.Vulkan
         /// <inheritdoc/>
         public override void OnResolutionChange() => RecreateSwapchain();
 
+        // TODO: clean up this method
         /// <inheritdoc/>
         public override void Render(IEnumerable<RendererGameObjectBase> gameObjects, bool presentRenderTarget)
         {
@@ -131,6 +133,12 @@ namespace NovaEngine.Renderer.Vulkan
                     VK.CommandBindPipeline(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.TriangleGraphicsPipeline);
                     foreach (var triangleVulkanGameObject in triangleVulkanGameObjects)
                     {
+                        var gameObjectPosition = triangleVulkanGameObject.BaseGameObject.Transform.GlobalPosition;
+                        var gameObjectMaterial = triangleVulkanGameObject.BaseGameObject.Components.MeshRenderer!.Material;
+                        var vulkanMaterial = new VulkanMaterial(new(gameObjectMaterial.Tint.R / 255f, gameObjectMaterial.Tint.G / 255f, gameObjectMaterial.Tint.B / 255), gameObjectMaterial.Roughness, gameObjectMaterial.Metallicness);
+                        VK.CommandPushConstants(commandBuffer, Pipeline.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Vertex, 0, (uint)sizeof(Vector3), &gameObjectPosition);
+                        VK.CommandPushConstants(commandBuffer, Pipeline.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Fragment, (uint)sizeof(Vector3), (uint)sizeof(VulkanMaterial), &vulkanMaterial);
+
                         VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.TriangleGraphicsPipelineLayout, 0, 1, new[] { triangleVulkanGameObject.DescriptorSet.NativeDescriptorSet }, 0, null);
                         var vertexBuffer = triangleVulkanGameObject.VertexBuffer!.NativeBuffer;
                         var offsets = (VkDeviceSize)0;

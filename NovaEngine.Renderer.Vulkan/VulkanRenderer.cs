@@ -1,9 +1,11 @@
 ﻿using NovaEngine.Components;
 using NovaEngine.Core;
+using NovaEngine.Debugging;
 using NovaEngine.Extensions;
 using NovaEngine.External.Rendering;
 using NovaEngine.Graphics;
 using NovaEngine.Logging;
+using NovaEngine.Maths;
 using NovaEngine.Rendering;
 using System;
 using System.Collections.Generic;
@@ -69,6 +71,10 @@ namespace NovaEngine.Renderer.Vulkan
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 
+        // TODO: temp
+        /// <summary>A buffer containing 4 lights to use when renderering.</summary>
+        internal VulkanBuffer LightsBuffer;
+
         /// <summary>The <see cref="VkPhysicalDevice"/> and it's logical <see cref="VkDevice"/> representation.</summary>
         internal VulkanDevice Device { get; private set; }
 
@@ -108,6 +114,18 @@ namespace NovaEngine.Renderer.Vulkan
 
             CreateDescriptorSetLayout();
             DescriptorPool = new();
+
+            // TODO: temp
+            var lights = new UniformBufferObjectLights()
+            {
+                Light1 = new Vector4(0, 1, 2, 1),
+                Light2 = new Vector4(1, 0, 2, 1),
+                Light3 = new Vector4(0, -1, 2, 1),
+                Light4 = new Vector4(-1, 0, 2, 1)
+            };
+
+            LightsBuffer = new VulkanBuffer(sizeof(UniformBufferObjectLights), VkBufferUsageFlags.UniformBuffer, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
+            LightsBuffer.CopyFrom(lights);
         }
 
         /// <inheritdoc/>
@@ -284,23 +302,11 @@ namespace NovaEngine.Renderer.Vulkan
         /// <exception cref="ApplicationException">Thrown if the descriptor set layout couldn't be created.</exception>
         private void CreateDescriptorSetLayout()
         {
-            var uboLayoutBinding = new VkDescriptorSetLayoutBinding()
+            var bindings = new VkDescriptorSetLayoutBinding[]
             {
-                Binding = 0,
-                DescriptorType = VkDescriptorType.UniformBuffer,
-                DescriptorCount = 1,
-                StageFlags = VkShaderStageFlags.Vertex
+                new() { Binding = 0, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Vertex | VkShaderStageFlags.Fragment },
+                new() { Binding = 1, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Fragment }
             };
-
-            var samplerLayoutBinding = new VkDescriptorSetLayoutBinding()
-            {
-                Binding = 1,
-                DescriptorType = VkDescriptorType.CombinedImageSampler,
-                DescriptorCount = 1,
-                StageFlags = VkShaderStageFlags.Fragment
-            };
-
-            var bindings = new[] { uboLayoutBinding, samplerLayoutBinding };
 
             fixed (VkDescriptorSetLayoutBinding* bindingsPointer = bindings)
             {

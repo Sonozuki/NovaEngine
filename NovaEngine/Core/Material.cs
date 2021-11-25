@@ -12,9 +12,15 @@ namespace NovaEngine.Core
         /// <summary>The tint of the material.</summary>
         public Colour Tint { get; set; }
 
+        /// <summary>The roughness of the material.</summary>
+        public float Roughness { get; set; }
+
+        /// <summary>The metallicness of the material.</summary>
+        public float Metallicness { get; set; }
+
         /// <summary>The default material.</summary>
         [NonSerialisable]
-        public static Material Default { get; } = new(Colour.Gray);
+        public static Material Default { get; } = new(Colour.Gray, .5f, .5f);
 
 
         /*********
@@ -25,7 +31,9 @@ namespace NovaEngine.Core
 
         /// <summary>Constructs an instance.</summary>
         /// <param name="tint">The tint of the material.</param>
-        public Material(Colour tint)
+        /// <param name="roughness">The roughness of the material.</param>
+        /// <param name="metallicness">The metallicness of the material.</param>
+        public Material(Colour tint, float roughness, float metallicness)
         {
             Tint = tint;
         }

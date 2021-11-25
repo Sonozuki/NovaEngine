@@ -1,6 +1,7 @@
 ﻿using NovaEngine.Content;
 using NovaEngine.Extensions;
 using NovaEngine.Logging;
+using NovaEngine.Maths;
 using NovaEngine.Settings;
 using System;
 using System.Collections.Generic;
@@ -157,17 +158,28 @@ namespace NovaEngine.Renderer.Vulkan
         /// <returns>The created <see cref="VkPipelineLayout"/>.</returns>
         private static VkPipelineLayout CreatePipelineLayout()
         {
-            var descriptorSetLayout = VulkanRenderer.Instance.NativeDescriptorSetLayout;
-            var pipelineLayoutCreateInfo = new VkPipelineLayoutCreateInfo()
+            var pushConstantRanges = new VkPushConstantRange[]
             {
-                SType = VkStructureType.PipelineLayoutCreateInfo,
-                SetLayoutCount = 1,
-                SetLayouts = &descriptorSetLayout
+                new() { StageFlags = VkShaderStageFlags.Vertex, Offset = 0, Size = (uint)sizeof(Vector3) },
+                new() { StageFlags = VkShaderStageFlags.Fragment, Offset = (uint)sizeof(Vector3), Size = (uint)sizeof(VulkanMaterial) }
             };
 
-            if (VK.CreatePipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, ref pipelineLayoutCreateInfo, null, out var pipelineLayout) != VkResult.Success)
-                throw new ApplicationException("Failed to create pipeline layout.").Log(LogSeverity.Fatal);
-            return pipelineLayout;
+            fixed (VkPushConstantRange* pushConstantRangesPointer = pushConstantRanges)
+            {
+                var descriptorSetLayout = VulkanRenderer.Instance.NativeDescriptorSetLayout;
+                var pipelineLayoutCreateInfo = new VkPipelineLayoutCreateInfo()
+                {
+                    SType = VkStructureType.PipelineLayoutCreateInfo,
+                    SetLayoutCount = 1,
+                    SetLayouts = &descriptorSetLayout,
+                    PushConstantRangeCount = (uint)pushConstantRanges.Length,
+                    PushConstantRanges = pushConstantRangesPointer
+                };
+
+                if (VK.CreatePipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, ref pipelineLayoutCreateInfo, null, out var pipelineLayout) != VkResult.Success)
+                    throw new ApplicationException("Failed to create pipeline layout.").Log(LogSeverity.Fatal);
+                return pipelineLayout;
+            }
         }
 
         /// <summary>Creates a graphics pipeline.</summary>
