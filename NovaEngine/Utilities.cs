@@ -5,21 +5,26 @@ using System;
 namespace NovaEngine
 {
     /// <summary>Creates generic miscellaneous methods.</summary>
-    internal static class Utilities
+    public static class Utilities
     {
         /*********
         ** Public Methods
         *********/
+        /// <summary>Converts a position from the engine's coordinate system to the current renderer's coordinate system.</summary>
+        /// <param name="position">The position in engine coordinate system to convert.</param>
+        /// <returns><paramref name="position"/> converted to the current renderer's coordinate system.</returns>
+        public static Vector3 ConvertEngineCoordinatesToRendererCoordinates(Vector3 position) => new(
+            x: position.X * (RendererManager.MVPSettings.InvertX ? -1 : 1),
+            y: position.Y * (RendererManager.MVPSettings.InvertY ? -1 : 1),
+            z: position.Z * (RendererManager.MVPSettings.InvertZ ? -1 : 1));
+
         /// <summary>Creates a model matrix.</summary>
         /// <param name="position">The position of the model.</param>
         /// <param name="scale">The scale of the model.</param>
         /// <returns>The model matrix.</returns>
         public static Matrix4x4 CreateModelMatrix(Vector3 position, Vector3 scale) =>
             Matrix4x4.CreateScale(scale)
-          * Matrix4x4.CreateTranslation(
-                position.X * (RendererManager.MVPSettings.InvertX ? -1 : 1),
-                position.Y * (RendererManager.MVPSettings.InvertY ? -1 : 1),
-                position.Z * (RendererManager.MVPSettings.InvertZ ? -1 : 1));
+          * Matrix4x4.CreateTranslation(Utilities.ConvertEngineCoordinatesToRendererCoordinates(position));
 
         /// <summary>Creates a model matrix.</summary>
         /// <param name="position">The position of the model.</param>
@@ -28,10 +33,7 @@ namespace NovaEngine
         /// <returns>The model matrix.</returns>
         public static Matrix4x4 CreateModelMatrix(Vector3 position, Quaternion rotation, Vector3 scale) =>
             Matrix4x4.CreateScale(scale)
-          * Matrix4x4.CreateTranslation(
-                position.X * (RendererManager.MVPSettings.InvertX ? -1 : 1),
-                position.Y * (RendererManager.MVPSettings.InvertY ? -1 : 1),
-                position.Z * (RendererManager.MVPSettings.InvertZ ? -1 : 1))
+          * Matrix4x4.CreateTranslation(Utilities.ConvertEngineCoordinatesToRendererCoordinates(position))
           * Matrix4x4.CreateFromQuaternion(RendererManager.MVPSettings.InvertRotation ? rotation.Inverse : rotation);
 
         /// <summary>Create a view matrix.</summary>
@@ -39,10 +41,7 @@ namespace NovaEngine
         /// <param name="rotation">The rotation of the view.</param>
         /// <returns>The view matrix.</returns>
         public static Matrix4x4 CreateViewMatrix(Vector3 position, Quaternion rotation) =>
-            Matrix4x4.CreateTranslation(
-                position.X * (RendererManager.MVPSettings.InvertX ? 1 : -1),
-                position.Y * (RendererManager.MVPSettings.InvertY ? 1 : -1),
-                position.Z * (RendererManager.MVPSettings.InvertZ ? 1 : -1))
+            Matrix4x4.CreateTranslation(Utilities.ConvertEngineCoordinatesToRendererCoordinates(-position))
           * Matrix4x4.CreateFromQuaternion(RendererManager.MVPSettings.InvertRotation ? rotation : rotation.Inverse);
 
         /// <summary>Calculates the eight corners of a frustum.</summary>
