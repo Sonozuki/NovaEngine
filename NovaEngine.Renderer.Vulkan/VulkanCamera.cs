@@ -153,6 +153,11 @@ namespace NovaEngine.Renderer.Vulkan
                     VK.CommandBindPipeline(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.LineGraphicsPipeline);
                     foreach (var lineVulkanGameObject in lineVulkanGameObjects)
                     {
+                        var position = Vector3.Zero;
+                        var vulkanMaterial = new VulkanMaterial(new(1, 0, 0), .5f, .5f);
+                        VK.CommandPushConstants(commandBuffer, Pipeline.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Vertex, 0, (uint)sizeof(Vector3), &position);
+                        VK.CommandPushConstants(commandBuffer, Pipeline.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Fragment, (uint)sizeof(Vector3), (uint)sizeof(VulkanMaterial), &vulkanMaterial);
+
                         VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.LineGraphicsPipelineLayout, 0, 1, new[] { lineVulkanGameObject.DescriptorSet.NativeDescriptorSet }, 0, null);
                         var vertexBuffer = lineVulkanGameObject.VertexBuffer!.NativeBuffer;
                         var offsets = (VkDeviceSize)0;
