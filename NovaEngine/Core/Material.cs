@@ -20,7 +20,7 @@ namespace NovaEngine.Core
 
         /// <summary>The default material.</summary>
         [NonSerialisable]
-        public static Material Default { get; } = new(Colour.Gray, .5f, .5f);
+        public static Material Default => new(Colour.Gray, .5f, .5f);
 
 
         /*********

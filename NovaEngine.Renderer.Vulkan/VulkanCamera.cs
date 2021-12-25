@@ -135,7 +135,7 @@ namespace NovaEngine.Renderer.Vulkan
                     {
                         var gameObjectPosition = triangleVulkanGameObject.BaseGameObject.Transform.GlobalPosition;
                         var gameObjectMaterial = triangleVulkanGameObject.BaseGameObject.Components.MeshRenderer!.Material;
-                        var vulkanMaterial = new VulkanMaterial(new(gameObjectMaterial.Tint.R / 255f, gameObjectMaterial.Tint.G / 255f, gameObjectMaterial.Tint.B / 255), gameObjectMaterial.Roughness, gameObjectMaterial.Metallicness);
+                        var vulkanMaterial = new VulkanMaterial(new(gameObjectMaterial.Tint.R / 255f, gameObjectMaterial.Tint.G / 255f, gameObjectMaterial.Tint.B / 255f), gameObjectMaterial.Roughness, gameObjectMaterial.Metallicness);
                         VK.CommandPushConstants(commandBuffer, Pipeline.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Vertex, 0, (uint)sizeof(Vector3), &gameObjectPosition);
                         VK.CommandPushConstants(commandBuffer, Pipeline.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Fragment, (uint)sizeof(Vector3), (uint)sizeof(VulkanMaterial), &vulkanMaterial);
 
@@ -154,7 +154,8 @@ namespace NovaEngine.Renderer.Vulkan
                     foreach (var lineVulkanGameObject in lineVulkanGameObjects)
                     {
                         var position = Vector3.Zero;
-                        var vulkanMaterial = new VulkanMaterial(new(1, 0, 0), .5f, .5f);
+                        var gameObjectMaterial = lineVulkanGameObject.BaseGameObject.Components.MeshRenderer!.Material;
+                        var vulkanMaterial = new VulkanMaterial(new(gameObjectMaterial.Tint.R / 255f, gameObjectMaterial.Tint.G / 255f, gameObjectMaterial.Tint.B / 255f), .5f, .5f);
                         VK.CommandPushConstants(commandBuffer, Pipeline.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Vertex, 0, (uint)sizeof(Vector3), &position);
                         VK.CommandPushConstants(commandBuffer, Pipeline.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Fragment, (uint)sizeof(Vector3), (uint)sizeof(VulkanMaterial), &vulkanMaterial);
 
