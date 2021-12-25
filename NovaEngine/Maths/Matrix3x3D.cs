@@ -556,15 +556,15 @@ namespace NovaEngine.Maths
             var zz = quaternion.Z * quaternion.Z;
 
             var xy = quaternion.X * quaternion.Y;
-            var wz = quaternion.Z * quaternion.W;
-            var xz = quaternion.Z * quaternion.X;
-            var wy = quaternion.Y * quaternion.W;
+            var xw = quaternion.X * quaternion.W;
             var yz = quaternion.Y * quaternion.Z;
-            var wx = quaternion.X * quaternion.W;
+            var yw = quaternion.Y * quaternion.W;
+            var xz = quaternion.Z * quaternion.X;
+            var zw = quaternion.Z * quaternion.W;
 
-            return new(1.0f - 2.0f * (yy + zz), 2.0f * (xy + wz),        2.0f * (xz - wy),
-                       2.0f * (xy - wz),        1.0f - 2.0f * (zz + xx), 2.0f * (yz + wx),
-                       2.0f * (xz + wy),        2.0f * (yz - wx),        1.0f - 2.0f * (yy + xx));
+            return new(1 - 2 * (yy + zz), 2 * (xy + zw),     2 * (xz - yw),
+                       2 * (xy - zw),     1 - 2 * (xx + zz), 2 * (yz + xw),
+                       2 * (xz + yw),     2 * (yz - xw),     1 - 2 * (xx + yy));
         }
 
         /// <summary>Creates a rotation matrix from euler angles.</summary>
