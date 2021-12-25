@@ -40,14 +40,16 @@ namespace NovaEngine.SceneManagement
         *********/
         /// <summary>Adds a cube gizmo to the scene.</summary>
         /// <param name="position">The position of the cube.</param>
+        /// <param name="rotation">The rotation of the cube.</param>
         /// <param name="scale">The scale of the cube.</param>
         /// <param name="colour">The colour of the cube.</param>
-        public void AddCube(Vector3 position, Vector3 scale, Colour colour)
+        public void AddCube(Vector3 position, Quaternion rotation, Vector3 scale, Colour colour)
         {
             var gameObject = CubeGameObjects.GetObject();
             gameObject.IsEnabled = true;
 
             gameObject.Transform.LocalPosition = position;
+            gameObject.Transform.LocalRotation = rotation;
             gameObject.Transform.LocalScale = scale;
             gameObject.Components.MeshRenderer!.Material.Tint = colour;
 

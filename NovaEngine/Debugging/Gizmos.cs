@@ -21,15 +21,16 @@ namespace NovaEngine.Debugging
         *********/
         /// <summary>Draws a cube.</summary>
         /// <param name="position">The position of the centre of the cube.</param>
-        /// <param name="scale">The scale of the cube.</param>
+        /// <param name="rotation">The rotation of the cube. If <see langword="null"/>, then <see cref="Quaternion.Identity"/> will be used.</param>
+        /// <param name="scale">The scale of the cube. If <see langword="null"/>, then <see cref="Vector3.One"/> will be used.</param>
         /// <param name="colour">The colour of the cube. If <see langword="null"/>, then <see cref="DefaultColour"/> will be used.</param>
-        public static void DrawCube(Vector3 position, Vector3 scale, Colour? colour = null) => SceneManager.GizmosScene.AddCube(position, scale, colour ?? DefaultColour);
+        public static void DrawCube(Vector3 position, Quaternion? rotation = null, Vector3? scale = null, Colour? colour = null) => SceneManager.GizmosScene.AddCube(position, rotation ?? Quaternion.Identity, scale ?? Vector3.One, colour ?? DefaultColour);
 
         /// <summary>Draws a sphere.</summary>
         /// <param name="position">The position of the centre of the sphere.</param>
-        /// <param name="radius">The radius of the sphere.</param>
+        /// <param name="radius">The radius of the sphere. If <see langword="null"/>, then 0.5 will be used.</param>
         /// <param name="colour">The colour of the sphere. If <see langword="null"/>, then <see cref="DefaultColour"/> will be used.</param>
-        public static void DrawSphere(Vector3 position, float radius, Colour? colour = null) => SceneManager.GizmosScene.AddSphere(position, radius, colour ?? DefaultColour);
+        public static void DrawSphere(Vector3 position, float? radius = null, Colour? colour = null) => SceneManager.GizmosScene.AddSphere(position, radius ?? .5f, colour ?? DefaultColour);
 
         /// <summary>Draws a line.</summary>
         /// <param name="point1">The first point of the line.</param>
