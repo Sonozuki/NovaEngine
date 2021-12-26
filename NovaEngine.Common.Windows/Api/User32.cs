@@ -33,7 +33,7 @@ namespace NovaEngine.Common.Windows.Api
             return size;
         }
 
-        /// <summary>Retreives the raw input header from the specified device.</summary>
+        /// <summary>Retrieves the raw input header from the specified device.</summary>
         /// <param name="rawInput">A handle to the <see cref="RawInput"/> structure. This comes from the lParam in <see cref="Message.Input"/>.</param>
         /// <param name="header">The raw header data.</param>
         /// <returns>The size, in <see langword="byte"/>s, of the data in <paramref name="header"/>.</returns>
@@ -140,7 +140,7 @@ namespace NovaEngine.Common.Windows.Api
         [DllImport("User32", SetLastError = true)]
         public static extern bool GetCursorPos(ref Vector2I point);
 
-        /// <summary>Retreives the raw input from the specified device.</summary>
+        /// <summary>Retrieves the raw input from the specified device.</summary>
         /// <param name="rawInput">A handle to the <see cref="RawInput"/> structure. This comes from the lParam in WM_INPUT.</param>
         /// <param name="command">The command flag.</param>
         /// <param name="data">A pointer to the data that comes from the <see cref="RawInput"/> structure. This depends on the value of <paramref name="command"/>. If <paramref name="data"/> is <see langword="null"/>, the required size of the butter is returning in <paramref name="size"/>.</param>
