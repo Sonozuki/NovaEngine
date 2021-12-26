@@ -128,6 +128,8 @@ namespace NovaEngine.Renderer.Vulkan
         /// <inheritdoc/>
         public void Dispose()
         {
+            LightsBuffer.Dispose();
+
             DescriptorPool.Dispose();
             VK.DestroyDescriptorSetLayout(Device.NativeDevice, NativeDescriptorSetLayout, null);
 
