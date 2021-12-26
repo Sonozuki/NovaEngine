@@ -244,7 +244,7 @@ namespace NovaEngine.Renderer.Vulkan
                     PolygonMode = VkPolygonMode.Fill,
                     LineWidth = 1,
                     CullMode = VkCullModeFlags.Back,
-                    FrontFace = VkFrontFace.CounterClockwise,
+                    FrontFace = VkFrontFace.Clockwise, // mesh data is still wound CCW, Vulkan uses CW because of how the Z axis direction has been flipped
                     DepthBiasEnable = false,
                     DepthBiasConstantFactor = 0,
                     DepthBiasClamp = 0,

@@ -17,9 +17,6 @@ namespace NovaEngine.Rendering
         /// <summary>The renderer that is currently being used.</summary>
         public static IRenderer CurrentRenderer { get; }
 
-        /// <summary>The MVP settings for the current renderer.</summary>
-        public static MVPSettings MVPSettings => CurrentRenderer.MVPSettings;
-
 
         /*********
         ** Public Methods

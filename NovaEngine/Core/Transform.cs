@@ -117,10 +117,6 @@ namespace NovaEngine.Core
         /// <summary>The right direction of the tranform in world space.</summary>
         public Vector3 Right => Vector3.UnitX * GlobalRotation;
 
-        /// <summary>The transform matrix.</summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public Matrix4x4 Matrix => Utilities.CreateModelMatrix(GlobalPosition, GlobalRotation, GlobalScale);
-
         /// <summary>The global position of the parent object.</summary>
         internal Vector3 ParentPosition
         {

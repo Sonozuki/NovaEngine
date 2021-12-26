@@ -78,23 +78,6 @@ namespace NovaEngine.SceneManagement
         /// <param name="colour">The colour of the line.</param>
         public void AddLine(Vector3 point1, Vector3 point2, Colour colour)
         {
-            // manually flip axis TODO: is this required for all meshes?
-            if (RendererManager.CurrentRenderer.MVPSettings.InvertX)
-            {
-                point1.X *= -1;
-                point2.X *= -1;
-            }
-            if (RendererManager.CurrentRenderer.MVPSettings.InvertY)
-            {
-                point1.Y *= -1;
-                point2.Y *= -1;
-            }
-            if (RendererManager.CurrentRenderer.MVPSettings.InvertZ)
-            {
-                point1.Z *= -1;
-                point2.Z *= -1;
-            }
-
             var gameObject = LineGameObjects.GetObject();
             gameObject.IsEnabled = true;
 

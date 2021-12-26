@@ -16,9 +16,6 @@ namespace NovaEngine.Rendering.Fake
         public bool CanUseOnPlatform => true;
 
         /// <inheritdoc/>
-        public MVPSettings MVPSettings { get; } = new(false, false, false, false);
-
-        /// <inheritdoc/>
         public SampleCount MaxSampleCount => SampleCount.Count1;
 
 

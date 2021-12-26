@@ -66,12 +66,24 @@ namespace NovaEngine.Renderer.Vulkan
         public override void UpdateUBO(Camera camera)
         {
             // create UBO
+            var rotation = BaseGameObject.Transform.GlobalRotation;
+            var modelMatrix = Matrix4x4.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W))
+                            * Matrix4x4.CreateTranslation(BaseGameObject.Transform.GlobalPosition)
+                            * Matrix4x4.CreateScale(BaseGameObject.Transform.GlobalScale);
+
+            rotation = camera.Transform.GlobalRotation.Inverse;
+            var viewMatrix = Matrix4x4.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W))
+                           * Matrix4x4.CreateTranslation(-camera.Transform.GlobalPosition);
+
             var ubo = new UniformBufferObject(
-                model: BaseGameObject.Transform.Matrix,
-                view: camera.ViewMatrix,
+                model: modelMatrix,
+                view: viewMatrix,
                 projection: camera.ProjectionMatrix,
-                cameraPosition: Utilities.ConvertEngineCoordinatesToRendererCoordinates(camera.Transform?.GlobalPosition ?? Vector3.Zero)
+                cameraPosition: Vector3.Zero
             );
+
+            ubo.Model.M43 *= -1;
+            ubo.View.M43 *= -1;
             ubo.Projection.M22 *= -1;
 
             // copy UBO data to uniform buffer

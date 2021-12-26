@@ -67,10 +67,6 @@ namespace NovaEngine.Components
         /// <summary>The texture the camera will render to.</summary>
         public Texture2D RenderTarget => RendererCamera.RenderTarget;
 
-        /// <summary>The view matrix of the camera.</summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public Matrix4x4 ViewMatrix => Utilities.CreateViewMatrix(this.Transform.GlobalPosition, Transform.GlobalRotation);
-
         /// <summary>The projection matrix of the camera.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public Matrix4x4 ProjectionMatrix
