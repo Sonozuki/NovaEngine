@@ -1,11 +1,4 @@
-﻿using NovaEngine.Extensions;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace NovaEngine.Serialisation
+﻿namespace NovaEngine.Serialisation
 {
     /// <summary>Represents the info about an object.</summary>
     internal class ObjectInfo

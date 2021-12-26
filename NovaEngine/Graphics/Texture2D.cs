@@ -1,7 +1,4 @@
-﻿using NovaEngine.Content;
-using NovaEngine.Rendering;
-
-namespace NovaEngine.Graphics
+﻿namespace NovaEngine.Graphics
 {
     /// <summary>Represents a two-dimensional texture.</summary>
     public class Texture2D : TextureBase

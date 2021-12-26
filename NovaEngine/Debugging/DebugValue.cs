@@ -1,8 +1,4 @@
-﻿using NovaEngine.Logging;
-using System;
-using System.ComponentModel;
-
-namespace NovaEngine.Debugging
+﻿namespace NovaEngine.Debugging
 {
     /// <summary>Represents a value to be used with the <see cref="Debugger"/>.</summary>
     /// <typeparam name="T">The type of the value.</typeparam>

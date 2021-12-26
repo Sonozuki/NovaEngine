@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NovaEngine.Maths
+﻿namespace NovaEngine.Maths
 {
     /// <summary>Represents a vector with four single-precision floating-point values.</summary>
     public struct Vector4 : IEquatable<Vector4>

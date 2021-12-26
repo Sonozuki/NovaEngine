@@ -1,6 +1,4 @@
-﻿using NovaEngine.Graphics;
-
-namespace NovaEngine.Core
+﻿namespace NovaEngine.Core
 {
     /// <summary>Contains static primitive meshes.</summary>
     internal static class Meshes

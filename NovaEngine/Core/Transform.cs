@@ -1,9 +1,4 @@
-﻿using NovaEngine.Maths;
-using NovaEngine.Rendering;
-using NovaEngine.Serialisation;
-using System.ComponentModel;
-
-namespace NovaEngine.Core
+﻿namespace NovaEngine.Core
 {
     /// <summary>Represents the transform for an <see cref="Core.GameObject"/>.</summary>
     public class Transform

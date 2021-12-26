@@ -1,11 +1,4 @@
-﻿using NovaEngine.Components;
-using NovaEngine.IO;
-using NovaEngine.Logging;
-using NovaEngine.SceneManagement;
-using System;
-using System.Diagnostics;
-
-namespace NovaEngine
+﻿namespace NovaEngine
 {
     /// <summary>Responsible for the main frame loop of the engine.</summary>
     public static class ApplicationLoop

@@ -1,8 +1,4 @@
-﻿using NovaEngine.Components;
-using NovaEngine.Core;
-using NovaEngine.External.Rendering;
-
-namespace NovaEngine.Rendering.Fake
+﻿namespace NovaEngine.Rendering.Fake
 {
     /// <summary>Represents a game object that is only used when nova is being used without a program instance.</summary>
     internal class FakeGameObject : RendererGameObjectBase

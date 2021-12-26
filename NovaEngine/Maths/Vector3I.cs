@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NovaEngine.Maths
+﻿namespace NovaEngine.Maths
 {
     /// <summary>Represents a vector with three 32-bit integer values.</summary>
     public struct Vector3I : IEquatable<Vector3I>

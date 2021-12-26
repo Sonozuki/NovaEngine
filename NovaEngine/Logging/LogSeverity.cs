@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NovaEngine.Logging
+﻿namespace NovaEngine.Logging
 {
     /// <summary>The severity of a log.</summary>
     public enum LogSeverity

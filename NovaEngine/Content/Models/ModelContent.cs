@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace NovaEngine.Content.Models
+﻿namespace NovaEngine.Content.Models
 {
     /// <summary>Contains the meshes that make up a (3D) model.</summary>
     public class ModelContent

@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace NovaEngine.Extensions
+﻿namespace NovaEngine.Extensions
 {
     /// <summary>Extension methods for the <see cref="PropertyInfo"/> class.</summary>
     public static class PropertyInfoExtensions

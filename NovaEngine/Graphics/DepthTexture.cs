@@ -1,6 +1,4 @@
-﻿using NovaEngine.Rendering;
-
-namespace NovaEngine.Graphics
+﻿namespace NovaEngine.Graphics
 {
     /// <summary>Represents a depth texture.</summary>
     public class DepthTexture : Texture2D

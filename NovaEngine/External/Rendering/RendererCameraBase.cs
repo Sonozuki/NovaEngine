@@ -1,9 +1,4 @@
-﻿using NovaEngine.Components;
-using NovaEngine.Graphics;
-using System;
-using System.Collections.Generic;
-
-namespace NovaEngine.External.Rendering
+﻿namespace NovaEngine.External.Rendering
 {
     /// <summary>Represents a renderer camera.</summary>
     public abstract class RendererCameraBase : IDisposable

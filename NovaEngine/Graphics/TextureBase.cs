@@ -1,11 +1,4 @@
-﻿using NovaEngine.External.Rendering;
-using NovaEngine.Rendering;
-using NovaEngine.Serialisation;
-using NovaEngine.Settings;
-using System;
-using System.ComponentModel;
-
-namespace NovaEngine.Graphics
+﻿namespace NovaEngine.Graphics
 {
     /// <summary>Represents a texture.</summary>
     public abstract class TextureBase : IDisposable

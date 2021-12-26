@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NovaEngine.Maths
+﻿namespace NovaEngine.Maths
 {
     /// <summary>Represents a 2x2 matrix using double-precision floating-point numbers.</summary>
     public struct Matrix2x2D : IEquatable<Matrix2x2D>

@@ -1,9 +1,4 @@
-﻿using NovaEngine.Extensions;
-using System;
-using System.IO;
-using System.Text;
-
-namespace NovaEngine.Logging
+﻿namespace NovaEngine.Logging
 {
     /// <summary>Represents a log.</summary>
     internal class Log

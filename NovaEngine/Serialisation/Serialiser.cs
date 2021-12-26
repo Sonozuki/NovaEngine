@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-
-namespace NovaEngine.Serialisation
+﻿namespace NovaEngine.Serialisation
 {
     /// <summary>The binary serialiser.</summary>
     public static class Serialiser

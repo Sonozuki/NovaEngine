@@ -1,9 +1,4 @@
-﻿using NovaEngine.Content.Attributes;
-using NovaEngine.Graphics;
-using System;
-using System.IO;
-
-namespace NovaEngine.Content.Readers
+﻿namespace NovaEngine.Content.Readers
 {
     /// <summary>Defines how a texture should be read from a nova file.</summary>
     [ContentReader("texture2d", typeof(Texture2D))]

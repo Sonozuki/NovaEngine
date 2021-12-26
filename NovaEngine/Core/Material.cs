@@ -1,7 +1,4 @@
-﻿using NovaEngine.Graphics;
-using NovaEngine.Serialisation;
-
-namespace NovaEngine.Core
+﻿namespace NovaEngine.Core
 {
     /// <summary>Represents a mesh material.</summary>
     public class Material

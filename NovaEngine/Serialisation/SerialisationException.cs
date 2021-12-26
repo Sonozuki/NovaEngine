@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NovaEngine.Serialisation
+﻿namespace NovaEngine.Serialisation
 {
     /// <summary>The exception that is thrown when an error occures in the <see cref="Serialiser"/>.</summary>
     public class SerialisationException : Exception

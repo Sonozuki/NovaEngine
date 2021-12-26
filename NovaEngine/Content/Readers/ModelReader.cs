@@ -1,12 +1,4 @@
-﻿using NovaEngine.Content.Attributes;
-using NovaEngine.Content.Models;
-using NovaEngine.Core;
-using NovaEngine.Components;
-using NovaEngine.Serialisation;
-using System;
-using System.IO;
-
-namespace NovaEngine.Content.Readers
+﻿namespace NovaEngine.Content.Readers
 {
     /// <summary>Defines how a model should be read from a nova file.</summary>
     [ContentReader("3dmodel", typeof(GameObject), typeof(ModelContent), typeof(Mesh[]))]

@@ -1,10 +1,4 @@
-﻿using NovaEngine.External.Platform;
-using NovaEngine.Logging;
-using NovaEngine.Platform.Fake;
-using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
+﻿using NovaEngine.Platform.Fake;
 
 namespace NovaEngine.Platform
 {

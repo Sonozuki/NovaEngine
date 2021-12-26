@@ -1,17 +1,4 @@
-﻿using NovaEngine.Content;
-using NovaEngine.Graphics;
-using NovaEngine.IO;
-using NovaEngine.Logging;
-using NovaEngine.Platform;
-using NovaEngine.Rendering;
-using NovaEngine.SceneManagement;
-using NovaEngine.Windowing;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-
-using Debugger = NovaEngine.Debugging.Debugger;
+﻿using Debugger = NovaEngine.Debugging.Debugger;
 
 namespace NovaEngine
 {

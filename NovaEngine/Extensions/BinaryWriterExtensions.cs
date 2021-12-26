@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace NovaEngine.Extensions
+﻿namespace NovaEngine.Extensions
 {
     /// <summary>Extension methods for the <see cref="BinaryWriter"/> class.</summary>
     public static class BinaryWriterExtensions

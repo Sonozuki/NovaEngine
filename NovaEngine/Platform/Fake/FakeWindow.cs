@@ -1,9 +1,4 @@
-﻿using NovaEngine.External.Platform;
-using NovaEngine.Maths;
-using NovaEngine.Windowing;
-using System;
-
-namespace NovaEngine.Platform.Fake
+﻿namespace NovaEngine.Platform.Fake
 {
     /// <summary>Represents a window that is only used when nova is being used without a program instance.</summary>
     internal class FakeWindow : PlatformWindowBase

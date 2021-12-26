@@ -1,8 +1,4 @@
-﻿using NovaEngine.Components;
-using NovaEngine.Core;
-using NovaEngine.Graphics;
-
-namespace NovaEngine.External.Rendering
+﻿namespace NovaEngine.External.Rendering
 {
     /// <summary>Represents a renderer game object.</summary>
     public abstract class RendererGameObjectBase

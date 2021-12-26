@@ -1,14 +1,4 @@
-﻿using NovaEngine.Core;
-using NovaEngine.External.Rendering;
-using NovaEngine.Graphics;
-using NovaEngine.Maths;
-using NovaEngine.Rendering;
-using NovaEngine.SceneManagement;
-using NovaEngine.Serialisation;
-using System.ComponentModel;
-using System.Linq;
-
-namespace NovaEngine.Components
+﻿namespace NovaEngine.Components
 {
     /// <summary>Represents a camera.</summary>
     public sealed class Camera : ComponentBase

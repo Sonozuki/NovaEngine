@@ -1,10 +1,4 @@
-﻿using NovaEngine.External.Platform;
-using NovaEngine.IO;
-using NovaEngine.Maths;
-using NovaEngine.Platform;
-using System;
-
-namespace NovaEngine.Windowing
+﻿namespace NovaEngine.Windowing
 {
     /// <summary>Represents a platform agnostic window.</summary>
     public class Window

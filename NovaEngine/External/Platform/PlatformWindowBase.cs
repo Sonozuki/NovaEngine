@@ -1,8 +1,4 @@
-﻿using NovaEngine.Maths;
-using NovaEngine.Windowing;
-using System;
-
-namespace NovaEngine.External.Platform
+﻿namespace NovaEngine.External.Platform
 {
     /// <summary>Represents a platform specific window.</summary>
     public abstract class PlatformWindowBase

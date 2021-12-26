@@ -1,8 +1,5 @@
-﻿using NovaEngine.Content.Attributes;
-using SixLabors.ImageSharp;
+﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using System.IO;
-using System.Runtime.InteropServices;
 
 namespace NovaEngine.Content.Unpackers
 {

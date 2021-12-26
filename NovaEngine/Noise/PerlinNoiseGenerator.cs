@@ -1,8 +1,4 @@
-﻿using NovaEngine.Maths;
-using System;
-using System.Linq;
-
-namespace NovaEngine.Noise
+﻿namespace NovaEngine.Noise
 {
     /// <summary>Handles generating Perlin noise.</summary>
     public class PerlinNoiseGenerator

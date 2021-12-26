@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace NovaEngine.Content.Readers
+﻿namespace NovaEngine.Content.Readers
 {
     /// <summary>Defines how content should be read from a nova file.</summary>
     public interface IContentReader

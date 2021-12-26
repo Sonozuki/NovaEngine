@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NovaEngine.Logging
+﻿namespace NovaEngine.Logging
 {
     /// <summary>An attribute to specify information of a <see cref="LogSeverity"/></summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]

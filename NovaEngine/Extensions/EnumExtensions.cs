@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace NovaEngine.Extensions
+﻿namespace NovaEngine.Extensions
 {
     /// <summary>Extension methods for the <see cref="Enum"/> class.</summary>
     public static class EnumExtensions

@@ -1,7 +1,4 @@
-﻿using NovaEngine.External.Rendering;
-using NovaEngine.Graphics;
-
-namespace NovaEngine.Rendering.Fake
+﻿namespace NovaEngine.Rendering.Fake
 {
     /// <summary>Represents a platform that is only used when nova is being used without a program instance.</summary>
     internal class FakeTexture : RendererTextureBase

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NovaEngine.Maths
+﻿namespace NovaEngine.Maths
 {
     /// <summary>Represents a vector with four 32-bit integer values.</summary>
     public struct Vector4I : IEquatable<Vector4I>

@@ -1,8 +1,4 @@
-﻿using NovaEngine.Serialisation;
-using System.Collections.Generic;
-using System.IO;
-
-namespace NovaEngine.Extensions
+﻿namespace NovaEngine.Extensions
 {
     /// <summary>Extension methods for the <see cref="BinaryReader"/> class.</summary>
     internal static class BinaryReaderExtensions

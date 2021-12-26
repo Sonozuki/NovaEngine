@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-
-namespace NovaEngine.Serialisation
+﻿namespace NovaEngine.Serialisation
 {
     /// <summary>Represents a collection of <see cref="TypeInfo"/>s.</summary>
     internal class TypeInfos : IEnumerable<TypeInfo>

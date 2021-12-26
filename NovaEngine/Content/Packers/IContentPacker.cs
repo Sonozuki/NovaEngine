@@ -1,7 +1,4 @@
-﻿using NovaEngine.Content.Readers;
-using System.IO;
-
-namespace NovaEngine.Content.Packers
+﻿namespace NovaEngine.Content.Packers
 {
     /// <summary>Defines how a file should be rewritten for a nova file.</summary>
     public interface IContentPacker

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NovaEngine.Maths
+﻿namespace NovaEngine.Maths
 {
     /// <summary>Contains helpful mathematical methods and constants.</summary>
     public static class MathsHelper

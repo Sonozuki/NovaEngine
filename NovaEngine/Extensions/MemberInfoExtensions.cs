@@ -1,7 +1,4 @@
-﻿using System;
-using System.Reflection;
-
-namespace NovaEngine.Extensions
+﻿namespace NovaEngine.Extensions
 {
     /// <summary>Extension methods for the <see cref="MemberInfo"/> class.</summary>
     public static class MemberInfoExtensions

@@ -1,6 +1,4 @@
-﻿using NovaEngine.Graphics;
-
-namespace NovaEngine.Core
+﻿namespace NovaEngine.Core
 {
     /// <summary>Represents a mesh.</summary>
     public class Mesh

@@ -1,6 +1,4 @@
-﻿using NovaEngine.Maths;
-
-namespace NovaEngine.Rendering
+﻿namespace NovaEngine.Rendering
 {
     // TODO: temp
     /// <summary></summary>

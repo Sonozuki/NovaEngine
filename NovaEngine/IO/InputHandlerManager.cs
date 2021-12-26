@@ -1,10 +1,4 @@
-﻿using NovaEngine.External.Input;
-using NovaEngine.IO.Fake;
-using NovaEngine.Logging;
-using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
+﻿using NovaEngine.IO.Fake;
 
 namespace NovaEngine.IO
 {

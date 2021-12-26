@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NovaEngine.Debugging
+﻿namespace NovaEngine.Debugging
 {
     /// <summary>Represents a value to be used with the <see cref="Debugger"/>.</summary>
     internal abstract class DebugValueBase

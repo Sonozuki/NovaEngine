@@ -1,6 +1,4 @@
-﻿using NovaEngine.Maths;
-
-namespace NovaEngine.Graphics
+﻿namespace NovaEngine.Graphics
 {
     /// <summary>Represents a mesh vertex.</summary>
     public struct Vertex

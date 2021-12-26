@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace NovaEngine.DataStructures
+﻿namespace NovaEngine.DataStructures
 {
     /// <summary>Represents a pool of objects that can be reused, instead of deleting and instantiating repeatedly.</summary>
     /// <typeparam name="T">The type of the objects to pool.</typeparam>

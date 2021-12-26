@@ -1,8 +1,4 @@
-﻿using NovaEngine.Graphics;
-using System;
-using System.Reflection;
-
-namespace NovaEngine.External.Rendering
+﻿namespace NovaEngine.External.Rendering
 {
     /// <summary>Represents a renderer texture.</summary>
     public abstract class RendererTextureBase : IDisposable

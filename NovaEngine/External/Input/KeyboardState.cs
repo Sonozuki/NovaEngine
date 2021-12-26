@@ -1,7 +1,4 @@
-﻿using NovaEngine.IO;
-using System;
-
-namespace NovaEngine.External.Input
+﻿namespace NovaEngine.External.Input
 {
     /// <summary>Represents the current state of the keyboard.</summary>
     public struct KeyboardState

@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace NovaEngine.Content.Unpackers
+﻿namespace NovaEngine.Content.Unpackers
 {
     /// <summary>Defines how a nova file should be rewritten for a regular file.</summary>
     public interface IContentUnpacker

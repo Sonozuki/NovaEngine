@@ -1,14 +1,4 @@
-﻿using NovaEngine.Extensions;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
-
-namespace NovaEngine.Serialisation
+﻿namespace NovaEngine.Serialisation
 {
     /// <summary>Contains useful methods for the serialiser.</summary>
     internal static class SerialiserUtilities

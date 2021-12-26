@@ -1,7 +1,4 @@
-﻿using NovaEngine.Graphics;
-using System.Collections.Generic;
-
-namespace NovaEngine.Content.Models
+﻿namespace NovaEngine.Content.Models
 {
     /// <summary>Contains the positions, texture coordinates, and normals vertex data as well as the faces that make up a mesh.</summary>
     public class MeshContent

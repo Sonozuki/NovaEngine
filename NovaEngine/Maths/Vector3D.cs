@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NovaEngine.Maths
+﻿namespace NovaEngine.Maths
 {
     /// <summary>Represents a vector with three double-precision floating-point values.</summary>
     public struct Vector3D : IEquatable<Vector3D>

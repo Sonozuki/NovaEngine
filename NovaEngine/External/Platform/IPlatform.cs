@@ -1,6 +1,4 @@
-﻿using NovaEngine.Maths;
-
-namespace NovaEngine.External.Platform
+﻿namespace NovaEngine.External.Platform
 {
     /// <summary>Represents a platform.</summary>
     public interface IPlatform

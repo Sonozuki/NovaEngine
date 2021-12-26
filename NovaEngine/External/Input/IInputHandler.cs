@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NovaEngine.External.Input
+﻿namespace NovaEngine.External.Input
 {
     /// <summary>Represents an input handler.</summary>
     public interface IInputHandler

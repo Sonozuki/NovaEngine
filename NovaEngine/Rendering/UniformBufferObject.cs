@@ -1,6 +1,4 @@
-﻿using NovaEngine.Maths;
-
-namespace NovaEngine.Rendering
+﻿namespace NovaEngine.Rendering
 {
     /// <summary>A UBO structure.</summary>
     public struct UniformBufferObject

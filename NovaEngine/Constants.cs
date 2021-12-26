@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
-
-namespace NovaEngine
+﻿namespace NovaEngine
 {
     /// <summary>Contains application constants.</summary>
     public static class Constants

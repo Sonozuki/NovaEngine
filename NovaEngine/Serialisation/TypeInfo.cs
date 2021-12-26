@@ -1,10 +1,4 @@
-﻿using NovaEngine.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-namespace NovaEngine.Serialisation
+﻿namespace NovaEngine.Serialisation
 {
     /// <summary>Represents the info about a type.</summary>
     internal class TypeInfo

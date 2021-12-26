@@ -1,12 +1,4 @@
-﻿using NovaEngine.Content.Models;
-using NovaEngine.Graphics;
-using NovaEngine.Maths;
-using NovaEngine.Serialisation;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace NovaEngine.Content.Packers
+﻿namespace NovaEngine.Content.Packers
 {
     /// <summary>Defines how an 3d model file should be rewritten for a nova file.</summary>
     public class ModelPacker : IContentPacker

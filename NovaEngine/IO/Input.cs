@@ -1,10 +1,4 @@
-﻿using NovaEngine.External.Input;
-using NovaEngine.Maths;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace NovaEngine.IO
+﻿namespace NovaEngine.IO
 {
     /// <summary>The input system.</summary>
     public static class Input

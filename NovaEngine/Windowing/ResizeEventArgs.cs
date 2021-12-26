@@ -1,7 +1,4 @@
-﻿using NovaEngine.Maths;
-using System;
-
-namespace NovaEngine.Windowing
+﻿namespace NovaEngine.Windowing
 {
     /// <summary>The event arguments for window resize events.</summary>
     public class ResizeEventArgs : EventArgs

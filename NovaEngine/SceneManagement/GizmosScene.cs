@@ -1,10 +1,4 @@
-﻿using NovaEngine.Core;
-using NovaEngine.DataStructures;
-using NovaEngine.Graphics;
-using NovaEngine.Maths;
-using NovaEngine.Rendering;
-
-namespace NovaEngine.SceneManagement
+﻿namespace NovaEngine.SceneManagement
 {
     /// <summary>Represents a scene specifically for storing gizmos.</summary>
     internal class GizmosScene : Scene

@@ -1,10 +1,4 @@
-﻿using NovaEngine.Components;
-using NovaEngine.Graphics;
-using NovaEngine.Maths;
-using NovaEngine.SceneManagement;
-using System.Runtime.CompilerServices;
-
-namespace NovaEngine.Debugging
+﻿namespace NovaEngine.Debugging
 {
     /// <summary>A visual debugging aid used for drawing primitive shapes.</summary>
     public static class Gizmos

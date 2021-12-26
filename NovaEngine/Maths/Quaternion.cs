@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NovaEngine.Maths
+﻿namespace NovaEngine.Maths
 {
     /// <summary>Represents a quaternion using single-precision floating-point numbers.</summary>
     public struct Quaternion : IEquatable<Quaternion>

@@ -1,7 +1,4 @@
-﻿using NovaEngine.Maths;
-using System;
-
-namespace NovaEngine
+﻿namespace NovaEngine
 {
     /// <summary>Creates generic miscellaneous methods.</summary>
     public static class Utilities

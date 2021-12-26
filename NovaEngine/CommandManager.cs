@@ -1,10 +1,4 @@
-﻿using NovaEngine.Logging;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace NovaEngine
+﻿namespace NovaEngine
 {
     /// <summary>Manages console commands commands.</summary>
     public static class CommandManager

@@ -1,11 +1,4 @@
-﻿using NovaEngine.Logging;
-using NovaEngine.Rendering;
-using System;
-using System.IO;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-namespace NovaEngine.Settings
+﻿namespace NovaEngine.Settings
 {
     /// <summary>The application settings related to rendering.</summary>
     public class RenderingSettings

@@ -1,10 +1,4 @@
-﻿using NovaEngine.External.Rendering;
-using NovaEngine.Logging;
-using NovaEngine.Rendering.Fake;
-using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
+﻿using NovaEngine.Rendering.Fake;
 
 namespace NovaEngine.Rendering
 {

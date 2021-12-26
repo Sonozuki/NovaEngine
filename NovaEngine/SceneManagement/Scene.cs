@@ -1,11 +1,4 @@
-﻿using NovaEngine.Core;
-using NovaEngine.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace NovaEngine.SceneManagement
+﻿namespace NovaEngine.SceneManagement
 {
     /// <summary>Represents a scene.</summary>
     public class Scene : IDisposable

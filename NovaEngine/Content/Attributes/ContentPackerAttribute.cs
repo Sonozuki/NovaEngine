@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NovaEngine.Content.Attributes
+﻿namespace NovaEngine.Content.Attributes
 {
     /// <summary>An aatribute used for specifying information about a content packer.</summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]

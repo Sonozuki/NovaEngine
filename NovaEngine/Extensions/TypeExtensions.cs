@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NovaEngine.Extensions
+﻿namespace NovaEngine.Extensions
 {
     /// <summary>Extension methods for the <see cref="Type"/> class.</summary>
     public static class TypeExtensions

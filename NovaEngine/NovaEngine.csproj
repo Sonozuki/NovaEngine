@@ -3,12 +3,50 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<Nullable>enable</Nullable>
 		<WarningsAsErrors>CS8600;CS8601;CS8602;CS8603;CS8604;CS8613;CS8618;CS8625;CS1570;CS1571;CS1572;CS1573;CS1574;CS1580;CS1581;CS1584;CS1587;CS1589;CS1590;CS1591;CS1592</WarningsAsErrors>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<Using Include="NovaEngine.Components" />
+		<Using Include="NovaEngine.Content" />
+		<Using Include="NovaEngine.Content.Attributes" />
+		<Using Include="NovaEngine.Content.Models" />
+		<Using Include="NovaEngine.Content.Packers" />
+		<Using Include="NovaEngine.Content.Readers" />
+		<Using Include="NovaEngine.Core" />
+		<Using Include="NovaEngine.DataStructures" />
+		<Using Include="NovaEngine.Debugging" />
+		<Using Include="NovaEngine.Extensions" />
+		<Using Include="NovaEngine.External.Input" />
+		<Using Include="NovaEngine.External.Platform" />
+		<Using Include="NovaEngine.External.Rendering" />
+		<Using Include="NovaEngine.Graphics" />
+		<Using Include="NovaEngine.IO" />
+		<Using Include="NovaEngine.Logging" />
+		<Using Include="NovaEngine.Maths" />
+		<Using Include="NovaEngine.Noise" />
+		<Using Include="NovaEngine.Platform" />
+		<Using Include="NovaEngine.Rendering" />
+		<Using Include="NovaEngine.SceneManagement" />
+		<Using Include="NovaEngine.Serialisation" />
+		<Using Include="NovaEngine.Settings" />
+		<Using Include="NovaEngine.Windowing" />
+		<Using Include="System.Collections" />
+		<Using Include="System.ComponentModel" />
+		<Using Include="System.Diagnostics" />
+		<Using Include="System.Reflection" />
+		<Using Include="System.Runtime.CompilerServices" />
+		<Using Include="System.Runtime.InteropServices" />
+		<Using Include="System.Text" />
+		<Using Include="System.Text.Json" />
+		<Using Include="System.Text.Json.Serialization" />
+		<Using Include="System.Text.RegularExpressions" />
+	</ItemGroup>
+		
 	<ItemGroup>
 		<PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
 	</ItemGroup>

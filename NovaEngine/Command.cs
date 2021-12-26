@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NovaEngine
+﻿namespace NovaEngine
 {
     /// <summary>Represents a console command.</summary>
     internal class Command

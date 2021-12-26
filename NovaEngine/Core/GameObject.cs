@@ -1,14 +1,4 @@
-﻿using NovaEngine.Components;
-using NovaEngine.External.Rendering;
-using NovaEngine.Maths;
-using NovaEngine.Rendering;
-using NovaEngine.Serialisation;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-
-namespace NovaEngine.Core
+﻿namespace NovaEngine.Core
 {
     /// <summary>Represents a game object.</summary>
     public class GameObject : IDisposable

@@ -1,10 +1,4 @@
-﻿using NovaEngine.Components;
-using NovaEngine.Serialisation;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace NovaEngine.Core
+﻿namespace NovaEngine.Core
 {
     /// <summary>Represents a collection of child <see cref="Core.GameObject"/>s for use in <see cref="GameObject.Children"/>.</summary>
     /// <remarks>This automatically sets/unsets the parent of components where necessary.</remarks>

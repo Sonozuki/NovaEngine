@@ -1,7 +1,4 @@
-﻿using NovaEngine.Core;
-using NovaEngine.Serialisation;
-
-namespace NovaEngine.Components
+﻿namespace NovaEngine.Components
 {
     /// <summary>Represents a component used for rendering a mesh.</summary>
     public class MeshRenderer : ComponentBase

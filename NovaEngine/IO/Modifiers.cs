@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NovaEngine.IO
+﻿namespace NovaEngine.IO
 {
     /// <summary>The modifier keys for input events.</summary>
     [Flags]

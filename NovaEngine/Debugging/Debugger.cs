@@ -1,9 +1,4 @@
-﻿using NovaEngine.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace NovaEngine.Debugging
+﻿namespace NovaEngine.Debugging
 {
     /// <summary>Provides a way of interacting with debug values at runtime through the console.</summary>
     public static class Debugger

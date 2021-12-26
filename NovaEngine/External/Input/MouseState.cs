@@ -1,8 +1,4 @@
-﻿using NovaEngine.IO;
-using NovaEngine.Maths;
-using System;
-
-namespace NovaEngine.External.Input
+﻿namespace NovaEngine.External.Input
 {
     /// <summary>Represents the current state of the mouse.</summary>
     public struct MouseState

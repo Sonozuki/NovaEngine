@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-
-namespace NovaEngine.Logging
+﻿namespace NovaEngine.Logging
 {
     /// <summary>Handles logging for the engine, game, and mods.</summary>
     public static class Logger

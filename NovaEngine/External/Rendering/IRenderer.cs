@@ -1,10 +1,4 @@
-﻿using NovaEngine.Components;
-using NovaEngine.Core;
-using NovaEngine.Graphics;
-using NovaEngine.Rendering;
-using System;
-
-namespace NovaEngine.External.Rendering
+﻿namespace NovaEngine.External.Rendering
 {
     /// <summary>Represents a graphics renderer.</summary>
     public interface IRenderer : IDisposable

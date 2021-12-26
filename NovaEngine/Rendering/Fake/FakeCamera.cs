@@ -1,9 +1,4 @@
-﻿using NovaEngine.Components;
-using NovaEngine.External.Rendering;
-using NovaEngine.Graphics;
-using System.Collections.Generic;
-
-namespace NovaEngine.Rendering.Fake
+﻿namespace NovaEngine.Rendering.Fake
 {
     /// <summary>Represents a camera that is only used when nova is being used without a program instance.</summary>
     internal class FakeCamera : RendererCameraBase
