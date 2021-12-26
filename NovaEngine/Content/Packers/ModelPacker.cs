@@ -65,7 +65,7 @@ namespace NovaEngine.Content.Packers
                     {
                         case "o": // object
                             {
-                                // ensure there is atleast one face in the current mesh
+                                // ensure there is at least one face in the current mesh
                                 if (meshContent.Vertices.Count == 0)
                                 {
                                     // reset the name to be the new mesh
@@ -122,7 +122,7 @@ namespace NovaEngine.Content.Packers
                                 {
                                     var vertexData = vertexDataGroups[i];
 
-                                    // ensure there is atleast 1 token
+                                    // ensure there is at least 1 token
                                     if (vertexData.Count == 0)
                                         throw new ContentException($"Model line: \"{line}\" invalid. It contains a blank vertex data token");
 

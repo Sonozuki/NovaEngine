@@ -44,7 +44,7 @@ namespace NovaEngine.Renderer.Vulkan
         public VulkanBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryProperties)
         {
             if (size == 0)
-                throw new ArgumentOutOfRangeException(nameof(size), "Must be atleast 1");
+                throw new ArgumentOutOfRangeException(nameof(size), "Must be at least 1");
 
             Size = size;
             MemoryProperties = memoryProperties;

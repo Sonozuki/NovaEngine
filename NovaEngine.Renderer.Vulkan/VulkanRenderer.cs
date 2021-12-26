@@ -270,7 +270,7 @@ namespace NovaEngine.Renderer.Vulkan
         /// <exception cref="InvalidOperationException">Thrown if no physical devices have Vulkan support, or if no Vulkan supporting devices were valid.</exception>
         private VkPhysicalDevice PickPhysicalDevice()
         {
-            // get the physical devices and ensure atleast one supports Vulkan
+            // get the physical devices and ensure at least one supports Vulkan
             var deviceCount = 0u;
             VK.EnumeratePhysicalDevices(NativeInstance, ref deviceCount, null);
             if (deviceCount == 0)
@@ -287,7 +287,7 @@ namespace NovaEngine.Renderer.Vulkan
                     suitablePhysicalDevices[physicalDevice] = suitability;
             }
 
-            // ensure there is atleast one suitable device
+            // ensure there is at least one suitable device
             if (suitablePhysicalDevices.Count == 0)
                 throw new InvalidOperationException("No physical devices that have support for Vulkan are suitable.").Log(LogSeverity.Fatal);
 
