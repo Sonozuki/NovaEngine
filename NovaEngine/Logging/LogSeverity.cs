@@ -1,35 +1,34 @@
-﻿namespace NovaEngine.Logging
+﻿namespace NovaEngine.Logging;
+
+/// <summary>The severity of a log.</summary>
+public enum LogSeverity
 {
-    /// <summary>The severity of a log.</summary>
-    public enum LogSeverity
-    {
-        /// <summary>Debugging information intended for developers.</summary>
-        [LogSeverityInfo("DEBUG", ConsoleColor.DarkGray, ConsoleColor.DarkGray)]
-        Debug,
+    /// <summary>Debugging information intended for developers.</summary>
+    [LogSeverityInfo("DEBUG", ConsoleColor.DarkGray, ConsoleColor.DarkGray)]
+    Debug,
 
-        /// <summary>Information to help players.</summary>
-        [LogSeverityInfo("HELP ", ConsoleColor.Blue, ConsoleColor.White)]
-        Help,
+    /// <summary>Information to help players.</summary>
+    [LogSeverityInfo("HELP ", ConsoleColor.Blue, ConsoleColor.White)]
+    Help,
 
-        /// <summary>Information relavant to players.</summary>
-        [LogSeverityInfo("INFO ", ConsoleColor.DarkGreen, ConsoleColor.White)]
-        Info,
+    /// <summary>Information relavant to players.</summary>
+    [LogSeverityInfo("INFO ", ConsoleColor.DarkGreen, ConsoleColor.White)]
+    Info,
 
-        /// <summary>Important information relavant to players.</summary>
-        [LogSeverityInfo("ALERT", ConsoleColor.Magenta, ConsoleColor.Magenta)]
-        Alert,
+    /// <summary>Important information relavant to players.</summary>
+    [LogSeverityInfo("ALERT", ConsoleColor.Magenta, ConsoleColor.Magenta)]
+    Alert,
 
-        /// <summary>An issue the the player should be aware of.</summary>
-        [LogSeverityInfo("WARN ", ConsoleColor.DarkYellow, ConsoleColor.DarkYellow)]
-        Warning,
+    /// <summary>An issue the the player should be aware of.</summary>
+    [LogSeverityInfo("WARN ", ConsoleColor.DarkYellow, ConsoleColor.DarkYellow)]
+    Warning,
 
-        /// <summary>An error that has occured.</summary>
-        [LogSeverityInfo("ERROR", ConsoleColor.Red, ConsoleColor.Red)]
-        Error,
+    /// <summary>An error that has occured.</summary>
+    [LogSeverityInfo("ERROR", ConsoleColor.Red, ConsoleColor.Red)]
+    Error,
 
-        /// <summary>An unrecoverable fatal error has occured.</summary>
-        /// <remarks>This should be used rarely, for example: if a renderer failed to initialise.</remarks>
-        [LogSeverityInfo("FATAL", ConsoleColor.DarkRed, ConsoleColor.White, ConsoleColor.DarkRed)]
-        Fatal
-    }
+    /// <summary>An unrecoverable fatal error has occured.</summary>
+    /// <remarks>This should be used rarely, for example: if a renderer failed to initialise.</remarks>
+    [LogSeverityInfo("FATAL", ConsoleColor.DarkRed, ConsoleColor.White, ConsoleColor.DarkRed)]
+    Fatal
 }

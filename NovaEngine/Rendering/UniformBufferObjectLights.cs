@@ -1,19 +1,18 @@
-﻿namespace NovaEngine.Rendering
+﻿namespace NovaEngine.Rendering;
+
+// TODO: temp
+/// <summary></summary>
+public struct UniformBufferObjectLights
 {
-    // TODO: temp
     /// <summary></summary>
-    public struct UniformBufferObjectLights
-    {
-        /// <summary></summary>
-        public Vector4 Light1;
+    public Vector4 Light1;
 
-        /// <summary></summary>
-        public Vector4 Light2;
+    /// <summary></summary>
+    public Vector4 Light2;
 
-        /// <summary></summary>
-        public Vector4 Light3;
+    /// <summary></summary>
+    public Vector4 Light3;
 
-        /// <summary></summary>
-        public Vector4 Light4;
-    }
+    /// <summary></summary>
+    public Vector4 Light4;
 }

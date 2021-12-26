@@ -1,31 +1,30 @@
-﻿namespace NovaEngine.IO.Fake
+﻿namespace NovaEngine.IO.Fake;
+
+/// <summary>Represents an input handler that is only used when nova is being used without a program instance.</summary>
+internal class FakeInputHandler : IInputHandler
 {
-    /// <summary>Represents an input handler that is only used when nova is being used without a program instance.</summary>
-    internal class FakeInputHandler : IInputHandler
-    {
-        /*********
-        ** Accessors
-        *********/
-        /// <inheritdoc/>
-        public bool CanUseOnPlatform => true;
+    /*********
+    ** Accessors
+    *********/
+    /// <inheritdoc/>
+    public bool CanUseOnPlatform => true;
 
-        /// <inheritdoc/>
-        public MouseState MouseState { get; set; }
+    /// <inheritdoc/>
+    public MouseState MouseState { get; set; }
 
-        /// <inheritdoc/>
-        public KeyboardState KeyboardState { get; set; }
+    /// <inheritdoc/>
+    public KeyboardState KeyboardState { get; set; }
 
-        /// <inheritdoc/>
-        public bool IsCursorVisible { get; set; }
+    /// <inheritdoc/>
+    public bool IsCursorVisible { get; set; }
 
-        /// <inheritdoc/>
-        public bool IsCursorLocked { get; set; }
+    /// <inheritdoc/>
+    public bool IsCursorLocked { get; set; }
 
 
-        /*********
-        ** Public Methods
-        *********/
-        /// <inheritdoc/>
-        public void OnInitialise(IntPtr windowHandle) { }
-    }
+    /*********
+    ** Public Methods
+    *********/
+    /// <inheritdoc/>
+    public void OnInitialise(IntPtr windowHandle) { }
 }

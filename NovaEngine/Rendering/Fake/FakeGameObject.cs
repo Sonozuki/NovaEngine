@@ -1,29 +1,28 @@
-﻿namespace NovaEngine.Rendering.Fake
+﻿namespace NovaEngine.Rendering.Fake;
+
+/// <summary>Represents a game object that is only used when nova is being used without a program instance.</summary>
+internal class FakeGameObject : RendererGameObjectBase
 {
-    /// <summary>Represents a game object that is only used when nova is being used without a program instance.</summary>
-    internal class FakeGameObject : RendererGameObjectBase
-    {
-        /*********
-        ** Public Methods
-        *********/
-        /// <inheritdoc/>
-        public FakeGameObject(GameObject baseGameObject)
-            : base(baseGameObject) { }
+    /*********
+    ** Public Methods
+    *********/
+    /// <inheritdoc/>
+    public FakeGameObject(GameObject baseGameObject)
+        : base(baseGameObject) { }
 
-        /// <inheritdoc/>
-        public override void UpdateMesh(Mesh mesh) { }
+    /// <inheritdoc/>
+    public override void UpdateMesh(Mesh mesh) { }
 
-        /// <inheritdoc/>
-        public override void UpdateUBO(Camera camera) { }
+    /// <inheritdoc/>
+    public override void UpdateUBO(Camera camera) { }
 
-        /// <inheritdoc/>
-        public override void Dispose() { }
+    /// <inheritdoc/>
+    public override void Dispose() { }
 
 
-        /*********
-        ** Private Methods
-        *********/
-        /// <summary>Constructs an instance.</summary>
-        public FakeGameObject() : base(new("Fake")) { }
-    }
+    /*********
+    ** Private Methods
+    *********/
+    /// <summary>Constructs an instance.</summary>
+    public FakeGameObject() : base(new("Fake")) { }
 }
