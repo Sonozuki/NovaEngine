@@ -12,7 +12,7 @@ namespace NovaEngine.Debugging
         ** Accessors
         *********/
         /// <summary>The callback of the debug value.</summary>
-        public Action<T> Callback { get; }
+        public Action<T?> Callback { get; }
 
 
         /*********
@@ -24,7 +24,7 @@ namespace NovaEngine.Debugging
         /// <param name="callback">The callback of the debug value.</param>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is <see langword="null"/> or white space.</exception>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="callback"/> is <see langword="null"/>.</exception>
-        public DebugValue(string name, string documentation, Action<T> callback)
+        public DebugValue(string name, string documentation, Action<T?> callback)
             : base(name, documentation)
         {
             Callback = callback ?? throw new ArgumentNullException(nameof(callback));
@@ -33,11 +33,11 @@ namespace NovaEngine.Debugging
         /// <inheritdoc/>
         public override void InvokeCallback(string value)
         {
-            T parsedValue;
+            T? parsedValue;
 
             try
             {
-                parsedValue = (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(value);
+                parsedValue = (T?)TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(value);
             }
             catch
             {

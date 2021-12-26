@@ -32,7 +32,7 @@ namespace NovaEngine.Debugging
         /// <returns><see langword="true"/>, if the debug value was added successfully; otherwise, <see langword="false"/>.</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is <see langword="null"/> or white space.</exception>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="callback"/> is <see langword="null"/>.</exception>
-        public static bool AddDebugValue<T>(string name, string documentation, Action<T> callback)
+        public static bool AddDebugValue<T>(string name, string documentation, Action<T?> callback)
         {
             var debugValue = new DebugValue<T>(name, documentation, callback);
 

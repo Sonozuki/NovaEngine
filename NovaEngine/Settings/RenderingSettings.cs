@@ -61,7 +61,7 @@ namespace NovaEngine.Settings
 
             Instance = instance;
 
-            Logger.LogDebug($"{nameof(RenderingSettings)}:\n{JsonSerializer.Serialize(Instance, new() { WriteIndented = true })}");
+            Logger.LogDebug($"{nameof(RenderingSettings)}:\n{JsonSerializer.Serialize(Instance, new JsonSerializerOptions() { WriteIndented = true })}");
 
             // save settings, this adds any missing properties as well as creating the settings file if it doesn't exist
             Save();
@@ -75,7 +75,7 @@ namespace NovaEngine.Settings
             Directory.CreateDirectory(directoryName);
 
             // serialise settings
-            try { File.WriteAllText(Constants.RenderingSettingsFilePath, JsonSerializer.Serialize(Instance, new() { WriteIndented = true })); }
+            try { File.WriteAllText(Constants.RenderingSettingsFilePath, JsonSerializer.Serialize(Instance, new JsonSerializerOptions() { WriteIndented = true })); }
             catch { Logger.LogError($"Failed to serialise {nameof(RenderingSettings)}, settings won't persist between sessions."); }
         }
     }
