@@ -1,7 +1,4 @@
-﻿using NovaEngine.Maths;
-using NUnit.Framework;
-
-namespace NovaEngine.Tests.Maths;
+﻿namespace NovaEngine.Tests.Maths;
 
 /// <summary>The <see cref="MathsHelper"/> tests.</summary>
 [TestFixture]

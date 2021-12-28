@@ -1,8 +1,4 @@
-﻿using NovaEngine.Maths;
-using NUnit.Framework;
-using System;
-
-namespace NovaEngine.Tests.Maths;
+﻿namespace NovaEngine.Tests.Maths;
 
 /// <summary>The <see cref="Matrix2x2"/> tests.</summary>
 [TestFixture]
