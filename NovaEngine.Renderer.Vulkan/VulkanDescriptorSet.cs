@@ -33,9 +33,10 @@ internal unsafe class VulkanDescriptorSet
     /// <summary>Binds a buffer info.</summary>
     /// <param name="destinationBinding">Where to bind <paramref name="bufferInfo"/>.</param>
     /// <param name="bufferInfo">The buffer info to bind to <paramref name="destinationBinding"/>.</param>
+    /// <param name="bufferType">The type of the buffer being written to.</param>
     /// <returns>The current instance, used for chaining calls.</returns>
     /// <remarks>This doesn't update the binding immediately, call <see cref="UpdateBindings"/> to update all pending bindings.</remarks>
-    public VulkanDescriptorSet Bind(uint destinationBinding, VkDescriptorBufferInfo* bufferInfo)
+    public VulkanDescriptorSet Bind(uint destinationBinding, VkDescriptorBufferInfo* bufferInfo, VkDescriptorType bufferType)
     {
         DescriptorWrites.Add(new VkWriteDescriptorSet()
         {
@@ -43,7 +44,7 @@ internal unsafe class VulkanDescriptorSet
             DestinationSet = NativeDescriptorSet,
             DestinationBinding = destinationBinding,
             DestinationArrayElement = 0,
-            DescriptorType = VkDescriptorType.UniformBuffer,
+            DescriptorType = bufferType,
             DescriptorCount = 1,
             BufferInfo = bufferInfo
         });

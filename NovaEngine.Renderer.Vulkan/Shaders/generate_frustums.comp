@@ -1,0 +1,111 @@
+#version 450
+
+/*********
+** Constants
+*********/
+// The size in the X and Y axis of a frustum tile.
+const uint TILE_SIZE = 16;
+
+
+/*********
+** Structs
+*********/
+// Represents a plane.
+struct Plane
+{
+    // The normal of the plane.
+    vec3 Normal;
+
+    // The distance to the origin.
+    float Distance;
+};
+
+// Represents a frustum.
+struct Frustum
+{
+    // The top, left, right, and bottom planes the frustum is comprised of.
+    Plane Planes[4];
+};
+
+
+/*********
+** Layouts
+*********/
+layout (local_size_x = TILE_SIZE, local_size_y = TILE_SIZE) in;
+
+// The parameters of the shader.
+layout (binding = 0) uniform ParamsUniform
+{
+    // The inverse of the projection matrix, this is used to convert from screen space to view space.
+    mat4 InverseProjection;
+
+    // The current screen resolution, this is used to ensure the a thread isn't used if it's out of bounds of the screen.
+    ivec2 ScreenResolution;
+} Params;
+
+// The buffer to store the calculated frustums.
+layout (binding = 1) buffer FrustumsBuffer
+{
+    Frustum Frustums[];
+};
+
+
+/*********
+** Functions
+*********/
+// Converts a screen space coordinate to view space.
+vec3 ScreenSpaceToViewSpace(vec2 screenSpace)
+{
+    vec2 normalisedScreenPosition = screenSpace / Params.ScreenResolution;
+
+    // convert to clip space
+    vec2 clipSpace = vec2(normalisedScreenPosition.x, 1 - normalisedScreenPosition.y) * 2 - 1;
+
+    // convert to view space
+    vec4 viewSpace = Params.InverseProjection * vec4(clipSpace, 1, 1);
+    viewSpace /= viewSpace.w;
+
+    return viewSpace.xyz;
+}
+
+// Calculates a plane from three non-collinear points.
+Plane ComputePlane(vec3 a, vec3 b, vec3 c)
+{
+    Plane plane;
+    plane.Normal = normalize(cross(b - a, c - a));
+    plane.Distance = dot(plane.Normal, a);
+    return plane;
+}
+
+// The shader entry point.
+void main()
+{
+    // ensure the thread is in the range of the grid
+    if (gl_GlobalInvocationID.x >= Params.ScreenResolution.x
+        || gl_GlobalInvocationID.y >= Params.ScreenResolution.y)
+    {
+        return;
+    }
+
+    // calculate the corners on the far clipping plane to use as the frustum vertices
+    vec2 screenSpace[4];
+    screenSpace[0] = gl_GlobalInvocationID.xy * TILE_SIZE;                                   // top left
+    screenSpace[1] = vec2(gl_GlobalInvocationID.x + 1, gl_GlobalInvocationID.y) * TILE_SIZE; // top right
+    screenSpace[2] = vec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y + 1) * TILE_SIZE; // bottom left
+    screenSpace[3] = (gl_GlobalInvocationID.xy + 1) * TILE_SIZE;                             // bottom right
+
+    // convert from screen space to view space
+    vec3 viewSpace[4];
+    for (int i = 0; i < 4; i++)
+    {
+        viewSpace[i] = ScreenSpaceToViewSpace(screenSpace[i]).xyz;
+    }
+
+    // calculate the frustum from view space
+    Frustums[gl_GlobalInvocationID.y * uint(Params.ScreenResolution.x) + gl_GlobalInvocationID.x] = Frustum(Plane[4](
+        ComputePlane(vec3(0), viewSpace[0], viewSpace[1]), // top
+        ComputePlane(vec3(0), viewSpace[2], viewSpace[0]), // left
+        ComputePlane(vec3(0), viewSpace[1], viewSpace[3]), // right
+        ComputePlane(vec3(0), viewSpace[3], viewSpace[2])  // bottom
+    ));
+}

@@ -32,11 +32,17 @@ internal unsafe class VulkanPipelines : IDisposable
     /*********
     ** Accessors
     *********/
+    /// <summary>The layout of <see cref="GenerateFrustumsPipeline"/>.</summary>
+    public VkPipelineLayout GenerateFrustumsPipelineLayout { get; private set; }
+
     /// <summary>The layout of <see cref="TriangleGraphicsPipeline"/>.</summary>
     public VkPipelineLayout TriangleGraphicsPipelineLayout { get; private set; }
 
     /// <summary>The layout of <see cref="LineGraphicsPipeline"/>.</summary>
     public VkPipelineLayout LineGraphicsPipelineLayout { get; private set; }
+
+    /// <summary>The compute pipeline for generating the tile frustums.</summary>
+    public VkPipeline GenerateFrustumsPipeline { get; private set; }
 
     /// <summary>A graphics pipeline with a topology of <see cref="VkPrimitiveTopology.TriangleList"/>.</summary>
     public VkPipeline TriangleGraphicsPipeline { get; private set; }
@@ -58,8 +64,8 @@ internal unsafe class VulkanPipelines : IDisposable
             Camera = camera;
 
             CreateShaderStages();
-            CreateGraphicsPipelines();
             CreateComputePipelines();
+            CreateGraphicsPipelines();
         }
         finally
         {
@@ -70,8 +76,10 @@ internal unsafe class VulkanPipelines : IDisposable
     /// <inheritdoc/>
     public void Dispose()
     {
+        VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, GenerateFrustumsPipelineLayout, null);
         VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, TriangleGraphicsPipelineLayout, null);
         VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, LineGraphicsPipelineLayout, null);
+        VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, GenerateFrustumsPipeline, null);
         VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, TriangleGraphicsPipeline, null);
         VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, LineGraphicsPipeline, null);
     }
@@ -84,8 +92,33 @@ internal unsafe class VulkanPipelines : IDisposable
     private void CreateShaderStages()
     {
         ShaderEntryPointNamePointer = Marshal.StringToHGlobalAnsi("main");
+        ShaderStages.GenerateFrustumsShader = LoadShader("Shaders/generate_frustums_comp", VkShaderStageFlags.Compute);
         ShaderStages.VertexShader = LoadShader("Shaders/shader_vert", VkShaderStageFlags.Vertex);
         ShaderStages.FragmentShader = LoadShader("Shaders/shader_frag", VkShaderStageFlags.Fragment);
+    }
+
+    /// <summary>Creates the compute pipelines.</summary>
+    /// <exception cref="ApplicationException">Thrown if a pipeline couldn't be created.</exception>
+    private void CreateComputePipelines()
+    {
+        // generate frustums
+        {
+            // pipeline layouts
+            var descriptorSetLayout = VulkanRenderer.Instance.DescriptorSetLayouts.GenerateFrustumsDescriptorSetLayout;
+            var pipelineLayoutCreateInfo = new VkPipelineLayoutCreateInfo()
+            {
+                SType = VkStructureType.PipelineLayoutCreateInfo,
+                SetLayoutCount = 1,
+                SetLayouts = &descriptorSetLayout
+            };
+
+            if (VK.CreatePipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, ref pipelineLayoutCreateInfo, null, out var pipelineLayout) != VkResult.Success)
+                throw new ApplicationException("Failed to create generate frustums compute pipeline layout.").Log(LogSeverity.Fatal);
+            GenerateFrustumsPipelineLayout = pipelineLayout;
+
+            // pipeline
+            GenerateFrustumsPipeline = CreateComputePipeline(ShaderStages.GenerateFrustumsShader, GenerateFrustumsPipelineLayout);
+        }
     }
 
     /// <summary>Creates the graphics pipelines.</summary>
@@ -101,13 +134,6 @@ internal unsafe class VulkanPipelines : IDisposable
 
         TriangleGraphicsPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, shaderStages, TriangleGraphicsPipelineLayout, VkPrimitiveTopology.TriangleList);
         LineGraphicsPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, shaderStages, LineGraphicsPipelineLayout, VkPrimitiveTopology.LineList);
-    }
-
-    /// <summary>Creates the compute pipelines.</summary>
-    /// <exception cref="ApplicationException">Thrown if a pipeline couldn't be created.</exception>
-    private void CreateComputePipelines()
-    {
-        // TODO
     }
 
     /// <summary>Cleans up the shader modules.</summary>
@@ -166,7 +192,7 @@ internal unsafe class VulkanPipelines : IDisposable
 
         fixed (VkPushConstantRange* pushConstantRangesPointer = pushConstantRanges)
         {
-            var descriptorSetLayout = VulkanRenderer.Instance.NativeDescriptorSetLayout;
+            var descriptorSetLayout = VulkanRenderer.Instance.DescriptorSetLayouts.RenderingDescriptorSetLayout;
             var pipelineLayoutCreateInfo = new VkPipelineLayoutCreateInfo()
             {
                 SType = VkStructureType.PipelineLayoutCreateInfo,
@@ -180,6 +206,25 @@ internal unsafe class VulkanPipelines : IDisposable
                 throw new ApplicationException("Failed to create pipeline layout.").Log(LogSeverity.Fatal);
             return pipelineLayout;
         }
+    }
+
+    /// <summary>Creates a compute pipeline.</summary>
+    /// <param name="shaderStage">The shader stage to use when creating the pipeline.</param>
+    /// <param name="layout">The pipeline layout to use when creating the pipeline.</param>
+    /// <returns>The created compute pipeline.</returns>
+    /// <exception cref="ApplicationException">Thrown if the compute pipeline couldn't be created.</exception>
+    private static VkPipeline CreateComputePipeline(VkPipelineShaderStageCreateInfo shaderStage, VkPipelineLayout layout)
+    {
+        var pipelineCreateInfo = new VkComputePipelineCreateInfo()
+        {
+            SType = VkStructureType.ComputePipelineCreateInfo,
+            Stage = shaderStage,
+            Layout = layout
+        };
+
+        if (VK.CreateComputePipelines(VulkanRenderer.Instance.Device.NativeDevice, VkPipelineCache.Null, 1, new[] { pipelineCreateInfo }, null, out var computePipeline) != VkResult.Success)
+            throw new ApplicationException("Failed to create compute pipeline.").Log(LogSeverity.Fatal);
+        return computePipeline;
     }
 
     /// <summary>Creates a graphics pipeline.</summary>

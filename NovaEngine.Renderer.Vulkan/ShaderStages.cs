@@ -8,6 +8,9 @@ internal struct ShaderStages
     /*********
     ** Fields
     *********/
+    /// <summary>The shader stage for the generate frustums compute shader.</summary>
+    public VkPipelineShaderStageCreateInfo GenerateFrustumsShader;
+
     /// <summary>The shader stage for the vertex shader.</summary>
     public VkPipelineShaderStageCreateInfo VertexShader;
 

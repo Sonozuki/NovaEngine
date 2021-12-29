@@ -66,6 +66,9 @@ public unsafe class VulkanRenderer : IRenderer
     /// <summary>The window surface Vulkan will draw to.</summary>
     internal VkSurfaceKHR NativeSurface { get; private set; }
 
+    /// <summary>The descriptor set layouts.</summary>
+    internal DescriptorSetLayouts DescriptorSetLayouts { get; private set; } = new();
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 
     // TODO: temp
@@ -75,11 +78,11 @@ public unsafe class VulkanRenderer : IRenderer
     /// <summary>The <see cref="VkPhysicalDevice"/> and it's logical <see cref="VkDevice"/> representation.</summary>
     internal VulkanDevice Device { get; private set; }
 
-    /// <summary>The descriptor set layout for <see cref="DescriptorPool"/>.</summary>
-    internal VkDescriptorSetLayout NativeDescriptorSetLayout { get; private set; }
+    /// <summary>The descriptor pool for descriptor sets for the generate frustums compute pipeline.</summary>
+    internal VulkanDescriptorPool GenerateFrustumsDescriptorPool { get; private set; }
 
-    /// <summary>The descriptor pool.</summary>
-    internal VulkanDescriptorPool DescriptorPool { get; private set; }
+    /// <summary>The descriptor pool for descriptor sets for the graphics pipeline.</summary>
+    internal VulkanDescriptorPool GraphicsDescriptorPool { get; private set; }
 
     /// <summary>The singleton instance of <see cref="VulkanRenderer"/>.</summary>
     public static VulkanRenderer Instance { get; private set; }
@@ -110,7 +113,8 @@ public unsafe class VulkanRenderer : IRenderer
         Device = new(PickPhysicalDevice());
 
         CreateDescriptorSetLayout();
-        DescriptorPool = new();
+        GenerateFrustumsDescriptorPool = new(DescriptorSetLayouts.GenerateFrustumsDescriptorSetLayout);
+        GraphicsDescriptorPool = new(DescriptorSetLayouts.RenderingDescriptorSetLayout);
 
         // TODO: temp
         var lights = new UniformBufferObjectLights()
@@ -130,8 +134,9 @@ public unsafe class VulkanRenderer : IRenderer
     {
         LightsBuffer.Dispose();
 
-        DescriptorPool.Dispose();
-        VK.DestroyDescriptorSetLayout(Device.NativeDevice, NativeDescriptorSetLayout, null);
+        GenerateFrustumsDescriptorPool.Dispose();
+        GraphicsDescriptorPool.Dispose();
+        DescriptorSetLayouts.Dispose();
 
         Device.Dispose();
 
@@ -297,28 +302,52 @@ public unsafe class VulkanRenderer : IRenderer
             .First().Key;
     }
 
-    /// <summary>Creates the descriptor set layout.</summary>
-    /// <exception cref="ApplicationException">Thrown if the descriptor set layout couldn't be created.</exception>
+    /// <summary>Creates the descriptor set layouts.</summary>
+    /// <exception cref="ApplicationException">Thrown if a descriptor set layout couldn't be created.</exception>
     private void CreateDescriptorSetLayout()
     {
-        var bindings = new VkDescriptorSetLayoutBinding[]
+        // generate frustums
         {
-            new() { Binding = 0, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Vertex | VkShaderStageFlags.Fragment },
-            new() { Binding = 1, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Fragment }
-        };
-
-        fixed (VkDescriptorSetLayoutBinding* bindingsPointer = bindings)
-        {
-            var descriptorSetLayoutCreateInfo = new VkDescriptorSetLayoutCreateInfo()
+            var bindings = new VkDescriptorSetLayoutBinding[]
             {
-                SType = VkStructureType.DescriptorSetLayoutCreateInfo,
-                BindingCount = (uint)bindings.Length,
-                Bindings = bindingsPointer
+                new() { Binding = 0, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Compute }, // parameters buffer
+                new() { Binding = 1, DescriptorType = VkDescriptorType.StorageBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Compute } // frustums buffer
             };
 
-            if (VK.CreateDescriptorSetLayout(Device.NativeDevice, ref descriptorSetLayoutCreateInfo, null, out var descriptorSetLayout) != VkResult.Success)
-                throw new ApplicationException("Failed to create descriptor set layout.").Log(LogSeverity.Fatal);
-            NativeDescriptorSetLayout = descriptorSetLayout;
+            fixed (VkDescriptorSetLayoutBinding* bindingsPointer = bindings)
+            {
+                var descriptorSetLayoutCreateInfo = new VkDescriptorSetLayoutCreateInfo()
+                {
+                    SType = VkStructureType.DescriptorSetLayoutCreateInfo,
+                    BindingCount = (uint)bindings.Length,
+                    Bindings = bindingsPointer
+                };
+
+                if (VK.CreateDescriptorSetLayout(Device.NativeDevice, ref descriptorSetLayoutCreateInfo, null, out DescriptorSetLayouts.GenerateFrustumsDescriptorSetLayout) != VkResult.Success)
+                    throw new ApplicationException("Failed to create generate frustums descriptor set layout.").Log(LogSeverity.Fatal);
+            }
+        }
+
+        // final rendering
+        {
+            var bindings = new VkDescriptorSetLayoutBinding[]
+            {
+                new() { Binding = 0, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Vertex | VkShaderStageFlags.Fragment },
+                new() { Binding = 1, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Fragment }
+            };
+
+            fixed (VkDescriptorSetLayoutBinding* bindingsPointer = bindings)
+            {
+                var descriptorSetLayoutCreateInfo = new VkDescriptorSetLayoutCreateInfo()
+                {
+                    SType = VkStructureType.DescriptorSetLayoutCreateInfo,
+                    BindingCount = (uint)bindings.Length,
+                    Bindings = bindingsPointer
+                };
+
+                if (VK.CreateDescriptorSetLayout(Device.NativeDevice, ref descriptorSetLayoutCreateInfo, null, out DescriptorSetLayouts.RenderingDescriptorSetLayout) != VkResult.Success)
+                    throw new ApplicationException("Failed to create rendering descriptor set layout.").Log(LogSeverity.Fatal);
+            }
         }
     }
 

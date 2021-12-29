@@ -93,7 +93,7 @@ public unsafe class VulkanGameObject : RendererGameObjectBase
     /// <inheritdoc/>
     public override void Dispose()
     {
-        VulkanRenderer.Instance.DescriptorPool.DisposeDescriptorSet(DescriptorSet);
+        VulkanRenderer.Instance.GraphicsDescriptorPool.DisposeDescriptorSet(DescriptorSet);
         UniformBuffer.Dispose();
         VertexBuffer?.Dispose();
         IndexBuffer?.Dispose();
@@ -125,10 +125,10 @@ public unsafe class VulkanGameObject : RendererGameObjectBase
             Range = sizeof(UniformBufferObjectLights)
         };
 
-        DescriptorSet = VulkanRenderer.Instance.DescriptorPool.GetDescriptorSet();
+        DescriptorSet = VulkanRenderer.Instance.GraphicsDescriptorPool.GetDescriptorSet();
         DescriptorSet
-            .Bind(0, &bufferInfo1)
-            .Bind(1, &bufferInfo2)
+            .Bind(0, &bufferInfo1, VkDescriptorType.UniformBuffer)
+            .Bind(1, &bufferInfo2, VkDescriptorType.UniformBuffer)
             .UpdateBindings();
     }
 }

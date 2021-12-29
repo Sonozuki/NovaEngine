@@ -5,6 +5,7 @@ using NovaEngine.External.Rendering;
 using NovaEngine.Graphics;
 using NovaEngine.Logging;
 using NovaEngine.Maths;
+using NovaEngine.Renderer.Vulkan.ShaderModels;
 using NovaEngine.Settings;
 using System;
 using System.Collections.Generic;
@@ -22,15 +23,22 @@ public unsafe class VulkanCamera : RendererCameraBase
     /// <summary>The number of frames that can be calculated concurrently.</summary>
     private const int ConcurrentFrames = 2;
 
+    /// <summary>The size of each tile.</summary>
+    /// <remarks>Note: this must be the same as specified in the shader.</remarks>
+    private const int TileSize = 16;
+
 
     /*********
     ** Fields
     *********/
     /// <summary>The pipelines that Vulkan will use.</summary>
-    private VulkanPipelines Pipeline;
+    private VulkanPipelines Pipelines;
 
-    /// <summary>The command pool for rendering command buffers.</summary>
-    private VulkanCommandPool CommandPool;
+    /// <summary>The command pool for compute command buffers.</summary>
+    private VulkanCommandPool ComputeCommandPool;
+
+    /// <summary>The command pool for graphics command buffers.</summary>
+    private VulkanCommandPool GraphicsCommandPool;
 
     /// <summary>A collection of semaphores, one for each concurrent frame, that will get signalled when an image have been retrieved from the swapchain.</summary>
     private VkSemaphore[] ImageAvailableSemaphores;
@@ -48,6 +56,18 @@ public unsafe class VulkanCamera : RendererCameraBase
     /// <remarks>This is used to determine which sync objects to use, it will always be between 0 and --<see cref="ConcurrentFrames"/>.</remarks>
     private int CurrentFrameIndex = 0;
 
+    /// <summary>The buffer containing the parameters for the compute shaders.</summary>
+    private VulkanBuffer ParametersBuffer;
+
+    /// <summary>The buffer containing the pre-computed tile frustums.</summary>
+    private VulkanBuffer FrustumsBuffer;
+
+    /// <summary>The descriptor set for the generate frustums compute shader.</summary>
+    private VulkanDescriptorSet GenerateFrustumsDescriptorSet;
+
+    /// <summary>The command buffer for generating tile frustums.</summary>
+    private VkCommandBuffer GenerateFrustumsCommandBuffer;
+
 
     /*********
     ** Accessors
@@ -57,6 +77,13 @@ public unsafe class VulkanCamera : RendererCameraBase
 
     /// <summary>The render pass.</summary>
     internal VkRenderPass NativeRenderPass { get; private set; }
+
+    // TODO: change this to Vector2U
+    /// <summary>The number of tiles in both axis.</summary>
+    private Vector2I NumberOfTiles => new((int)MathF.Ceiling(BaseCamera.Resolution.X / (float)TileSize), (int)MathF.Ceiling(BaseCamera.Resolution.Y / (float)TileSize));
+
+    /// <summary>The total number of tiles.</summary>
+    private uint TotalNumberOfTiles => (uint)(NumberOfTiles.X * NumberOfTiles.Y);
 
     /// <inheritdoc/>
     public override Texture2D RenderTarget => Swapchain.ColourTexture;
@@ -75,11 +102,18 @@ public unsafe class VulkanCamera : RendererCameraBase
         CreateRenderPass();
         Swapchain.CreateFramebuffers(NativeRenderPass);
 
-        Pipeline = new(this);
+        Pipelines = new(this);
 
         CreateSyncObjects();
 
-        CommandPool = new(CommandPoolUsage.Graphics);
+        ComputeCommandPool = new(CommandPoolUsage.Compute);
+        GraphicsCommandPool = new(CommandPoolUsage.Graphics);
+
+        CreateBuffers();
+        CreateDescriptorSets();
+        CreateComputeCommandBuffers();
+
+        GenerateFrustums();
     }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -112,7 +146,7 @@ public unsafe class VulkanCamera : RendererCameraBase
 
         // TODO: temp
         // create the command buffer for this frame
-        var commandBuffer = CommandPool.AllocateCommandBuffer(true, VkCommandBufferUsageFlags.OneTimeSubmit);
+        var commandBuffer = GraphicsCommandPool.AllocateCommandBuffer(true, VkCommandBufferUsageFlags.OneTimeSubmit);
         var clearValues = new VkClearValue[] { new VkClearColorValue(.05f, .05f, .05f, 0), new VkClearDepthStencilValue(1, 0) };
         fixed (VkClearValue* clearValuePointers = clearValues)
         {
@@ -130,16 +164,16 @@ public unsafe class VulkanCamera : RendererCameraBase
 
             if (triangleVulkanGameObjects.Count > 0)
             {
-                VK.CommandBindPipeline(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.TriangleGraphicsPipeline);
+                VK.CommandBindPipeline(commandBuffer, VkPipelineBindPoint.Graphics, Pipelines.TriangleGraphicsPipeline);
                 foreach (var triangleVulkanGameObject in triangleVulkanGameObjects)
                 {
                     var gameObjectPosition = triangleVulkanGameObject.BaseGameObject.Transform.GlobalPosition;
                     var gameObjectMaterial = triangleVulkanGameObject.BaseGameObject.Components.MeshRenderer!.Material;
                     var vulkanMaterial = new VulkanMaterial(new(gameObjectMaterial.Tint.R / 255f, gameObjectMaterial.Tint.G / 255f, gameObjectMaterial.Tint.B / 255f), gameObjectMaterial.Roughness, gameObjectMaterial.Metallicness);
-                    VK.CommandPushConstants(commandBuffer, Pipeline.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Vertex, 0, (uint)sizeof(Vector3), &gameObjectPosition);
-                    VK.CommandPushConstants(commandBuffer, Pipeline.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Fragment, (uint)sizeof(Vector3), (uint)sizeof(VulkanMaterial), &vulkanMaterial);
+                    VK.CommandPushConstants(commandBuffer, Pipelines.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Vertex, 0, (uint)sizeof(Vector3), &gameObjectPosition);
+                    VK.CommandPushConstants(commandBuffer, Pipelines.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Fragment, (uint)sizeof(Vector3), (uint)sizeof(VulkanMaterial), &vulkanMaterial);
 
-                    VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.TriangleGraphicsPipelineLayout, 0, 1, new[] { triangleVulkanGameObject.DescriptorSet.NativeDescriptorSet }, 0, null);
+                    VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipelines.TriangleGraphicsPipelineLayout, 0, 1, new[] { triangleVulkanGameObject.DescriptorSet.NativeDescriptorSet }, 0, null);
                     var vertexBuffer = triangleVulkanGameObject.VertexBuffer!.NativeBuffer;
                     var offsets = (VkDeviceSize)0;
                     VK.CommandBindVertexBuffers(commandBuffer, 0, 1, ref vertexBuffer, &offsets);
@@ -150,16 +184,16 @@ public unsafe class VulkanCamera : RendererCameraBase
 
             if (lineVulkanGameObjects.Count > 0)
             {
-                VK.CommandBindPipeline(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.LineGraphicsPipeline);
+                VK.CommandBindPipeline(commandBuffer, VkPipelineBindPoint.Graphics, Pipelines.LineGraphicsPipeline);
                 foreach (var lineVulkanGameObject in lineVulkanGameObjects)
                 {
                     var position = Vector3.Zero;
                     var gameObjectMaterial = lineVulkanGameObject.BaseGameObject.Components.MeshRenderer!.Material;
                     var vulkanMaterial = new VulkanMaterial(new(gameObjectMaterial.Tint.R / 255f, gameObjectMaterial.Tint.G / 255f, gameObjectMaterial.Tint.B / 255f), .5f, .5f);
-                    VK.CommandPushConstants(commandBuffer, Pipeline.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Vertex, 0, (uint)sizeof(Vector3), &position);
-                    VK.CommandPushConstants(commandBuffer, Pipeline.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Fragment, (uint)sizeof(Vector3), (uint)sizeof(VulkanMaterial), &vulkanMaterial);
+                    VK.CommandPushConstants(commandBuffer, Pipelines.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Vertex, 0, (uint)sizeof(Vector3), &position);
+                    VK.CommandPushConstants(commandBuffer, Pipelines.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Fragment, (uint)sizeof(Vector3), (uint)sizeof(VulkanMaterial), &vulkanMaterial);
 
-                    VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipeline.LineGraphicsPipelineLayout, 0, 1, new[] { lineVulkanGameObject.DescriptorSet.NativeDescriptorSet }, 0, null);
+                    VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipelines.LineGraphicsPipelineLayout, 0, 1, new[] { lineVulkanGameObject.DescriptorSet.NativeDescriptorSet }, 0, null);
                     var vertexBuffer = lineVulkanGameObject.VertexBuffer!.NativeBuffer;
                     var offsets = (VkDeviceSize)0;
                     VK.CommandBindVertexBuffers(commandBuffer, 0, 1, ref vertexBuffer, &offsets);
@@ -205,7 +239,7 @@ public unsafe class VulkanCamera : RendererCameraBase
         CurrentFrameIndex = (CurrentFrameIndex + 1) % ConcurrentFrames;
 
         // TODO: temp
-        CommandPool.FreeCommandBuffers(new[] { commandBuffer });
+        GraphicsCommandPool.FreeCommandBuffers(new[] { commandBuffer });
     }
 
     /// <inheritdoc/>
@@ -220,7 +254,10 @@ public unsafe class VulkanCamera : RendererCameraBase
             VK.DestroyFence(VulkanRenderer.Instance.Device.NativeDevice, InFlightFences[i], null);
         }
 
-        CommandPool.Dispose();
+        ComputeCommandPool.Dispose();
+        GraphicsCommandPool.Dispose();
+
+        ParametersBuffer.Dispose();
     }
 
 
@@ -236,7 +273,13 @@ public unsafe class VulkanCamera : RendererCameraBase
         CreateRenderPass();
         Swapchain.CreateFramebuffers(NativeRenderPass);
 
-        Pipeline = new(this); // TODO: use dynamic state instead of recreating the entire pipeline
+        Pipelines = new(this); // TODO: use dynamic state instead of recreating the entire pipeline
+
+        FrustumsBuffer = new VulkanBuffer(sizeof(Frustum) * TotalNumberOfTiles, VkBufferUsageFlags.StorageBuffer, VkMemoryPropertyFlags.DeviceLocal);
+
+        CreateDescriptorSets();
+        CreateComputeCommandBuffers();
+        GenerateFrustums();
     }
 
     /// <summary>Cleans up the swapchain resources.</summary>
@@ -244,9 +287,13 @@ public unsafe class VulkanCamera : RendererCameraBase
     {
         VK.DeviceWaitIdle(VulkanRenderer.Instance.Device.NativeDevice);
 
-        Pipeline.Dispose();
+        ComputeCommandPool.FreeCommandBuffers(new[] { GenerateFrustumsCommandBuffer });
+
+        Pipelines.Dispose();
         VK.DestroyRenderPass(VulkanRenderer.Instance.Device.NativeDevice, NativeRenderPass, null);
         Swapchain.Dispose();
+
+        FrustumsBuffer.Dispose();
     }
 
     /// <summary>Creates the render pass.</summary>
@@ -363,5 +410,76 @@ public unsafe class VulkanCamera : RendererCameraBase
             if (VK.CreateFence(VulkanRenderer.Instance.Device.NativeDevice, ref fenceCreateInfo, null, out InFlightFences[i]) != VkResult.Success)
                 throw new ApplicationException("Failed to create fence.").Log(LogSeverity.Fatal);
         }
+    }
+
+    /// <summary>Creates the buffers required for the tiled rendering.</summary>
+    /// <exception cref="ApplicationException">Thrown if a buffer couldn't be created.</exception>
+    private void CreateBuffers()
+    {
+        ParametersBuffer = new VulkanBuffer(sizeof(ParametersUBO), VkBufferUsageFlags.UniformBuffer | VkBufferUsageFlags.TransferDestination, VkMemoryPropertyFlags.DeviceLocal);
+        FrustumsBuffer = new VulkanBuffer(sizeof(Frustum) * TotalNumberOfTiles, VkBufferUsageFlags.StorageBuffer, VkMemoryPropertyFlags.DeviceLocal);
+    }
+
+    /// <summary>Creates the descriptor sets required for the tiled rendering.</summary>
+    private void CreateDescriptorSets()
+    {
+        // generate frustums
+        {
+            GenerateFrustumsDescriptorSet = VulkanRenderer.Instance.GenerateFrustumsDescriptorPool.GetDescriptorSet();
+
+            var bufferInfo1 = new VkDescriptorBufferInfo() { Buffer = ParametersBuffer.NativeBuffer, Offset = 0, Range = ParametersBuffer.Size };
+            var bufferInfo2 = new VkDescriptorBufferInfo() { Buffer = FrustumsBuffer.NativeBuffer, Offset = 0, Range = FrustumsBuffer.Size };
+
+            GenerateFrustumsDescriptorSet
+                .Bind(0, &bufferInfo1, VkDescriptorType.UniformBuffer)
+                .Bind(1, &bufferInfo2, VkDescriptorType.StorageBuffer)
+                .UpdateBindings();
+        }
+    }
+
+    /// <summary>Creates the command buffers required for the tiled rendering.</summary>
+    private void CreateComputeCommandBuffers()
+    {
+        // generate frustums
+        {
+            GenerateFrustumsCommandBuffer = ComputeCommandPool.AllocateCommandBuffer(true);
+
+            VK.CommandBindPipeline(GenerateFrustumsCommandBuffer, VkPipelineBindPoint.Compute, Pipelines.GenerateFrustumsPipeline);
+            VK.CommandBindDescriptorSets(GenerateFrustumsCommandBuffer, VkPipelineBindPoint.Compute, Pipelines.GenerateFrustumsPipelineLayout, 0, 1, new[] { GenerateFrustumsDescriptorSet.NativeDescriptorSet }, 0, null);
+            VK.CommandDispatch(GenerateFrustumsCommandBuffer, (uint)NumberOfTiles.X, (uint)NumberOfTiles.Y, 1);
+
+            VK.EndCommandBuffer(GenerateFrustumsCommandBuffer);
+        }
+    }
+
+    /// <summary>Generates the tile frustums.</summary>
+    private void GenerateFrustums()
+    {
+        // update parameters
+        var parameters = new ParametersUBO() { InverseProjection = BaseCamera.ProjectionMatrix.Inverse, ScreenResolution = BaseCamera.Resolution };
+        ParametersBuffer.CopyFrom(parameters);
+
+        // generate frustums
+        var fenceCreateInfo = new VkFenceCreateInfo()
+        {
+            SType = VkStructureType.FenceCreateInfo,
+        };
+
+        // TODO: don't create a fence each time
+        if (VK.CreateFence(VulkanRenderer.Instance.Device.NativeDevice, ref fenceCreateInfo, null, out var fence) != VkResult.Success)
+            throw new ApplicationException("Failed to create fence.").Log(LogSeverity.Fatal);
+
+        var furstumsCommandBuffer = GenerateFrustumsCommandBuffer;
+        var submitInfo = new VkSubmitInfo()
+        {
+            SType = VkStructureType.SubmitInfo,
+            CommandBufferCount = 1,
+            CommandBuffers = &furstumsCommandBuffer
+        };
+
+        VK.QueueSubmit(VulkanRenderer.Instance.Device.ComputeQueue, 1, new[] { submitInfo }, fence);
+        VK.WaitForFences(VulkanRenderer.Instance.Device.NativeDevice, 1, new[] { fence }, true, long.MaxValue);
+
+        VK.DestroyFence(VulkanRenderer.Instance.Device.NativeDevice, fence, null);
     }
 }

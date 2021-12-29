@@ -12,9 +12,6 @@ internal unsafe class VulkanBuffer : IDisposable
     /*********
     ** Fields
     *********/
-    /// <summary>The size of <see cref="NativeBuffer"/>.</summary>
-    private readonly VkDeviceSize Size;
-
     /// <summary>The memory for <see cref="NativeBuffer"/>.</summary>
     private readonly VkDeviceMemory NativeMemory;
 
@@ -28,6 +25,9 @@ internal unsafe class VulkanBuffer : IDisposable
     /*********
     ** Accessors
     *********/
+    /// <summary>The size of <see cref="NativeBuffer"/>.</summary>
+    public VkDeviceSize Size { get; }
+
     /// <summary>The Vulkan buffer.</summary>
     public VkBuffer NativeBuffer { get; }
 
@@ -191,7 +191,7 @@ internal unsafe class VulkanBuffer : IDisposable
         else
         {
             // copy data from buffer using staging buffer
-            using var stagingBuffer = new VulkanBuffer(data.Length * sizeof(T), VkBufferUsageFlags.TransferSource, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
+            using var stagingBuffer = new VulkanBuffer(data.Length * sizeof(T), VkBufferUsageFlags.TransferDestination, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
             stagingBuffer.CopyFrom(this);
             stagingBuffer.CopyTo(data);
         }

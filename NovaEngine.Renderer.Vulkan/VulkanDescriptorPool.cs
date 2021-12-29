@@ -19,6 +19,9 @@ internal unsafe class VulkanDescriptorPool : IDisposable
     /*********
     ** Fields
     *********/
+    /// <summary>The descriptor set layout of the descriptor pool.</summary>
+    private readonly VkDescriptorSetLayout NativeDescriptorSetLayout;
+
     /// <summary>The descriptor sets to reuse.</summary>
     private readonly Queue<VulkanDescriptorSet> ReusableDescriptorSets = new();
 
@@ -30,12 +33,17 @@ internal unsafe class VulkanDescriptorPool : IDisposable
     ** Public Methods
     *********/
     /// <summary>Constructs an instance.</summary>
-    public VulkanDescriptorPool()
+    public VulkanDescriptorPool(VkDescriptorSetLayout descriptorSetLayout)
     {
-        var uboDescriptorSize = new VkDescriptorPoolSize() { Type = VkDescriptorType.UniformBuffer, DescriptorCount = 1 * MaxNumberOfSets };
-        var samplerDescriptorSize = new VkDescriptorPoolSize() { Type = VkDescriptorType.CombinedImageSampler, DescriptorCount = 1 * MaxNumberOfSets };
+        NativeDescriptorSetLayout = descriptorSetLayout;
 
-        var poolSizes = new[] { uboDescriptorSize, samplerDescriptorSize };
+        // TODO: create a VulkanDescriptorSetLayout that contains the relevant info on what the pool sizes should be
+        var poolSizes = new VkDescriptorPoolSize[]
+        {
+            new() { Type = VkDescriptorType.UniformBuffer, DescriptorCount = 10 * MaxNumberOfSets },
+            new() { Type = VkDescriptorType.CombinedImageSampler, DescriptorCount = 10 * MaxNumberOfSets },
+            new() { Type = VkDescriptorType.StorageBuffer, DescriptorCount = 10 * MaxNumberOfSets }
+        };
 
         fixed (VkDescriptorPoolSize* poolSizesPointer = poolSizes)
         {
@@ -62,7 +70,7 @@ internal unsafe class VulkanDescriptorPool : IDisposable
             return ReusableDescriptorSets.Dequeue();
 
         // allocate a new descriptor set
-        var descriptorSetLayout = VulkanRenderer.Instance.NativeDescriptorSetLayout;
+        var descriptorSetLayout = NativeDescriptorSetLayout;
         var allocateInfo = new VkDescriptorSetAllocateInfo()
         {
             SType = VkStructureType.DescriptorSetAllocateInfo,
