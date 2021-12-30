@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace NovaEngine.Common.Windows.Api;
+﻿namespace NovaEngine.Common.Windows.Api;
 
 /// <summary>Exposes neccessary Kernel.dll apis.</summary>
 public static class Kernel32

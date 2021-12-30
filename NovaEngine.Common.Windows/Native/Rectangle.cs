@@ -1,6 +1,4 @@
-﻿using NovaEngine.Maths;
-
-namespace NovaEngine.Common.Windows.Native;
+﻿namespace NovaEngine.Common.Windows.Native;
 
 /// <summary>Contains a rectangle defined by its upper-left and lower-right corners.</summary>
 public struct Rectangle

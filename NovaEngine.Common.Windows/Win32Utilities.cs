@@ -1,8 +1,4 @@
-﻿using NovaEngine.Common.Windows.Api;
-using NovaEngine.Common.Windows.Native;
-using NovaEngine.IO;
-
-namespace NovaEngine.Common.Windows;
+﻿namespace NovaEngine.Common.Windows;
 
 /// <summary>Contains useful miscellaneous methods for the Win32 platform.</summary>
 public static class Win32Utilities

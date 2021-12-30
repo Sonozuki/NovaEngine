@@ -1,12 +1,4 @@
-﻿using NovaEngine.Common.Windows.Native;
-using NovaEngine.Extensions;
-using NovaEngine.IO;
-using NovaEngine.Logging;
-using NovaEngine.Maths;
-using System;
-using System.Runtime.InteropServices;
-
-namespace NovaEngine.Common.Windows.Api;
+﻿namespace NovaEngine.Common.Windows.Api;
 
 /// <summary>Exposes neccessary User32.dll apis.</summary>
 public static class User32

@@ -1,7 +1,4 @@
-﻿using NovaEngine.Common.Windows.Api;
-using System;
-
-namespace NovaEngine.Common.Windows.Native;
+﻿namespace NovaEngine.Common.Windows.Native;
 
 /// <summary>Specifies what data will be returned in the 'data' paramater of <see cref="User32.GetRawInputData(IntPtr, GetRawInputDataCommand, IntPtr, ref uint, uint)"/>.</summary>
 public enum GetRawInputDataCommand

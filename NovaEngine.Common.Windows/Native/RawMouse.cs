@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace NovaEngine.Common.Windows.Native;
+﻿namespace NovaEngine.Common.Windows.Native;
 
 /// <summary>Contains information about the state of the mouse.</summary>
 [StructLayout(LayoutKind.Explicit)]

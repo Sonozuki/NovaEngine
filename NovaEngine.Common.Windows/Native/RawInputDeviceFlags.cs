@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NovaEngine.Common.Windows.Native;
+﻿namespace NovaEngine.Common.Windows.Native;
 
 /// <summary>The flags a <see cref="RawInputDevice"/> can have.</summary>
 [Flags]

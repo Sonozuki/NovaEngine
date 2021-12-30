@@ -1,7 +1,4 @@
-﻿using NovaEngine.Maths;
-using System;
-
-namespace NovaEngine.Common.Windows.Native;
+﻿namespace NovaEngine.Common.Windows.Native;
 
 /// <summary>Constains global cursor information.</summary>
 public struct CursorInfo

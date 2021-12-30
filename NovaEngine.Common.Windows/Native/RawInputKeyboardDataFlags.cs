@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NovaEngine.Common.Windows.Native;
+﻿namespace NovaEngine.Common.Windows.Native;
 
 /// <summary>Flags for scan code information.</summary>
 [Flags]

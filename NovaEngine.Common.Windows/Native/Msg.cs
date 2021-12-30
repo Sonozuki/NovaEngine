@@ -1,7 +1,4 @@
-﻿using NovaEngine.Maths;
-using System;
-
-namespace NovaEngine.Common.Windows.Native;
+﻿namespace NovaEngine.Common.Windows.Native;
 
 /// <summary>Contains message information from a thread's message queue.</summary>
 public struct Msg

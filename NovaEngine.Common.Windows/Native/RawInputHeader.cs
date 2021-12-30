@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NovaEngine.Common.Windows.Native;
+﻿namespace NovaEngine.Common.Windows.Native;
 
 /// <summary>Contains the header information that is part of the raw input data.</summary>
 public struct RawInputHeader
