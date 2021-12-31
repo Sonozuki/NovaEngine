@@ -190,28 +190,6 @@ public struct Vector2 : IEquatable<Vector2>
     /// <returns>The interpolated value.</returns>
     public static Vector2 Lerp(in Vector2 value1, in Vector2 value2, float amount) => new(MathsHelper.Lerp(value1.X, value2.X, amount), MathsHelper.Lerp(value1.Y, value2.Y, amount));
 
-    /// <summary>Transforms a vector by a rotation.</summary>
-    /// <param name="vector">The vector to rotate.</param>
-    /// <param name="rotation">The rotation to apply.</param>
-    /// <returns>The rotated vector.</returns>
-    public static Vector2 Transform(in Vector2 vector, in Quaternion rotation)
-    {
-        var x2 = rotation.X + rotation.X;
-        var y2 = rotation.Y + rotation.Y;
-        var z2 = rotation.Z + rotation.Z;
-
-        var wz2 = rotation.W * z2;
-        var xx2 = rotation.X * x2;
-        var xy2 = rotation.X * y2;
-        var yy2 = rotation.Y * y2;
-        var zz2 = rotation.Z * z2;
-
-        return new(
-            x: vector.X * (1 - yy2 - zz2) + vector.Y * (xy2 - wz2),
-            y: vector.X * (xy2 + wz2) + vector.Y * (1 - xx2 - zz2)
-        );
-    }
-
 
     /*********
     ** Operators
