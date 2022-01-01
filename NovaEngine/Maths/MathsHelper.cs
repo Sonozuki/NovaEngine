@@ -42,7 +42,7 @@ public static class MathsHelper
     /// <param name="amount">The amount to interpolate between <paramref name="value1"/> and <paramref name="value2"/>.</param>
     /// <returns>The interpolated value.</returns>
     /// <remarks>This clamps <paramref name="amount"/> before performing the linear interpolation.</remarks>
-    public static float ClampedLerp(float value1, float value2, float amount)
+    public static float LerpClamped(float value1, float value2, float amount)
     {
         amount = Math.Clamp(amount, 0, 1);
         return MathsHelper.Lerp(value1, value2, amount);
@@ -54,7 +54,7 @@ public static class MathsHelper
     /// <param name="amount">The amount to interpolate between <paramref name="value1"/> and <paramref name="value2"/>.</param>
     /// <returns>The interpolated value.</returns>
     /// <remarks>This clamps <paramref name="amount"/> before performing the linear interpolation.</remarks>
-    public static double ClampedLerp(double value1, double value2, double amount)
+    public static double LerpClamped(double value1, double value2, double amount)
     {
         amount = Math.Clamp(amount, 0, 1);
         return MathsHelper.Lerp(value1, value2, amount);
