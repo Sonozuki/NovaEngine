@@ -329,59 +329,6 @@ public struct Vector3D : IEquatable<Vector3D>
     /// <returns>The interpolated value.</returns>
     public static Vector3D Lerp(in Vector3D value1, in Vector3D value2, double amount) => new(MathsHelper.Lerp(value1.X, value2.X, amount), MathsHelper.Lerp(value1.Y, value2.Y, amount), MathsHelper.Lerp(value1.Z, value2.Z, amount));
 
-    /// <summary>Transforms a vector by a matrix.</summary>
-    /// <param name="position">The source position.</param>
-    /// <param name="matrix">The transformation matrix.</param>
-    /// <returns>The transformed vector.</returns>
-    public static Vector3D Transform(in Vector3D position, in Matrix4x4D matrix)
-    {
-        return new(
-            x: position.X * matrix.M11 + position.Y * matrix.M21 + position.Z * matrix.M31 + matrix.M41,
-            y: position.X * matrix.M12 + position.Y * matrix.M22 + position.Z * matrix.M32 + matrix.M42,
-            z: position.X * matrix.M13 + position.Y * matrix.M23 + position.Z * matrix.M33 + matrix.M43
-        );
-    }
-
-    /// <summary>Transforms a vector by a rotation.</summary>
-    /// <param name="vector">The vector to rotate.</param>
-    /// <param name="rotation">The rotation to apply.</param>
-    /// <returns>The rotated vector.</returns>
-    public static Vector3D Transform(in Vector3D vector, in QuaternionD rotation)
-    {
-        var x2 = rotation.X + rotation.X;
-        var y2 = rotation.Y + rotation.Y;
-        var z2 = rotation.Z + rotation.Z;
-
-        var xx2 = rotation.X * x2;
-        var xy2 = rotation.X * y2;
-        var xz2 = rotation.X * z2;
-        var yy2 = rotation.Y * y2;
-        var yz2 = rotation.Y * z2;
-        var zz2 = rotation.Z * z2;
-        var wx2 = rotation.W * x2;
-        var wy2 = rotation.W * y2;
-        var wz2 = rotation.W * z2;
-
-        return new(
-            vector.X * (1 - yy2 - zz2) + vector.Y * (xy2 - wz2) + vector.Z * (xz2 + wy2),
-            vector.X * (xy2 + wz2) + vector.Y * (1 - xx2 - zz2) + vector.Z * (yz2 - wx2),
-            vector.X * (xz2 - wy2) + vector.Y * (yz2 + wx2) + vector.Z * (1 - xx2 - yy2)
-        );
-    }
-
-    /// <summary>Transforms a vector normal by a matrix.</summary>
-    /// <param name="normal">The source vector.</param>
-    /// <param name="matrix">The transformation matrix.</param>
-    /// <returns>The transformed vector.</returns>
-    public static Vector3D TransformNormal(in Vector3D normal, in Matrix4x4D matrix)
-    {
-        return new(
-            x: normal.X * matrix.M11 + normal.Y * matrix.M21 + normal.Z * matrix.M31,
-            y: normal.X * matrix.M12 + normal.Y * matrix.M22 + normal.Z * matrix.M32,
-            z: normal.X * matrix.M13 + normal.Y * matrix.M23 + normal.Z * matrix.M33
-        );
-    }
-
 
     /*********
     ** Operators
