@@ -106,96 +106,96 @@ public class MathsHelperTests
     /****
     ** ClampedLerp (float)
     ****/
-    /// <summary>Tests <see cref="MathsHelper.ClampedLerp(float, float, float)"/>.</summary>
+    /// <summary>Tests <see cref="MathsHelper.LerpClamped(float, float, float)"/>.</summary>
     /// <remarks>This tests that giving an amount that is in between '0' and '1' will result in a value that's correctly interpolated between the two values.</remarks>
     [Test]
-    public void ClampedLerpFloat_AmountBetweenZeroAndOne_ReturnsInterpolatedValue()
+    public void LerpClampedFloat_AmountBetweenZeroAndOne_ReturnsInterpolatedValue()
     {
-        var lerpValue = MathsHelper.ClampedLerp(0, 10, .5f);
+        var lerpValue = MathsHelper.LerpClamped(0, 10, .5f);
         Assert.AreEqual(5, lerpValue);
     }
 
-    /// <summary>Tests <see cref="MathsHelper.ClampedLerp(float, float, float)"/>.</summary>
+    /// <summary>Tests <see cref="MathsHelper.LerpClamped(float, float, float)"/>.</summary>
     /// <remarks>This tests that giving an amount that is less than '0' will result in the first value (meaning the method is clamped).</remarks>
     [Test]
-    public void ClampedLerpFloat_AmountLessThanZero_ReturnsFirstValue()
+    public void LerpClampedFloat_AmountLessThanZero_ReturnsFirstValue()
     {
-        var lerpValue = MathsHelper.ClampedLerp(0, 10, -1f);
+        var lerpValue = MathsHelper.LerpClamped(0, 10, -1f);
         Assert.AreEqual(00, lerpValue);
     }
 
-    /// <summary>Tests <see cref="MathsHelper.ClampedLerp(float, float, float)"/>.</summary>
+    /// <summary>Tests <see cref="MathsHelper.LerpClamped(float, float, float)"/>.</summary>
     /// <remarks>This tests that giving an amount that is more than '1' will result in the second value (meaning the method is clamped).</remarks>
     [Test]
-    public void ClampedLerpFloat_AmountMoreThanOne_ReturnsSecondValue()
+    public void LerpClampedFloat_AmountMoreThanOne_ReturnsSecondValue()
     {
-        var lerpValue = MathsHelper.ClampedLerp(0, 10, 2f);
+        var lerpValue = MathsHelper.LerpClamped(0, 10, 2f);
         Assert.AreEqual(10, lerpValue);
     }
 
-    /// <summary>Tests <see cref="MathsHelper.ClampedLerp(float, float, float)"/>.</summary>
+    /// <summary>Tests <see cref="MathsHelper.LerpClamped(float, float, float)"/>.</summary>
     /// <remarks>This tests that giving the amount '0' will result in the first value.</remarks>
     [Test]
-    public void ClampedLerpFloat_AmountIsZero_ReturnsFirstValue()
+    public void LerpClampedFloat_AmountIsZero_ReturnsFirstValue()
     {
-        var lerpValue = MathsHelper.ClampedLerp(0, 10, 0f);
+        var lerpValue = MathsHelper.LerpClamped(0, 10, 0f);
         Assert.AreEqual(0, lerpValue);
     }
 
-    /// <summary>Tests <see cref="MathsHelper.ClampedLerp(float, float, float)"/>.</summary>
+    /// <summary>Tests <see cref="MathsHelper.LerpClamped(float, float, float)"/>.</summary>
     /// <remarks>This tests that giving the amount '1' will result in the second value.</remarks>
     [Test]
-    public void ClampedLerpFloat_AmountIsOne_ReturnsSecondValue()
+    public void LerpClampedFloat_AmountIsOne_ReturnsSecondValue()
     {
-        var lerpValue = MathsHelper.ClampedLerp(0, 10, 1f);
+        var lerpValue = MathsHelper.LerpClamped(0, 10, 1f);
         Assert.AreEqual(10, lerpValue);
     }
 
     /****
     ** ClampedLerp (double)
     ****/
-    /// <summary>Tests <see cref="MathsHelper.ClampedLerp(double, double, double)"/>.</summary>
+    /// <summary>Tests <see cref="MathsHelper.LerpClamped(double, double, double)"/>.</summary>
     /// <remarks>This tests that giving an amount that is in between '0' and '1' will result in a value that's correctly interpolated between the two values.</remarks>
     [Test]
-    public void ClampedLerpDouble_AmountBetweenZeroAndOne_ReturnsInterpolatedValue()
+    public void LerpClampedDouble_AmountBetweenZeroAndOne_ReturnsInterpolatedValue()
     {
-        var lerpValue = MathsHelper.ClampedLerp(0, 10, .5d);
+        var lerpValue = MathsHelper.LerpClamped(0, 10, .5d);
         Assert.AreEqual(5, lerpValue);
     }
 
-    /// <summary>Tests <see cref="MathsHelper.ClampedLerp(double, double, double)"/>.</summary>
+    /// <summary>Tests <see cref="MathsHelper.LerpClamped(double, double, double)"/>.</summary>
     /// <remarks>This tests that giving an amount that is less than '0' will result in the first value (meaning the method is clamped).</remarks>
     [Test]
-    public void ClampedLerpDouble_AmountLessThanZero_ReturnsFirstValue()
+    public void LerpClampedDouble_AmountLessThanZero_ReturnsFirstValue()
     {
-        var lerpValue = MathsHelper.ClampedLerp(0, 10, -1d);
+        var lerpValue = MathsHelper.LerpClamped(0, 10, -1d);
         Assert.AreEqual(0, lerpValue);
     }
 
-    /// <summary>Tests <see cref="MathsHelper.ClampedLerp(double, double, double)"/>.</summary>
+    /// <summary>Tests <see cref="MathsHelper.LerpClamped(double, double, double)"/>.</summary>
     /// <remarks>This tests that giving an amount that is more than '1' will result in the second value (meaning the method is clamped).</remarks>
     [Test]
-    public void ClampedLerpDouble_AmountMoreThanOne_ReturnsSecondValue()
+    public void LerpClampedDouble_AmountMoreThanOne_ReturnsSecondValue()
     {
-        var lerpValue = MathsHelper.ClampedLerp(0, 10, 2d);
+        var lerpValue = MathsHelper.LerpClamped(0, 10, 2d);
         Assert.AreEqual(10, lerpValue);
     }
 
-    /// <summary>Tests <see cref="MathsHelper.ClampedLerp(double, double, double)"/>.</summary>
+    /// <summary>Tests <see cref="MathsHelper.LerpClamped(double, double, double)"/>.</summary>
     /// <remarks>This tests that giving the amount '0' will result in the first value.</remarks>
     [Test]
-    public void ClampedLerpDouble_AmountIsZero_ReturnsFirstValue()
+    public void LerpClampedDouble_AmountIsZero_ReturnsFirstValue()
     {
-        var lerpValue = MathsHelper.ClampedLerp(0, 10, 0d);
+        var lerpValue = MathsHelper.LerpClamped(0, 10, 0d);
         Assert.AreEqual(0, lerpValue);
     }
 
-    /// <summary>Tests <see cref="MathsHelper.ClampedLerp(double, double, double)"/>.</summary>
+    /// <summary>Tests <see cref="MathsHelper.LerpClamped(double, double, double)"/>.</summary>
     /// <remarks>This tests that giving the amount '1' will result in the second value.</remarks>
     [Test]
-    public void ClampedLerpDouble_AmountIsOne_ReturnsSecondValue()
+    public void LerpClampedDouble_AmountIsOne_ReturnsSecondValue()
     {
-        var lerpValue = MathsHelper.ClampedLerp(0, 10, 1d);
+        var lerpValue = MathsHelper.LerpClamped(0, 10, 1d);
         Assert.AreEqual(10, lerpValue);
     }
 
