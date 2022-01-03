@@ -885,6 +885,25 @@ public struct Vector4 : IEquatable<Vector4>
     /// <inheritdoc/>
     public readonly override string ToString() => $"<X: {X}, Y: {Y}, Z: {Z}, W: {W}>";
 
+    /// <summary>Clamps a vector to the specified minimum and maximum vectors.</summary>
+    /// <param name="value">The value to clamp.</param>
+    /// <param name="min">The minimum value.</param>
+    /// <param name="max">The maximum value.</param>
+    /// <returns>The clamped value.</returns>
+    public static Vector4 Clamp(in Vector4 value, in Vector4 min, in Vector4 max) => new(Math.Clamp(value.X, min.X, max.X), Math.Clamp(value.Y, min.Y, max.Y), Math.Clamp(value.Z, min.Z, max.Z), Math.Clamp(value.W, min.W, max.W));
+
+    /// <summary>Creates a vector using the smallest of the corresponding components from two vectors.</summary>
+    /// <param name="vector1">The first vector.</param>
+    /// <param name="vector2">The second vector.</param>
+    /// <returns>The component-wise minimum.</returns>
+    public static Vector4 ComponentMin(in Vector4 vector1, in Vector4 vector2) => new(Math.Min(vector1.X, vector2.X), Math.Min(vector1.Y, vector2.Y), Math.Min(vector1.Z, vector2.Z), Math.Min(vector1.W, vector2.W));
+
+    /// <summary>Creates a vector using the largest of the corresponding components from two vectors.</summary>
+    /// <param name="vector1">The first vector.</param>
+    /// <param name="vector2">The second vector.</param>
+    /// <returns>The component-wise maximum.</returns>
+    public static Vector4 ComponentMax(in Vector4 vector1, in Vector4 vector2) => new(Math.Max(vector1.X, vector2.X), Math.Max(vector1.Y, vector2.Y), Math.Max(vector1.Z, vector2.Z), Math.Max(vector1.W, vector2.W));
+
     /// <summary>Calculates the distance between two vectors.</summary>
     /// <param name="vector1">The first vector.</param>
     /// <param name="vector2">The second vector.</param>
@@ -904,31 +923,20 @@ public struct Vector4 : IEquatable<Vector4>
     /// <returns>The dot product of <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
     public static float Dot(in Vector4 vector1, in Vector4 vector2) => vector1.X * vector2.X + vector1.Y * vector2.Y + vector1.Z * vector2.Z + vector1.W * vector2.W;
 
-    /// <summary>Creates a vector using the smallest of the corresponding components from two vectors.</summary>
-    /// <param name="vector1">The first vector.</param>
-    /// <param name="vector2">The second vector.</param>
-    /// <returns>The component-wise minimum.</returns>
-    public static Vector4 ComponentMin(in Vector4 vector1, in Vector4 vector2) => new(Math.Min(vector1.X, vector2.X), Math.Min(vector1.Y, vector2.Y), Math.Min(vector1.Z, vector2.Z), Math.Min(vector1.W, vector2.W));
-
-    /// <summary>Creates a vector using the largest of the corresponding components from two vectors.</summary>
-    /// <param name="vector1">The first vector.</param>
-    /// <param name="vector2">The second vector.</param>
-    /// <returns>The component-wise maximum.</returns>
-    public static Vector4 ComponentMax(in Vector4 vector1, in Vector4 vector2) => new(Math.Max(vector1.X, vector2.X), Math.Max(vector1.Y, vector2.Y), Math.Max(vector1.Z, vector2.Z), Math.Max(vector1.W, vector2.W));
-
-    /// <summary>Clamps a vector to the specified minimum and maximum vectors.</summary>
-    /// <param name="value">The value to clamp.</param>
-    /// <param name="min">The minimum value.</param>
-    /// <param name="max">The maximum value.</param>
-    /// <returns>The clamped value.</returns>
-    public static Vector4 Clamp(in Vector4 value, in Vector4 min, in Vector4 max) => new(Math.Clamp(value.X, min.X, max.X), Math.Clamp(value.Y, min.Y, max.Y), Math.Clamp(value.Z, min.Z, max.Z), Math.Clamp(value.W, min.W, max.W));
-
     /// <summary>Linearly interpolates between two values.</summary>
     /// <param name="value1">The source value.</param>
     /// <param name="value2">The destination value.</param>
     /// <param name="amount">The amount to interpolate between <paramref name="value1"/> and <paramref name="value2"/>.</param>
     /// <returns>The interpolated value.</returns>
     public static Vector4 Lerp(in Vector4 value1, in Vector4 value2, float amount) => new(MathsHelper.Lerp(value1.X, value2.X, amount), MathsHelper.Lerp(value1.Y, value2.Y, amount), MathsHelper.Lerp(value1.Z, value2.Z, amount), MathsHelper.Lerp(value1.W, value2.W, amount));
+
+    /// <summary>Linearly interpolates between two values.</summary>
+    /// <param name="value1">The source value.</param>
+    /// <param name="value2">The destination value.</param>
+    /// <param name="amount">The amount to interpolate between <paramref name="value1"/> and <paramref name="value2"/>.</param>
+    /// <returns>The interpolated value.</returns>
+    /// <remarks>This clamps <paramref name="amount"/> before performing the linear interpolation.</remarks>
+    public static Vector4 LerpClamped(in Vector4 value1, in Vector4 value2, float amount) => new(MathsHelper.LerpClamped(value1.X, value2.X, amount), MathsHelper.LerpClamped(value1.Y, value2.Y, amount), MathsHelper.LerpClamped(value1.Z, value2.Z, amount), MathsHelper.LerpClamped(value1.W, value2.W, amount));
 
 
     /*********
@@ -962,6 +970,12 @@ public struct Vector4 : IEquatable<Vector4>
     /// <param name="vector">The vector to flip the component signs of.</param>
     /// <returns><paramref name="vector"/> with the sign of its components flipped.</returns>
     public static Vector4 operator -(Vector4 vector) => vector * -1;
+
+    /// <summary>Multiplies a vector by a scalar.</summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns>The result of the multiplication.</returns>
+    public static Vector4 operator *(float left, Vector4 right) => right * left;
 
     /// <summary>Multiplies a vector by a scalar.</summary>
     /// <param name="left">The left operand.</param>
