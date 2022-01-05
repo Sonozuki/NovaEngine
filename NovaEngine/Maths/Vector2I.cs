@@ -219,7 +219,7 @@ public struct Vector2I : IEquatable<Vector2I>
     /// <param name="vector">The vector to convert.</param>
     public static implicit operator Vector2(Vector2I vector) => vector.ToVector2();
 
-    /// <summary>Converts a <see cref="Vector2I"/> to a <see cref="Vector3"/>.</summary>
+    /// <summary>Converts a <see cref="Vector2I"/> to a <see cref="Vector2"/>.</summary>
     /// <param name="vector">The vector to convert.</param>
     public static implicit operator Vector2D(Vector2I vector) => vector.ToVector2D();
 }
