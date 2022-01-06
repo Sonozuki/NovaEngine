@@ -106,6 +106,10 @@ public struct Vector2I : IEquatable<Vector2I>
     /// <returns>The vector as a <see cref="Vector2D"/>.</returns>
     public readonly Vector2D ToVector2D() => new(X, Y);
 
+    /// <summary>Gets the vector as a <see cref="Vector2U"/>.</summary>
+    /// <returns>The vector as a <see cref="Vector2U"/>.</returns>
+    public readonly Vector2U ToVector2U() => new((uint)X, (uint)Y);
+
     /// <inheritdoc/>
     public readonly bool Equals(Vector2I other) => this == other;
 
@@ -219,7 +223,11 @@ public struct Vector2I : IEquatable<Vector2I>
     /// <param name="vector">The vector to convert.</param>
     public static implicit operator Vector2(Vector2I vector) => vector.ToVector2();
 
-    /// <summary>Converts a <see cref="Vector2I"/> to a <see cref="Vector2"/>.</summary>
+    /// <summary>Converts a <see cref="Vector2I"/> to a <see cref="Vector2D"/>.</summary>
     /// <param name="vector">The vector to convert.</param>
     public static implicit operator Vector2D(Vector2I vector) => vector.ToVector2D();
+
+    /// <summary>Converts a <see cref="Vector2I"/> to a <see cref="Vector2U"/>.</summary>
+    /// <param name="vector">The vector to convert.</param>
+    public static explicit operator Vector2U(Vector2I vector) => vector.ToVector2U();
 }

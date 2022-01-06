@@ -136,6 +136,18 @@ public struct Vector2 : IEquatable<Vector2>
     /// <returns>The rounded up vector as a <see cref="Vector2I"/>.</returns>
     public readonly Vector2I ToCeilingedVector2I() => new((int)MathF.Ceiling(X), (int)MathF.Ceiling(Y));
 
+    /// <summary>Gets the vector as a <see cref="Vector2U"/> by rounding the components down.</summary>
+    /// <returns>The rounded down vector as a <see cref="Vector2U"/>.</returns>
+    public readonly Vector2U ToFlooredVector2U() => new((uint)MathF.Floor(X), (uint)MathF.Floor(Y));
+
+    /// <summary>Gets the vector as a <see cref="Vector2U"/> by rounding the components.</summary>
+    /// <returns>The rounded vector as a <see cref="Vector2U"/>.</returns>
+    public readonly Vector2U ToRoundedVector2U() => new((uint)MathF.Round(X), (uint)MathF.Round(Y));
+
+    /// <summary>Gets the vector as a <see cref="Vector2U"/> by rounding the components up.</summary>
+    /// <returns>The rounded up vector as a <see cref="Vector2U"/>.</returns>
+    public readonly Vector2U ToCeilingedVector2U() => new((uint)MathF.Ceiling(X), (uint)MathF.Ceiling(Y));
+
     /// <inheritdoc/>
     public readonly bool Equals(Vector2 other) => this == other;
 
@@ -302,4 +314,9 @@ public struct Vector2 : IEquatable<Vector2>
     /// <param name="vector">The vector to convert.</param>
     /// <remarks>This floors the vector components, to be consistant with explicit <see langword="float"/> to <see langword="int"/> conversion.</remarks>
     public static explicit operator Vector2I(Vector2 vector) => vector.ToFlooredVector2I();
+
+    /// <summary>Converts a <see cref="Vector2"/> to a <see cref="Vector2U"/>.</summary>
+    /// <param name="vector">The vector to convert.</param>
+    /// <remarks>This floors the vector components, to be consistant with explicit <see langword="float"/> to <see langword="uint"/> conversion.</remarks>
+    public static explicit operator Vector2U(Vector2 vector) => vector.ToFlooredVector2U();
 }
