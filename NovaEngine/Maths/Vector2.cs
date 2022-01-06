@@ -112,6 +112,9 @@ public struct Vector2 : IEquatable<Vector2>
     /// <summary>Converts the vector to unit length.</summary>
     public void Normalise()
     {
+        if (Length == 0)
+            return;
+
         var scale = 1 / Length;
         X *= scale;
         Y *= scale;
