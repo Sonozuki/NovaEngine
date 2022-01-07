@@ -85,21 +85,21 @@ public class Matrix2x2DTests
     /// <summary>Tests <see cref="Matrix2x2D.Inverse"/>.</summary>
     /// <remarks>This tests that the unchanged matrix is returned when the determinant is '0'.</remarks>
     [Test]
-    public void Inverted_DeterminantIsZero_ReturnsUnchangedMatrix()
+    public void Inverse_DeterminantIsZero_ReturnsUnchangedMatrix()
     {
         var matrix = Matrix2x2D.Identity;
-        var inverted = matrix.Inverse;
-        Assert.AreEqual(matrix, inverted);
+        var inverse = matrix.Inverse;
+        Assert.AreEqual(matrix, inverse);
     }
 
     /// <summary>Tests <see cref="Matrix2x2D.Inverse"/>.</summary>
     /// <remarks>This tests that the inverse of the matrix is returned when the determinant is not '0'.</remarks>
     [Test]
-    public void Inverted_DeterminantIsNotZero_ReturnsInvertedMatrix()
+    public void Inverse_DeterminantIsNotZero_ReturnsInverseMatrix()
     {
         var matrix = new Matrix2x2D(1, 2, 3, 4);
-        var inverted = matrix.Inverse;
-        Assert.AreEqual(new Matrix2x2D(-2, 1, 1.5f, -.5f), inverted);
+        var inverse = matrix.Inverse;
+        Assert.AreEqual(new Matrix2x2D(-2, 1, 1.5f, -.5f), inverse);
     }
 
     /// <summary>Tests <see cref="Matrix2x2D.Row1"/>.</summary>
