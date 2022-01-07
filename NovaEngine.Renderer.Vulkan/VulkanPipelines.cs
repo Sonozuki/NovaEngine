@@ -93,8 +93,10 @@ internal unsafe class VulkanPipelines : IDisposable
     {
         ShaderEntryPointNamePointer = Marshal.StringToHGlobalAnsi("main");
         ShaderStages.GenerateFrustumsShader = LoadShader("Shaders/generate_frustums_comp", VkShaderStageFlags.Compute);
-        ShaderStages.VertexShader = LoadShader("Shaders/shader_vert", VkShaderStageFlags.Vertex);
-        ShaderStages.FragmentShader = LoadShader("Shaders/shader_frag", VkShaderStageFlags.Fragment);
+        ShaderStages.PBRVertexShader = LoadShader("Shaders/pbr_vert", VkShaderStageFlags.Vertex);
+        ShaderStages.PBRFragmentShader = LoadShader("Shaders/pbr_frag", VkShaderStageFlags.Fragment);
+        ShaderStages.SolidColourVertexShader = LoadShader("Shaders/solid_colour_vert", VkShaderStageFlags.Vertex);
+        ShaderStages.SolidColourFragmentShader = LoadShader("Shaders/solid_colour_frag", VkShaderStageFlags.Fragment);
     }
 
     /// <summary>Creates the compute pipelines.</summary>
@@ -126,14 +128,25 @@ internal unsafe class VulkanPipelines : IDisposable
     private void CreateGraphicsPipelines()
     {
         // pipeline layouts
-        TriangleGraphicsPipelineLayout = CreatePipelineLayout();
-        LineGraphicsPipelineLayout = CreatePipelineLayout();
+        var trianglePushConstantRanges = new VkPushConstantRange[]
+        {
+            new() { StageFlags = VkShaderStageFlags.Vertex, Offset = 0, Size = (uint)sizeof(Vector3) },
+            new() { StageFlags = VkShaderStageFlags.Fragment, Offset = (uint)sizeof(Vector3), Size = (uint)sizeof(VulkanMaterial) }
+        };
+        var linePushConstantRanges = new VkPushConstantRange[]
+        {
+            new() { StageFlags = VkShaderStageFlags.Fragment, Offset = 0, Size = (uint)sizeof(Vector3) },
+        };
+
+        TriangleGraphicsPipelineLayout = CreatePipelineLayout(trianglePushConstantRanges);
+        LineGraphicsPipelineLayout = CreatePipelineLayout(linePushConstantRanges);
 
         // pipelines
-        var shaderStages = new[] { ShaderStages.VertexShader, ShaderStages.FragmentShader };
+        var pbrShaderStages = new[] { ShaderStages.PBRVertexShader, ShaderStages.PBRFragmentShader };
+        var solidColourShaderStages = new[] { ShaderStages.SolidColourVertexShader, ShaderStages.SolidColourFragmentShader };
 
-        TriangleGraphicsPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, shaderStages, TriangleGraphicsPipelineLayout, VkPrimitiveTopology.TriangleList);
-        LineGraphicsPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, shaderStages, LineGraphicsPipelineLayout, VkPrimitiveTopology.LineList);
+        TriangleGraphicsPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, pbrShaderStages, TriangleGraphicsPipelineLayout, VkPrimitiveTopology.TriangleList);
+        LineGraphicsPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, solidColourShaderStages, LineGraphicsPipelineLayout, VkPrimitiveTopology.LineList);
     }
 
     /// <summary>Cleans up the shader modules.</summary>
@@ -182,14 +195,8 @@ internal unsafe class VulkanPipelines : IDisposable
 
     /// <summary>Creates a <see cref="VkPipelineLayout"/>.</summary>
     /// <returns>The created <see cref="VkPipelineLayout"/>.</returns>
-    private static VkPipelineLayout CreatePipelineLayout()
+    private static VkPipelineLayout CreatePipelineLayout(VkPushConstantRange[] pushConstantRanges)
     {
-        var pushConstantRanges = new VkPushConstantRange[]
-        {
-            new() { StageFlags = VkShaderStageFlags.Vertex, Offset = 0, Size = (uint)sizeof(Vector3) },
-            new() { StageFlags = VkShaderStageFlags.Fragment, Offset = (uint)sizeof(Vector3), Size = (uint)sizeof(VulkanMaterial) }
-        };
-
         fixed (VkPushConstantRange* pushConstantRangesPointer = pushConstantRanges)
         {
             var descriptorSetLayout = VulkanRenderer.Instance.DescriptorSetLayouts.RenderingDescriptorSetLayout;

@@ -17,7 +17,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Folder Include="Shaders\" />
+	  <Compile Remove="Shaders\bin\**" />
+	  <EmbeddedResource Remove="Shaders\bin\**" />
+	  <None Remove="Shaders\bin\**" />
 	</ItemGroup>
 
 	<ItemGroup>

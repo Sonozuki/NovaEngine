@@ -11,9 +11,15 @@ internal struct ShaderStages
     /// <summary>The shader stage for the generate frustums compute shader.</summary>
     public VkPipelineShaderStageCreateInfo GenerateFrustumsShader;
 
-    /// <summary>The shader stage for the vertex shader.</summary>
-    public VkPipelineShaderStageCreateInfo VertexShader;
+    /// <summary>The shader stage for the PBR vertex shader.</summary>
+    public VkPipelineShaderStageCreateInfo PBRVertexShader;
 
-    /// <summary>The shader stage for the fragment shader.</summary>
-    public VkPipelineShaderStageCreateInfo FragmentShader;
+    /// <summary>The shader stage for the PBR fragment shader.</summary>
+    public VkPipelineShaderStageCreateInfo PBRFragmentShader;
+
+    /// <summary>The shader stage for the solid colour vertex shader.</summary>
+    public VkPipelineShaderStageCreateInfo SolidColourVertexShader;
+
+    /// <summary>The shader stage for the solid colour fragment shader.</summary>
+    public VkPipelineShaderStageCreateInfo SolidColourFragmentShader;
 }

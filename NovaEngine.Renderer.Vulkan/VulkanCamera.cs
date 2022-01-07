@@ -188,10 +188,9 @@ public unsafe class VulkanCamera : RendererCameraBase
                 foreach (var lineVulkanGameObject in lineVulkanGameObjects)
                 {
                     var position = Vector3.Zero;
-                    var gameObjectMaterial = lineVulkanGameObject.BaseGameObject.Components.MeshRenderer!.Material;
-                    var vulkanMaterial = new VulkanMaterial(new(gameObjectMaterial.Tint.R / 255f, gameObjectMaterial.Tint.G / 255f, gameObjectMaterial.Tint.B / 255f), .5f, .5f);
-                    VK.CommandPushConstants(commandBuffer, Pipelines.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Vertex, 0, (uint)sizeof(Vector3), &position);
-                    VK.CommandPushConstants(commandBuffer, Pipelines.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Fragment, (uint)sizeof(Vector3), (uint)sizeof(VulkanMaterial), &vulkanMaterial);
+                    var material = lineVulkanGameObject.BaseGameObject.Components.MeshRenderer!.Material;
+                    var colour = new Vector3(material.Tint.R / 255f, material.Tint.G / 255f, material.Tint.B / 255f);
+                    VK.CommandPushConstants(commandBuffer, Pipelines.LineGraphicsPipelineLayout, VkShaderStageFlags.Fragment, 0, (uint)sizeof(Vector3), &colour);
 
                     VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipelines.LineGraphicsPipelineLayout, 0, 1, new[] { lineVulkanGameObject.DescriptorSet.NativeDescriptorSet }, 0, null);
                     var vertexBuffer = lineVulkanGameObject.VertexBuffer!.NativeBuffer;
