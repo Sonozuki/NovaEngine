@@ -66,14 +66,16 @@ public unsafe class VulkanGameObject : RendererGameObjectBase
     public override void UpdateUBO(Camera camera)
     {
         // create UBO
+        var position = BaseGameObject.Transform.GlobalPosition;
         var rotation = BaseGameObject.Transform.GlobalRotation;
         var modelMatrix = Matrix4x4.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W))
-                        * Matrix4x4.CreateTranslation(BaseGameObject.Transform.GlobalPosition)
+                        * Matrix4x4.CreateTranslation(new(position.X, position.Y, -position.Z))
                         * Matrix4x4.CreateScale(BaseGameObject.Transform.GlobalScale);
 
+        position = -camera.Transform.GlobalPosition;
         rotation = camera.Transform.GlobalRotation.Inverse;
-        var viewMatrix = Matrix4x4.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W))
-                       * Matrix4x4.CreateTranslation(-camera.Transform.GlobalPosition);
+        var viewMatrix = Matrix4x4.CreateTranslation(new(position.X, position.Y, -position.Z))
+                       * Matrix4x4.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W));
 
         var ubo = new UniformBufferObject(
             model: modelMatrix,
@@ -82,8 +84,6 @@ public unsafe class VulkanGameObject : RendererGameObjectBase
             cameraPosition: Vector3.Zero
         );
 
-        ubo.Model.M43 *= -1;
-        ubo.View.M43 *= -1;
         ubo.Projection.M22 *= -1;
 
         // copy UBO data to uniform buffer
