@@ -850,6 +850,9 @@ public struct Vector4 : IEquatable<Vector4>
     /// <summary>Converts the vector to unit length.</summary>
     public void Normalise()
     {
+        if (Length == 0)
+            return;
+
         var scale = 1 / Length;
         X *= scale;
         Y *= scale;
