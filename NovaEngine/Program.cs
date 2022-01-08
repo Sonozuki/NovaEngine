@@ -40,29 +40,11 @@ public static class Program
             Name = Process.GetCurrentProcess().ProcessName;
             Handle = Process.GetCurrentProcess().Handle;
 
-            // initialise window
-            if (PlatformManager.CurrentPlatform == null)
-                return; // fatal log has already been created at this point
-            MainWindow = new Window("NovaEngine", new(1280, 720)); // TODO: don't hardcode
+            // initialisation
+            if (!InitialiseEngine())
+                return;
 
-            // initialise input handler
-            if (InputHandlerManager.CurrentInputHandler == null)
-                return; // fatal log has already been created at this point
-            InputHandlerManager.CurrentInputHandler.OnInitialise(MainWindow.Handle);
-
-            // initialise renderer
-            if (RendererManager.CurrentRenderer == null)
-                return; // fatal log has already been created at this point
-            RendererManager.CurrentRenderer.OnInitialise(MainWindow.Handle);
-
-            // force run some class initialisers to add their commands / event handlers
-            RuntimeHelpers.RunClassConstructor(typeof(CommandManager).TypeHandle);
-            RuntimeHelpers.RunClassConstructor(typeof(Debugger).TypeHandle);
-
-            // initialise initial scenes
-            var initialScenes = ContentLoader.Load<List<string>>("InitialScenes");
-            foreach (var scene in initialScenes)
-                SceneManager.LoadScene(scene);
+            LoadInitialScenes();
 
             MainWindow.Show();
 
@@ -81,5 +63,44 @@ public static class Program
         {
             Logger.LogFatal($"Unrecoverable error occured outside the main loop: {ex}");
         }
+    }
+
+
+    /*********
+    ** Private Methods
+    *********/
+    /// <summary>Initialises the core engine managers.</summary>
+    /// <returns><see langword="true"/>, if the engine was successfully initialised; otherwise, <see langword="false"/>.</returns>
+    private static bool InitialiseEngine()
+    {
+        // initialise window
+        if (PlatformManager.CurrentPlatform == null)
+            return false; // manager has already created a fatal log
+        MainWindow = new Window("NovaEngine", new(1280, 720)); // TODO: don't hardcode
+
+        // initialise input handler
+        if (InputHandlerManager.CurrentInputHandler == null)
+            return false; // manager has already created a fatal log
+        InputHandlerManager.CurrentInputHandler.OnInitialise(MainWindow.Handle);
+
+        // initialise renderer
+        if (RendererManager.CurrentRenderer == null)
+            return false; // manager has already created a fatal log
+        RendererManager.CurrentRenderer.OnInitialise(MainWindow.Handle);
+
+        // force run some class initialisers to add their commands / event handlers
+        RuntimeHelpers.RunClassConstructor(typeof(CommandManager).TypeHandle);
+        RuntimeHelpers.RunClassConstructor(typeof(Debugger).TypeHandle);
+
+        return true;
+    }
+
+    /// <summary>Loads the initial scenes.</summary>
+    private static void LoadInitialScenes()
+    {
+        // initialise initial scenes
+        var initialScenes = ContentLoader.Load<List<string>>("InitialScenes");
+        foreach (var scene in initialScenes)
+            SceneManager.LoadScene(scene);
     }
 }
