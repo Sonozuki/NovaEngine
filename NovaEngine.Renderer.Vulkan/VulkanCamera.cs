@@ -78,12 +78,11 @@ public unsafe class VulkanCamera : RendererCameraBase
     /// <summary>The render pass.</summary>
     internal VkRenderPass NativeRenderPass { get; private set; }
 
-    // TODO: change this to Vector2U
     /// <summary>The number of tiles in both axis.</summary>
-    private Vector2I NumberOfTiles => new((int)MathF.Ceiling(BaseCamera.Resolution.X / (float)TileSize), (int)MathF.Ceiling(BaseCamera.Resolution.Y / (float)TileSize));
+    private Vector2U NumberOfTiles => new((uint)MathF.Ceiling(BaseCamera.Resolution.X / (float)TileSize), (uint)MathF.Ceiling(BaseCamera.Resolution.Y / (float)TileSize));
 
     /// <summary>The total number of tiles.</summary>
-    private uint TotalNumberOfTiles => (uint)(NumberOfTiles.X * NumberOfTiles.Y);
+    private uint TotalNumberOfTiles => NumberOfTiles.X * NumberOfTiles.Y;
 
     /// <inheritdoc/>
     public override Texture2D RenderTarget => Swapchain.ColourTexture;
@@ -445,7 +444,7 @@ public unsafe class VulkanCamera : RendererCameraBase
 
             VK.CommandBindPipeline(GenerateFrustumsCommandBuffer, VkPipelineBindPoint.Compute, Pipelines.GenerateFrustumsPipeline);
             VK.CommandBindDescriptorSets(GenerateFrustumsCommandBuffer, VkPipelineBindPoint.Compute, Pipelines.GenerateFrustumsPipelineLayout, 0, 1, new[] { GenerateFrustumsDescriptorSet.NativeDescriptorSet }, 0, null);
-            VK.CommandDispatch(GenerateFrustumsCommandBuffer, (uint)NumberOfTiles.X, (uint)NumberOfTiles.Y, 1);
+            VK.CommandDispatch(GenerateFrustumsCommandBuffer, NumberOfTiles.X, NumberOfTiles.Y, 1);
 
             VK.EndCommandBuffer(GenerateFrustumsCommandBuffer);
         }
