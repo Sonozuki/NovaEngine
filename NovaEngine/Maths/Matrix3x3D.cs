@@ -725,6 +725,19 @@ public struct Matrix3x3D : IEquatable<Matrix3x3D>
     /// <returns>The result of the multiplication.</returns>
     public static Matrix3x3D operator *(Matrix3x3D left, double right) => right * left;
 
+    /// <summary>Mulltiples a matrix by a vector.</summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns>The result of the multiplication.</returns>
+    public static Vector3D operator *(Matrix3x3D left, Vector3D right)
+    {
+        return new(
+            Vector3D.Dot(left.Row1, right),
+            Vector3D.Dot(left.Row2, right),
+            Vector3D.Dot(left.Row3, right)
+        );
+    }
+
     /// <summary>Multiplies two matrices together.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
