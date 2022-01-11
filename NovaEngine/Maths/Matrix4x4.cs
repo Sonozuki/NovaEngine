@@ -1114,6 +1114,20 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
     /// <returns>The result of the multiplication.</returns>
     public static Matrix4x4 operator *(Matrix4x4 left, float right) => right * left;
 
+    /// <summary>Mulltiples a matrix by a vector.</summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns>The result of the multiplication.</returns>
+    public static Vector4 operator *(Matrix4x4 left, Vector4 right)
+    {
+        return new(
+            Vector4.Dot(left.Row1, right),
+            Vector4.Dot(left.Row2, right),
+            Vector4.Dot(left.Row3, right),
+            Vector4.Dot(left.Row4, right)
+        );
+    }
+
     /// <summary>Multiplies two matrices together.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
