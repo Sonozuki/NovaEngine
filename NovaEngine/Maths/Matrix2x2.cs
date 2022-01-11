@@ -343,6 +343,18 @@ public struct Matrix2x2 : IEquatable<Matrix2x2>
     /// <returns>The result of the multiplication.</returns>
     public static Matrix2x2 operator *(Matrix2x2 left, float right) => right * left;
 
+    /// <summary>Mulltiples a matrix by a vector.</summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns>The result of the multiplication.</returns>
+    public static Vector2 operator *(Matrix2x2 left, Vector2 right)
+    {
+        return new(
+            Vector2.Dot(left.Row1, right),
+            Vector2.Dot(left.Row2, right)
+        );
+    }
+
     /// <summary>Multiplies two matrices together.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
