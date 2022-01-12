@@ -75,7 +75,7 @@ public struct Vector2 : IEquatable<Vector2>
             else if (index == 1)
                 return Y;
             else
-                throw new ArgumentOutOfRangeException(nameof(index), "Must be between 0 => 1 (inclusive)");
+                throw new IndexOutOfRangeException($"{nameof(index)} must be between 0 => 1 (inclusive)");
         }
         set
         {
@@ -84,7 +84,7 @@ public struct Vector2 : IEquatable<Vector2>
             else if (index == 1)
                 Y = value;
             else
-                throw new ArgumentOutOfRangeException(nameof(index), "Must be between 0 => 1 (inclusive)");
+                throw new IndexOutOfRangeException($"{nameof(index)} must be between 0 => 1 (inclusive)");
         }
     }
 
