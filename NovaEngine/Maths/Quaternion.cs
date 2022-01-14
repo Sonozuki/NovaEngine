@@ -150,6 +150,9 @@ public struct Quaternion : IEquatable<Quaternion>
     /// <summary>Inverts the quaternion.</summary>
     public void Invert()
     {
+        if (LengthSquared == 0)
+            return;
+
         var invertedLengthSquared = 1 / LengthSquared;
         X *= -invertedLengthSquared;
         Y *= -invertedLengthSquared;
