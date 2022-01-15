@@ -14,5 +14,5 @@ internal class FakePlatform : IPlatform
     ** Public Methods
     *********/
     /// <inheritdoc/>
-    public PlatformWindowBase CreatePlatformWindow(string title, Vector2I size) => new FakeWindow(title, size);
+    public PlatformWindowBase CreatePlatformWindow(string title, Vector2I size) => new FakeWindow();
 }

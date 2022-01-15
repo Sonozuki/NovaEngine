@@ -32,15 +32,6 @@ public abstract class PlatformWindowBase
     /*********
     ** Public Methods
     *********/
-    /// <summary>Constructs an instance.</summary>
-    /// <param name="title">The title of the window.</param>
-    /// <param name="size">The size of the window.</param>
-    public PlatformWindowBase(string title, Vector2I size)
-    {
-        Title = title;
-        Size = size;
-    }
-
     /// <summary>Processes all pending window events.</summary>
     public abstract void ProcessEvents();
 
