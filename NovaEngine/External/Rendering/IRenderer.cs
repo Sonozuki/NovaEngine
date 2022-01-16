@@ -12,6 +12,9 @@ public interface IRenderer : IDisposable
     /// <summary>The max supported sample count.</summary>
     public SampleCount MaxSampleCount { get; }
 
+    /// <summary>The name of the device being used.</summary>
+    public string DeviceName { get; }
+
 
     /*********
     ** Public Methods

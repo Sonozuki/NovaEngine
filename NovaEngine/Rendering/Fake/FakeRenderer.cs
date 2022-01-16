@@ -12,6 +12,9 @@ internal class FakeRenderer : IRenderer
     /// <inheritdoc/>
     public SampleCount MaxSampleCount => SampleCount.Count1;
 
+    /// <inheritdoc/>
+    public string DeviceName => "";
+
 
     /*********
     ** Public Methods

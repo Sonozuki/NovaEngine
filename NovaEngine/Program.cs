@@ -87,6 +87,7 @@ public static class Program
         if (RendererManager.CurrentRenderer == null)
             return false; // manager has already created a fatal log
         RendererManager.CurrentRenderer.OnInitialise(MainWindow.Handle);
+        Logger.LogDebug($"Using graphics device: {RendererManager.CurrentRenderer.DeviceName}");
 
         // force run some class initialisers to add their commands / event handlers
         RuntimeHelpers.RunClassConstructor(typeof(CommandManager).TypeHandle);

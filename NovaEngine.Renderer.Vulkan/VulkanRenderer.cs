@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using Vulkan;
 
 namespace NovaEngine.Renderer.Vulkan;
@@ -60,6 +61,16 @@ public unsafe class VulkanRenderer : IRenderer
             VK.GetPhysicalDeviceProperties(Device.NativePhysicalDevice, out var physicalDeviceProperties);
             var counts = physicalDeviceProperties.Limits.FramebufferColorSampleCounts & physicalDeviceProperties.Limits.FramebufferDepthSampleCounts;
             return VulkanUtilities.ConvertSampleCount(counts);
+        }
+    }
+
+    /// <inheritdoc/>
+    public string DeviceName
+    {
+        get
+        {
+            VK.GetPhysicalDeviceProperties(Device.NativePhysicalDevice, out var physicalDeviceProperties);
+            return Encoding.ASCII.GetString(physicalDeviceProperties.DeviceName, 256);
         }
     }
 
