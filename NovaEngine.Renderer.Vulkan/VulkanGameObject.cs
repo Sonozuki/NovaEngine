@@ -68,9 +68,9 @@ public unsafe class VulkanGameObject : RendererGameObjectBase
         // create UBO
         var position = BaseGameObject.Transform.GlobalPosition;
         var rotation = BaseGameObject.Transform.GlobalRotation;
-        var modelMatrix = Matrix4x4.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W))
-                        * Matrix4x4.CreateTranslation(new(position.X, position.Y, -position.Z))
-                        * Matrix4x4.CreateScale(BaseGameObject.Transform.GlobalScale);
+        var modelMatrix = Matrix4x4.CreateScale(BaseGameObject.Transform.GlobalScale)
+                        * Matrix4x4.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W))
+                        * Matrix4x4.CreateTranslation(new(position.X, position.Y, -position.Z));
 
         position = -camera.Transform.GlobalPosition;
         rotation = camera.Transform.GlobalRotation.Inverse;
