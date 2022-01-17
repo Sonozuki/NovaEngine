@@ -308,6 +308,18 @@ public struct QuaternionD
     /*********
     ** Operators
     *********/
+    /// <summary>Adds two quaternions together.</summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns>The result of the addition.</returns>
+    public static QuaternionD operator +(QuaternionD left, QuaternionD right) => new(left.X + right.X, left.Y + right.Y, left.Z + right.Z, left.W + right.W);
+
+    /// <summary>Subtracts a quaternions from another quaternion.</summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns>The result of the subtraction.</returns>
+    public static QuaternionD operator -(QuaternionD left, QuaternionD right) => new(left.X - right.X, left.Y - right.Y, left.Z - right.Z, left.W - right.W);
+
     /// <summary>Multiplies two quaternions together.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
