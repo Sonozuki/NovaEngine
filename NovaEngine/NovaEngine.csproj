@@ -29,6 +29,8 @@
 		<Using Include="NovaEngine.Logging" />
 		<Using Include="NovaEngine.Maths" />
 		<Using Include="NovaEngine.Noise" />
+		<Using Include="NovaEngine.Physics" />
+		<Using Include="NovaEngine.Physics.Collidables" />
 		<Using Include="NovaEngine.Platform" />
 		<Using Include="NovaEngine.Rendering" />
 		<Using Include="NovaEngine.SceneManagement" />
