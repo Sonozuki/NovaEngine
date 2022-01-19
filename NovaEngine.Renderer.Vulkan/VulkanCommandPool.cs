@@ -92,26 +92,44 @@ internal unsafe class VulkanCommandPool : IDisposable
     /// <summary>Submits and frees a command buffer.</summary>
     /// <param name="endCommandBuffer">Whether the command buffer should stop recording commands.</param>
     /// <param name="commandBuffer">The command buffer to submit and free.</param>
+    /// <param name="waitSemaphores">The semaphores to wait on before executing the command buffer.</param>
+    /// <param name="waitDestinationStageMask">The pipeline stages at which each corresponding semaphore wait will occur.</param>
+    /// <param name="signalSemaphores">The semaphores to signal when the command buffer finishes execution.</param>
+    /// <param name="signalFence">The fence to signal when the command buffer finishes execution.</param>
     /// <exception cref="ApplicationException">Thrown if the command buffer couldn't be ended, submited, or the queue couldn't be waited.</exception>
-    public void SubmitCommandBuffer(bool endCommandBuffer, VkCommandBuffer commandBuffer)
+    public void SubmitCommandBuffer(bool endCommandBuffer, VkCommandBuffer commandBuffer, VkSemaphore[]? waitSemaphores = null, VkPipelineStageFlags[]? waitDestinationStageMask = null, VkSemaphore[]? signalSemaphores = null, VkFence? signalFence = null)
     {
         // end recording commands
         if (endCommandBuffer)
             if (VK.EndCommandBuffer(commandBuffer) != VkResult.Success)
                 throw new ApplicationException("Failed to end command buffer.").Log(LogSeverity.Fatal);
 
-        // submit command buffer
-        var submitInfo = new VkSubmitInfo()
-        {
-            SType = VkStructureType.SubmitInfo,
-            CommandBufferCount = 1,
-            CommandBuffers = &commandBuffer
-        };
+        waitSemaphores ??= Array.Empty<VkSemaphore>();
+        waitDestinationStageMask ??= Array.Empty<VkPipelineStageFlags>();
+        signalSemaphores ??= Array.Empty<VkSemaphore>();
 
-        if (VK.QueueSubmit(Queue, 1, new[] { submitInfo }, VkFence.Null) != VkResult.Success)
-            throw new ApplicationException("Failed to submit command buffer.").Log(LogSeverity.Fatal);
-        if (VK.QueueWaitIdle(Queue) != VkResult.Success)
-            throw new ApplicationException("Failed to queue wait idle.").Log(LogSeverity.Fatal);
+        fixed (VkSemaphore* waitSemaphoresPointer = waitSemaphores)
+        fixed (VkPipelineStageFlags* waitDestinationStageMaskPointer = waitDestinationStageMask)
+        fixed (VkSemaphore* signalSemaphoresPointer = signalSemaphores)
+        {
+            // submit command buffer
+            var submitInfo = new VkSubmitInfo()
+            {
+                SType = VkStructureType.SubmitInfo,
+                CommandBufferCount = 1,
+                CommandBuffers = &commandBuffer,
+                WaitSemaphoreCount = (uint)waitSemaphores.Length,
+                WaitSemaphores = waitSemaphoresPointer,
+                WaitDestinationStageMask = waitDestinationStageMaskPointer,
+                SignalSemaphoreCount = (uint)signalSemaphores.Length,
+                SignalSemaphores = signalSemaphoresPointer
+            };
+
+            if (VK.QueueSubmit(Queue, 1, new[] { submitInfo }, VkFence.Null) != VkResult.Success)
+                throw new ApplicationException("Failed to submit command buffer.").Log(LogSeverity.Fatal);
+            if (VK.QueueWaitIdle(Queue) != VkResult.Success)
+                throw new ApplicationException("Failed to queue wait idle.").Log(LogSeverity.Fatal);
+        }
 
         // free command buffer
         VK.FreeCommandBuffers(VulkanRenderer.Instance.Device.NativeDevice, NativeCommandPool, 1, new[] { commandBuffer });

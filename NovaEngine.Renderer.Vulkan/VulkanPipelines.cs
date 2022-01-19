@@ -32,8 +32,11 @@ internal unsafe class VulkanPipelines : IDisposable
     /*********
     ** Accessors
     *********/
-    /// <summary>The layout of <see cref="GenerateFrustumsPipeline"/>.</summary>
-    public VkPipelineLayout GenerateFrustumsPipelineLayout { get; private set; }
+    /// <summary>The layout of <see cref="GenerateFrustumsComputePipeline"/>.</summary>
+    public VkPipelineLayout GenerateFrustumsComputePipelineLayout { get; private set; }
+
+    /// <summary>The layout of <see cref="DepthPrepassGraphicsPipeline"/>.</summary>
+    public VkPipelineLayout DepthPrepassGraphicsPipelineLayout { get; private set; }
 
     /// <summary>The layout of <see cref="TriangleGraphicsPipeline"/>.</summary>
     public VkPipelineLayout TriangleGraphicsPipelineLayout { get; private set; }
@@ -42,7 +45,10 @@ internal unsafe class VulkanPipelines : IDisposable
     public VkPipelineLayout LineGraphicsPipelineLayout { get; private set; }
 
     /// <summary>The compute pipeline for generating the tile frustums.</summary>
-    public VkPipeline GenerateFrustumsPipeline { get; private set; }
+    public VkPipeline GenerateFrustumsComputePipeline { get; private set; }
+
+    /// <summary>The graphics pipeline for the depth pre-pass.</summary>
+    public VkPipeline DepthPrepassGraphicsPipeline { get; private set; }
 
     /// <summary>A graphics pipeline with a topology of <see cref="VkPrimitiveTopology.TriangleList"/>.</summary>
     public VkPipeline TriangleGraphicsPipeline { get; private set; }
@@ -76,10 +82,12 @@ internal unsafe class VulkanPipelines : IDisposable
     /// <inheritdoc/>
     public void Dispose()
     {
-        VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, GenerateFrustumsPipelineLayout, null);
+        VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, GenerateFrustumsComputePipelineLayout, null);
+        VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, DepthPrepassGraphicsPipelineLayout, null);
         VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, TriangleGraphicsPipelineLayout, null);
         VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, LineGraphicsPipelineLayout, null);
-        VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, GenerateFrustumsPipeline, null);
+        VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, GenerateFrustumsComputePipeline, null);
+        VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, DepthPrepassGraphicsPipeline, null);
         VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, TriangleGraphicsPipeline, null);
         VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, LineGraphicsPipeline, null);
     }
@@ -93,6 +101,7 @@ internal unsafe class VulkanPipelines : IDisposable
     {
         ShaderEntryPointNamePointer = Marshal.StringToHGlobalAnsi("main");
         ShaderStages.GenerateFrustumsShader = LoadShader("Shaders/generate_frustums_comp", VkShaderStageFlags.Compute);
+        ShaderStages.DepthShader = LoadShader("Shaders/depth_vert", VkShaderStageFlags.Vertex);
         ShaderStages.PBRVertexShader = LoadShader("Shaders/pbr_vert", VkShaderStageFlags.Vertex);
         ShaderStages.PBRFragmentShader = LoadShader("Shaders/pbr_frag", VkShaderStageFlags.Fragment);
         ShaderStages.SolidColourVertexShader = LoadShader("Shaders/solid_colour_vert", VkShaderStageFlags.Vertex);
@@ -105,7 +114,7 @@ internal unsafe class VulkanPipelines : IDisposable
     {
         // generate frustums
         {
-            // pipeline layouts
+            // pipeline layout
             var descriptorSetLayout = VulkanRenderer.Instance.DescriptorSetLayouts.GenerateFrustumsDescriptorSetLayout;
             var pipelineLayoutCreateInfo = new VkPipelineLayoutCreateInfo()
             {
@@ -116,10 +125,10 @@ internal unsafe class VulkanPipelines : IDisposable
 
             if (VK.CreatePipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, ref pipelineLayoutCreateInfo, null, out var pipelineLayout) != VkResult.Success)
                 throw new ApplicationException("Failed to create generate frustums compute pipeline layout.").Log(LogSeverity.Fatal);
-            GenerateFrustumsPipelineLayout = pipelineLayout;
+            GenerateFrustumsComputePipelineLayout = pipelineLayout;
 
             // pipeline
-            GenerateFrustumsPipeline = CreateComputePipeline(ShaderStages.GenerateFrustumsShader, GenerateFrustumsPipelineLayout);
+            GenerateFrustumsComputePipeline = CreateComputePipeline(ShaderStages.GenerateFrustumsShader, GenerateFrustumsComputePipelineLayout);
         }
     }
 
@@ -127,26 +136,48 @@ internal unsafe class VulkanPipelines : IDisposable
     /// <exception cref="ApplicationException">Thrown if the graphics pipeline layout or a pipeline couldn't be created.</exception>
     private void CreateGraphicsPipelines()
     {
-        // pipeline layouts
-        var trianglePushConstantRanges = new VkPushConstantRange[]
+        // depth pre-pass
         {
-            new() { StageFlags = VkShaderStageFlags.Vertex, Offset = 0, Size = (uint)sizeof(Vector3) },
-            new() { StageFlags = VkShaderStageFlags.Fragment, Offset = (uint)sizeof(Vector3), Size = (uint)sizeof(VulkanMaterial) }
-        };
-        var linePushConstantRanges = new VkPushConstantRange[]
+            // layout
+            var descriptorSetLayout = VulkanRenderer.Instance.DescriptorSetLayouts.DepthPrepassDescriptorSetLayout;
+            var pipelineLayoutCreateInfo = new VkPipelineLayoutCreateInfo
+            {
+                SType = VkStructureType.PipelineLayoutCreateInfo,
+                SetLayoutCount = 1,
+                SetLayouts = &descriptorSetLayout
+            };
+
+            if (VK.CreatePipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, ref pipelineLayoutCreateInfo, null, out var pipelineLayout) != VkResult.Success)
+                throw new ApplicationException("Failed to create graphics pipeline layout.").Log(LogSeverity.Fatal);
+            DepthPrepassGraphicsPipelineLayout = pipelineLayout;
+
+            // pipeline
+            DepthPrepassGraphicsPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, new[] { ShaderStages.DepthShader }, DepthPrepassGraphicsPipelineLayout, VkPrimitiveTopology.TriangleList, Camera.DepthPrePassRenderPass);
+        }
+
+        // final rendering
         {
-            new() { StageFlags = VkShaderStageFlags.Fragment, Offset = 0, Size = (uint)sizeof(Vector3) },
-        };
+            // pipeline layouts
+            var trianglePushConstantRanges = new VkPushConstantRange[]
+            {
+                new() { StageFlags = VkShaderStageFlags.Vertex, Offset = 0, Size = (uint)sizeof(Vector3) },
+                new() { StageFlags = VkShaderStageFlags.Fragment, Offset = (uint)sizeof(Vector3), Size = (uint)sizeof(VulkanMaterial) }
+            };
+            var linePushConstantRanges = new VkPushConstantRange[]
+            {
+                new() { StageFlags = VkShaderStageFlags.Fragment, Offset = 0, Size = (uint)sizeof(Vector3) },
+            };
 
-        TriangleGraphicsPipelineLayout = CreatePipelineLayout(trianglePushConstantRanges);
-        LineGraphicsPipelineLayout = CreatePipelineLayout(linePushConstantRanges);
+            TriangleGraphicsPipelineLayout = CreatePipelineLayout(trianglePushConstantRanges);
+            LineGraphicsPipelineLayout = CreatePipelineLayout(linePushConstantRanges);
 
-        // pipelines
-        var pbrShaderStages = new[] { ShaderStages.PBRVertexShader, ShaderStages.PBRFragmentShader };
-        var solidColourShaderStages = new[] { ShaderStages.SolidColourVertexShader, ShaderStages.SolidColourFragmentShader };
+            // pipelines
+            var pbrShaderStages = new[] { ShaderStages.PBRVertexShader, ShaderStages.PBRFragmentShader };
+            var solidColourShaderStages = new[] { ShaderStages.SolidColourVertexShader, ShaderStages.SolidColourFragmentShader };
 
-        TriangleGraphicsPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, pbrShaderStages, TriangleGraphicsPipelineLayout, VkPrimitiveTopology.TriangleList);
-        LineGraphicsPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, solidColourShaderStages, LineGraphicsPipelineLayout, VkPrimitiveTopology.LineList);
+            TriangleGraphicsPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, pbrShaderStages, TriangleGraphicsPipelineLayout, VkPrimitiveTopology.TriangleList, Camera.FinalRenderingRenderPass);
+            LineGraphicsPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, solidColourShaderStages, LineGraphicsPipelineLayout, VkPrimitiveTopology.LineList, Camera.FinalRenderingRenderPass);
+        }
     }
 
     /// <summary>Cleans up the shader modules.</summary>
@@ -239,9 +270,10 @@ internal unsafe class VulkanPipelines : IDisposable
     /// <param name="vertexBindingDescriptions">The vertex binding descriptions to use when creating the pipeline.</param>
     /// <param name="shaderStages">The shader stages to use when creating the pipeline.</param>
     /// <param name="layout">The layout to use when creating the pipeline.</param>
-    /// <param name="topology">The topology of the meshes rendered throug the pipeline.</param>
+    /// <param name="topology">The topology of the meshes rendered through the pipeline.</param>
+    /// <param name="renderPass">The render pass that the pipeline will use.</param>
     /// <returns>The created graphics pipeline.</returns>
-    private VkPipeline CreateGraphicsPipeline(VkVertexInputAttributeDescription[] vertexAttributeDescriptions, VkVertexInputBindingDescription[] vertexBindingDescriptions, VkPipelineShaderStageCreateInfo[] shaderStages, VkPipelineLayout layout, VkPrimitiveTopology topology)
+    private VkPipeline CreateGraphicsPipeline(VkVertexInputAttributeDescription[] vertexAttributeDescriptions, VkVertexInputBindingDescription[] vertexBindingDescriptions, VkPipelineShaderStageCreateInfo[] shaderStages, VkPipelineLayout layout, VkPrimitiveTopology topology, VkRenderPass renderPass)
     {
         fixed (VkVertexInputAttributeDescription* vertexAttributeDescriptionsPointer = vertexAttributeDescriptions)
         fixed (VkVertexInputBindingDescription* vertexBindingDescriptionsPointer = vertexBindingDescriptions)
@@ -368,7 +400,7 @@ internal unsafe class VulkanPipelines : IDisposable
                 DepthStencilState = &depthStencilState,
                 ColorBlendState = &colourBlendState,
                 Layout = layout,
-                RenderPass = Camera.NativeRenderPass,
+                RenderPass = renderPass,
                 Subpass = 0
             };
 

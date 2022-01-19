@@ -40,21 +40,30 @@ public unsafe class VulkanCamera : RendererCameraBase
     /// <summary>The command pool for graphics command buffers.</summary>
     private VulkanCommandPool GraphicsCommandPool;
 
-    /// <summary>A collection of semaphores, one for each concurrent frame, that will get signalled when an image have been retrieved from the swapchain.</summary>
+    /// <summary>The semaphores that will get signalled when the depth pre-pass have finished.</summary>
+    private VkSemaphore[] DepthPrePassFinishedSemaphores;
+
+    /// <summary>The semaphores that will get signalled when an image have been retrieved from the swapchain.</summary>
     private VkSemaphore[] ImageAvailableSemaphores;
 
-    /// <summary>A collection of semaphores, one for each concurrent frame, that will get signalled when rendering to the respective image has finished and presentation can begin.</summary>
+    /// <summary>The semaphores that will get signalled when rendering to the respective image has finished and presentation can begin.</summary>
     private VkSemaphore[] RenderFinishedSemaphores;
 
-    /// <summary>A collection of fences, one for each concurrent frame, that is used to keep track of when the frame is available.</summary>
+    /// <summary>The fences that are used to keep track of when a frame is available.</summary>
     private VkFence[] InFlightFences;
 
-    /// <summary>A collection of fences, one for each swapchain image, used to keep track of when the image is being used.</summary>
+    /// <summary>The fences used to keep track of when an image is being used.</summary>
     private VkFence[] ImagesInFlight;
 
     /// <summary>The current frame index.</summary>
     /// <remarks>This is used to determine which sync objects to use, it will always be between 0 and --<see cref="ConcurrentFrames"/>.</remarks>
     private int CurrentFrameIndex = 0;
+
+    /// <summary>The depth pre-pass textures.</summary>
+    private DepthTexture[] DepthPrePassTextures;
+
+    /// <summary>The depth pre-pass framebuffers.</summary>
+    private VkFramebuffer[] DepthPrePassFramebuffers;
 
     /// <summary>The buffer containing the parameters for the compute shaders.</summary>
     private VulkanBuffer ParametersBuffer;
@@ -64,6 +73,9 @@ public unsafe class VulkanCamera : RendererCameraBase
 
     /// <summary>The descriptor set for the generate frustums compute shader.</summary>
     private VulkanDescriptorSet GenerateFrustumsDescriptorSet;
+
+    /// <summary>The descriptor sets for the depth pre-pass vertex shader.</summary>
+    private VulkanDescriptorSet[] DepthPrePassDescriptorSets;
 
     /// <summary>The command buffer for generating tile frustums.</summary>
     private VkCommandBuffer GenerateFrustumsCommandBuffer;
@@ -75,8 +87,11 @@ public unsafe class VulkanCamera : RendererCameraBase
     /// <summary>The swapchain Vulkan will present to.</summary>
     internal VulkanSwapchain Swapchain { get; private set; }
 
-    /// <summary>The render pass.</summary>
-    internal VkRenderPass NativeRenderPass { get; private set; }
+    /// <summary>The depth pre-pass render pass.</summary>
+    internal VkRenderPass DepthPrePassRenderPass { get; private set; }
+
+    /// <summary>The final rendering render pass.</summary>
+    internal VkRenderPass FinalRenderingRenderPass { get; private set; }
 
     /// <summary>The number of tiles in both axis.</summary>
     private Vector2U NumberOfTiles => new((uint)MathF.Ceiling(BaseCamera.Resolution.X / (float)TileSize), (uint)MathF.Ceiling(BaseCamera.Resolution.Y / (float)TileSize));
@@ -98,8 +113,10 @@ public unsafe class VulkanCamera : RendererCameraBase
         : base(baseCamera)
     {
         Swapchain = new(false, new((uint)this.BaseCamera.Resolution.X, (uint)this.BaseCamera.Resolution.Y)); // TODO: retrieve vsync from settings file
-        CreateRenderPass();
-        Swapchain.CreateFramebuffers(NativeRenderPass);
+        CreateRenderPasses();
+        Swapchain.CreateFramebuffers(FinalRenderingRenderPass);
+        CreateDepthPrePassImages();
+        CreateDepthPrePassFramebuffers();
 
         Pipelines = new(this);
 
@@ -136,99 +153,137 @@ public unsafe class VulkanCamera : RendererCameraBase
         // acquire an image from the swapchain
         var imageIndex = Swapchain.AcquireNextImage(ImageAvailableSemaphores[CurrentFrameIndex], VkFence.Null);
 
-        // check if a previous frame is using this images (meaning there is a fence to wait on)
-        if (!ImagesInFlight[imageIndex].IsNull)
-            VK.WaitForFences(VulkanRenderer.Instance.Device.NativeDevice, 1, new[] { ImagesInFlight[imageIndex] }, true, ulong.MaxValue);
-
-        // mark the image as being used by this frame
-        ImagesInFlight[imageIndex] = InFlightFences[CurrentFrameIndex];
-
-        // TODO: temp
-        // create the command buffer for this frame
-        var commandBuffer = GraphicsCommandPool.AllocateCommandBuffer(true, VkCommandBufferUsageFlags.OneTimeSubmit);
-        var clearValues = new VkClearValue[] { new VkClearColorValue(.05f, .05f, .05f, 0), new VkClearDepthStencilValue(1, 0) };
-        fixed (VkClearValue* clearValuePointers = clearValues)
+        // depth buffer
         {
+            var commandBuffer = GraphicsCommandPool.AllocateCommandBuffer(true, VkCommandBufferUsageFlags.OneTimeSubmit);
+
+            VkClearValue clearValue = new VkClearDepthStencilValue(1, 0);
             var renderPassBeginInfo = new VkRenderPassBeginInfo()
             {
                 SType = VkStructureType.RenderPassBeginInfo,
-                RenderPass = NativeRenderPass,
-                Framebuffer = Swapchain.NativeFramebuffers![imageIndex],
+                RenderPass = DepthPrePassRenderPass,
+                Framebuffer = DepthPrePassFramebuffers[CurrentFrameIndex],
                 RenderArea = new VkRect2D(VkOffset2D.Zero, Swapchain.Extent),
                 ClearValueCount = 2,
-                ClearValues = clearValuePointers
+                ClearValues = &clearValue
             };
 
             VK.CommandBeginRenderPass(commandBuffer, ref renderPassBeginInfo, VkSubpassContents.Inline);
 
-            if (triangleVulkanGameObjects.Count > 0)
+            VK.CommandBindPipeline(commandBuffer, VkPipelineBindPoint.Graphics, Pipelines.DepthPrepassGraphicsPipeline);
+            foreach (var triangleVulkanGameObject in triangleVulkanGameObjects)
             {
-                VK.CommandBindPipeline(commandBuffer, VkPipelineBindPoint.Graphics, Pipelines.TriangleGraphicsPipeline);
-                foreach (var triangleVulkanGameObject in triangleVulkanGameObjects)
-                {
-                    var gameObjectPosition = triangleVulkanGameObject.BaseGameObject.Transform.GlobalPosition;
-                    var gameObjectMaterial = triangleVulkanGameObject.BaseGameObject.Components.MeshRenderer!.Material;
-                    var vulkanMaterial = new VulkanMaterial(new(gameObjectMaterial.Tint.R / 255f, gameObjectMaterial.Tint.G / 255f, gameObjectMaterial.Tint.B / 255f), gameObjectMaterial.Roughness, gameObjectMaterial.Metallicness);
-                    VK.CommandPushConstants(commandBuffer, Pipelines.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Vertex, 0, (uint)sizeof(Vector3), &gameObjectPosition);
-                    VK.CommandPushConstants(commandBuffer, Pipelines.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Fragment, (uint)sizeof(Vector3), (uint)sizeof(VulkanMaterial), &vulkanMaterial);
-
-                    VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipelines.TriangleGraphicsPipelineLayout, 0, 1, new[] { triangleVulkanGameObject.DescriptorSet.NativeDescriptorSet }, 0, null);
-                    var vertexBuffer = triangleVulkanGameObject.VertexBuffer!.NativeBuffer;
-                    var offsets = (VkDeviceSize)0;
-                    VK.CommandBindVertexBuffers(commandBuffer, 0, 1, ref vertexBuffer, &offsets);
-                    VK.CommandBindIndexBuffer(commandBuffer, triangleVulkanGameObject.IndexBuffer!.NativeBuffer, 0, VkIndexType.Uint32);
-                    VK.CommandDrawIndexed(commandBuffer, (uint)triangleVulkanGameObject.IndexCount, 1, 0, 0, 0);
-                }
+                VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipelines.DepthPrepassGraphicsPipelineLayout, 0, 1, new[] { DepthPrePassDescriptorSets[CurrentFrameIndex].NativeDescriptorSet }, 0, null);
+                var vertexBuffer = triangleVulkanGameObject.VertexBuffer!.NativeBuffer;
+                var offsets = (VkDeviceSize)0;
+                VK.CommandBindVertexBuffers(commandBuffer, 0, 1, ref vertexBuffer, &offsets);
+                VK.CommandBindIndexBuffer(commandBuffer, triangleVulkanGameObject.IndexBuffer!.NativeBuffer, 0, VkIndexType.Uint32);
+                VK.CommandDrawIndexed(commandBuffer, (uint)triangleVulkanGameObject.IndexCount, 1, 0, 0, 0);
             }
 
-            if (lineVulkanGameObjects.Count > 0)
-            {
-                VK.CommandBindPipeline(commandBuffer, VkPipelineBindPoint.Graphics, Pipelines.LineGraphicsPipeline);
-                foreach (var lineVulkanGameObject in lineVulkanGameObjects)
-                {
-                    var position = Vector3.Zero;
-                    var material = lineVulkanGameObject.BaseGameObject.Components.MeshRenderer!.Material;
-                    var colour = new Vector3(material.Tint.R / 255f, material.Tint.G / 255f, material.Tint.B / 255f);
-                    VK.CommandPushConstants(commandBuffer, Pipelines.LineGraphicsPipelineLayout, VkShaderStageFlags.Fragment, 0, (uint)sizeof(Vector3), &colour);
-
-                    VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, Pipelines.LineGraphicsPipelineLayout, 0, 1, new[] { lineVulkanGameObject.DescriptorSet.NativeDescriptorSet }, 0, null);
-                    var vertexBuffer = lineVulkanGameObject.VertexBuffer!.NativeBuffer;
-                    var offsets = (VkDeviceSize)0;
-                    VK.CommandBindVertexBuffers(commandBuffer, 0, 1, ref vertexBuffer, &offsets);
-                    VK.CommandBindIndexBuffer(commandBuffer, lineVulkanGameObject.IndexBuffer!.NativeBuffer, 0, VkIndexType.Uint32);
-                    VK.CommandDrawIndexed(commandBuffer, (uint)lineVulkanGameObject.IndexCount, 1, 0, 0, 0);
-                }
-            }
-            
             VK.CommandEndRenderPass(commandBuffer);
-            VK.EndCommandBuffer(commandBuffer);
-
-            // run graphics queue
-            var waitSemaphore = ImageAvailableSemaphores[CurrentFrameIndex];
-            var waitDestinationStageMask = VkPipelineStageFlags.ColorAttachmentOutput;
-            var signalSemaphore = RenderFinishedSemaphores[CurrentFrameIndex];
-            var submitInfo = new VkSubmitInfo()
-            {
-                SType = VkStructureType.SubmitInfo,
-                WaitSemaphoreCount = 1,
-                WaitSemaphores = &waitSemaphore,
-                WaitDestinationStageMask = &waitDestinationStageMask,
-                CommandBufferCount = 1,
-                CommandBuffers = &commandBuffer,
-                SignalSemaphoreCount = 1,
-                SignalSemaphores = &signalSemaphore
-            };
-
-            VK.ResetFences(VulkanRenderer.Instance.Device.NativeDevice, 1, new[] { InFlightFences[CurrentFrameIndex] });
-            VK.QueueSubmit(VulkanRenderer.Instance.Device.GraphicsQueue, 1, new[] { submitInfo }, InFlightFences[CurrentFrameIndex]);
+            GraphicsCommandPool.SubmitCommandBuffer(true, commandBuffer/*, signalSemaphores: new[] { DepthPrePassFinishedSemaphores[CurrentFrameIndex] }*/);
         }
+
+        // final rendering
+        VkCommandBuffer renderingCommandBuffer;
+        {
+            // check if a previous frame is using this images (meaning there is a fence to wait on)
+            if (!ImagesInFlight[imageIndex].IsNull)
+                VK.WaitForFences(VulkanRenderer.Instance.Device.NativeDevice, 1, new[] { ImagesInFlight[imageIndex] }, true, ulong.MaxValue);
+
+            // mark the image as being used by this frame
+            ImagesInFlight[imageIndex] = InFlightFences[CurrentFrameIndex];
+
+            // TODO: temp
+            // create the command buffer for this frame
+            renderingCommandBuffer = GraphicsCommandPool.AllocateCommandBuffer(true, VkCommandBufferUsageFlags.OneTimeSubmit);
+
+            var clearValues = new VkClearValue[] { new VkClearColorValue(.05f, .05f, .05f, 0), new VkClearDepthStencilValue(1, 0) };
+            fixed (VkClearValue* clearValuePointers = clearValues)
+            {
+                var renderPassBeginInfo = new VkRenderPassBeginInfo()
+                {
+                    SType = VkStructureType.RenderPassBeginInfo,
+                    RenderPass = FinalRenderingRenderPass,
+                    Framebuffer = Swapchain.NativeFramebuffers![imageIndex],
+                    RenderArea = new VkRect2D(VkOffset2D.Zero, Swapchain.Extent),
+                    ClearValueCount =(uint)clearValues.Length,
+                    ClearValues = clearValuePointers
+                };
+
+                VK.CommandBeginRenderPass(renderingCommandBuffer, ref renderPassBeginInfo, VkSubpassContents.Inline);
+
+                if (triangleVulkanGameObjects.Count > 0)
+                {
+                    VK.CommandBindPipeline(renderingCommandBuffer, VkPipelineBindPoint.Graphics, Pipelines.TriangleGraphicsPipeline);
+                    foreach (var triangleVulkanGameObject in triangleVulkanGameObjects)
+                    {
+                        var gameObjectPosition = triangleVulkanGameObject.BaseGameObject.Transform.GlobalPosition;
+                        var gameObjectMaterial = triangleVulkanGameObject.BaseGameObject.Components.MeshRenderer!.Material;
+                        var vulkanMaterial = new VulkanMaterial(new(gameObjectMaterial.Tint.R / 255f, gameObjectMaterial.Tint.G / 255f, gameObjectMaterial.Tint.B / 255f), gameObjectMaterial.Roughness, gameObjectMaterial.Metallicness);
+                        VK.CommandPushConstants(renderingCommandBuffer, Pipelines.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Vertex, 0, (uint)sizeof(Vector3), &gameObjectPosition);
+                        VK.CommandPushConstants(renderingCommandBuffer, Pipelines.TriangleGraphicsPipelineLayout, VkShaderStageFlags.Fragment, (uint)sizeof(Vector3), (uint)sizeof(VulkanMaterial), &vulkanMaterial);
+
+                        VK.CommandBindDescriptorSets(renderingCommandBuffer, VkPipelineBindPoint.Graphics, Pipelines.TriangleGraphicsPipelineLayout, 0, 1, new[] { triangleVulkanGameObject.DescriptorSet.NativeDescriptorSet }, 0, null);
+                        var vertexBuffer = triangleVulkanGameObject.VertexBuffer!.NativeBuffer;
+                        var offsets = (VkDeviceSize)0;
+                        VK.CommandBindVertexBuffers(renderingCommandBuffer, 0, 1, ref vertexBuffer, &offsets);
+                        VK.CommandBindIndexBuffer(renderingCommandBuffer, triangleVulkanGameObject.IndexBuffer!.NativeBuffer, 0, VkIndexType.Uint32);
+                        VK.CommandDrawIndexed(renderingCommandBuffer, (uint)triangleVulkanGameObject.IndexCount, 1, 0, 0, 0);
+                    }
+                }
+
+                if (lineVulkanGameObjects.Count > 0)
+                {
+                    VK.CommandBindPipeline(renderingCommandBuffer, VkPipelineBindPoint.Graphics, Pipelines.LineGraphicsPipeline);
+                    foreach (var lineVulkanGameObject in lineVulkanGameObjects)
+                    {
+                        var material = lineVulkanGameObject.BaseGameObject.Components.MeshRenderer!.Material;
+                        var colour = new Vector3(material.Tint.R / 255f, material.Tint.G / 255f, material.Tint.B / 255f);
+                        VK.CommandPushConstants(renderingCommandBuffer, Pipelines.LineGraphicsPipelineLayout, VkShaderStageFlags.Fragment, 0, (uint)sizeof(Vector3), &colour);
+
+                        VK.CommandBindDescriptorSets(renderingCommandBuffer, VkPipelineBindPoint.Graphics, Pipelines.LineGraphicsPipelineLayout, 0, 1, new[] { lineVulkanGameObject.DescriptorSet.NativeDescriptorSet }, 0, null);
+                        var vertexBuffer = lineVulkanGameObject.VertexBuffer!.NativeBuffer;
+                        var offsets = (VkDeviceSize)0;
+                        VK.CommandBindVertexBuffers(renderingCommandBuffer, 0, 1, ref vertexBuffer, &offsets);
+                        VK.CommandBindIndexBuffer(renderingCommandBuffer, lineVulkanGameObject.IndexBuffer!.NativeBuffer, 0, VkIndexType.Uint32);
+                        VK.CommandDrawIndexed(renderingCommandBuffer, (uint)lineVulkanGameObject.IndexCount, 1, 0, 0, 0);
+                    }
+                }
+
+                VK.CommandEndRenderPass(renderingCommandBuffer);
+                VK.EndCommandBuffer(renderingCommandBuffer);
+
+                // run graphics queue
+                var waitSemaphore = ImageAvailableSemaphores[CurrentFrameIndex];
+                var waitDestinationStageMask = VkPipelineStageFlags.ColorAttachmentOutput;
+                var signalSemaphore = RenderFinishedSemaphores[CurrentFrameIndex];
+                var submitInfo = new VkSubmitInfo()
+                {
+                    SType = VkStructureType.SubmitInfo,
+                    WaitSemaphoreCount = 1,
+                    WaitSemaphores = &waitSemaphore,
+                    WaitDestinationStageMask = &waitDestinationStageMask,
+                    CommandBufferCount = 1,
+                    CommandBuffers = &renderingCommandBuffer,
+                    SignalSemaphoreCount = 1,
+                    SignalSemaphores = &signalSemaphore
+                };
+
+                VK.ResetFences(VulkanRenderer.Instance.Device.NativeDevice, 1, new[] { InFlightFences[CurrentFrameIndex] });
+                VK.QueueSubmit(VulkanRenderer.Instance.Device.GraphicsQueue, 1, new[] { submitInfo }, InFlightFences[CurrentFrameIndex]);
+            }
+        }
+
+        // presentation
 
         // TODO: fix this, skipping this doesn't allow the swapchain the return the acquired image
-        if (presentRenderTarget)
-        {
+        //if (presentRenderTarget)
+        //{
             // run presentation queue
             Swapchain.QueuePresent(RenderFinishedSemaphores[CurrentFrameIndex], imageIndex);
-        }
+        //}
 
         // wait for the queue to finish to stop overloading the GPU with work
         VK.QueueWaitIdle(VulkanRenderer.Instance.Device.GraphicsQueue);
@@ -237,7 +292,7 @@ public unsafe class VulkanCamera : RendererCameraBase
         CurrentFrameIndex = (CurrentFrameIndex + 1) % ConcurrentFrames;
 
         // TODO: temp
-        GraphicsCommandPool.FreeCommandBuffers(new[] { commandBuffer });
+        GraphicsCommandPool.FreeCommandBuffers(new[] { renderingCommandBuffer });
     }
 
     /// <inheritdoc/>
@@ -247,6 +302,7 @@ public unsafe class VulkanCamera : RendererCameraBase
 
         for (int i = 0; i < ConcurrentFrames; i++)
         {
+            VK.DestroySemaphore(VulkanRenderer.Instance.Device.NativeDevice, DepthPrePassFinishedSemaphores[i], null);
             VK.DestroySemaphore(VulkanRenderer.Instance.Device.NativeDevice, RenderFinishedSemaphores[i], null);
             VK.DestroySemaphore(VulkanRenderer.Instance.Device.NativeDevice, ImageAvailableSemaphores[i], null);
             VK.DestroyFence(VulkanRenderer.Instance.Device.NativeDevice, InFlightFences[i], null);
@@ -268,8 +324,10 @@ public unsafe class VulkanCamera : RendererCameraBase
         CleanUpSwapchain();
 
         Swapchain = new(false, new((uint)this.BaseCamera.Resolution.X, (uint)this.BaseCamera.Resolution.Y)); // TODO: retrieve vsync from settings file
-        CreateRenderPass();
-        Swapchain.CreateFramebuffers(NativeRenderPass);
+        CreateRenderPasses();
+        Swapchain.CreateFramebuffers(FinalRenderingRenderPass);
+        CreateDepthPrePassImages();
+        CreateDepthPrePassFramebuffers();
 
         Pipelines = new(this); // TODO: use dynamic state instead of recreating the entire pipeline
 
@@ -288,85 +346,58 @@ public unsafe class VulkanCamera : RendererCameraBase
         ComputeCommandPool.FreeCommandBuffers(new[] { GenerateFrustumsCommandBuffer });
 
         Pipelines.Dispose();
-        VK.DestroyRenderPass(VulkanRenderer.Instance.Device.NativeDevice, NativeRenderPass, null);
+        VK.DestroyRenderPass(VulkanRenderer.Instance.Device.NativeDevice, DepthPrePassRenderPass, null);
+        VK.DestroyRenderPass(VulkanRenderer.Instance.Device.NativeDevice, FinalRenderingRenderPass, null);
         Swapchain.Dispose();
+
+        DisposeDepthPrePassImages();
+        DisposeDepthPrePassFramebuffers();
 
         FrustumsBuffer.Dispose();
     }
 
-    /// <summary>Creates the render pass.</summary>
-    /// <exception cref="ApplicationException">Thrown if the render pass couldn't be created.</exception>
-    private void CreateRenderPass()
+    /// <summary>Creates the render passes.</summary>
+    /// <exception cref="ApplicationException">Thrown if a render pass couldn't be created.</exception>
+    private void CreateRenderPasses()
     {
-        var colourAttachmentDescription = new VkAttachmentDescription()
+        // depth pre-pass
         {
-            Format = Swapchain.ImageFormat,
-            Samples = VulkanUtilities.ConvertSampleCount(RenderingSettings.Instance.SampleCount),
-            LoadOp = VkAttachmentLoadOp.Clear,
-            StoreOp = VkAttachmentStoreOp.Store,
-            StencilLoadOp = VkAttachmentLoadOp.DontCare,
-            StencilStoreOp = VkAttachmentStoreOp.DontCare,
-            InitialLayout = VkImageLayout.Undefined,
-            FinalLayout = VkImageLayout.ColorAttachmentOptimal
-        };
+            var depthAttachmentDescription = new VkAttachmentDescription()
+            {
+                Format = VulkanSwapchain.GetDepthFormat(),
+                Samples = VulkanUtilities.ConvertSampleCount(RenderingSettings.Instance.SampleCount),
+                LoadOp = VkAttachmentLoadOp.Clear,
+                StoreOp = VkAttachmentStoreOp.Store,
+                StencilLoadOp = VkAttachmentLoadOp.DontCare,
+                StencilStoreOp = VkAttachmentStoreOp.DontCare,
+                InitialLayout = VkImageLayout.Undefined,
+                FinalLayout = VkImageLayout.ShaderReadOnlyOptimal
+            };
 
-        var depthAttachmentDescription = new VkAttachmentDescription()
-        {
-            Format = VulkanSwapchain.GetDepthFormat(),
-            Samples = VulkanUtilities.ConvertSampleCount(RenderingSettings.Instance.SampleCount),
-            LoadOp = VkAttachmentLoadOp.Clear,
-            StoreOp = VkAttachmentStoreOp.Store,
-            StencilLoadOp = VkAttachmentLoadOp.DontCare,
-            StencilStoreOp = VkAttachmentStoreOp.DontCare,
-            InitialLayout = VkImageLayout.Undefined,
-            FinalLayout = VkImageLayout.DepthStencilAttachmentOptimal
-        };
+            var depthAttachmentReference = new VkAttachmentReference() { Attachment = 0, Layout = VkImageLayout.DepthStencilAttachmentOptimal };
 
-        var colourAttachmentResolveDescription = new VkAttachmentDescription()
-        {
-            Format = Swapchain.ImageFormat,
-            Samples = VkSampleCountFlags.Count1,
-            LoadOp = VkAttachmentLoadOp.DontCare,
-            StoreOp = VkAttachmentStoreOp.Store,
-            StencilLoadOp = VkAttachmentLoadOp.DontCare,
-            StencilStoreOp = VkAttachmentStoreOp.DontCare,
-            InitialLayout = VkImageLayout.Undefined,
-            FinalLayout = VkImageLayout.PresentSourceKhr
-        };
+            var subpassDescription = new VkSubpassDescription()
+            {
+                PipelineBindPoint = VkPipelineBindPoint.Graphics,
+                DepthStencilAttachment = &depthAttachmentReference
+            };
 
-        var colourAttachmentReference = new VkAttachmentReference() { Attachment = 0, Layout = VkImageLayout.ColorAttachmentOptimal };
-        var depthAttachmentReference = new VkAttachmentReference() { Attachment = 1, Layout = VkImageLayout.DepthStencilAttachmentOptimal };
-        var colourAttachmentResolveReference = new VkAttachmentReference() { Attachment = 2, Layout = VkImageLayout.ColorAttachmentOptimal };
+            var subpassDependency = new VkSubpassDependency()
+            {
+                SourceSubpass = VK.SubpassExternal,
+                DestinationSubpass = 0,
+                SourceStageMask = VkPipelineStageFlags.BottomOfPipe,
+                SourceAccessMask = VkAccessFlags.MemoryRead,
+                DestinationStageMask = VkPipelineStageFlags.ColorAttachmentOutput,
+                DestinationAccessMask = VkAccessFlags.ColorAttachmentRead | VkAccessFlags.ColorAttachmentWrite,
+                DependencyFlags = VkDependencyFlags.ByRegion
+            };
 
-        var subpassDescription = new VkSubpassDescription()
-        {
-            PipelineBindPoint = VkPipelineBindPoint.Graphics,
-            ColorAttachmentCount = 1,
-            ColorAttachments = &colourAttachmentReference,
-            DepthStencilAttachment = &depthAttachmentReference,
-            ResolveAttachments = &colourAttachmentResolveReference
-        };
-
-        var subpassDependency = new VkSubpassDependency()
-        {
-            SourceSubpass = VK.SubpassExternal,
-            DestinationSubpass = 0,
-            SourceStageMask = VkPipelineStageFlags.ColorAttachmentOutput,
-            SourceAccessMask = 0,
-            DestinationStageMask = VkPipelineStageFlags.ColorAttachmentOutput,
-            DestinationAccessMask = VkAccessFlags.ColorAttachmentWrite,
-            DependencyFlags = 0
-        };
-
-        var attachments = new[] { colourAttachmentDescription, depthAttachmentDescription, colourAttachmentResolveDescription };
-
-        fixed (VkAttachmentDescription* attachmentsPointer = attachments)
-        {
             var renderPassCreateInfo = new VkRenderPassCreateInfo()
             {
                 SType = VkStructureType.RenderPassCreateInfo,
-                AttachmentCount = (uint)attachments.Length,
-                Attachments = attachmentsPointer,
+                AttachmentCount = 1,
+                Attachments = &depthAttachmentDescription,
                 SubpassCount = 1,
                 Subpasses = &subpassDescription,
                 DependencyCount = 1,
@@ -374,15 +405,145 @@ public unsafe class VulkanCamera : RendererCameraBase
             };
 
             if (VK.CreateRenderPass(VulkanRenderer.Instance.Device.NativeDevice, ref renderPassCreateInfo, null, out var nativeRenderPass) != VkResult.Success)
-                throw new ApplicationException("Failed to create render pass.").Log(LogSeverity.Fatal);
-            NativeRenderPass = nativeRenderPass;
+                throw new ApplicationException("Failed to create rendering render pass.").Log(LogSeverity.Fatal);
+            DepthPrePassRenderPass = nativeRenderPass;
         }
+
+        // final rendering
+        {
+            var colourAttachmentDescription = new VkAttachmentDescription()
+            {
+                Format = Swapchain.ImageFormat,
+                Samples = VulkanUtilities.ConvertSampleCount(RenderingSettings.Instance.SampleCount),
+                LoadOp = VkAttachmentLoadOp.Clear,
+                StoreOp = VkAttachmentStoreOp.Store,
+                StencilLoadOp = VkAttachmentLoadOp.DontCare,
+                StencilStoreOp = VkAttachmentStoreOp.DontCare,
+                InitialLayout = VkImageLayout.Undefined,
+                FinalLayout = VkImageLayout.ColorAttachmentOptimal
+            };
+
+            var depthAttachmentDescription = new VkAttachmentDescription()
+            {
+                Format = VulkanSwapchain.GetDepthFormat(),
+                Samples = VulkanUtilities.ConvertSampleCount(RenderingSettings.Instance.SampleCount),
+                LoadOp = VkAttachmentLoadOp.Clear,
+                StoreOp = VkAttachmentStoreOp.Store,
+                StencilLoadOp = VkAttachmentLoadOp.DontCare,
+                StencilStoreOp = VkAttachmentStoreOp.DontCare,
+                InitialLayout = VkImageLayout.Undefined,
+                FinalLayout = VkImageLayout.DepthStencilAttachmentOptimal
+            };
+
+            var colourAttachmentResolveDescription = new VkAttachmentDescription()
+            {
+                Format = Swapchain.ImageFormat,
+                Samples = VkSampleCountFlags.Count1,
+                LoadOp = VkAttachmentLoadOp.DontCare,
+                StoreOp = VkAttachmentStoreOp.Store,
+                StencilLoadOp = VkAttachmentLoadOp.DontCare,
+                StencilStoreOp = VkAttachmentStoreOp.DontCare,
+                InitialLayout = VkImageLayout.Undefined,
+                FinalLayout = VkImageLayout.PresentSourceKhr
+            };
+
+            var colourAttachmentReference = new VkAttachmentReference() { Attachment = 0, Layout = VkImageLayout.ColorAttachmentOptimal };
+            var depthAttachmentReference = new VkAttachmentReference() { Attachment = 1, Layout = VkImageLayout.DepthStencilAttachmentOptimal };
+            var colourAttachmentResolveReference = new VkAttachmentReference() { Attachment = 2, Layout = VkImageLayout.ColorAttachmentOptimal };
+
+            var subpassDescription = new VkSubpassDescription()
+            {
+                PipelineBindPoint = VkPipelineBindPoint.Graphics,
+                ColorAttachmentCount = 1,
+                ColorAttachments = &colourAttachmentReference,
+                DepthStencilAttachment = &depthAttachmentReference,
+                ResolveAttachments = &colourAttachmentResolveReference
+            };
+
+            var subpassDependency = new VkSubpassDependency()
+            {
+                SourceSubpass = VK.SubpassExternal,
+                DestinationSubpass = 0,
+                SourceStageMask = VkPipelineStageFlags.ColorAttachmentOutput,
+                SourceAccessMask = 0,
+                DestinationStageMask = VkPipelineStageFlags.ColorAttachmentOutput,
+                DestinationAccessMask = VkAccessFlags.ColorAttachmentWrite,
+                DependencyFlags = 0
+            };
+
+            var attachments = new[] { colourAttachmentDescription, depthAttachmentDescription, colourAttachmentResolveDescription };
+
+            fixed (VkAttachmentDescription* attachmentsPointer = attachments)
+            {
+                var renderPassCreateInfo = new VkRenderPassCreateInfo()
+                {
+                    SType = VkStructureType.RenderPassCreateInfo,
+                    AttachmentCount = (uint)attachments.Length,
+                    Attachments = attachmentsPointer,
+                    SubpassCount = 1,
+                    Subpasses = &subpassDescription,
+                    DependencyCount = 1,
+                    Dependencies = &subpassDependency
+                };
+
+                if (VK.CreateRenderPass(VulkanRenderer.Instance.Device.NativeDevice, ref renderPassCreateInfo, null, out var nativeRenderPass) != VkResult.Success)
+                    throw new ApplicationException("Failed to create render pass.").Log(LogSeverity.Fatal);
+                FinalRenderingRenderPass = nativeRenderPass;
+            }
+        }
+    }
+
+    /// <summary>Creates the depth pre-pass textures.</summary>
+    private void CreateDepthPrePassImages()
+    {
+        DepthPrePassTextures = new DepthTexture[ConcurrentFrames];
+        for (int i = 0; i < ConcurrentFrames; i++)
+            DepthPrePassTextures[i] = new DepthTexture(Swapchain.Extent.Width, Swapchain.Extent.Height, RenderingSettings.Instance.SampleCount);
+    }
+
+    /// <summary>Creates the depth pre-pass framebuffers.</summary>
+    private void CreateDepthPrePassFramebuffers()
+    {
+        DepthPrePassFramebuffers = new VkFramebuffer[ConcurrentFrames];
+        for (int i = 0; i < ConcurrentFrames; i++)
+        {
+            var attachment = (DepthPrePassTextures[i].RendererTexture as VulkanTexture)!.NativeImageView;
+
+            var framebufferCreateInfo = new VkFramebufferCreateInfo
+            {
+                SType = VkStructureType.FramebufferCreateInfo,
+                RenderPass = DepthPrePassRenderPass,
+                AttachmentCount = 1,
+                Attachments = &attachment,
+                Width = Swapchain.Extent.Width,
+                Height = Swapchain.Extent.Height,
+                Layers = 1
+            };
+
+            if (VK.CreateFramebuffer(VulkanRenderer.Instance.Device.NativeDevice, ref framebufferCreateInfo, null, out DepthPrePassFramebuffers[i]) != VkResult.Success)
+                throw new Exception("Failed to create depth pre-pass framebuffer").Log(LogSeverity.Fatal);
+        }
+    }
+
+    /// <summary>Disposes the depth pre-pass textures.</summary>
+    private void DisposeDepthPrePassImages()
+    {
+        for (int i = 0; i < ConcurrentFrames; i++)
+            DepthPrePassTextures[i].Dispose();
+    }
+
+    /// <summary>Disposes the depth pre-pass framebuffers.</summary>
+    private void DisposeDepthPrePassFramebuffers()
+    {
+        for (int i = 0; i < ConcurrentFrames; i++)
+            VK.DestroyFramebuffer(VulkanRenderer.Instance.Device.NativeDevice, DepthPrePassFramebuffers[i], null);
     }
 
     /// <summary>Create the semaphores and fences.</summary>
     /// <exception cref="ApplicationException">Thrown if the semaphores or fences couldn't be created.</exception>
     private void CreateSyncObjects()
     {
+        DepthPrePassFinishedSemaphores = new VkSemaphore[ConcurrentFrames];
         ImageAvailableSemaphores = new VkSemaphore[ConcurrentFrames];
         RenderFinishedSemaphores = new VkSemaphore[ConcurrentFrames];
         InFlightFences = new VkFence[ConcurrentFrames];
@@ -401,7 +562,8 @@ public unsafe class VulkanCamera : RendererCameraBase
                 Flags = VkFenceCreateFlags.Signaled
             };
 
-            if (VK.CreateSemaphore(VulkanRenderer.Instance.Device.NativeDevice, ref semaphoreCreateInfo, null, out ImageAvailableSemaphores[i]) != VkResult.Success ||
+            if (VK.CreateSemaphore(VulkanRenderer.Instance.Device.NativeDevice, ref semaphoreCreateInfo, null, out DepthPrePassFinishedSemaphores[i]) != VkResult.Success ||
+                VK.CreateSemaphore(VulkanRenderer.Instance.Device.NativeDevice, ref semaphoreCreateInfo, null, out ImageAvailableSemaphores[i]) != VkResult.Success ||
                 VK.CreateSemaphore(VulkanRenderer.Instance.Device.NativeDevice, ref semaphoreCreateInfo, null, out RenderFinishedSemaphores[i]) != VkResult.Success)
                 throw new ApplicationException("Failed to create semaphores.").Log(LogSeverity.Fatal);
 
@@ -433,6 +595,19 @@ public unsafe class VulkanCamera : RendererCameraBase
                 .Bind(1, &bufferInfo2, VkDescriptorType.StorageBuffer)
                 .UpdateBindings();
         }
+
+        // depth pre-pass
+        DepthPrePassDescriptorSets = new VulkanDescriptorSet[ConcurrentFrames];
+        for (int i = 0; i < ConcurrentFrames; i++)
+        {
+            DepthPrePassDescriptorSets[i] = VulkanRenderer.Instance.DepthPrePassDescriptorPool.GetDescriptorSet();
+
+            var bufferInfo = new VkDescriptorBufferInfo() { Buffer = ParametersBuffer.NativeBuffer, Offset = 0, Range = ParametersBuffer.Size };
+
+            DepthPrePassDescriptorSets[i]
+                .Bind(0, &bufferInfo, VkDescriptorType.UniformBuffer)
+                .UpdateBindings();
+        }
     }
 
     /// <summary>Creates the command buffers required for the tiled rendering.</summary>
@@ -442,8 +617,8 @@ public unsafe class VulkanCamera : RendererCameraBase
         {
             GenerateFrustumsCommandBuffer = ComputeCommandPool.AllocateCommandBuffer(true);
 
-            VK.CommandBindPipeline(GenerateFrustumsCommandBuffer, VkPipelineBindPoint.Compute, Pipelines.GenerateFrustumsPipeline);
-            VK.CommandBindDescriptorSets(GenerateFrustumsCommandBuffer, VkPipelineBindPoint.Compute, Pipelines.GenerateFrustumsPipelineLayout, 0, 1, new[] { GenerateFrustumsDescriptorSet.NativeDescriptorSet }, 0, null);
+            VK.CommandBindPipeline(GenerateFrustumsCommandBuffer, VkPipelineBindPoint.Compute, Pipelines.GenerateFrustumsComputePipeline);
+            VK.CommandBindDescriptorSets(GenerateFrustumsCommandBuffer, VkPipelineBindPoint.Compute, Pipelines.GenerateFrustumsComputePipelineLayout, 0, 1, new[] { GenerateFrustumsDescriptorSet.NativeDescriptorSet }, 0, null);
             VK.CommandDispatch(GenerateFrustumsCommandBuffer, NumberOfTiles.X, NumberOfTiles.Y, 1);
 
             VK.EndCommandBuffer(GenerateFrustumsCommandBuffer);

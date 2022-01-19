@@ -11,6 +11,9 @@ internal struct ShaderStages
     /// <summary>The shader stage for the generate frustums compute shader.</summary>
     public VkPipelineShaderStageCreateInfo GenerateFrustumsShader;
 
+    /// <summary>The shader stage for the depth pre-pass shader.</summary>
+    public VkPipelineShaderStageCreateInfo DepthShader;
+
     /// <summary>The shader stage for the PBR vertex shader.</summary>
     public VkPipelineShaderStageCreateInfo PBRVertexShader;
 

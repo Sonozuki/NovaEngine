@@ -92,6 +92,9 @@ public unsafe class VulkanRenderer : IRenderer
     /// <summary>The descriptor pool for descriptor sets for the generate frustums compute pipeline.</summary>
     internal VulkanDescriptorPool GenerateFrustumsDescriptorPool { get; private set; }
 
+    /// <summary>The descriptor pool for descriptor sets for the depth pre-pass pipeline.</summary>
+    internal VulkanDescriptorPool DepthPrePassDescriptorPool { get; private set; }
+
     /// <summary>The descriptor pool for descriptor sets for the graphics pipeline.</summary>
     internal VulkanDescriptorPool GraphicsDescriptorPool { get; private set; }
 
@@ -123,8 +126,9 @@ public unsafe class VulkanRenderer : IRenderer
         CreateSurface();
         Device = new(PickPhysicalDevice());
 
-        CreateDescriptorSetLayout();
+        CreateDescriptorSetLayouts();
         GenerateFrustumsDescriptorPool = new(DescriptorSetLayouts.GenerateFrustumsDescriptorSetLayout);
+        DepthPrePassDescriptorPool = new(DescriptorSetLayouts.DepthPrepassDescriptorSetLayout);
         GraphicsDescriptorPool = new(DescriptorSetLayouts.RenderingDescriptorSetLayout);
 
         // TODO: temp
@@ -146,6 +150,7 @@ public unsafe class VulkanRenderer : IRenderer
         LightsBuffer.Dispose();
 
         GenerateFrustumsDescriptorPool.Dispose();
+        DepthPrePassDescriptorPool.Dispose();
         GraphicsDescriptorPool.Dispose();
         DescriptorSetLayouts.Dispose();
 
@@ -315,7 +320,7 @@ public unsafe class VulkanRenderer : IRenderer
 
     /// <summary>Creates the descriptor set layouts.</summary>
     /// <exception cref="ApplicationException">Thrown if a descriptor set layout couldn't be created.</exception>
-    private void CreateDescriptorSetLayout()
+    private void CreateDescriptorSetLayouts()
     {
         // generate frustums
         {
@@ -339,12 +344,27 @@ public unsafe class VulkanRenderer : IRenderer
             }
         }
 
+        // depth pre-pass
+        {
+            var binding = new VkDescriptorSetLayoutBinding() { Binding = 0, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Vertex }; // parameters uniform
+
+            var descriptorSetLayoutCreateInfo = new VkDescriptorSetLayoutCreateInfo
+            {
+                SType = VkStructureType.DescriptorSetLayoutCreateInfo,
+                BindingCount = 1,
+                Bindings = &binding
+            };
+
+            if (VK.CreateDescriptorSetLayout(Device.NativeDevice, ref descriptorSetLayoutCreateInfo, null, out DescriptorSetLayouts.DepthPrepassDescriptorSetLayout) != VkResult.Success)
+                throw new ApplicationException("Failed to create depth pre-pass descriptor set layout.").Log(LogSeverity.Fatal);
+        }
+
         // final rendering
         {
             var bindings = new VkDescriptorSetLayoutBinding[]
             {
-                new() { Binding = 0, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Vertex | VkShaderStageFlags.Fragment },
-                new() { Binding = 1, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Fragment }
+                new() { Binding = 0, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Vertex | VkShaderStageFlags.Fragment }, // parameters buffer
+                new() { Binding = 1, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Fragment } // lights buffer
             };
 
             fixed (VkDescriptorSetLayoutBinding* bindingsPointer = bindings)
