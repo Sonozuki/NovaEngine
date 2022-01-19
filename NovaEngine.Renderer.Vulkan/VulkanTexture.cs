@@ -183,7 +183,7 @@ public unsafe class VulkanTexture : RendererTextureBase
         TransitionImageLayout(VkImageLayout.Undefined, VkImageLayout.TransferSourceOptimal, VkPipelineStageFlags.Transfer, VkPipelineStageFlags.Transfer);
 
         // create a staging buffer and copy the texture to it
-        var stagingBuffer = new VulkanBuffer(bufferSize, VkBufferUsageFlags.TransferSource | VkBufferUsageFlags.TransferDestination, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
+        using var stagingBuffer = new VulkanBuffer(bufferSize, VkBufferUsageFlags.TransferSource | VkBufferUsageFlags.TransferDestination, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
         stagingBuffer.CopyFrom(this);
 
         // get the pixel data from the staging buffer
@@ -215,9 +215,6 @@ public unsafe class VulkanTexture : RendererTextureBase
         TransitionImageLayout(VkImageLayout.TransferSourceOptimal, VkImageLayout.TransferDestinationOptimal, VkPipelineStageFlags.Transfer, VkPipelineStageFlags.Transfer);
         stagingBuffer.CopyTo(this);
         GenerateMipChain();
-
-        // clean up resources
-        stagingBuffer.Dispose();
     }
 
     /// <inheritdoc/>
