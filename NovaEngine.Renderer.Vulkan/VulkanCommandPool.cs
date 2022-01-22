@@ -92,12 +92,13 @@ internal unsafe class VulkanCommandPool : IDisposable
     /// <summary>Submits and frees a command buffer.</summary>
     /// <param name="endCommandBuffer">Whether the command buffer should stop recording commands.</param>
     /// <param name="commandBuffer">The command buffer to submit and free.</param>
+    /// <param name="freeCommandBuffer">Whether the command buffer should be freed after it has been submitted.</param>
     /// <param name="waitSemaphores">The semaphores to wait on before executing the command buffer.</param>
     /// <param name="waitDestinationStageMask">The pipeline stages at which each corresponding semaphore wait will occur.</param>
     /// <param name="signalSemaphores">The semaphores to signal when the command buffer finishes execution.</param>
     /// <param name="signalFence">The fence to signal when the command buffer finishes execution.</param>
     /// <exception cref="ApplicationException">Thrown if the command buffer couldn't be ended, submited, or the queue couldn't be waited.</exception>
-    public void SubmitCommandBuffer(bool endCommandBuffer, VkCommandBuffer commandBuffer, VkSemaphore[]? waitSemaphores = null, VkPipelineStageFlags[]? waitDestinationStageMask = null, VkSemaphore[]? signalSemaphores = null, VkFence? signalFence = null)
+    public void SubmitCommandBuffer(bool endCommandBuffer, VkCommandBuffer commandBuffer, bool freeCommandBuffer = true, VkSemaphore[]? waitSemaphores = null, VkPipelineStageFlags[]? waitDestinationStageMask = null, VkSemaphore[]? signalSemaphores = null, VkFence? signalFence = null)
     {
         // end recording commands
         if (endCommandBuffer)
@@ -132,7 +133,8 @@ internal unsafe class VulkanCommandPool : IDisposable
         }
 
         // free command buffer
-        VK.FreeCommandBuffers(VulkanRenderer.Instance.Device.NativeDevice, NativeCommandPool, 1, new[] { commandBuffer });
+        if (freeCommandBuffer)
+            VK.FreeCommandBuffers(VulkanRenderer.Instance.Device.NativeDevice, NativeCommandPool, 1, new[] { commandBuffer });
     }
 
     /// <summary>Frees command buffers.</summary>
