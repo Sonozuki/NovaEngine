@@ -102,7 +102,7 @@ internal unsafe class VulkanBuffer : IDisposable
         else
         {
             // copy data to buffer using a staging buffer
-            using var stagingBuffer = new VulkanBuffer(sizeof(T), VkBufferUsageFlags.TransferSource, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
+            using var stagingBuffer = new VulkanBuffer(sizeof(T), VkBufferUsageFlags.TransferSource | VkBufferUsageFlags.TransferDestination, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
             stagingBuffer.CopyFrom(data);
             stagingBuffer.CopyTo(this);
         }
@@ -130,7 +130,7 @@ internal unsafe class VulkanBuffer : IDisposable
         else
         {
             // copy data to buffer using staging buffer
-            using var stagingBuffer = new VulkanBuffer(data.Length * sizeof(T), VkBufferUsageFlags.TransferSource, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
+            using var stagingBuffer = new VulkanBuffer(data.Length * sizeof(T), VkBufferUsageFlags.TransferSource | VkBufferUsageFlags.TransferDestination, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
             stagingBuffer.CopyFrom(data);
             stagingBuffer.CopyTo(this);
         }
@@ -191,7 +191,7 @@ internal unsafe class VulkanBuffer : IDisposable
         else
         {
             // copy data from buffer using staging buffer
-            using var stagingBuffer = new VulkanBuffer(data.Length * sizeof(T), VkBufferUsageFlags.TransferDestination, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
+            using var stagingBuffer = new VulkanBuffer(data.Length * sizeof(T), VkBufferUsageFlags.TransferSource | VkBufferUsageFlags.TransferDestination, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
             stagingBuffer.CopyFrom(this);
             stagingBuffer.CopyTo(data);
         }
