@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Maths;
 
 /// <summary>Represents a quaternion using double-precision floating-point numbers.</summary>
-public struct QuaternionD
+public struct QuaternionD : IEquatable<QuaternionD>
 {
     /*********
     ** Fields
