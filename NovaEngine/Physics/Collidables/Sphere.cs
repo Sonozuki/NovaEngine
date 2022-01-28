@@ -61,5 +61,5 @@ internal class Sphere : ICollidable
     }
 
     /// <inheritdoc/>
-    public Vector3 CalculateInertia(float inverseMass) => new(2.5f * inverseMass / Radius * Radius);
+    public Vector3 CalculateInertia(float inverseMass) => new(2.5f * inverseMass / (Radius * Radius));
 }
