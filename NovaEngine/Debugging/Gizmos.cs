@@ -18,18 +18,21 @@ public static class Gizmos
     /// <param name="rotation">The rotation of the cube. If <see langword="null"/>, then <see cref="Quaternion.Identity"/> will be used.</param>
     /// <param name="scale">The scale of the cube. If <see langword="null"/>, then <see cref="Vector3.One"/> will be used.</param>
     /// <param name="colour">The colour of the cube. If <see langword="null"/>, then <see cref="DefaultColour"/> will be used.</param>
+    [Conditional("DEBUG")]
     public static void DrawCube(Vector3 position, Quaternion? rotation = null, Vector3? scale = null, Colour? colour = null) => SceneManager.GizmosScene.AddCube(position, rotation ?? Quaternion.Identity, scale ?? Vector3.One, colour ?? DefaultColour);
 
     /// <summary>Draws a sphere.</summary>
     /// <param name="position">The position of the centre of the sphere.</param>
     /// <param name="radius">The radius of the sphere. If <see langword="null"/>, then 0.5 will be used.</param>
     /// <param name="colour">The colour of the sphere. If <see langword="null"/>, then <see cref="DefaultColour"/> will be used.</param>
+    [Conditional("DEBUG")]
     public static void DrawSphere(Vector3 position, float? radius = null, Colour? colour = null) => SceneManager.GizmosScene.AddSphere(position, radius ?? .5f, colour ?? DefaultColour);
 
     /// <summary>Draws a line.</summary>
     /// <param name="point1">The first point of the line.</param>
     /// <param name="point2">The second point of the line.</param>
     /// <param name="colour">The colour of the line. If <see langword="null"/>, then <see cref="DefaultColour"/> will be used.</param>
+    [Conditional("DEBUG")]
     public static void DrawLine(Vector3 point1, Vector3 point2, Colour? colour = null) => SceneManager.GizmosScene.AddLine(point1, point2, colour ?? DefaultColour);
 
     /// <summary>Draws a line.</summary>
@@ -37,11 +40,13 @@ public static class Gizmos
     /// <param name="direction">The direction from <paramref name="position"/> to the second point.</param>
     /// <param name="distance">The distance between the two points.</param>
     /// <param name="colour">The colour of the line. If <see langword="null"/>, then <see cref="DefaultColour"/> will be used.</param>
+    [Conditional("DEBUG")]
     public static void DrawLine(Vector3 position, Vector3 direction, float distance, Colour? colour = null) => DrawLine(position, position + direction.Normalised * distance, colour);
 
     /// <summary>Draws a frustum.</summary>
     /// <param name="camera">The camera whose view frustum should be drawn.</param>
     /// <param name="colour">The colour of the frustum. If <see langword="null"/>, then <see cref="DefaultColour"/> will be used.</param>
+    [Conditional("DEBUG")]
     public static void DrawCameraFrustum(Camera camera, Colour? colour = null)
     {
         if (camera.Projection == CameraProjection.Perspective)
@@ -58,6 +63,7 @@ public static class Gizmos
     /// <param name="nearPlane">The distance from the tip to the near plane of the frustum.</param>
     /// <param name="farPlane">The distance from the tip to the far plane of the frustum.</param>
     /// <param name="colour">The colour of the frustum. If <see langword="null"/>, then <see cref="DefaultColour"/> will be used.</param>
+    [Conditional("DEBUG")]
     public static void DrawPerspectiveFrustum(Vector3 position, Quaternion rotation, float fov, float aspectRatio, float nearPlane, float farPlane, Colour? colour = null)
     {
         var points = Utilities.CalculatePerspectiveFrustumCorners(position, rotation, fov, aspectRatio, nearPlane, farPlane);
@@ -72,6 +78,7 @@ public static class Gizmos
     /// <param name="nearPlane">The distance from the tip to the near plane of the frustum.</param>
     /// <param name="farPlane">The distance from the tip to the far plane of the frustum.</param>
     /// <param name="colour">The colour of the frustum. If <see langword="null"/>, then <see cref="DefaultColour"/> will be used.</param>
+    [Conditional("DEBUG")]
     public static void DrawOrthographicFrustum(Vector3 position, Quaternion rotation, float width, float height, float nearPlane, float farPlane, Colour? colour = null)
     {
         var points = Utilities.CalculateOrthographicFrustumCorners(position, rotation, width, height, nearPlane, farPlane);
@@ -86,7 +93,6 @@ public static class Gizmos
     /// <param name="points">The eight points to draw the frustum from.</param>
     /// <param name="colour">The colour of the lines.</param>
     /// <remarks>It's the callers responsibility to ensure <paramref name="points"/> contains eight points, the points are assumed to be the following order:<br/>[0] far top left<br/>[1] far top right<br/>[2] far bottom left<br/>[3] far bottom right<br/>[4] near top left<br/>[5] near top right<br/>[6] near bottom left<br/>[7] near bottom right</remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void DrawEightPointFrustum(Vector3[] points, Colour colour)
     {
         // far plane outline
