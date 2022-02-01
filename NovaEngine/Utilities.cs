@@ -30,7 +30,7 @@ public static class Utilities
         var rightNearPlane = right * xFactor * nearPlane;
         var upNearPlane = up * yFactor * nearPlane;
 
-        return new Vector3[]
+        return new[]
         {
             position + forwardFarPlane - rightFarPlane + upFarPlane, // far top left
             position + forwardFarPlane + rightFarPlane + upFarPlane, // far top right
@@ -65,7 +65,7 @@ public static class Utilities
         var rightPlane = right * halfWidth;
         var upPlane = up * halfHeight;
 
-        return new Vector3[]
+        return new[]
         {
             position + forwardFarPlane - rightPlane + upPlane, // far top left
             position + forwardFarPlane + rightPlane + upPlane, // far top right
