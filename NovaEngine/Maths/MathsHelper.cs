@@ -27,6 +27,7 @@ public static class MathsHelper
     /// <param name="value2">The destination value.</param>
     /// <param name="amount">The amount to interpolate between <paramref name="value1"/> and <paramref name="value2"/>.</param>
     /// <returns>The interpolated value.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float Lerp(float value1, float value2, float amount) => amount * (value2 - value1) + value1;
 
     /// <summary>Linearly interpolates between two values.</summary>
@@ -34,6 +35,7 @@ public static class MathsHelper
     /// <param name="value2">The destination value.</param>
     /// <param name="amount">The amount to interpolate between <paramref name="value1"/> and <paramref name="value2"/>.</param>
     /// <returns>The interpolated value.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double Lerp(double value1, double value2, double amount) => amount * (value2 - value1) + value1;
 
     /// <summary>Linearly interpolates between two values.</summary>
@@ -42,6 +44,7 @@ public static class MathsHelper
     /// <param name="amount">The amount to interpolate between <paramref name="value1"/> and <paramref name="value2"/>.</param>
     /// <returns>The interpolated value.</returns>
     /// <remarks>This clamps <paramref name="amount"/> before performing the linear interpolation.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float LerpClamped(float value1, float value2, float amount)
     {
         amount = Math.Clamp(amount, 0, 1);
@@ -54,6 +57,7 @@ public static class MathsHelper
     /// <param name="amount">The amount to interpolate between <paramref name="value1"/> and <paramref name="value2"/>.</param>
     /// <returns>The interpolated value.</returns>
     /// <remarks>This clamps <paramref name="amount"/> before performing the linear interpolation.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double LerpClamped(double value1, double value2, double amount)
     {
         amount = Math.Clamp(amount, 0, 1);
@@ -63,20 +67,24 @@ public static class MathsHelper
     /// <summary>Converts degrees to radians.</summary>
     /// <param name="degrees">The angle, in degrees.</param>
     /// <returns>The angle, in radians.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float DegreesToRadians(float degrees) => degrees * DegToRad;
 
     /// <summary>Converts degrees to radians.</summary>
     /// <param name="degrees">The angle, in degrees.</param>
     /// <returns>The angle, in radians.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double DegreesToRadians(double degrees) => degrees * DegToRadD;
 
     /// <summary>Converts radians to degrees.</summary>
     /// <param name="radians">The angle, in radians.</param>
     /// <returns>The angle, in degrees.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float RadiansToDegrees(float radians) => radians * RadToDeg;
 
     /// <summary>Converts radians to degrees.</summary>
     /// <param name="radians">The angle, in radians.</param>
     /// <returns>The angle, in degrees.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double RadiansToDegrees(double radians) => radians * RadToDegD;
 }
