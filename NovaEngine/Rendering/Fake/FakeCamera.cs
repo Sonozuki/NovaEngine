@@ -21,6 +21,9 @@ internal class FakeCamera : RendererCameraBase
     public override void OnResolutionChange() { }
 
     /// <inheritdoc/>
+    public override void OnVSyncChange() { }
+
+    /// <inheritdoc/>
     public override void Render(IEnumerable<RendererGameObjectBase> gameObjects, bool presentRenderTarget) { }
 
     /// <inheritdoc/>

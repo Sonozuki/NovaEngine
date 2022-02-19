@@ -1,11 +1,9 @@
 ﻿using NovaEngine.Components;
 using NovaEngine.Core;
-using NovaEngine.Debugging;
 using NovaEngine.Extensions;
 using NovaEngine.External.Rendering;
 using NovaEngine.Graphics;
 using NovaEngine.Logging;
-using NovaEngine.Maths;
 using NovaEngine.Rendering;
 using System;
 using System.Collections.Generic;
@@ -77,26 +75,10 @@ public unsafe class VulkanRenderer : IRenderer
     /// <summary>The window surface Vulkan will draw to.</summary>
     internal VkSurfaceKHR NativeSurface { get; private set; }
 
-    /// <summary>The descriptor set layouts.</summary>
-    internal DescriptorSetLayouts DescriptorSetLayouts { get; private set; } = new();
-
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
-
-    // TODO: temp
-    /// <summary>A buffer containing 4 lights to use when renderering.</summary>
-    internal VulkanBuffer LightsBuffer;
 
     /// <summary>The <see cref="VkPhysicalDevice"/> and it's logical <see cref="VkDevice"/> representation.</summary>
     internal VulkanDevice Device { get; private set; }
-
-    /// <summary>The descriptor pool for descriptor sets for the generate frustums compute pipeline.</summary>
-    internal VulkanDescriptorPool GenerateFrustumsDescriptorPool { get; private set; }
-
-    /// <summary>The descriptor pool for descriptor sets for the depth pre-pass pipeline.</summary>
-    internal VulkanDescriptorPool DepthPrePassDescriptorPool { get; private set; }
-
-    /// <summary>The descriptor pool for descriptor sets for the graphics pipeline.</summary>
-    internal VulkanDescriptorPool GraphicsDescriptorPool { get; private set; }
 
     /// <summary>The singleton instance of <see cref="VulkanRenderer"/>.</summary>
     public static VulkanRenderer Instance { get; private set; }
@@ -125,34 +107,22 @@ public unsafe class VulkanRenderer : IRenderer
         CreateInstance();
         CreateSurface();
         Device = new(PickPhysicalDevice());
+    }
 
-        CreateDescriptorSetLayouts();
-        GenerateFrustumsDescriptorPool = new(DescriptorSetLayouts.GenerateFrustumsDescriptorSetLayout);
-        DepthPrePassDescriptorPool = new(DescriptorSetLayouts.DepthPrepassDescriptorSetLayout);
-        GraphicsDescriptorPool = new(DescriptorSetLayouts.RenderingDescriptorSetLayout);
-
-        // TODO: temp
-        var lights = new UniformBufferObjectLights()
-        {
-            Light1 = new Vector4(0, 1, 2, 1),
-            Light2 = new Vector4(1, 0, 2, 1),
-            Light3 = new Vector4(0, -1, 2, 1),
-            Light4 = new Vector4(-1, 0, 2, 1)
-        };
-
-        LightsBuffer = new VulkanBuffer(sizeof(UniformBufferObjectLights), VkBufferUsageFlags.UniformBuffer, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
-        LightsBuffer.CopyFrom(lights);
+    /// <inheritdoc/>
+    public void PrepareDispose()
+    {
+        // waiting for all work submitted is required before disposing because the scenes are cleaned up before the renderer is (where the other DeviceWaitIdle is)
+        // this resulted in exceptions being thrown as game objects that were in use where trying to be destroyed
+        VK.DeviceWaitIdle(Device.NativeDevice);
     }
 
     /// <inheritdoc/>
     public void Dispose()
     {
-        LightsBuffer.Dispose();
-
-        GenerateFrustumsDescriptorPool.Dispose();
-        DepthPrePassDescriptorPool.Dispose();
-        GraphicsDescriptorPool.Dispose();
+        ShaderStages.Dispose();
         DescriptorSetLayouts.Dispose();
+        DescriptorPools.Dispose();
 
         Device.Dispose();
 
@@ -171,13 +141,13 @@ public unsafe class VulkanRenderer : IRenderer
     /// <exception cref="ApplicationException">Thrown if the instance or debug report callback (if validation layers are enabled) couldn't be created.</exception>
     private void CreateInstance()
     {
-        var applicationInfo = new VkApplicationInfo()
+        var applicationInfo = new VkApplicationInfo
         {
             SType = VkStructureType.ApplicationInfo,
             ApiVersion = new VkVersion(0, 1, 2, 0)
         };
 
-        var instanceCreateInfo = new VkInstanceCreateInfo()
+        var instanceCreateInfo = new VkInstanceCreateInfo
         {
             SType = VkStructureType.InstanceCreateInfo,
             ApplicationInfo = &applicationInfo
@@ -186,7 +156,11 @@ public unsafe class VulkanRenderer : IRenderer
         var layerNames = new[] { "VK_LAYER_KHRONOS_validation" };
         var enabledLayerNames = Array.Empty<IntPtr>();
 
-        var extensionNames = new List<string>() { VK.KhrSurfaceExtensionName, VK.KhrWin32SurfaceExtensionName }; // TODO: don't hard code platform specific extension
+        var extensionNames = new List<string> { VK.KhrSurfaceExtensionName };
+        if (OperatingSystem.IsWindows())
+            extensionNames.Add(VK.KhrWin32SurfaceExtensionName);
+        // TODO: add mac and linux support
+
         var enabledExtensionNames = Array.Empty<IntPtr>();
 
         try
@@ -232,11 +206,11 @@ public unsafe class VulkanRenderer : IRenderer
             }
 
             // create instance
-            fixed (void* enabledlayerNamesPointer = enabledLayerNames)
+            fixed (void* enabledLayerNamesPointer = enabledLayerNames)
             fixed (void* enabledExtensionNamesPointer = enabledExtensionNames)
             {
                 instanceCreateInfo.EnabledLayerCount = (uint)enabledLayerNames.Length;
-                instanceCreateInfo.EnabledLayerNames = (byte**)enabledlayerNamesPointer;
+                instanceCreateInfo.EnabledLayerNames = (byte**)enabledLayerNamesPointer;
                 instanceCreateInfo.EnabledExtensionCount = (uint)enabledExtensionNames.Length;
                 instanceCreateInfo.EnabledExtensionNames = (byte**)enabledExtensionNamesPointer;
 
@@ -249,7 +223,7 @@ public unsafe class VulkanRenderer : IRenderer
             // set up debug report
             if (enabledLayerNames.Length > 0)
             {
-                var debugReportCallbackCreateInfo = new VkDebugReportCallbackCreateInfoEXT()
+                var debugReportCallbackCreateInfo = new VkDebugReportCallbackCreateInfoEXT
                 {
                     SType = VkStructureType.DebugReportCreateInfoExt,
                     Flags = VkDebugReportFlagsEXT.ErrorExt | VkDebugReportFlagsEXT.WarningExt | VkDebugReportFlagsEXT.PerformanceWarningExt,
@@ -274,16 +248,20 @@ public unsafe class VulkanRenderer : IRenderer
     /// <summary>Creates the surface Vulkan will draw to.</summary>
     private void CreateSurface()
     {
-        var win32SurfaceCreateInfo = new VkWin32SurfaceCreateInfoKHR() // TODO: don't hard code platform specific surface
+        if (OperatingSystem.IsWindows())
         {
-            SType = VkStructureType.Win32SurfaceCreateInfoKhr,
-            Hwnd = WindowHandle,
-            Hinstance = Program.Handle
-        };
+            var win32SurfaceCreateInfo = new VkWin32SurfaceCreateInfoKHR
+            {
+                SType = VkStructureType.Win32SurfaceCreateInfoKhr,
+                Hwnd = WindowHandle,
+                Hinstance = Program.Handle
+            };
 
-        if (VK.CreateWin32SurfaceKHR(NativeInstance, ref win32SurfaceCreateInfo, null, out var nativeSurface) != VkResult.Success)
-            throw new ApplicationException("Failed to create surface.").Log(LogSeverity.Fatal);
-        NativeSurface = nativeSurface;
+            if (VK.CreateWin32SurfaceKHR(NativeInstance, ref win32SurfaceCreateInfo, null, out var nativeSurface) != VkResult.Success)
+                throw new ApplicationException("Failed to create surface.").Log(LogSeverity.Fatal);
+            NativeSurface = nativeSurface;
+        }
+        // TODO: add mac and linux support
     }
 
     /// <summary>Picks the physical device for Vulkan to use.</summary>
@@ -318,70 +296,6 @@ public unsafe class VulkanRenderer : IRenderer
             .First().Key;
     }
 
-    /// <summary>Creates the descriptor set layouts.</summary>
-    /// <exception cref="ApplicationException">Thrown if a descriptor set layout couldn't be created.</exception>
-    private void CreateDescriptorSetLayouts()
-    {
-        // generate frustums
-        {
-            var bindings = new VkDescriptorSetLayoutBinding[]
-            {
-                new() { Binding = 0, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Compute }, // parameters buffer
-                new() { Binding = 1, DescriptorType = VkDescriptorType.StorageBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Compute } // frustums buffer
-            };
-
-            fixed (VkDescriptorSetLayoutBinding* bindingsPointer = bindings)
-            {
-                var descriptorSetLayoutCreateInfo = new VkDescriptorSetLayoutCreateInfo()
-                {
-                    SType = VkStructureType.DescriptorSetLayoutCreateInfo,
-                    BindingCount = (uint)bindings.Length,
-                    Bindings = bindingsPointer
-                };
-
-                if (VK.CreateDescriptorSetLayout(Device.NativeDevice, ref descriptorSetLayoutCreateInfo, null, out DescriptorSetLayouts.GenerateFrustumsDescriptorSetLayout) != VkResult.Success)
-                    throw new ApplicationException("Failed to create generate frustums descriptor set layout.").Log(LogSeverity.Fatal);
-            }
-        }
-
-        // depth pre-pass
-        {
-            var binding = new VkDescriptorSetLayoutBinding() { Binding = 0, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Vertex }; // parameters uniform
-
-            var descriptorSetLayoutCreateInfo = new VkDescriptorSetLayoutCreateInfo
-            {
-                SType = VkStructureType.DescriptorSetLayoutCreateInfo,
-                BindingCount = 1,
-                Bindings = &binding
-            };
-
-            if (VK.CreateDescriptorSetLayout(Device.NativeDevice, ref descriptorSetLayoutCreateInfo, null, out DescriptorSetLayouts.DepthPrepassDescriptorSetLayout) != VkResult.Success)
-                throw new ApplicationException("Failed to create depth pre-pass descriptor set layout.").Log(LogSeverity.Fatal);
-        }
-
-        // final rendering
-        {
-            var bindings = new VkDescriptorSetLayoutBinding[]
-            {
-                new() { Binding = 0, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Vertex | VkShaderStageFlags.Fragment }, // parameters buffer
-                new() { Binding = 1, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Fragment } // lights buffer
-            };
-
-            fixed (VkDescriptorSetLayoutBinding* bindingsPointer = bindings)
-            {
-                var descriptorSetLayoutCreateInfo = new VkDescriptorSetLayoutCreateInfo()
-                {
-                    SType = VkStructureType.DescriptorSetLayoutCreateInfo,
-                    BindingCount = (uint)bindings.Length,
-                    Bindings = bindingsPointer
-                };
-
-                if (VK.CreateDescriptorSetLayout(Device.NativeDevice, ref descriptorSetLayoutCreateInfo, null, out DescriptorSetLayouts.RenderingDescriptorSetLayout) != VkResult.Success)
-                    throw new ApplicationException("Failed to create rendering descriptor set layout.").Log(LogSeverity.Fatal);
-            }
-        }
-    }
-
     /// <summary>Invoked when a validation layer fails.</summary>
     /// <param name="flags">The severity of the message.</param>
     /// <param name="objectType">The type of message.</param>
@@ -410,11 +324,11 @@ public unsafe class VulkanRenderer : IRenderer
         {
             var score = 0f;
 
-            // check if the device is decrete (have a major performance advantage)
+            // check if the device is decrete (typically have a major performance advantage)
             if (deviceProperties.DeviceType == VkPhysicalDeviceType.DiscreteGpu)
-                score += 1000;
+                score += 2;
 
-            // maximum image size is typically an indication of a devices performance
+            // maximum image size can be an indication of a devices performance
             score += MathF.Log2(deviceProperties.Limits.MaxImageDimension2D);
 
             // ensure device contains the required queue families and has proper swapchain support

@@ -15,6 +15,9 @@ internal class FakeRenderer : IRenderer
     /// <inheritdoc/>
     public string DeviceName => "";
 
+    /// <inheritdoc/>
+    public bool VSync { set { } }
+
 
     /*********
     ** Public Methods
@@ -30,6 +33,9 @@ internal class FakeRenderer : IRenderer
 
     /// <inheritdoc/>
     public void OnInitialise(IntPtr windowHandle) { }
+
+    /// <inheritdoc/>
+    public void PrepareDispose() { }
 
     /// <inheritdoc/>
     public void Dispose() { }

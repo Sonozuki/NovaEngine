@@ -17,7 +17,7 @@ internal unsafe class VulkanDescriptorSet
     ** Accessors
     *********/
     /// <summary>The underlying descriptor set.</summary>
-    public VkDescriptorSet NativeDescriptorSet { get; private set; }
+    public VkDescriptorSet NativeDescriptorSet { get; }
 
 
     /*********
@@ -38,7 +38,7 @@ internal unsafe class VulkanDescriptorSet
     /// <remarks>This doesn't update the binding immediately, call <see cref="UpdateBindings"/> to update all pending bindings.</remarks>
     public VulkanDescriptorSet Bind(uint destinationBinding, VkDescriptorBufferInfo* bufferInfo, VkDescriptorType bufferType)
     {
-        DescriptorWrites.Add(new VkWriteDescriptorSet()
+        DescriptorWrites.Add(new()
         {
             SType = VkStructureType.WriteDescriptorSet,
             DestinationSet = NativeDescriptorSet,
@@ -59,7 +59,7 @@ internal unsafe class VulkanDescriptorSet
     /// <remarks>This doesn't update the binding immediately, call <see cref="UpdateBindings"/> to update all pending bindings.</remarks>
     public VulkanDescriptorSet Bind(uint destinationBinding, VkDescriptorImageInfo* imageInfo)
     {
-        DescriptorWrites.Add(new VkWriteDescriptorSet()
+        DescriptorWrites.Add(new()
         {
             SType = VkStructureType.WriteDescriptorSet,
             DestinationSet = NativeDescriptorSet,

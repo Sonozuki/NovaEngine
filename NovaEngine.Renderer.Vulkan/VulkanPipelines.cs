@@ -1,11 +1,9 @@
-﻿using NovaEngine.Content;
-using NovaEngine.Extensions;
+﻿using NovaEngine.Extensions;
 using NovaEngine.Logging;
 using NovaEngine.Maths;
+using NovaEngine.Rendering;
 using NovaEngine.Settings;
 using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Vulkan;
 
 namespace NovaEngine.Renderer.Vulkan;
@@ -19,42 +17,51 @@ internal unsafe class VulkanPipelines : IDisposable
     /// <summary>The camera that the pipelines belong to.</summary>
     private readonly VulkanCamera Camera;
 
-    /// <summary>A pointer to a <see langword="string"/> containing "main", specifying the name of a shader entry point.</summary>
-    private IntPtr ShaderEntryPointNamePointer;
-
-    /// <summary>The created shader modules, stored for destroying.</summary>
-    private readonly List<VkShaderModule> ShaderModules = new();
-
-    /// <summary>The created shader stages.</summary>
-    private ShaderStages ShaderStages;
-
 
     /*********
     ** Accessors
     *********/
-    /// <summary>The layout of <see cref="GenerateFrustumsComputePipeline"/>.</summary>
-    public VkPipelineLayout GenerateFrustumsComputePipelineLayout { get; private set; }
+    /// <summary>The layout of <see cref="GenerateFrustumsPipeline"/>.</summary>
+    public VkPipelineLayout GenerateFrustumsPipelineLayout { get; private set; }
 
-    /// <summary>The layout of <see cref="DepthPrepassGraphicsPipeline"/>.</summary>
-    public VkPipelineLayout DepthPrepassGraphicsPipelineLayout { get; private set; }
+    /// <summary>The layout of <see cref="DepthPrepassPipeline"/>.</summary>
+    public VkPipelineLayout DepthPrepassPipelineLayout { get; private set; }
 
-    /// <summary>The layout of <see cref="TriangleGraphicsPipeline"/>.</summary>
-    public VkPipelineLayout TriangleGraphicsPipelineLayout { get; private set; }
+    /// <summary>The layout of <see cref="CullLightsPipeline"/>.</summary>
+    public VkPipelineLayout CullLightsPipelineLayout { get; private set; }
 
-    /// <summary>The layout of <see cref="LineGraphicsPipeline"/>.</summary>
-    public VkPipelineLayout LineGraphicsPipelineLayout { get; private set; }
+    /// <summary>The layout of <see cref="PBRTrianglePipeline"/>.</summary>
+    public VkPipelineLayout PBRTrianglePipelineLayout { get; private set; }
 
-    /// <summary>The compute pipeline for generating the tile frustums.</summary>
-    public VkPipeline GenerateFrustumsComputePipeline { get; private set; }
+    /// <summary>The layout of <see cref="PBRLinePipeline"/>.</summary>
+    public VkPipelineLayout PBRLinePipelineLayout { get; private set; }
 
-    /// <summary>The graphics pipeline for the depth pre-pass.</summary>
-    public VkPipeline DepthPrepassGraphicsPipeline { get; private set; }
+    /// <summary>The layout of <see cref="SolidColourTrianglePipeline"/>.</summary>
+    public VkPipelineLayout SolidColourTrianglePipelineLayout { get; private set; }
 
-    /// <summary>A graphics pipeline with a topology of <see cref="VkPrimitiveTopology.TriangleList"/>.</summary>
-    public VkPipeline TriangleGraphicsPipeline { get; private set; }
+    /// <summary>The layout of <see cref="SolidColourLinePipeline"/>.</summary>
+    public VkPipelineLayout SolidColourLinePipelineLayout { get; private set; }
 
-    /// <summary>A graphics pipeline with a topology of <see cref="VkPrimitiveTopology.LineList"/>.</summary>
-    public VkPipeline LineGraphicsPipeline { get; private set; }
+    /// <summary>The tile frustum generation pipeline.</summary>
+    public VkPipeline GenerateFrustumsPipeline { get; private set; }
+
+    /// <summary>The depth pre-pass pipeline.</summary>
+    public VkPipeline DepthPrepassPipeline { get; private set; }
+
+    /// <summary>The light culling pipeline.</summary>
+    public VkPipeline CullLightsPipeline { get; private set; }
+
+    /// <summary>The pbr pipeline with a topology of <see cref="VkPrimitiveTopology.TriangleList"/>.</summary>
+    public VkPipeline PBRTrianglePipeline { get; private set; }
+
+    /// <summary>The pbr pipeline with a topology of <see cref="VkPrimitiveTopology.LineList"/>.</summary>
+    public VkPipeline PBRLinePipeline { get; private set; }
+
+    /// <summary>The solid colour pipeline with a topology of <see cref="VkPrimitiveTopology.TriangleList"/>.</summary>
+    public VkPipeline SolidColourTrianglePipeline { get; private set; }
+
+    /// <summary>The solid colour pipeline with a topology of <see cref="VkPrimitiveTopology.LineList"/>.</summary>
+    public VkPipeline SolidColourLinePipeline { get; private set; }
 
 
     /*********
@@ -65,70 +72,56 @@ internal unsafe class VulkanPipelines : IDisposable
     /// <exception cref="ApplicationException">Thrown if the pipeline layout or a pipeline couldn't be created.</exception>
     public VulkanPipelines(VulkanCamera camera)
     {
-        try
-        {
-            Camera = camera;
+        Camera = camera;
 
-            CreateShaderStages();
-            CreateComputePipelines();
-            CreateGraphicsPipelines();
-        }
-        finally
-        {
-            CleanupShaderModules();
-        }
+        CreateComputePipelines();
+        CreateGraphicsPipelines();
     }
 
     /// <inheritdoc/>
     public void Dispose()
     {
-        VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, GenerateFrustumsComputePipelineLayout, null);
-        VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, DepthPrepassGraphicsPipelineLayout, null);
-        VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, TriangleGraphicsPipelineLayout, null);
-        VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, LineGraphicsPipelineLayout, null);
-        VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, GenerateFrustumsComputePipeline, null);
-        VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, DepthPrepassGraphicsPipeline, null);
-        VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, TriangleGraphicsPipeline, null);
-        VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, LineGraphicsPipeline, null);
+        VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, GenerateFrustumsPipelineLayout, null);
+        VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, DepthPrepassPipelineLayout, null);
+        VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, CullLightsPipelineLayout, null);
+        VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, PBRTrianglePipelineLayout, null);
+        VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, PBRLinePipelineLayout, null);
+        VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, SolidColourTrianglePipelineLayout, null);
+        VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, SolidColourLinePipelineLayout, null);
+
+        VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, GenerateFrustumsPipeline, null);
+        VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, DepthPrepassPipeline, null);
+        VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, CullLightsPipeline, null);
+        VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, PBRTrianglePipeline, null);
+        VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, PBRLinePipeline, null);
+        VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, SolidColourTrianglePipeline, null);
+        VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, SolidColourLinePipeline, null);
     }
 
 
     /*********
     ** Private Methods
     *********/
-    /// <summary>Creates the shader stages.</summary>
-    private void CreateShaderStages()
-    {
-        ShaderEntryPointNamePointer = Marshal.StringToHGlobalAnsi("main");
-        ShaderStages.GenerateFrustumsShader = LoadShader("Shaders/generate_frustums_comp", VkShaderStageFlags.Compute);
-        ShaderStages.DepthShader = LoadShader("Shaders/depth_vert", VkShaderStageFlags.Vertex);
-        ShaderStages.PBRVertexShader = LoadShader("Shaders/pbr_vert", VkShaderStageFlags.Vertex);
-        ShaderStages.PBRFragmentShader = LoadShader("Shaders/pbr_frag", VkShaderStageFlags.Fragment);
-        ShaderStages.SolidColourVertexShader = LoadShader("Shaders/solid_colour_vert", VkShaderStageFlags.Vertex);
-        ShaderStages.SolidColourFragmentShader = LoadShader("Shaders/solid_colour_frag", VkShaderStageFlags.Fragment);
-    }
-
     /// <summary>Creates the compute pipelines.</summary>
     /// <exception cref="ApplicationException">Thrown if a pipeline couldn't be created.</exception>
     private void CreateComputePipelines()
     {
         // generate frustums
         {
-            // pipeline layout
-            var descriptorSetLayout = VulkanRenderer.Instance.DescriptorSetLayouts.GenerateFrustumsDescriptorSetLayout;
-            var pipelineLayoutCreateInfo = new VkPipelineLayoutCreateInfo()
-            {
-                SType = VkStructureType.PipelineLayoutCreateInfo,
-                SetLayoutCount = 1,
-                SetLayouts = &descriptorSetLayout
-            };
-
-            if (VK.CreatePipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, ref pipelineLayoutCreateInfo, null, out var pipelineLayout) != VkResult.Success)
-                throw new ApplicationException("Failed to create generate frustums compute pipeline layout.").Log(LogSeverity.Fatal);
-            GenerateFrustumsComputePipelineLayout = pipelineLayout;
+            // layout
+            GenerateFrustumsPipelineLayout = CreatePipelineLayout(null, DescriptorSetLayouts.GenerateFrustumsDescriptorSetLayout);
 
             // pipeline
-            GenerateFrustumsComputePipeline = CreateComputePipeline(ShaderStages.GenerateFrustumsShader, GenerateFrustumsComputePipelineLayout);
+            GenerateFrustumsPipeline = CreateComputePipeline(ShaderStages.GenerateFrustumsShader, GenerateFrustumsPipelineLayout);
+        }
+
+        // cull lights
+        {
+            // layout
+            CullLightsPipelineLayout = CreatePipelineLayout(null, DescriptorSetLayouts.CulLightsDescriptorSetLayout);
+
+            // pipeline
+            CullLightsPipeline = CreateComputePipeline(ShaderStages.CullLightsShader, CullLightsPipelineLayout);
         }
     }
 
@@ -139,99 +132,58 @@ internal unsafe class VulkanPipelines : IDisposable
         // depth pre-pass
         {
             // layout
-            var descriptorSetLayout = VulkanRenderer.Instance.DescriptorSetLayouts.DepthPrepassDescriptorSetLayout;
-            var pipelineLayoutCreateInfo = new VkPipelineLayoutCreateInfo
-            {
-                SType = VkStructureType.PipelineLayoutCreateInfo,
-                SetLayoutCount = 1,
-                SetLayouts = &descriptorSetLayout
-            };
-
-            if (VK.CreatePipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, ref pipelineLayoutCreateInfo, null, out var pipelineLayout) != VkResult.Success)
-                throw new ApplicationException("Failed to create graphics pipeline layout.").Log(LogSeverity.Fatal);
-            DepthPrepassGraphicsPipelineLayout = pipelineLayout;
+            DepthPrepassPipelineLayout = CreatePipelineLayout(null, DescriptorSetLayouts.DepthPrepassDescriptorSetLayout);
 
             // pipeline
-            DepthPrepassGraphicsPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, new[] { ShaderStages.DepthShader }, DepthPrepassGraphicsPipelineLayout, VkPrimitiveTopology.TriangleList, Camera.DepthPrePassRenderPass);
+            DepthPrepassPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, new[] { ShaderStages.DepthShader }, DepthPrepassPipelineLayout, VkPrimitiveTopology.TriangleList, SampleCount.Count1, Camera.DepthPrepassRenderPass);
         }
 
-        // final rendering
+        // pbr
         {
-            // pipeline layouts
-            var trianglePushConstantRanges = new VkPushConstantRange[]
+            // layouts
+            var pbrPushConstantRanges = new VkPushConstantRange[]
             {
-                new() { StageFlags = VkShaderStageFlags.Vertex, Offset = 0, Size = (uint)sizeof(Vector3) },
-                new() { StageFlags = VkShaderStageFlags.Fragment, Offset = (uint)sizeof(Vector3), Size = (uint)sizeof(VulkanMaterial) }
+                new() { StageFlags = VkShaderStageFlags.Fragment, Offset = 0, Size = (uint)sizeof(VulkanMaterial) }
             };
-            var linePushConstantRanges = new VkPushConstantRange[]
+
+            PBRTrianglePipelineLayout = CreatePipelineLayout(pbrPushConstantRanges, DescriptorSetLayouts.PBRDescriptorSetLayout);
+            PBRLinePipelineLayout = CreatePipelineLayout(pbrPushConstantRanges, DescriptorSetLayouts.PBRDescriptorSetLayout);
+
+            // pipelines
+            var pbrShaderStages = new[] { ShaderStages.PBRVertexShader, ShaderStages.PBRFragmentShader };
+
+            PBRTrianglePipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, pbrShaderStages, PBRTrianglePipelineLayout, VkPrimitiveTopology.TriangleList, RenderingSettings.Instance.SampleCount, Camera.FinalRenderingRenderPass);
+            PBRLinePipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, pbrShaderStages, PBRLinePipelineLayout, VkPrimitiveTopology.LineList, RenderingSettings.Instance.SampleCount, Camera.FinalRenderingRenderPass);
+        }
+
+        // solid colour
+        {
+            // layouts
+            var solidColourPushConstantRanges = new VkPushConstantRange[]
             {
                 new() { StageFlags = VkShaderStageFlags.Fragment, Offset = 0, Size = (uint)sizeof(Vector3) },
             };
 
-            TriangleGraphicsPipelineLayout = CreatePipelineLayout(trianglePushConstantRanges);
-            LineGraphicsPipelineLayout = CreatePipelineLayout(linePushConstantRanges);
+            SolidColourTrianglePipelineLayout = CreatePipelineLayout(solidColourPushConstantRanges, DescriptorSetLayouts.SolidColourDescriptorSetLayout);
+            SolidColourLinePipelineLayout = CreatePipelineLayout(solidColourPushConstantRanges, DescriptorSetLayouts.SolidColourDescriptorSetLayout);
 
             // pipelines
-            var pbrShaderStages = new[] { ShaderStages.PBRVertexShader, ShaderStages.PBRFragmentShader };
             var solidColourShaderStages = new[] { ShaderStages.SolidColourVertexShader, ShaderStages.SolidColourFragmentShader };
 
-            TriangleGraphicsPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, pbrShaderStages, TriangleGraphicsPipelineLayout, VkPrimitiveTopology.TriangleList, Camera.FinalRenderingRenderPass);
-            LineGraphicsPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, solidColourShaderStages, LineGraphicsPipelineLayout, VkPrimitiveTopology.LineList, Camera.FinalRenderingRenderPass);
+            SolidColourTrianglePipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, solidColourShaderStages, SolidColourTrianglePipelineLayout, VkPrimitiveTopology.TriangleList, RenderingSettings.Instance.SampleCount, Camera.FinalRenderingRenderPass);
+            SolidColourLinePipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, solidColourShaderStages, SolidColourLinePipelineLayout, VkPrimitiveTopology.LineList, RenderingSettings.Instance.SampleCount, Camera.FinalRenderingRenderPass);
         }
-    }
-
-    /// <summary>Cleans up the shader modules.</summary>
-    private void CleanupShaderModules()
-    {
-        if (ShaderEntryPointNamePointer != IntPtr.Zero)
-            Marshal.FreeHGlobal(ShaderEntryPointNamePointer);
-
-        foreach (var shaderModule in ShaderModules)
-            VK.DestroyShaderModule(VulkanRenderer.Instance.Device.NativeDevice, shaderModule, null);
-    }
-
-    /// <summary>Loads a shader.</summary>
-    /// <param name="path">The path to the compiled shader file.</param>
-    /// <param name="stage">The stage the shader will be used at.</param>
-    private VkPipelineShaderStageCreateInfo LoadShader(string path, VkShaderStageFlags stage)
-    {
-        // create shader module
-        var fileData = new Span<byte>(ContentLoader.Load<byte[]>(path));
-        var shaderData = MemoryMarshal.Cast<byte, uint>(fileData);
-
-        VkShaderModule shaderModule;
-        fixed (uint* shaderDataPointer = &shaderData.GetPinnableReference())
-        {
-            var shaderModuleCreateInfo = new VkShaderModuleCreateInfo()
-            {
-                SType = VkStructureType.ShaderModuleCreateInfo,
-                CodeSize = (uint)shaderData.Length * sizeof(uint),
-                Code = shaderDataPointer
-            };
-
-            if (VK.CreateShaderModule(VulkanRenderer.Instance.Device.NativeDevice, ref shaderModuleCreateInfo, null, out shaderModule) != VkResult.Success)
-                throw new ApplicationException($"Failed to create shader module: {path}.").Log(LogSeverity.Fatal);
-            ShaderModules.Add(shaderModule);
-        }
-
-        // create shader stage
-        return new()
-        {
-            SType = VkStructureType.PipelineShaderStageCreateInfo,
-            Stage = stage,
-            Module = shaderModule,
-            Name = (byte*)ShaderEntryPointNamePointer
-        };
     }
 
     /// <summary>Creates a <see cref="VkPipelineLayout"/>.</summary>
     /// <returns>The created <see cref="VkPipelineLayout"/>.</returns>
-    private static VkPipelineLayout CreatePipelineLayout(VkPushConstantRange[] pushConstantRanges)
+    private static VkPipelineLayout CreatePipelineLayout(VkPushConstantRange[]? pushConstantRanges, VkDescriptorSetLayout descriptorSetLayout)
     {
+        pushConstantRanges ??= Array.Empty<VkPushConstantRange>();
+
         fixed (VkPushConstantRange* pushConstantRangesPointer = pushConstantRanges)
         {
-            var descriptorSetLayout = VulkanRenderer.Instance.DescriptorSetLayouts.RenderingDescriptorSetLayout;
-            var pipelineLayoutCreateInfo = new VkPipelineLayoutCreateInfo()
+            var pipelineLayoutCreateInfo = new VkPipelineLayoutCreateInfo
             {
                 SType = VkStructureType.PipelineLayoutCreateInfo,
                 SetLayoutCount = 1,
@@ -253,7 +205,7 @@ internal unsafe class VulkanPipelines : IDisposable
     /// <exception cref="ApplicationException">Thrown if the compute pipeline couldn't be created.</exception>
     private static VkPipeline CreateComputePipeline(VkPipelineShaderStageCreateInfo shaderStage, VkPipelineLayout layout)
     {
-        var pipelineCreateInfo = new VkComputePipelineCreateInfo()
+        var pipelineCreateInfo = new VkComputePipelineCreateInfo
         {
             SType = VkStructureType.ComputePipelineCreateInfo,
             Stage = shaderStage,
@@ -271,16 +223,17 @@ internal unsafe class VulkanPipelines : IDisposable
     /// <param name="shaderStages">The shader stages to use when creating the pipeline.</param>
     /// <param name="layout">The layout to use when creating the pipeline.</param>
     /// <param name="topology">The topology of the meshes rendered through the pipeline.</param>
+    /// <param name="sampleCount">The sample count to use when creating the pipeline.</param>
     /// <param name="renderPass">The render pass that the pipeline will use.</param>
     /// <returns>The created graphics pipeline.</returns>
-    private VkPipeline CreateGraphicsPipeline(VkVertexInputAttributeDescription[] vertexAttributeDescriptions, VkVertexInputBindingDescription[] vertexBindingDescriptions, VkPipelineShaderStageCreateInfo[] shaderStages, VkPipelineLayout layout, VkPrimitiveTopology topology, VkRenderPass renderPass)
+    private VkPipeline CreateGraphicsPipeline(VkVertexInputAttributeDescription[] vertexAttributeDescriptions, VkVertexInputBindingDescription[] vertexBindingDescriptions, VkPipelineShaderStageCreateInfo[] shaderStages, VkPipelineLayout layout, VkPrimitiveTopology topology, SampleCount sampleCount, VkRenderPass renderPass)
     {
         fixed (VkVertexInputAttributeDescription* vertexAttributeDescriptionsPointer = vertexAttributeDescriptions)
         fixed (VkVertexInputBindingDescription* vertexBindingDescriptionsPointer = vertexBindingDescriptions)
         fixed (VkPipelineShaderStageCreateInfo* shaderStagesPointer = shaderStages)
         {
             // vertex input
-            var vertexInputState = new VkPipelineVertexInputStateCreateInfo()
+            var vertexInputState = new VkPipelineVertexInputStateCreateInfo
             {
                 SType = VkStructureType.PipelineVertexInputStateCreateInfo,
                 VertexAttributeDescriptionCount = (uint)vertexAttributeDescriptions.Length,
@@ -290,7 +243,7 @@ internal unsafe class VulkanPipelines : IDisposable
             };
 
             // input assembly
-            var inputAssemblyState = new VkPipelineInputAssemblyStateCreateInfo()
+            var inputAssemblyState = new VkPipelineInputAssemblyStateCreateInfo
             {
                 SType = VkStructureType.PipelineInputAssemblyStateCreateInfo,
                 Topology = topology,
@@ -298,7 +251,7 @@ internal unsafe class VulkanPipelines : IDisposable
             };
 
             // viewport
-            var viewport = new VkViewport()
+            var viewport = new VkViewport
             {
                 X = 0,
                 Y = 0,
@@ -310,7 +263,7 @@ internal unsafe class VulkanPipelines : IDisposable
 
             var scissorRectangle = new VkRect2D(VkOffset2D.Zero, Camera.Swapchain.Extent);
 
-            var viewportState = new VkPipelineViewportStateCreateInfo()
+            var viewportState = new VkPipelineViewportStateCreateInfo
             {
                 SType = VkStructureType.PipelineViewportStateCreateInfo,
                 ViewportCount = 1,
@@ -320,7 +273,7 @@ internal unsafe class VulkanPipelines : IDisposable
             };
 
             // rasterisation
-            var rasterisationState = new VkPipelineRasterizationStateCreateInfo()
+            var rasterisationState = new VkPipelineRasterizationStateCreateInfo
             {
                 SType = VkStructureType.PipelineRasterizationStateCreateInfo,
                 DepthClampEnable = false,
@@ -336,11 +289,11 @@ internal unsafe class VulkanPipelines : IDisposable
             };
 
             // multisample
-            var multisampleState = new VkPipelineMultisampleStateCreateInfo()
+            var multisampleState = new VkPipelineMultisampleStateCreateInfo
             {
                 SType = VkStructureType.PipelineMultisampleStateCreateInfo,
                 SampleShadingEnable = true, // TODO: make this a rendering setting
-                RasterizationSamples = VulkanUtilities.ConvertSampleCount(RenderingSettings.Instance.SampleCount),
+                RasterizationSamples = VulkanUtilities.ConvertSampleCount(sampleCount),
                 MinSampleShading = 1,
                 SampleMask = null,
                 AlphaToCoverageEnable = false,
@@ -348,7 +301,7 @@ internal unsafe class VulkanPipelines : IDisposable
             };
 
             // depth / stencil
-            var depthStencilState = new VkPipelineDepthStencilStateCreateInfo()
+            var depthStencilState = new VkPipelineDepthStencilStateCreateInfo
             {
                 SType = VkStructureType.PipelineDepthStencilStateCreateInfo,
                 DepthTestEnable = true,
@@ -361,7 +314,7 @@ internal unsafe class VulkanPipelines : IDisposable
             };
 
             // colour blend
-            var colourBlendAttachmentState = new VkPipelineColorBlendAttachmentState()
+            var colourBlendAttachmentState = new VkPipelineColorBlendAttachmentState
             {
                 ColorWriteMask = VkColorComponentFlags.R | VkColorComponentFlags.G | VkColorComponentFlags.B | VkColorComponentFlags.A,
                 BlendEnable = false,
@@ -373,7 +326,7 @@ internal unsafe class VulkanPipelines : IDisposable
                 AlphaBlendOp = VkBlendOp.Add
             };
 
-            var colourBlendState = new VkPipelineColorBlendStateCreateInfo()
+            var colourBlendState = new VkPipelineColorBlendStateCreateInfo
             {
                 SType = VkStructureType.PipelineColorBlendStateCreateInfo,
                 LogicOpEnable = false,
@@ -387,7 +340,7 @@ internal unsafe class VulkanPipelines : IDisposable
             colourBlendState.BlendConstants[3] = 0;
 
             // pipeline
-            var pipelineCreateInfo = new VkGraphicsPipelineCreateInfo()
+            var pipelineCreateInfo = new VkGraphicsPipelineCreateInfo
             {
                 SType = VkStructureType.GraphicsPipelineCreateInfo,
                 StageCount = (uint)shaderStages.Length,

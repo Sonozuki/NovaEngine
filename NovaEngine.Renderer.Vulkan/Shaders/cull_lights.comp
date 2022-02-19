@@ -1,0 +1,374 @@
+#version 450
+
+/*********
+** Constants
+*********/
+// The size in the X and Y axis of a frustum tile.
+const uint TILE_SIZE = 16;
+
+// The number of maximum lights per tile
+const uint MAX_LIGHTS_PER_TILE = 1024;
+
+// The type of a point light.
+const uint LIGHT_TYPE_POINT = 0;
+
+// The type of a spot light.
+const uint LIGHT_TYPE_SPOT = 1;
+
+// The type of a directional light.
+const uint LIGHT_TYPE_DIRECTIONAL = 2;
+
+
+/*********
+** Structs
+*********/
+// Represents a light.
+struct Light
+{
+    // The position of the light in world space (for point and spot lights).
+    vec4 PositionWorldSpace;
+
+    // The direction of the light in world space (for spot and directional lights).
+    vec4 DirectionWorldSpace;
+
+    // The position of the light in view space (for point and spot lights).
+    vec4 PositionViewSpace;
+
+    // The direction of the light in view space (for spot and directional lights).
+    vec4 DirectionViewSpace;
+
+    // The colour of the light.
+    vec4 Colour;
+
+    // The half angle of the spotlight cone.
+    float SpotlightAngle;
+
+    // The range of the light.
+    float Range;
+
+    // The intensity of the light.
+    float Intensity;
+
+    // The type of the light.
+    uint Type;
+};
+
+// Represents a plane.
+struct Plane
+{
+    // The normal of the plane.
+    vec3 Normal;
+
+    // The distance to the origin.
+    float Distance;
+};
+
+// Represents a frustum.
+struct Frustum
+{
+    // The top, left, right, and bottom planes the frustum is comprised of.
+    Plane Planes[4];
+};
+
+// Represents a sphere.
+struct Sphere
+{
+    // The position of the center of the sphere.
+    vec3 Centre;
+
+    // The radius of the sphere.
+    float Radius;
+};
+
+// Represents a cone.
+struct Cone
+{
+    // The position of the top of the cone.
+    vec3 Tip;
+
+    // The height of the cone.
+    float Height;
+
+    // The direction of the cone (from tip to base.)
+    vec3 Direction;
+
+    // The radius of the base of the cone.
+    float Radius;
+};
+
+
+/*********
+** Layouts
+*********/
+layout (local_size_x = TILE_SIZE, local_size_y = TILE_SIZE) in;
+
+// The parameters of the shader.
+layout (binding = 0) uniform ParamsUniform
+{
+    // The inverse of the projection matrix, this is used to convert from screen space to view space.
+    mat4 InverseProjection;
+
+    // The current screen resolution, this is used to ensure the a thread isn't used if it's out of bounds of the screen.
+    ivec2 ScreenResolution;
+} Params;
+
+// The buffer containing the pre-computed frustums.
+layout (binding = 1) buffer FrustumsBuffer
+{
+    Frustum Frustums[];
+};
+
+// A sampler to the depth pre-pass texture.
+layout (binding = 2) uniform sampler2D DepthSampler;
+
+// The buffer containing the lights to cull.
+layout (binding = 3) buffer LightsBuffer
+{
+    Light Lights[];
+};
+
+// The buffer to store the global counter for the current index into the light index list for the opaque light list.
+// NOTE: this will only ever contain a single uint.
+layout (binding = 4) buffer OpaqueLightIndexCounterBuffer
+{
+    uint OpaqueLightIndexCounter[];
+};
+
+// The buffer to store the global counter for the current index into the light index list for the transparent light list.
+// NOTE: this will only ever contain a single uint.
+layout (binding = 5) buffer TransparentLightIndexCounterBuffer
+{
+    uint TransparentLightIndexCounter[];
+};
+
+// The buffer to store the light indices for opaque geometry.
+layout (binding = 6) buffer OpaqueLightIndexListBuffer
+{
+    uint OpaqueLightIndexList[];
+};
+
+// The buffer to store the light indices for transparent geometry.
+layout (binding = 7) buffer TransparentLightIndexListBuffer
+{
+    uint TransparentLightIndexList[];
+};
+
+// The buffer to store the opaque light grid.
+layout (binding = 8) buffer OpaqueLightGridBuffer
+{
+    uvec2 OpaqueLightGrid[];
+};
+
+// The buffer to store the opaque light grid.
+layout (binding = 9) buffer TransparentLightGridBuffer
+{
+    uvec2 TransparentLightGrid[];
+};
+
+
+/*********
+** Shared
+*********/
+// The minimum depth of the tile.
+shared uint MinDepth;
+
+// The maximum depth of the tile.
+shared uint MaxDepth;
+
+// The frustum of the group.
+shared Frustum GroupFrustum;
+
+// xLightCount: The number of lights that are intersecting the current tile frustum.
+// xLightIndexStart: The offset into the global light index list.
+// xLightList: The local light list. NOTE: MAX_LIGHTS_PER_TILE is more than the allocated average lights per tile. This allows for some leeway of more lights in some tiles over others.
+shared uint OpaqueLightCount;
+shared uint OpaqueLightIndexStartOffset;
+shared uint OpaqueLightList[MAX_LIGHTS_PER_TILE];
+
+shared uint TransparentLightCount;
+shared uint TransparentLightIndexStartOffset;
+shared uint TransparentLightList[MAX_LIGHTS_PER_TILE];
+
+
+/*********
+** Functions
+*********/
+// Determines whether a point is inside the negative half-space of a plane.
+bool PointBehindPlane(vec3 point, Plane plane)
+{
+    return dot(plane.Normal, point) - plane.Distance < 0;
+}
+
+// Determines whether a sphere is fully behind (inside the negative half-space of) a plane.
+bool SphereBehindPlane(Sphere sphere, Plane plane)
+{
+    return dot(sphere.Centre, plane.Normal) - plane.Distance < -sphere.Radius;
+}
+
+// Determines whether a cone is fully behind (inside the negative half-space of) a plane.
+bool ConeBehindPlane(Cone cone, Plane plane)
+{
+    // calculate the point on the base of the cone farthest in the direction of plane.Normal is inside the plane
+    vec3 m = cross(cross(plane.Normal, cone.Direction), cone.Direction);
+    vec3 Q = cone.Tip + cone.Direction * cone.Height - m * cone.Radius;
+
+    // check if the tip and Q are both behind the plane
+    return PointBehindPlane(cone.Tip, plane) && PointBehindPlane(Q, plane);
+}
+
+// Determines whether a sphere is partially contained within a frustum.
+bool SphereInsideFrustum(Sphere sphere, Frustum frustum, float zNear, float zFar)
+{
+    // check the sphere is inside the clipping planes
+    if (sphere.Centre.z + sphere.Radius < zNear || sphere.Centre.z - sphere.Radius > zFar)
+        return false;
+
+    // check the sphere is inside the frustum planes
+    for (int i = 0; i < 4; i++)
+        if (SphereBehindPlane(sphere, frustum.Planes[i]))
+            return false;
+
+    return true;
+}
+
+// Determines whether a cone is partially contained within a frustum.
+bool ConeInsideFrustum(Cone cone, Frustum frustum, float zNear, float zFar)
+{
+    // check the cone is inside the clipping planes
+    Plane nearPlane = Plane(vec3(0, 0, 1), zNear);
+    Plane farPlane = Plane(vec3(0, 0, -1), zFar);
+    if (ConeBehindPlane(cone, nearPlane) || ConeBehindPlane(cone, farPlane))
+        return false;
+
+    // check the cone is inside frustum planes
+    for (int i = 0; i < 4; i++)
+        if (ConeBehindPlane(cone, frustum.Planes[i]))
+            return false;
+
+    return true;
+}
+
+// Converts a clip space coordinate to view space.
+vec3 ClipSpaceToViewSpace(vec3 clipSpace)
+{
+    vec4 viewSpace = Params.InverseProjection * vec4(clipSpace, 1);
+    viewSpace /= viewSpace.w;
+
+    return viewSpace.xyz;
+}
+
+// Adds a light to the visible light list for opaque geometry.
+void AppendLightOpaque(uint lightIndex)
+{
+    uint index = atomicAdd(OpaqueLightCount, 1);
+    if (index < MAX_LIGHTS_PER_TILE)
+        OpaqueLightList[index] = lightIndex;
+}
+
+// Adds a light to the visible light list for transparent geometry.
+void AppendLightTransparent(uint lightIndex)
+{
+    uint index = atomicAdd(TransparentLightCount, 1);
+    if (index < MAX_LIGHTS_PER_TILE)
+        TransparentLightList[index] = lightIndex;
+}
+
+// The shader entry point.
+void main()
+{
+    // ensure the thread is in the range of the grid
+    if (gl_GlobalInvocationID.x >= Params.ScreenResolution.x
+        || gl_GlobalInvocationID.y >= Params.ScreenResolution.y)
+        return;
+
+    uint groupIndex = gl_WorkGroupID.y * gl_NumWorkGroups.x + gl_WorkGroupID.x;
+
+    // initialise shared variables
+    if (gl_LocalInvocationIndex == 0) {
+        MinDepth = 0xffffffff;
+        MaxDepth = 0;
+        OpaqueLightCount = 0;
+        TransparentLightCount = 0;
+        GroupFrustum = Frustums[groupIndex];
+    }
+    barrier();
+    
+    // calculate the min & max depth of the tile
+    uint depth = floatBitsToUint(texture(DepthSampler, gl_GlobalInvocationID.xy).r); // this is reinterpreted as atomicMin/Max can't be done on floating-point numbers
+    atomicMin(MinDepth, depth);
+    atomicMax(MaxDepth, depth);
+    barrier();
+
+    float minDepth = uintBitsToFloat(MinDepth);
+    float maxDepth = uintBitsToFloat(MaxDepth);
+
+    // convert depth values to view space
+    float minDepthViewSpace = ClipSpaceToViewSpace(vec3(0, 0, minDepth)).z;
+    float maxDepthViewSpace = ClipSpaceToViewSpace(vec3(0, 0, maxDepth)).z;
+    float nearClipViewSpace = ClipSpaceToViewSpace(vec3(0, 0, 0)).z; // this is used for testing lights withing the bounds of transparent geometry
+
+    // clipping plane for minimum depth values (used for testing lights within the bounds of opaque geometry)
+    Plane opaqueNearPlane = Plane(vec3(0, 0, 1), minDepthViewSpace);
+
+    // cull lights
+    for (uint i = gl_LocalInvocationIndex; i < 1; i += TILE_SIZE * TILE_SIZE)
+    {
+        Light light = Lights[i];
+        switch (light.Type)
+        {
+            case LIGHT_TYPE_POINT:
+            {
+                Sphere sphere = Sphere(light.PositionViewSpace.xyz, light.Range);
+                if (SphereInsideFrustum(sphere, GroupFrustum, nearClipViewSpace, maxDepthViewSpace)) {
+                    // add the light to the list for transparent geometry
+                    AppendLightTransparent(i);
+
+                    // add the light to the list for opaque geometry
+                    if (!SphereBehindPlane(sphere, opaqueNearPlane))
+                        AppendLightOpaque(i);
+                }
+                break;
+            }
+            case LIGHT_TYPE_SPOT:
+            {
+                float coneRadius = tan(radians(light.SpotlightAngle)) * light.Range;
+                Cone cone = Cone(light.PositionViewSpace.xyz, light.Range, light.DirectionViewSpace.xyz, coneRadius);
+                if (ConeInsideFrustum(cone, GroupFrustum, nearClipViewSpace, maxDepthViewSpace)) {
+                    // add the light to the list for transparent geometry
+                    AppendLightTransparent(i);
+
+                    // add the light to the list for opaque geometry
+                    if (!ConeBehindPlane(cone, opaqueNearPlane))
+                        AppendLightOpaque(i);
+                }
+                break;
+            }
+            case LIGHT_TYPE_DIRECTIONAL:
+            {
+                AppendLightTransparent(i);
+                AppendLightOpaque(i);
+                break;
+            }
+        }
+    }
+    barrier();
+
+    // update global memory with visible light buffer
+    if (gl_LocalInvocationIndex == 0)
+    {
+        OpaqueLightIndexStartOffset = atomicAdd(OpaqueLightIndexCounter[0], OpaqueLightCount);
+        OpaqueLightGrid[groupIndex] = uvec2(OpaqueLightIndexStartOffset, OpaqueLightCount);
+        
+        OpaqueLightIndexStartOffset = atomicAdd(TransparentLightIndexCounter[0], TransparentLightCount);
+        OpaqueLightGrid[groupIndex] = uvec2(TransparentLightIndexStartOffset, TransparentLightCount);
+    }
+    barrier();
+
+    // update the light index list for opaque geometry
+    for (uint i = gl_LocalInvocationIndex; i < OpaqueLightCount; i += TILE_SIZE * TILE_SIZE)
+        OpaqueLightIndexList[OpaqueLightIndexStartOffset + i] = OpaqueLightList[i];
+
+    // update the light index list for transparent geometry
+    for (uint i = gl_LocalInvocationIndex; i < TransparentLightCount; i += TILE_SIZE * TILE_SIZE)
+        TransparentLightIndexList[TransparentLightIndexStartOffset + i] = TransparentLightList[i];
+}

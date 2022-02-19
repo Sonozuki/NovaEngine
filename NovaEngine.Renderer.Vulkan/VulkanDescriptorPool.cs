@@ -13,7 +13,7 @@ internal unsafe class VulkanDescriptorPool : IDisposable
     ** Constants
     *********/
     /// <summary>The max number of sets that a pool can allocate.</summary>
-    private uint MaxNumberOfSets = 256;
+    private const uint MaxNumberOfSets = 256;
 
 
     /*********
@@ -47,7 +47,7 @@ internal unsafe class VulkanDescriptorPool : IDisposable
 
         fixed (VkDescriptorPoolSize* poolSizesPointer = poolSizes)
         {
-            var descriptorPoolCreateInfo = new VkDescriptorPoolCreateInfo() // TODO: dynamically expand / shrink descriptor pool
+            var descriptorPoolCreateInfo = new VkDescriptorPoolCreateInfo // TODO: dynamically expand / shrink descriptor pool
             {
                 SType = VkStructureType.DescriptorPoolCreateInfo,
                 MaxSets = MaxNumberOfSets,
@@ -71,7 +71,7 @@ internal unsafe class VulkanDescriptorPool : IDisposable
 
         // allocate a new descriptor set
         var descriptorSetLayout = NativeDescriptorSetLayout;
-        var allocateInfo = new VkDescriptorSetAllocateInfo()
+        var allocateInfo = new VkDescriptorSetAllocateInfo
         {
             SType = VkStructureType.DescriptorSetAllocateInfo,
             DescriptorPool = NativeDescriptorPool,

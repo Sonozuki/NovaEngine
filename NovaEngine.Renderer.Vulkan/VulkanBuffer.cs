@@ -50,7 +50,7 @@ internal unsafe class VulkanBuffer : IDisposable
         MemoryProperties = memoryProperties;
 
         // create buffer
-        var bufferCreateInfo = new VkBufferCreateInfo()
+        var bufferCreateInfo = new VkBufferCreateInfo
         {
             SType = VkStructureType.BufferCreateInfo,
             Size = Size,
@@ -65,7 +65,7 @@ internal unsafe class VulkanBuffer : IDisposable
         // allocate & bind buffer memory
         VK.GetBufferMemoryRequirements(VulkanRenderer.Instance.Device.NativeDevice, nativeBuffer, out var memoryRequirements);
 
-        var memoryAllocateInfo = new VkMemoryAllocateInfo()
+        var memoryAllocateInfo = new VkMemoryAllocateInfo
         {
             SType = VkStructureType.MemoryAllocateInfo,
             AllocationSize = memoryRequirements.Size,
@@ -79,7 +79,7 @@ internal unsafe class VulkanBuffer : IDisposable
             throw new ApplicationException("Failed to bind buffer memory.").Log(LogSeverity.Fatal);
 
         // create a command pool for the transfer commands
-        TransferCommandPool = new VulkanCommandPool(CommandPoolUsage.Transfer, VkCommandPoolCreateFlags.Transient);
+        TransferCommandPool = new(CommandPoolUsage.Transfer, VkCommandPoolCreateFlags.Transient);
     }
 
     /// <summary>Copies data to the buffer.</summary>
@@ -142,7 +142,7 @@ internal unsafe class VulkanBuffer : IDisposable
     {
         // copy buffer to buffer
         var commandBuffer = TransferCommandPool.AllocateCommandBuffer(true, VkCommandBufferUsageFlags.OneTimeSubmit);
-        var bufferCopy = new VkBufferCopy() { SourceOffset = 0, DestinationOffset = 0, Size = Size };
+        var bufferCopy = new VkBufferCopy { SourceOffset = 0, DestinationOffset = 0, Size = Size };
         VK.CommandCopyBuffer(commandBuffer, buffer.NativeBuffer, NativeBuffer, 1, new[] { bufferCopy });
         TransferCommandPool.SubmitCommandBuffer(true, commandBuffer);
     }
@@ -154,14 +154,14 @@ internal unsafe class VulkanBuffer : IDisposable
         // copy image to buffer
         var commandBuffer = TransferCommandPool.AllocateCommandBuffer(true, VkCommandBufferUsageFlags.OneTimeSubmit);
 
-        var bufferImageCopy = new VkBufferImageCopy()
+        var bufferImageCopy = new VkBufferImageCopy
         {
             BufferOffset = 0,
             BufferRowLength = 0,
             BufferImageHeight = 0,
-            ImageSubresource = new VkImageSubresourceLayers(texture.AspectFlags, 0, 0, texture.LayerCount),
+            ImageSubresource = new(texture.AspectFlags, 0, 0, texture.LayerCount),
             ImageOffset = VkOffset3D.Zero,
-            ImageExtent = new VkExtent3D(texture.Width, texture.Height, texture.Depth)
+            ImageExtent = new(texture.Width, texture.Height, texture.Depth)
         };
 
         VK.CommandCopyImageToBuffer(commandBuffer, texture.NativeImage, VkImageLayout.TransferSourceOptimal, NativeBuffer, 1, new[] { bufferImageCopy });
@@ -203,7 +203,7 @@ internal unsafe class VulkanBuffer : IDisposable
     {
         // copy buffer to buffer
         var commandBuffer = TransferCommandPool.AllocateCommandBuffer(true, VkCommandBufferUsageFlags.OneTimeSubmit);
-        var bufferCopy = new VkBufferCopy() { SourceOffset = 0, DestinationOffset = 0, Size = Size };
+        var bufferCopy = new VkBufferCopy { SourceOffset = 0, DestinationOffset = 0, Size = Size };
         VK.CommandCopyBuffer(commandBuffer, NativeBuffer, buffer.NativeBuffer, 1, new[] { bufferCopy });
         TransferCommandPool.SubmitCommandBuffer(true, commandBuffer);
     }
@@ -215,14 +215,14 @@ internal unsafe class VulkanBuffer : IDisposable
         // copy buffer to image
         var commandBuffer = TransferCommandPool.AllocateCommandBuffer(true, VkCommandBufferUsageFlags.OneTimeSubmit);
 
-        var bufferImageCopy = new VkBufferImageCopy()
+        var bufferImageCopy = new VkBufferImageCopy
         {
             BufferOffset = 0,
             BufferRowLength = 0,
             BufferImageHeight = 0,
-            ImageSubresource = new VkImageSubresourceLayers(texture.AspectFlags, 0, 0, texture.LayerCount),
+            ImageSubresource = new(texture.AspectFlags, 0, 0, texture.LayerCount),
             ImageOffset = VkOffset3D.Zero,
-            ImageExtent = new VkExtent3D(texture.Width, texture.Height, texture.Depth)
+            ImageExtent = new(texture.Width, texture.Height, texture.Depth)
         };
         
         VK.CommandCopyBufferToImage(commandBuffer, NativeBuffer, texture.NativeImage, VkImageLayout.TransferDestinationOptimal, 1, new[] { bufferImageCopy });

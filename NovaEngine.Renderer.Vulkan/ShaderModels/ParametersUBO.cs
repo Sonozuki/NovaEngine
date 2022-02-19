@@ -14,6 +14,6 @@ internal struct ParametersUBO
     /// <summary>The resolution of the render target.</summary>
     public Vector2I ScreenResolution;
 
-    /// <summary>The number of lights to cull.</summary>
-    public int NumberOfLights;
+    /// <summary>The number of horizontal tiles.</summary>
+    public uint NumberOfTilesWide;
 }

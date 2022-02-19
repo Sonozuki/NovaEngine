@@ -13,21 +13,17 @@ layout(binding = 0) uniform UniformBufferObject
     mat4 model;
     mat4 view;
     mat4 projection;
-    vec3 cameraPosition;
 } ubo;
-
-layout(push_constant) uniform PushConstants
-{
-    vec3 objectPosition;
-};
 
 void main()
 {
-    vec3 localPosition = vec3(ubo.model * vec4(inPosition, 1));
+//    vec3 localPosition = vec3(ubo.model * vec4(inPosition, 1));
+//
+//    outWorldPosition = localPosition + objectPosition;
+//    outTextureCoordinate = inTextureCoordinate;
+//    outNormal = inNormal;
+//    
+//    gl_Position = ubo.projection * ubo.view * vec4(outWorldPosition, 1);
 
-    outWorldPosition = localPosition + objectPosition;
-    outTextureCoordinate = inTextureCoordinate;
-    outNormal = inNormal;
-    
-    gl_Position = ubo.projection * ubo.view * vec4(outWorldPosition, 1);
+    gl_Position = ubo.projection * ubo.view * ubo.model * vec4(inPosition.x, inPosition.y, inPosition.z * -1, 1);
 }

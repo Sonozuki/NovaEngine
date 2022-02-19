@@ -52,6 +52,7 @@ public static class Program
             ApplicationLoop.Run();
 
             // clean up
+            RendererManager.CurrentRenderer.PrepareDispose();
             SceneManager.GizmosScene.Dispose();
             foreach (var scene in SceneManager.LoadedScenes)
                 scene.Dispose();

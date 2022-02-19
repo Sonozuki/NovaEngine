@@ -14,7 +14,7 @@ internal class FakeGameObject : RendererGameObjectBase
     public override void UpdateMesh(Mesh mesh) { }
 
     /// <inheritdoc/>
-    public override void UpdateUBO(Camera camera) { }
+    public override void PrepareForCamera(Camera camera) { }
 
     /// <inheritdoc/>
     public override void Dispose() { }

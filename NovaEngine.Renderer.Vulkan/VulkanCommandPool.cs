@@ -40,11 +40,11 @@ internal unsafe class VulkanCommandPool : IDisposable
         };
 
         // create command pool
-        var commandPoolCreateInfo = new VkCommandPoolCreateInfo()
+        var commandPoolCreateInfo = new VkCommandPoolCreateInfo
         {
             SType = VkStructureType.CommandPoolCreateInfo,
             QueueFamilyIndex = queueFamilyIndex,
-            Flags = commandPoolCreateFlags == null ? 0 : commandPoolCreateFlags.Value
+            Flags = commandPoolCreateFlags ?? 0
         };
 
         if (VK.CreateCommandPool(VulkanRenderer.Instance.Device.NativeDevice, ref commandPoolCreateInfo, null, out var nativeCommandPool) != VkResult.Success)
@@ -60,7 +60,7 @@ internal unsafe class VulkanCommandPool : IDisposable
     public VkCommandBuffer AllocateCommandBuffer(bool beginCommandBuffer, VkCommandBufferUsageFlags? commandBufferUsageFlags = null)
     {
         // allocate command buffer
-        var commandBufferAllocateInfo = new VkCommandBufferAllocateInfo()
+        var commandBufferAllocateInfo = new VkCommandBufferAllocateInfo
         {
             SType = VkStructureType.CommandBufferAllocateInfo,
             CommandPool = NativeCommandPool,
@@ -69,14 +69,14 @@ internal unsafe class VulkanCommandPool : IDisposable
         };
 
         var commandBuffers = new VkCommandBuffer[1];
-        if (VK.AllocateCommandBuffers(VulkanRenderer.Instance.Device.NativeDevice, ref commandBufferAllocateInfo, commandBuffers) != VkResult.Success) // TODO: should return an array
+        if (VK.AllocateCommandBuffers(VulkanRenderer.Instance.Device.NativeDevice, ref commandBufferAllocateInfo, commandBuffers) != VkResult.Success)
             throw new ApplicationException("Failed to allocate command buffer.").Log(LogSeverity.Fatal);
         var commandBuffer = commandBuffers[0];
 
         // begin and return command buffer
         if (beginCommandBuffer)
         {
-            var commandBufferBeginInfo = new VkCommandBufferBeginInfo()
+            var commandBufferBeginInfo = new VkCommandBufferBeginInfo
             {
                 SType = VkStructureType.CommandBufferBeginInfo,
                 Flags = commandBufferUsageFlags == null ? 0 : commandBufferUsageFlags.Value
@@ -114,7 +114,7 @@ internal unsafe class VulkanCommandPool : IDisposable
         fixed (VkSemaphore* signalSemaphoresPointer = signalSemaphores)
         {
             // submit command buffer
-            var submitInfo = new VkSubmitInfo()
+            var submitInfo = new VkSubmitInfo
             {
                 SType = VkStructureType.SubmitInfo,
                 CommandBufferCount = 1,
@@ -128,6 +128,7 @@ internal unsafe class VulkanCommandPool : IDisposable
 
             if (VK.QueueSubmit(Queue, 1, new[] { submitInfo }, VkFence.Null) != VkResult.Success)
                 throw new ApplicationException("Failed to submit command buffer.").Log(LogSeverity.Fatal);
+
             if (VK.QueueWaitIdle(Queue) != VkResult.Success)
                 throw new ApplicationException("Failed to queue wait idle.").Log(LogSeverity.Fatal);
         }

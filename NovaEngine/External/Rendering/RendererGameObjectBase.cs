@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.External.Rendering;
 
 /// <summary>Represents a renderer game object.</summary>
-public abstract class RendererGameObjectBase
+public abstract class RendererGameObjectBase : IDisposable
 {
     /*********
     ** Accessors
@@ -24,9 +24,10 @@ public abstract class RendererGameObjectBase
     /// <param name="mesh">The updated mesh.</param>
     public abstract void UpdateMesh(Mesh mesh);
 
-    /// <summary>Invoked every tick to update the game object for a specified camera, to update a UBO.</summary>
+    /// <summary>Invoked every tick to just before the object is rendered.</summary>
     /// <param name="camera">The camera to update the game object UBO with.</param>
-    public abstract void UpdateUBO(Camera camera);
+    /// <remarks>Used for updating UBOs etc.</remarks>
+    public abstract void PrepareForCamera(Camera camera);
 
     /// <inheritdoc/>
     public abstract void Dispose();

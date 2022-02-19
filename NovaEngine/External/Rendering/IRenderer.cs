@@ -37,4 +37,7 @@ public interface IRenderer : IDisposable
     /// <summary>Invoked when the renderer should initialise itself.</summary>
     /// <param name="windowHandle">The handle to the application window.</param>
     public void OnInitialise(IntPtr windowHandle);
+
+    /// <summary>Invoked just before disposing begins.</summary>
+    public void PrepareDispose();
 }

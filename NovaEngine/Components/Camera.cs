@@ -14,6 +14,10 @@ public sealed class Camera : ComponentBase
     [Serialisable]
     private float? _AspectRatio;
 
+    /// <summary>Whether VSync is enabled.</summary>
+    [Serialisable]
+    private bool _IsVSyncEnabled;
+
 
     /*********
     ** Acecssors
@@ -56,6 +60,17 @@ public sealed class Camera : ComponentBase
 
     /// <summary>The texture the camera will render to.</summary>
     public Texture2D RenderTarget => RendererCamera.RenderTarget;
+
+    /// <summary>Whether VSync is enabled.</summary>
+    public bool IsVSyncEnabled
+    {
+        get => _IsVSyncEnabled;
+        set
+        {
+            _IsVSyncEnabled = value;
+            RendererCamera.OnVSyncChange();
+        }
+    }
 
     /// <summary>The projection matrix of the camera.</summary>
     [EditorBrowsable(EditorBrowsableState.Never)]

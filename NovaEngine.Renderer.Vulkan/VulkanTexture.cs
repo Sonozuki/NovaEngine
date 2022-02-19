@@ -89,7 +89,7 @@ public unsafe class VulkanTexture : RendererTextureBase
         };
 
         // create image
-        var imageCreateInfo = new VkImageCreateInfo()
+        var imageCreateInfo = new VkImageCreateInfo
         {
             SType = VkStructureType.ImageCreateInfo,
             ImageType = imageType,
@@ -111,7 +111,7 @@ public unsafe class VulkanTexture : RendererTextureBase
         // allocate memory
         VK.GetImageMemoryRequirements(VulkanRenderer.Instance.Device.NativeDevice, NativeImage, out var memoryRequirements);
 
-        var memoryAllocateInfo = new VkMemoryAllocateInfo()
+        var memoryAllocateInfo = new VkMemoryAllocateInfo
         {
             SType = VkStructureType.MemoryAllocateInfo,
             AllocationSize = memoryRequirements.Size,
@@ -125,14 +125,14 @@ public unsafe class VulkanTexture : RendererTextureBase
             throw new ApplicationException("Failed to bind image memory.").Log(LogSeverity.Fatal);
 
         // create image view
-        var imageViewCreateInfo = new VkImageViewCreateInfo()
+        var imageViewCreateInfo = new VkImageViewCreateInfo
         {
             SType = VkStructureType.ImageViewCreateInfo,
             Image = NativeImage,
             ViewType = imageViewType,
             Format = Format,
             Components = VkComponentMapping.Identity,
-            SubresourceRange = new VkImageSubresourceRange(AspectFlags, 0, this.MipLevels, 0, this.LayerCount)
+            SubresourceRange = new(AspectFlags, 0, this.MipLevels, 0, this.LayerCount)
         };
 
         if (VK.CreateImageView(VulkanRenderer.Instance.Device.NativeDevice, ref imageViewCreateInfo, null, out var nativeImageView) != VkResult.Success)
@@ -140,7 +140,7 @@ public unsafe class VulkanTexture : RendererTextureBase
         NativeImageView = nativeImageView;
 
         // create sampler
-        var samplerCreateInfo = new VkSamplerCreateInfo()
+        var samplerCreateInfo = new VkSamplerCreateInfo
         {
             SType = VkStructureType.SamplerCreateInfo,
             MagFilter = VkFilter.Linear,
@@ -165,7 +165,7 @@ public unsafe class VulkanTexture : RendererTextureBase
         NativeSampler = nativeSampler;
 
         // create command pool
-        CommandPool = new VulkanCommandPool(CommandPoolUsage.Graphics, VkCommandPoolCreateFlags.Transient);
+        CommandPool = new(CommandPoolUsage.Graphics, VkCommandPoolCreateFlags.Transient);
     }
 
     /// <inheritdoc/>
@@ -193,22 +193,18 @@ public unsafe class VulkanTexture : RendererTextureBase
         // apply pixel changes
         for (int y = 0; y < pixels.GetLength(0); y++)
         {
-            // ensure this row is in the texture area
             if (y + yOffset < 0 || y + yOffset >= this.Height)
                 continue;
 
             for (int x = 0; x < pixels.GetLength(1); x++)
             {
-                // ensure this column is in the texture area
                 if (x + xOffset < 0 || x + xOffset >= this.Width)
                     continue;
 
-                // set pixel
                 pixelBuffer[(y + yOffset) * (int)this.Width + (x + xOffset)] = pixels[x, y];
             }
         }
 
-        // copy the byte data to the staging buffer
         stagingBuffer.CopyFrom(pixelBuffer);
 
         // copy the staging buffer to the texture
@@ -238,7 +234,7 @@ public unsafe class VulkanTexture : RendererTextureBase
         var commandBuffer = CommandPool.AllocateCommandBuffer(true, VkCommandBufferUsageFlags.OneTimeSubmit);
 
         // create the memory barrier that will be used to transition the layout of the levels
-        var imageMemoryBarrier = new VkImageMemoryBarrier()
+        var imageMemoryBarrier = new VkImageMemoryBarrier
         {
             SType = VkStructureType.ImageMemoryBarrier,
             Image = NativeImage,
@@ -248,7 +244,7 @@ public unsafe class VulkanTexture : RendererTextureBase
             NewLayout = VkImageLayout.TransferSourceOptimal,
             SourceAccessMask = VkAccessFlags.TransferWrite,
             DestinationAccessMask = VkAccessFlags.TransferRead,
-            SubresourceRange = new VkImageSubresourceRange(VkImageAspectFlags.Color, 0, 1, 0, 1)
+            SubresourceRange = new(VkImageAspectFlags.Color, 0, 1, 0, 1)
         };
 
         var mipWidth = (int)this.Width;
@@ -266,14 +262,14 @@ public unsafe class VulkanTexture : RendererTextureBase
             VK.CommandPipelineBarrier(commandBuffer, VkPipelineStageFlags.Transfer, VkPipelineStageFlags.Transfer, 0, 0, null, 0, null, 1, new[] { imageMemoryBarrier });
 
             // submit the blit operation to create the next mip level
-            var imageBlit = new VkImageBlit()
+            var imageBlit = new VkImageBlit
             {
                 SourceOffsets_0 = VkOffset3D.Zero,
-                SourceOffsets_1 = new VkOffset3D(mipWidth, mipHeight, 1),
-                SourceSubresource = new VkImageSubresourceLayers(VkImageAspectFlags.Color, i - 1, 0, 1),
+                SourceOffsets_1 = new(mipWidth, mipHeight, 1),
+                SourceSubresource = new(VkImageAspectFlags.Color, i - 1, 0, 1),
                 DestinationOffsets_0 = VkOffset3D.Zero,
-                DestinationOffsets_1 = new VkOffset3D(mipWidth > 1 ? mipWidth / 2 : 1, mipHeight > 1 ? mipHeight / 2 : 1, 1),
-                DestinationSubresource = new VkImageSubresourceLayers(VkImageAspectFlags.Color, i, 0, 1)
+                DestinationOffsets_1 = new(mipWidth > 1 ? mipWidth / 2 : 1, mipHeight > 1 ? mipHeight / 2 : 1, 1),
+                DestinationSubresource = new(VkImageAspectFlags.Color, i, 0, 1)
             };
 
             VK.CommandBlitImage(commandBuffer, NativeImage, VkImageLayout.TransferSourceOptimal, NativeImage, VkImageLayout.TransferDestinationOptimal, 1, new[] { imageBlit }, VkFilter.Linear);
@@ -323,7 +319,7 @@ public unsafe class VulkanTexture : RendererTextureBase
     private void TransitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout, VkPipelineStageFlags sourceStage = VkPipelineStageFlags.AllCommands, VkPipelineStageFlags destinationStage = VkPipelineStageFlags.AllCommands)
     {
         // create a memory barrier
-        var imageMemoryBarrier = new VkImageMemoryBarrier()
+        var imageMemoryBarrier = new VkImageMemoryBarrier
         {
             SType = VkStructureType.ImageMemoryBarrier,
             OldLayout = oldLayout,
@@ -331,7 +327,7 @@ public unsafe class VulkanTexture : RendererTextureBase
             SourceQueueFamilyIndex = VK.QueueFamilyIgnored,
             DestinationQueueFamilyIndex = VK.QueueFamilyIgnored,
             Image = NativeImage,
-            SubresourceRange = new VkImageSubresourceRange(AspectFlags, 0, this.MipLevels, 0, 1)
+            SubresourceRange = new(AspectFlags, 0, this.MipLevels, 0, 1)
         };
 
         // set the source access mask

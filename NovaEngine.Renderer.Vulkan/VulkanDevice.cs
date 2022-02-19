@@ -48,7 +48,7 @@ internal unsafe class VulkanDevice : IDisposable
         for (int i = 0; i < queueFamilyIndices.Length; i++)
         {
             var queuePriorities = 0f;
-            deviceQueueCreateInfos[i] = new VkDeviceQueueCreateInfo()
+            deviceQueueCreateInfos[i] = new VkDeviceQueueCreateInfo
             {
                 SType = VkStructureType.DeviceQueueCreateInfo,
                 QueueFamilyIndex = queueFamilyIndices[i],
@@ -57,7 +57,7 @@ internal unsafe class VulkanDevice : IDisposable
             };
         }
 
-        var enabledFeatures = new VkPhysicalDeviceFeatures()
+        var enabledFeatures = new VkPhysicalDeviceFeatures
         {
             SamplerAnisotropy = true,
             SampleRateShading = true
@@ -90,7 +90,7 @@ internal unsafe class VulkanDevice : IDisposable
             fixed (VkDeviceQueueCreateInfo* deviceQueueCreateInfosPointer = deviceQueueCreateInfos)
             fixed (void* enabledExtensionNamesPointer = enabledExtensionNames)
             {
-                var deviceCreateInfo = new VkDeviceCreateInfo()
+                var deviceCreateInfo = new VkDeviceCreateInfo
                 {
                     SType = VkStructureType.DeviceCreateInfo,
                     QueueCreateInfoCount = (uint)deviceQueueCreateInfos.Length,

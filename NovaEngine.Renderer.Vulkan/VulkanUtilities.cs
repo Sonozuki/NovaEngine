@@ -14,19 +14,19 @@ internal unsafe static class VulkanUtilities
     /// <summary>The attribute descriptions for a vertex.</summary>
     /// <remarks>Describes how to extract the vertex attributes from a chunk of vertex data from the <see cref="VertexBindingDescription"/>.</remarks>
     public static VkVertexInputAttributeDescription[] VertexAttributeDesciptions { get; } =
-        new[]
+        new VkVertexInputAttributeDescription[]
         {
-            new VkVertexInputAttributeDescription() { Location = 0, Binding = 0, Format = VkFormat.R32G32B32SFloat, Offset = 0 },
-            new VkVertexInputAttributeDescription() { Location = 1, Binding = 0, Format = VkFormat.R32G32SFloat, Offset = 3 * sizeof(float) },
-            new VkVertexInputAttributeDescription() { Location = 2, Binding = 0, Format = VkFormat.R32G32B32SFloat, Offset = 5 * sizeof(float) }
+            new() { Location = 0, Binding = 0, Format = VkFormat.R32G32B32SFloat, Offset = 0 },
+            new() { Location = 1, Binding = 0, Format = VkFormat.R32G32SFloat, Offset = 3 * sizeof(float) },
+            new() { Location = 2, Binding = 0, Format = VkFormat.R32G32B32SFloat, Offset = 5 * sizeof(float) }
         };
 
     /// <summary>The binding description for a vertex.</summary>
     /// <remarks>This specifies the number of bytes between data entries and whether to move to the next data entry after each vertex of after each instance.</remarks>
     public static VkVertexInputBindingDescription[] VertexBindingDescription { get; } =
-        new[]
+        new VkVertexInputBindingDescription[]
         {
-            new VkVertexInputBindingDescription() { Binding = 0, Stride = (uint)sizeof(Vertex), InputRate = VkVertexInputRate.Vertex }
+            new() { Binding = 0, Stride = (uint)sizeof(Vertex), InputRate = VkVertexInputRate.Vertex }
         };
 
 

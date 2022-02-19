@@ -1,7 +1,6 @@
 ﻿using NovaEngine.Components;
 using NovaEngine.Core;
 using NovaEngine.External.Rendering;
-using NovaEngine.Graphics;
 using NovaEngine.Maths;
 using NovaEngine.Rendering;
 using System;
@@ -10,13 +9,13 @@ using Vulkan;
 namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Represents a Vulkan game object.</summary>
-public unsafe class VulkanGameObject : RendererGameObjectBase
+public class VulkanGameObject : RendererGameObjectBase
 {
     /*********
     ** Fields
     *********/
-    /// <summary>The uniform buffer.</summary>
-    private VulkanBuffer UniformBuffer;
+    /// <summary>The mvp buffer.</summary>
+    private readonly VulkanBuffer MVPBuffer;
 
 
     /*********
@@ -37,8 +36,11 @@ public unsafe class VulkanGameObject : RendererGameObjectBase
     /// <summary>The Vulkan index buffer.</summary>
     internal VulkanBuffer? IndexBuffer { get; private set; }
 
-    /// <summary>The descriptor set.</summary>
-    internal VulkanDescriptorSet DescriptorSet { get; private set; }
+    /// <summary>The depth pre-pass descriptor set.</summary>
+    internal VulkanDescriptorSet DepthPrepassDescriptorSet { get; private set; }
+
+    /// <summary>The pbr descriptor set.</summary>
+    internal VulkanDescriptorSet PBRDescriptorSet { get; private set; }
 
 
     /*********
@@ -63,38 +65,60 @@ public unsafe class VulkanGameObject : RendererGameObjectBase
     }
 
     /// <inheritdoc/>
-    public override void UpdateUBO(Camera camera)
+    public override unsafe void PrepareForCamera(Camera camera)
     {
-        // create UBO
-        var position = BaseGameObject.Transform.GlobalPosition;
-        var rotation = BaseGameObject.Transform.GlobalRotation;
-        var modelMatrix = Matrix4x4.CreateScale(BaseGameObject.Transform.GlobalScale)
-                        * Matrix4x4.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W))
-                        * Matrix4x4.CreateTranslation(new(position.X, position.Y, -position.Z));
+        var vulkanCamera = (camera.RendererCamera as VulkanCamera)!;
 
-        position = -camera.Transform.GlobalPosition;
-        rotation = camera.Transform.GlobalRotation.Inverse;
-        var viewMatrix = Matrix4x4.CreateTranslation(new(position.X, position.Y, -position.Z))
-                       * Matrix4x4.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W));
+        // MVP UBO
+        {
+            var position = BaseGameObject.Transform.GlobalPosition;
+            var rotation = BaseGameObject.Transform.GlobalRotation;
+            var modelMatrix = Matrix4x4.CreateScale(BaseGameObject.Transform.GlobalScale)
+                            * Matrix4x4.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W))
+                            * Matrix4x4.CreateTranslation(new(position.X, position.Y, -position.Z));
 
-        var ubo = new UniformBufferObject(
-            model: modelMatrix,
-            view: viewMatrix,
-            projection: camera.ProjectionMatrix,
-            cameraPosition: Vector3.Zero
-        );
+            position = -camera.Transform.GlobalPosition;
+            rotation = camera.Transform.GlobalRotation.Inverse;
+            var viewMatrix = Matrix4x4.CreateTranslation(new(position.X, position.Y, -position.Z))
+                           * Matrix4x4.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W));
 
-        ubo.Projection.M22 *= -1;
+            var ubo = new MVPBuffer(
+                model: modelMatrix,
+                view: viewMatrix,
+                projection: camera.ProjectionMatrix
+            );
+            ubo.Projection.M22 *= -1;
 
-        // copy UBO data to uniform buffer
-        UniformBuffer.CopyFrom(ubo);
+            MVPBuffer.CopyFrom(ubo);
+        }
+
+        // pbr descriptor set
+        {
+            var bufferInfo1 = new VkDescriptorBufferInfo { Buffer = vulkanCamera.ParametersBuffer.NativeBuffer, Offset = 0, Range = vulkanCamera.ParametersBuffer.Size };
+            var bufferInfo2 = new VkDescriptorBufferInfo { Buffer = vulkanCamera.LightsBuffer.NativeBuffer, Offset = 0, Range = vulkanCamera.LightsBuffer.Size };
+            var bufferInfo3 = new VkDescriptorBufferInfo { Buffer = vulkanCamera.OpaqueLightIndexListBuffer.NativeBuffer, Offset = 0, Range = vulkanCamera.OpaqueLightIndexListBuffer.Size };
+            var bufferInfo4 = new VkDescriptorBufferInfo { Buffer = vulkanCamera.TransparentLightIndexListBuffer.NativeBuffer, Offset = 0, Range = vulkanCamera.TransparentLightIndexListBuffer.Size };
+            var bufferInfo5 = new VkDescriptorBufferInfo { Buffer = vulkanCamera.OpaqueLightGridBuffer.NativeBuffer, Offset = 0, Range = vulkanCamera.OpaqueLightGridBuffer.Size };
+            var bufferInfo6 = new VkDescriptorBufferInfo { Buffer = vulkanCamera.TransparentLightGridBuffer.NativeBuffer, Offset = 0, Range = vulkanCamera.TransparentLightGridBuffer.Size };
+
+            PBRDescriptorSet
+                .Bind(1, &bufferInfo1, VkDescriptorType.UniformBuffer)
+                .Bind(2, &bufferInfo2, VkDescriptorType.StorageBuffer)
+                .Bind(3, &bufferInfo3, VkDescriptorType.StorageBuffer)
+                .Bind(4, &bufferInfo4, VkDescriptorType.StorageBuffer)
+                .Bind(5, &bufferInfo5, VkDescriptorType.StorageBuffer)
+                .Bind(6, &bufferInfo6, VkDescriptorType.StorageBuffer)
+                .UpdateBindings();
+        }
     }
 
     /// <inheritdoc/>
     public override void Dispose()
     {
-        VulkanRenderer.Instance.GraphicsDescriptorPool.DisposeDescriptorSet(DescriptorSet);
-        UniformBuffer.Dispose();
+        DescriptorPools.DepthPrepassDescriptorPool.DisposeDescriptorSet(DepthPrepassDescriptorSet);
+        DescriptorPools.PBRDescriptorPool.DisposeDescriptorSet(PBRDescriptorSet);
+
+        MVPBuffer.Dispose();
         VertexBuffer?.Dispose();
         IndexBuffer?.Dispose();
     }
@@ -104,31 +128,23 @@ public unsafe class VulkanGameObject : RendererGameObjectBase
     ** Internal Methods
     *********/
     /// <inheritdoc/>
-    internal VulkanGameObject(GameObject baseGameObject)
+    internal unsafe VulkanGameObject(GameObject baseGameObject)
         : base(baseGameObject)
     {
         // create the uniform buffer
-        UniformBuffer = new VulkanBuffer(sizeof(UniformBufferObject), VkBufferUsageFlags.UniformBuffer, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
+        MVPBuffer = new VulkanBuffer(sizeof(MVPBuffer), VkBufferUsageFlags.UniformBuffer, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
 
-        // create a descriptor set for the object
-        var bufferInfo1 = new VkDescriptorBufferInfo()
-        {
-            Buffer = UniformBuffer.NativeBuffer,
-            Offset = 0,
-            Range = sizeof(UniformBufferObject)
-        };
+        // create the descriptor sets for the object
+        var bufferInfo = new VkDescriptorBufferInfo { Buffer = MVPBuffer.NativeBuffer, Offset = 0, Range = sizeof(MVPBuffer) };
 
-        var bufferInfo2 = new VkDescriptorBufferInfo()
-        {
-            Buffer = VulkanRenderer.Instance.LightsBuffer.NativeBuffer,
-            Offset = 0,
-            Range = sizeof(UniformBufferObjectLights)
-        };
+        DepthPrepassDescriptorSet = DescriptorPools.DepthPrepassDescriptorPool.GetDescriptorSet();
+        DepthPrepassDescriptorSet
+            .Bind(0, &bufferInfo, VkDescriptorType.UniformBuffer)
+            .UpdateBindings();
 
-        DescriptorSet = VulkanRenderer.Instance.GraphicsDescriptorPool.GetDescriptorSet();
-        DescriptorSet
-            .Bind(0, &bufferInfo1, VkDescriptorType.UniformBuffer)
-            .Bind(1, &bufferInfo2, VkDescriptorType.UniformBuffer)
+        PBRDescriptorSet = DescriptorPools.PBRDescriptorPool.GetDescriptorSet();
+        PBRDescriptorSet
+            .Bind(0, &bufferInfo, VkDescriptorType.UniformBuffer)
             .UpdateBindings();
     }
 }

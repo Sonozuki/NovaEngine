@@ -90,7 +90,7 @@ internal unsafe class VulkanSwapchain : IDisposable
             throw new InvalidOperationException("Physical device doesn't support surface").Log(LogSeverity.Fatal);
 
         // create swapchain
-        var swapchainCreateInfo = new VkSwapchainCreateInfoKHR()
+        var swapchainCreateInfo = new VkSwapchainCreateInfoKHR
         {
             SType = VkStructureType.SwapchainCreateInfoKhr,
             Surface = VulkanRenderer.Instance.NativeSurface,
@@ -122,14 +122,14 @@ internal unsafe class VulkanSwapchain : IDisposable
         NativeImageViews = new VkImageView[NativeImages.Length];
         for (int i = 0; i < NativeImages.Length; i++)
         {
-            var imageViewCreateInfo = new VkImageViewCreateInfo()
+            var imageViewCreateInfo = new VkImageViewCreateInfo
             {
                 SType = VkStructureType.ImageViewCreateInfo,
                 Image = NativeImages[i],
                 ViewType = VkImageViewType._2d,
                 Format = ImageFormat,
                 Components = VkComponentMapping.Identity,
-                SubresourceRange = new VkImageSubresourceRange(VkImageAspectFlags.Color, 0, 1, 0, 1)
+                SubresourceRange = new(VkImageAspectFlags.Color, 0, 1, 0, 1)
             };
 
             if (VK.CreateImageView(VulkanRenderer.Instance.Device.NativeDevice, ref imageViewCreateInfo, null, out var nativeImageView) != VkResult.Success)
@@ -138,8 +138,8 @@ internal unsafe class VulkanSwapchain : IDisposable
         }
 
         // create the colour and depth attachments
-        ColourTexture = new Texture2D(Extent.Width, Extent.Height, automaticallyGenerateMipChain: false, sampleCount: RenderingSettings.Instance.SampleCount);
-        DepthTexture = new DepthTexture(Extent.Width, Extent.Height, RenderingSettings.Instance.SampleCount);
+        ColourTexture = new(Extent.Width, Extent.Height, automaticallyGenerateMipChain: false, sampleCount: RenderingSettings.Instance.SampleCount);
+        DepthTexture = new(Extent.Width, Extent.Height, RenderingSettings.Instance.SampleCount);
     }
 
     /// <summary>Creates the framebuffers.</summary>
@@ -150,11 +150,11 @@ internal unsafe class VulkanSwapchain : IDisposable
         NativeFramebuffers = new VkFramebuffer[NativeImageViews.Length];
         for (int i = 0; i < NativeImageViews.Length; i++)
         {
-            var attachments = new[] { (ColourTexture.RendererTexture as VulkanTexture)!.NativeImageView, (DepthTexture.RendererTexture as VulkanTexture)!.NativeImageView, NativeImageViews[i] };
+            var attachments = new[] { (DepthTexture.RendererTexture as VulkanTexture)!.NativeImageView, (ColourTexture.RendererTexture as VulkanTexture)!.NativeImageView, NativeImageViews[i] };
 
             fixed (VkImageView* attachmentsPointer = attachments)
             {
-                var framebufferCreateInfo = new VkFramebufferCreateInfo()
+                var framebufferCreateInfo = new VkFramebufferCreateInfo
                 {
                     SType = VkStructureType.FramebufferCreateInfo,
                     RenderPass = renderPass,
@@ -174,12 +174,11 @@ internal unsafe class VulkanSwapchain : IDisposable
 
     /// <summary>Retrieves the index of the next available presentable image.</summary>
     /// <param name="semaphore">The semaphore to signal when the image is available.</param>
-    /// <param name="fence">The fence to signal when the image is available.</param>
     /// <returns>The index of the next available presentable image.</returns>
     /// <exception cref="ApplicationException">Thrown if the next image couldn't be acquired.</exception>
-    public uint AcquireNextImage(VkSemaphore semaphore, VkFence fence)
+    public uint AcquireNextImage(VkSemaphore semaphore)
     {
-        if (VK.AcquireNextImageKHR(VulkanRenderer.Instance.Device.NativeDevice, NativeSwapchain, ulong.MaxValue, semaphore, fence, out var imageIndex) != VkResult.Success)
+        if (VK.AcquireNextImageKHR(VulkanRenderer.Instance.Device.NativeDevice, NativeSwapchain, ulong.MaxValue, semaphore, VkFence.Null, out var imageIndex) != VkResult.Success)
             throw new ApplicationException("Failed to acquire next image.").Log(LogSeverity.Fatal);
         return imageIndex;
     }
@@ -192,7 +191,7 @@ internal unsafe class VulkanSwapchain : IDisposable
     public void QueuePresent(VkSemaphore waitSemaphore, uint imageIndex)
     {
         var swapchain = NativeSwapchain;
-        var presentInfo = new VkPresentInfoKHR()
+        var presentInfo = new VkPresentInfoKHR
         {
             SType = VkStructureType.PresentInfoKhr,
             WaitSemaphoreCount = 1,
@@ -244,7 +243,7 @@ internal unsafe class VulkanSwapchain : IDisposable
     {
         // if only one format is passed and it's undefined, just use Format.B8G8R8A8UNorm
         if (formats.Length == 1 && formats[0].Format == VkFormat.Undefined)
-            return new VkSurfaceFormatKHR() { Format = VkFormat.B8G8R8A8UNorm, ColorSpace = formats[0].ColorSpace };
+            return new VkSurfaceFormatKHR { Format = VkFormat.B8G8R8A8UNorm, ColorSpace = formats[0].ColorSpace };
 
         // try to find Format.B8G8R8A8UNorm as it's the most desirable
         foreach (var format in formats)
