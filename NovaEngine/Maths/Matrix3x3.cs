@@ -115,35 +115,35 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
             var quaternion = new Quaternion();
             if (Trace > 0)
             {
-                var sq = .5f / MathF.Sqrt(Trace + 1);
-                quaternion.X = (M31 - M23) * sq;
-                quaternion.Y = (M13 - M31) * sq;
-                quaternion.Z = (M21 - M12) * sq;
+                var sq = .5f / MathF.Sqrt(copy.Trace + 1);
+                quaternion.X = (copy.M31 - copy.M23) * sq;
+                quaternion.Y = (copy.M13 - copy.M31) * sq;
+                quaternion.Z = (copy.M21 - copy.M12) * sq;
                 quaternion.W = .25f / sq;
             }
             else if (M11 > M22 && M11 > M33)
             {
-                var sq = 2 * MathF.Sqrt(1 + M11 - M22 - M33);
+                var sq = 2 * MathF.Sqrt(1 + copy.M11 - copy.M22 - copy.M33);
                 quaternion.X = .25f * sq;
-                quaternion.Y = (M12 + M21) / sq;
-                quaternion.Z = (M13 + M31) / sq;
-                quaternion.W = (M32 - M23) / sq;
+                quaternion.Y = (copy.M12 + copy.M21) / sq;
+                quaternion.Z = (copy.M13 + copy.M31) / sq;
+                quaternion.W = (copy.M32 - copy.M23) / sq;
             }
             else if (M22 > M33)
             {
-                var sq = 2 * MathF.Sqrt(1 + M22 - M11 - M33);
-                quaternion.X = (M12 + M21) / sq;
+                var sq = 2 * MathF.Sqrt(1 + copy.M22 - copy.M11 - copy.M33);
+                quaternion.X = (copy.M12 + copy.M21) / sq;
                 quaternion.Y = .25f * sq;
-                quaternion.Z = (M23 + M32) / sq;
-                quaternion.W = (M13 - M31) / sq;
+                quaternion.Z = (copy.M23 + copy.M32) / sq;
+                quaternion.W = (copy.M13 - copy.M31) / sq;
             }
             else
             {
-                var sq = 2 * MathF.Sqrt(1 + M33 - M11 - M22);
-                quaternion.X = (M13 + M31) / sq;
-                quaternion.Y = (M23 + M32) / sq;
+                var sq = 2 * MathF.Sqrt(1 + copy.M33 - copy.M11 - copy.M22);
+                quaternion.X = (copy.M13 + copy.M31) / sq;
+                quaternion.Y = (copy.M23 + copy.M32) / sq;
                 quaternion.Z = .25f * sq;
-                quaternion.W = (M21 - M12) / sq;
+                quaternion.W = (copy.M21 - copy.M12) / sq;
             }
 
             return quaternion.Normalised;
