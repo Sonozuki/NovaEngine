@@ -801,7 +801,7 @@ public struct Matrix4x4D : IEquatable<Matrix4x4D>
     public readonly override int GetHashCode() => (M11, M12, M13, M14, M21, M22, M23, M24, M31, M32, M33, M34, M41, M42, M43, M44).GetHashCode();
 
     /// <inheritdoc/>
-    public readonly override string ToString() => $"<M11: {M11}, M12: {M12}, M13: {M13}, M14: {M14}, M21: {M21}, M22: {M22}, M23: {M23}, M24: {M24}, M31: {M31}, M32: {M32}, M33: {M33}>, M34: {M34}, M41: {M41}, M42: {M42}, M43: {M43}, M44: {M44}>";
+    public readonly override string ToString() => $"<M11: {M11}, M12: {M12}, M13: {M13}, M14: {M14}, M21: {M21}, M22: {M22}, M23: {M23}, M24: {M24}, M31: {M31}, M32: {M32}, M33: {M33}, M34: {M34}, M41: {M41}, M42: {M42}, M43: {M43}, M44: {M44}>";
 
     /// <summary>Creates a translation matrix.</summary>
     /// <param name="x">The X translation.</param>
