@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NovaEngine.InputHandler.Raw
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{2C16C474-32CE-45E5-A7B8-2DF27B01B0BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaEngine.Common.Windows", "NovaEngine.Common.Windows\NovaEngine.Common.Windows.csproj", "{AEB9737B-FA24-46A7-9F9B-4DA513774D14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NovaEngine.Common.Windows", "NovaEngine.Common.Windows\NovaEngine.Common.Windows.csproj", "{AEB9737B-FA24-46A7-9F9B-4DA513774D14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

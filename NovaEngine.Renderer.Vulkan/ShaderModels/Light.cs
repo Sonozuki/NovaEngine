@@ -34,4 +34,10 @@ internal struct Light
 
     /// <summary>The type of the light.</summary>
     public uint Type;
+
+    /// <summary>Whether the light is enabled.</summary>
+    public bool IsEnabled;
+
+    /// <summary>Unused.</summary>
+    private Vector3 Padding;
 }

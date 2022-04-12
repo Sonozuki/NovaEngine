@@ -199,6 +199,25 @@ public unsafe class VulkanCamera : RendererCameraBase
         ImagesInFlight[imageIndex] = InFlightFences[CurrentFrameIndex];
 
         // TODO: temp
+        var position = -Camera.Main!.Transform.GlobalPosition;
+        var rotation = Camera.Main.Transform.GlobalRotation;
+        var viewMatrix = Matrix4x4.CreateTranslation(position)
+                       * Matrix4x4.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W));
+        viewMatrix.Transpose();
+
+        var worldSpace = new Vector4(0, 0, 4.5f, 1);
+        var light = new Light()
+        {
+            Type = 0, // point
+            Intensity = 5,
+            Range = 1f,
+            Colour = new Vector4(1, 0, 0, 1),
+            PositionWorldSpace = worldSpace,
+            PositionViewSpace = viewMatrix * worldSpace,
+            IsEnabled = true
+        };
+        LightsBuffer.CopyFrom(light);
+
         var vulkanGameObjects = gameObjects.Cast<VulkanGameObject>();
         var triangleVulkanGameObjects = vulkanGameObjects.Where(vulkanGameObject => vulkanGameObject.MeshType == MeshType.TriangleList).ToList();
         var lineVulkanGameObjects = vulkanGameObjects.Where(vulkanGameObject => vulkanGameObject.MeshType == MeshType.LineList).ToList();
@@ -766,7 +785,7 @@ public unsafe class VulkanCamera : RendererCameraBase
     private void GenerateFrustums()
     {
         // update parameters
-        var parameters = new ParametersUBO() { InverseProjection = BaseCamera.ProjectionMatrix.Inverse, ScreenResolution = BaseCamera.Resolution };
+        var parameters = new ParametersUBO() { InverseProjection = BaseCamera.ProjectionMatrix.Inverse, ScreenResolution = BaseCamera.Resolution, NumberOfTilesWide = NumberOfTiles.X };
         ParametersBuffer.CopyFrom(parameters);
 
         // generate frustums

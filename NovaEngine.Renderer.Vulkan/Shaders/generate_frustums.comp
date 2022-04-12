@@ -31,7 +31,7 @@ struct Frustum
 /*********
 ** Layouts
 *********/
-layout (local_size_x = TILE_SIZE, local_size_y = TILE_SIZE) in;
+layout (local_size_x = 1) in;
 
 // The parameters of the shader.
 layout (binding = 0) uniform ParamsUniform
@@ -59,10 +59,10 @@ vec3 ScreenSpaceToViewSpace(vec2 screenSpace)
     vec2 normalisedScreenPosition = screenSpace / Params.ScreenResolution;
 
     // convert to clip space
-    vec2 clipSpace = vec2(normalisedScreenPosition.x, 1 - normalisedScreenPosition.y) * 2 - 1;
+    vec4 clipSpace = vec4(normalisedScreenPosition * 2 - 1, -1, 1);
 
     // convert to view space
-    vec4 viewSpace = Params.InverseProjection * vec4(clipSpace, 1, 1);
+    vec4 viewSpace = Params.InverseProjection * clipSpace;
     viewSpace /= viewSpace.w;
 
     return viewSpace.xyz;
@@ -73,36 +73,28 @@ Plane ComputePlane(vec3 a, vec3 b, vec3 c)
 {
     Plane plane;
     plane.Normal = normalize(cross(b - a, c - a));
-    plane.Distance = dot(plane.Normal, a);
+    plane.Normal.x *= -1;
+    // distance will always be zero so no point in calculating it
     return plane;
 }
 
 // The shader entry point.
 void main()
 {
-    // ensure the thread is in the range of the grid
-    if (gl_GlobalInvocationID.x >= Params.ScreenResolution.x
-        || gl_GlobalInvocationID.y >= Params.ScreenResolution.y)
-    {
-        return;
-    }
-
     // calculate the corners on the far clipping plane to use as the frustum vertices
     vec2 screenSpace[4];
-    screenSpace[0] = gl_GlobalInvocationID.xy * TILE_SIZE;                                   // top left
-    screenSpace[1] = vec2(gl_GlobalInvocationID.x + 1, gl_GlobalInvocationID.y) * TILE_SIZE; // top right
-    screenSpace[2] = vec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y + 1) * TILE_SIZE; // bottom left
-    screenSpace[3] = (gl_GlobalInvocationID.xy + 1) * TILE_SIZE;                             // bottom right
+    screenSpace[0] = gl_WorkGroupID.xy * TILE_SIZE;                            // top left
+    screenSpace[1] = vec2(gl_WorkGroupID.x + 1, gl_WorkGroupID.y) * TILE_SIZE; // top right
+    screenSpace[2] = vec2(gl_WorkGroupID.x, gl_WorkGroupID.y + 1) * TILE_SIZE; // bottom left
+    screenSpace[3] = (gl_WorkGroupID.xy + 1) * TILE_SIZE;                      // bottom right
 
     // convert from screen space to view space
     vec3 viewSpace[4];
     for (int i = 0; i < 4; i++)
-    {
         viewSpace[i] = ScreenSpaceToViewSpace(screenSpace[i]).xyz;
-    }
 
     // calculate the frustum from view space
-    Frustums[gl_GlobalInvocationID.y * uint(Params.ScreenResolution.x) + gl_GlobalInvocationID.x] = Frustum(Plane[4](
+    Frustums[gl_WorkGroupID.y * gl_NumWorkGroups.x + gl_WorkGroupID.x] = Frustum(Plane[4](
         ComputePlane(vec3(0), viewSpace[0], viewSpace[1]), // top
         ComputePlane(vec3(0), viewSpace[2], viewSpace[0]), // left
         ComputePlane(vec3(0), viewSpace[1], viewSpace[3]), // right

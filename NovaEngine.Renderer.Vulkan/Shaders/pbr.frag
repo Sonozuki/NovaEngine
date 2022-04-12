@@ -1,5 +1,10 @@
 #version 450
 
+
+// The size in the X and Y axis of a frustum tile.
+const uint TILE_SIZE = 16;
+
+
 /*********
 ** Structs
 *********/
@@ -55,6 +60,9 @@ layout (binding = 1) uniform ParamsUniform
 
     // The current screen resolution, this is used to ensure the a thread isn't used if it's out of bounds of the screen.
     ivec2 ScreenResolution;
+
+    // The number of horizontal tiles.
+    uint NumberOfTilesWide;
 } Params;
 
 // The buffer containing the lights to cull.
@@ -170,5 +178,9 @@ void main()
     // apply gamma correction
 //    colour = pow(colour, vec3(.4545));
 
-    outColour = vec4(material.colour, 1);
+    uvec2 tileIndex = uvec2(floor(gl_FragCoord.xy / TILE_SIZE));
+    uint index = tileIndex.y * Params.NumberOfTilesWide + tileIndex.x;
+    uint lightCount = OpaqueLightGrid[index].y;
+    outColour = vec4(lightCount, 0, 0, 1);
+    //outColour = vec4(material.colour, 1);
 }

@@ -51,6 +51,9 @@ struct Light
 
     // The type of the light.
     uint Type;
+
+    // Whether the light is enabled.
+    bool IsEnabled;
 };
 
 // Represents a plane.
@@ -303,9 +306,9 @@ void main()
     float maxDepth = uintBitsToFloat(MaxDepth);
 
     // convert depth values to view space
-    float minDepthViewSpace = ClipSpaceToViewSpace(vec3(0, 0, minDepth)).z;
-    float maxDepthViewSpace = ClipSpaceToViewSpace(vec3(0, 0, maxDepth)).z;
-    float nearClipViewSpace = ClipSpaceToViewSpace(vec3(0, 0, 0)).z; // this is used for testing lights withing the bounds of transparent geometry
+    float minDepthViewSpace = -ClipSpaceToViewSpace(vec3(0, 0, minDepth)).z;
+    float maxDepthViewSpace = -ClipSpaceToViewSpace(vec3(0, 0, maxDepth)).z;
+    float nearClipViewSpace = -ClipSpaceToViewSpace(vec3(0, 0, 0)).z; // this is used for testing lights withing the bounds of transparent geometry
 
     // clipping plane for minimum depth values (used for testing lights within the bounds of opaque geometry)
     Plane opaqueNearPlane = Plane(vec3(0, 0, 1), minDepthViewSpace);
@@ -314,6 +317,9 @@ void main()
     for (uint i = gl_LocalInvocationIndex; i < 1; i += TILE_SIZE * TILE_SIZE)
     {
         Light light = Lights[i];
+        if (!light.IsEnabled)
+            continue;
+
         switch (light.Type)
         {
             case LIGHT_TYPE_POINT:
