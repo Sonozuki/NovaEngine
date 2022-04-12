@@ -1,6 +1,6 @@
 ﻿namespace NovaEngine.Extensions;
 
-/// <summary>Extension methods for the <see cref="BinaryWriter"/> class.</summary>
+/// <summary>Extension methods for <see cref="BinaryWriter"/>.</summary>
 public static class BinaryWriterExtensions
 {
     /*********

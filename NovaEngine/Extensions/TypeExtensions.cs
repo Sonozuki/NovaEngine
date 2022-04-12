@@ -1,6 +1,6 @@
 ﻿namespace NovaEngine.Extensions;
 
-/// <summary>Extension methods for the <see cref="Type"/> class.</summary>
+/// <summary>Extension methods for <see cref="Type"/>.</summary>
 public static class TypeExtensions
 {
     /*********
