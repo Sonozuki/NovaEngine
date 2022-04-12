@@ -1,19 +1,4 @@
-﻿using NovaEngine.Components;
-using NovaEngine.Core;
-using NovaEngine.Extensions;
-using NovaEngine.External.Rendering;
-using NovaEngine.Graphics;
-using NovaEngine.Logging;
-using NovaEngine.Maths;
-using NovaEngine.Renderer.Vulkan.ShaderModels;
-using NovaEngine.Rendering;
-using NovaEngine.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Vulkan;
-
-namespace NovaEngine.Renderer.Vulkan;
+﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Represents a Vulkan camera.</summary>
 public unsafe class VulkanCamera : RendererCameraBase

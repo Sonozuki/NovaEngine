@@ -1,12 +1,4 @@
-﻿using NovaEngine.Extensions;
-using NovaEngine.Logging;
-using NovaEngine.Maths;
-using NovaEngine.Rendering;
-using NovaEngine.Settings;
-using System;
-using Vulkan;
-
-namespace NovaEngine.Renderer.Vulkan;
+﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Encapsulates all graphics and compute pipelines.</summary>
 internal unsafe class VulkanPipelines : IDisposable

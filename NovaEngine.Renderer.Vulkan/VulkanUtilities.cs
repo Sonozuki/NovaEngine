@@ -1,9 +1,4 @@
-﻿using NovaEngine.Graphics;
-using NovaEngine.Rendering;
-using System;
-using Vulkan;
-
-namespace NovaEngine.Renderer.Vulkan;
+﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Contains useful miscellaneous methods for rendering with Vulkan.</summary>
 internal unsafe static class VulkanUtilities

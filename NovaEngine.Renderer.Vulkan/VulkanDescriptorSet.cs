@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using Vulkan;
-
-namespace NovaEngine.Renderer.Vulkan;
+﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Encapsulates a <see cref="VkDescriptorSet"/>.</summary>
 internal unsafe class VulkanDescriptorSet

@@ -1,10 +1,4 @@
-﻿using NovaEngine.Extensions;
-using NovaEngine.Logging;
-using System;
-using System.Collections.Generic;
-using Vulkan;
-
-namespace NovaEngine.Renderer.Vulkan;
+﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Encapsulates a <see cref="VkDescriptorPool"/>.</summary>
 internal unsafe class VulkanDescriptorPool : IDisposable

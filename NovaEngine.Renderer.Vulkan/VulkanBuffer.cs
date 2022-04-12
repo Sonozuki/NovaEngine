@@ -1,10 +1,4 @@
-﻿using NovaEngine.Extensions;
-using NovaEngine.Logging;
-using System;
-using System.Runtime.InteropServices;
-using Vulkan;
-
-namespace NovaEngine.Renderer.Vulkan;
+﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Encapsulates a <see cref="VkBuffer"/>.</summary>
 internal unsafe class VulkanBuffer : IDisposable

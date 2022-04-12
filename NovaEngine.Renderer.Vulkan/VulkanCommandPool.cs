@@ -1,9 +1,4 @@
-﻿using NovaEngine.Extensions;
-using NovaEngine.Logging;
-using System;
-using Vulkan;
-
-namespace NovaEngine.Renderer.Vulkan;
+﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Encapsulate a <see cref="VkCommandPool"/>.</summary>
 internal unsafe class VulkanCommandPool : IDisposable

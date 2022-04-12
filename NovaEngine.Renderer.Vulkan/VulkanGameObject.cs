@@ -1,12 +1,4 @@
-﻿using NovaEngine.Components;
-using NovaEngine.Core;
-using NovaEngine.External.Rendering;
-using NovaEngine.Maths;
-using NovaEngine.Rendering;
-using System;
-using Vulkan;
-
-namespace NovaEngine.Renderer.Vulkan;
+﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Represents a Vulkan game object.</summary>
 public class VulkanGameObject : RendererGameObjectBase

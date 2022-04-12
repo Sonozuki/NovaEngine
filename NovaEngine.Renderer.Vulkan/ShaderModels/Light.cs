@@ -1,6 +1,4 @@
-﻿using NovaEngine.Maths;
-
-namespace NovaEngine.Renderer.Vulkan.ShaderModels;
+﻿namespace NovaEngine.Renderer.Vulkan.ShaderModels;
 
 /// <summary>Represents a light.</summary>
 internal struct Light

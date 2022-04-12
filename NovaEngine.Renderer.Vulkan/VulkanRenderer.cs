@@ -1,18 +1,4 @@
-﻿using NovaEngine.Components;
-using NovaEngine.Core;
-using NovaEngine.Extensions;
-using NovaEngine.External.Rendering;
-using NovaEngine.Graphics;
-using NovaEngine.Logging;
-using NovaEngine.Rendering;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using Vulkan;
-
-namespace NovaEngine.Renderer.Vulkan;
+﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Represents a graphics renderer using Vulkan.</summary>
 public unsafe class VulkanRenderer : IRenderer

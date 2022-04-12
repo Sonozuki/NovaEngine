@@ -1,9 +1,4 @@
-﻿using NovaEngine.Extensions;
-using NovaEngine.Logging;
-using System;
-using Vulkan;
-
-namespace NovaEngine.Renderer.Vulkan;
+﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>A store for all descriptor set layouts.</summary>
 internal unsafe static class DescriptorSetLayouts

@@ -1,11 +1,4 @@
-﻿using NovaEngine.Extensions;
-using NovaEngine.Graphics;
-using NovaEngine.Logging;
-using NovaEngine.Settings;
-using System;
-using Vulkan;
-
-namespace NovaEngine.Renderer.Vulkan;
+﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Encapsulates a <see cref="VkSwapchainKHR"/>.</summary>
 internal unsafe class VulkanSwapchain : IDisposable

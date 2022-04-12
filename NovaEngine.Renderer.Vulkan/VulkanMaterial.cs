@@ -1,6 +1,4 @@
-﻿using NovaEngine.Maths;
-
-namespace NovaEngine.Renderer.Vulkan;
+﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>The material that'll get passed to a shader.</summary>
 internal struct VulkanMaterial

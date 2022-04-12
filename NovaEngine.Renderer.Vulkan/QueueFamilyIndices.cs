@@ -1,6 +1,4 @@
-﻿using Vulkan;
-
-namespace NovaEngine.Renderer.Vulkan;
+﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Contains the indices for the required queue families.</summary>
 internal struct QueueFamilyIndices

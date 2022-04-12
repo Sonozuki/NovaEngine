@@ -1,12 +1,4 @@
-﻿using NovaEngine.Extensions;
-using NovaEngine.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using Vulkan;
-
-namespace NovaEngine.Renderer.Vulkan;
+﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Encapsulates a <see cref="VkPhysicalDevice"/> and it's logical <see cref="VkDevice"/> representation.</summary>
 internal unsafe class VulkanDevice : IDisposable

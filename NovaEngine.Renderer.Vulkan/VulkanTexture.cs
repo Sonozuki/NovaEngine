@@ -1,11 +1,4 @@
-﻿using NovaEngine.Extensions;
-using NovaEngine.External.Rendering;
-using NovaEngine.Graphics;
-using NovaEngine.Logging;
-using System;
-using Vulkan;
-
-namespace NovaEngine.Renderer.Vulkan;
+﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Represents a Vulkan specific texture.</summary>
 public unsafe class VulkanTexture : RendererTextureBase

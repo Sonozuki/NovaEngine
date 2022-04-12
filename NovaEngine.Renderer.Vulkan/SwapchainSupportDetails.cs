@@ -1,6 +1,4 @@
-﻿using Vulkan;
-
-namespace NovaEngine.Renderer.Vulkan;
+﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Contains details about the swapchain support.</summary>
 internal struct SwapchainSupportDetails

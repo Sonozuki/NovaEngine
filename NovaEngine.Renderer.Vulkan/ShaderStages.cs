@@ -1,12 +1,4 @@
-﻿using NovaEngine.Content;
-using NovaEngine.Extensions;
-using NovaEngine.Logging;
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using Vulkan;
-
-namespace NovaEngine.Renderer.Vulkan;
+﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>A structure used to store shader stages for the graphics and compute pipelines.</summary>
 internal unsafe static class ShaderStages
