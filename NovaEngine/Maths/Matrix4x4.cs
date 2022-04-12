@@ -754,7 +754,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
         var cofactorsMatrix = minorsMatrix;
         for (int row = 0; row < 4; row++)
             for (int column = 0; column < 4; column++)
-                if (row + column % 2 != 0)
+                if ((row + column) % 2 != 0)
                     cofactorsMatrix[row, column] *= -1;
 
         // get the inverted matrix
