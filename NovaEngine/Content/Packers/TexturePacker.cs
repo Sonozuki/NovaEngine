@@ -4,18 +4,9 @@ using SixLabors.ImageSharp.PixelFormats;
 namespace NovaEngine.Content.Packers;
 
 /// <summary>Defines how a texture should be rewritten for a nova file.</summary>
+[ContentPacker("texture2d", ".bmp", ".gif", ".jpg", ".png")]
 public class TexturePacker : IContentPacker
 {
-    /*********
-    ** Accessors
-    *********/
-    /// <inheritdoc/>
-    public string Type => "texture2d";
-
-    /// <inheritdoc/>
-    public List<string> Extensions => new() { ".bmp", ".gif", ".jpg", ".png" };
-
-
     /*********
     ** Public Methods
     *********/

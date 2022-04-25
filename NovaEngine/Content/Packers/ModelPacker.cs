@@ -1,18 +1,9 @@
 ﻿namespace NovaEngine.Content.Packers;
 
 /// <summary>Defines how an 3d model file should be rewritten for a nova file.</summary>
+[ContentPacker("3dmodel", ".obj")]
 public class ModelPacker : IContentPacker
 {
-    /*********
-    ** Accessors
-    *********/
-    /// <inheritdoc/>
-    public string Type => "3dmodel";
-
-    /// <inheritdoc/>
-    public List<string> Extensions => new() { ".obj" };
-
-
     /*********
     ** Public Methods
     *********/
