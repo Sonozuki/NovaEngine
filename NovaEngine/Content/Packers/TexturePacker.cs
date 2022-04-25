@@ -13,20 +13,19 @@ public class TexturePacker : IContentPacker
     /// <inheritdoc/>
     public Stream Write(string file)
     {
-        using (var image = Image.Load<Rgba32>(file))
+        using var image = Image.Load<Rgba32>(file);
+
+        // populate memory stream with raw pixel data
+        var stream = new MemoryStream();
+        using (var binaryWriter = new BinaryWriter(stream, Encoding.UTF8, true))
         {
-            // populate memory stream with raw pixel data
-            var stream = new MemoryStream();
-            using (var binaryWriter = new BinaryWriter(stream, Encoding.UTF8, true))
-            {
-                binaryWriter.Write(image.Width);
-                binaryWriter.Write(image.Height);
+            binaryWriter.Write(image.Width);
+            binaryWriter.Write(image.Height);
 
-                for (int row = 0; row < image.Height; row++)
-                    binaryWriter.Write(MemoryMarshal.Cast<Rgba32, byte>(image.GetPixelRowSpan(row)));
-            }
-
-            return stream;
+            for (int row = 0; row < image.Height; row++)
+                binaryWriter.Write(MemoryMarshal.Cast<Rgba32, byte>(image.GetPixelRowSpan(row)));
         }
+
+        return stream;
     }
 }
