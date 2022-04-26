@@ -1,4 +1,6 @@
-﻿namespace NovaEngine.Content.Packers;
+﻿using NovaEngine.Content.Models.Model;
+
+namespace NovaEngine.Content.Packers;
 
 /// <summary>Defines how an 3d model file should be rewritten for a nova file.</summary>
 [ContentPacker("3dmodel", ".obj")]
