@@ -1,6 +1,6 @@
 ﻿namespace NovaEngine;
 
-/// <summary>Creates generic miscellaneous methods.</summary>
+/// <summary>Contains generic miscellaneous methods.</summary>
 public static class Utilities
 {
     /*********
