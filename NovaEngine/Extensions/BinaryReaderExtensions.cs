@@ -23,10 +23,10 @@ internal static class BinaryReaderExtensions
     /// <returns>A 4-byte signed integer read from the current stream.</returns>
     internal static uint ReadUInt32BigEndian(this BinaryReader binaryReader) => BinaryPrimitives.ReverseEndianness(binaryReader.ReadUInt32());
 
-    /// <summary>Reads a 2-byte signed integer as big endian from the current stream, dividing it by <c>1&lt;&lt;14</c>, and advances the current position of the stream by two bytes.</summary>
+    /// <summary>Reads a 2-byte floating-point number with the low 14 bits representing fraction, and advances the current position of the stream by two bytes.</summary>
     /// <param name="binaryReader">The binary reader to read the bytes from.</param>
-    /// <returns>A 2-byte signed integer read from the current stream, divided by <c>1&lt;&lt;14</c>.</returns>
-    internal static short Read2Dot14(this BinaryReader binaryReader) => (short)(binaryReader.ReadInt16BigEndian() / (1 << 14));
+    /// <returns>A 2-byte floating-point number with the low 14 bits representing fraction.</returns>
+    internal static float Read2Dot14(this BinaryReader binaryReader) => binaryReader.ReadInt16BigEndian() / (float)(1 << 14);
 
     /// <summary>Writes a collection of inlinable object buffers to the current stream and advances the position.</summary>
     /// <param name="binaryReader">The binary reader to read from.</param>
