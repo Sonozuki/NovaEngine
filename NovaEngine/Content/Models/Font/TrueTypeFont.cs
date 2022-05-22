@@ -136,7 +136,7 @@ internal class TrueTypeFont : IDisposable
             default:
                 throw new ContentException($"CMap format: '{format}' is unknown.");
         }
-        
+
         BinaryReader.BaseStream.Position = oldOffset;
     }
 
@@ -183,14 +183,43 @@ internal class TrueTypeFont : IDisposable
         ReadGlyphOffsets(glyfTableOffset);
 
         // read glyphs
-        for (uint i = 0; i < NumberOfGlyphs; i++)
-            Glyphs.Add(ReadGlyph(i));
+        // TODO: currently only reads ASCII glyphs
+        var characterMap = CMaps.First();
+
+        Glyphs.Add(ReadGlyph(characterMap.Map(BinaryReader, 0)));
+        for (int i = 0x21; i < 0x7F; i++)
+            Glyphs.Add(ReadGlyph(characterMap.Map(BinaryReader, i)));
+        NumberOfGlyphs = (ushort)Glyphs.Count;
 
         CalculateGlyphContours();
 
         // calculate glyph edge colours
         for (int i = 0; i < NumberOfGlyphs; i++)
             MTSDF.ColourEdges(Glyphs[i]);
+
+        // calculate bounds
+        var maxGlyphHeight = -1;
+        foreach (var glyph in Glyphs)
+        {
+            var points = glyph.Contours.SelectMany(contour => contour.Edges).SelectMany(edge => edge.Points);
+            var xMin = points.Min(point => point.X);
+            var yMin = points.Min(point => point.Y);
+            var xMax = points.Max(point => point.X);
+            var yMax = points.Max(point => point.Y);
+            glyph.UnscaledBounds = new Rectangle(xMin, yMin, xMax - xMin, yMax - yMin);
+
+            // record height so glyphs can be correctly scaled in the atlas
+            if (glyph.UnscaledBounds.Height > maxGlyphHeight)
+                maxGlyphHeight = (int)glyph.UnscaledBounds.Height;
+        }
+
+        // scale glyphs
+        var scale = maxGlyphHeight / 48f;
+        foreach (var glyph in Glyphs)
+        {
+            glyph.ScaledBounds.Width = MathF.Ceiling(glyph.UnscaledBounds.Width / scale);
+            glyph.ScaledBounds.Height = MathF.Ceiling(glyph.UnscaledBounds.Height / scale);
+        }
     }
 
     /// <summary>Reads the number of glyphs in the font.</summary>
@@ -421,8 +450,8 @@ internal class TrueTypeFont : IDisposable
             }
             else
             {
-                arg1 = BinaryReader.ReadByte();
-                arg2 = BinaryReader.ReadByte();
+                arg1 = BinaryReader.ReadSByte();
+                arg2 = BinaryReader.ReadSByte();
             }
 
             if (flags.HasFlag(CompoundGlyphFlags.ArgsAreXYValues))
@@ -451,24 +480,22 @@ internal class TrueTypeFont : IDisposable
             // read the component glyph
             var oldPosition = BinaryReader.BaseStream.Position;
             var simpleGlyph = ReadGlyph(component.GlyphIndex);
-            if (simpleGlyph != null)
-            {
-                // merge the component glyph's contour ends into this glyphs's contour ends
-                var pointOffset = glyph.Points.Count;
-                for (int i = 0; i < simpleGlyph.ContourEnds.Count; i++)
-                    glyph.ContourEnds.Add((ushort)(simpleGlyph.ContourEnds[i] + pointOffset));
-
-                // merge the component glyph's points into this glyphs's points
-                for (int i = 0; i < simpleGlyph.Points.Count; i++)
-                {
-                    var x = simpleGlyph.Points[i].X;
-                    var y = simpleGlyph.Points[i].Y;
-                    x = (int)(component.Matrix.M11 * x + component.Matrix.M12 * y + component.Matrix.M31);
-                    y = (int)(component.Matrix.M21 * x + component.Matrix.M22 * y + component.Matrix.M32);
-                    glyph.Points.Add(new(x, y, simpleGlyph.Points[i].IsOnCurve));
-                }
-            }
             BinaryReader.BaseStream.Position = oldPosition;
+
+            // merge the component glyph's contour ends into this glyphs's contour ends
+            var pointOffset = glyph.Points.Count;
+            for (int i = 0; i < simpleGlyph.ContourEnds.Count; i++)
+                glyph.ContourEnds.Add((ushort)(simpleGlyph.ContourEnds[i] + pointOffset));
+
+            // merge the component glyph's points into this glyphs's points
+            for (int i = 0; i < simpleGlyph.Points.Count; i++)
+            {
+                var point = simpleGlyph.Points[i];
+
+                var x = (int)(component.Matrix.M11 * point.X + component.Matrix.M12 * point.Y + component.Matrix.M31);
+                var y = (int)(component.Matrix.M21 * point.X + component.Matrix.M22 * point.Y + component.Matrix.M32);
+                glyph.Points.Add(new(x, y, point.IsOnCurve));
+            }
         }
 
         glyph.NumberOfContours = (short)glyph.ContourEnds.Count;

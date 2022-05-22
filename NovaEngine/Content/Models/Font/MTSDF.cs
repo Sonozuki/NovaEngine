@@ -102,45 +102,23 @@ internal static class MTSDF
         }
     }
 
-    // TODO: calculate the frame and texture size based off of the glyph size automatically
     /// <summary>Generates the MTSDF texture of a glyph.</summary>
     /// <param name="glyph">The glyph to calculate the texture of.</param>
-    /// <returns>The MTSDF texture of the glyph.</returns>
-    public static Colour128[,] GenerateMTSDF(Glyph glyph)
+    /// <param name="atlas">The atlas to draw the glyph on.</param>
+    public static void GenerateMTSDF(Glyph glyph, Colour128[,] atlas)
     {
-        // bounds
-        var points = glyph.Contours.SelectMany(contour => contour.Edges).SelectMany(edge => edge.Points);
-        var xMin = points.Min(point => point.X);
-        var yMin = points.Min(point => point.Y);
-        var xMax = points.Max(point => point.X);
-        var yMax = points.Max(point => point.Y);
-        var bounds = new Rectangle(xMin, yMin, xMax - xMin, yMax - yMin);
-
-        var frame = new Vector2(500, 500);
-
-        var scale = 1f;
-        var translate = new Vector2();
-        if (bounds.Width * frame.Y < bounds.Height * frame.X)
-        {
-            scale = frame.Y / bounds.Height;
-            translate = new(.5f * (frame.X / frame.Y * bounds.Height - bounds.Width) - bounds.X, -bounds.Y);
-        }
-        else
-        {
-            scale = frame.X / bounds.Width;
-            translate = new(-bounds.X, .5f * (frame.Y / frame.X * bounds.Width - bounds.Height) - bounds.Y);
-        }
-        translate += 1 / scale;
-
-        var range = 10 / scale;
+        // calculate glyph transformation
+        var range = 2f;
+        var frame = new Vector2(glyph.ScaledBounds.Width - range, glyph.ScaledBounds.Height - range);
+        var scale = frame.Y / glyph.UnscaledBounds.Height;
+        var offset = new Vector2(MathF.Round(glyph.UnscaledBounds.X * scale), MathF.Round(glyph.UnscaledBounds.Y * scale));
+        range /= scale;
 
         // create texture
-        var pixels = new Colour128[512, 512];
-
-        for (int y = 0; y < 512; y++)
-            for (int x = 0; x < 512; x++)
+        for (int y = 0; y < glyph.ScaledBounds.Height; y++)
+            for (int x = 0; x < glyph.ScaledBounds.Width; x++)
             {
-                var point = new Vector2(x + .5f, y + .5f) / scale - translate;
+                var point = (new Vector2(x + .5f, y - .5f) + offset) / scale;
 
                 var minDistance = new SignedDistance();
                 var r = new Channel();
@@ -182,15 +160,13 @@ internal static class MTSDF
                 if (b.NearEdge != null)
                     b.NearEdge.DistanceToPseudoDistance(b.MinDistance, point, b.NearParam);
 
-                pixels[x, y] = new Colour128(
+                atlas[x + (int)glyph.ScaledBounds.X, (int)glyph.ScaledBounds.Height - 1 - y + (int)glyph.ScaledBounds.Y] = new Colour128(
                     r.MinDistance.Distance / range + .5f,
                     g.MinDistance.Distance / range + .5f,
                     b.MinDistance.Distance / range + .5f,
                     a / range + .5f
                 );
             }
-
-        return pixels;
     }
 
 

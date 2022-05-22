@@ -4,6 +4,16 @@
 internal class Glyph
 {
     /*********
+    ** Fields
+    *********/
+    /// <summary>The bounds of the glyph in the font file.</summary>
+    public Rectangle UnscaledBounds = new();
+
+    /// <summary>The bounds of the glyph in the texture atlas.</summary>
+    public Rectangle ScaledBounds = new();
+
+
+    /*********
     ** Accessors
     *********/
     /// <summary>The indices in <see cref="Points"/> the represent the end of each contour.</summary>
