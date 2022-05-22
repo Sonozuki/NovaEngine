@@ -62,6 +62,7 @@ internal class CmapFormat4 : ICmapFormat
                     glyphIndex = (ushort)((segment.IdDelta + characterCode) & 0xFFFF);
 
                 Cache[characterCode] = glyphIndex;
+                break;
             }
 
         return glyphIndex;
