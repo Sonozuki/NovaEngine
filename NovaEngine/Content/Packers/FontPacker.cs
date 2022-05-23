@@ -22,18 +22,16 @@ public class FontPacker : IContentPacker
         return new MemoryStream();
     }
 
-    private static void GenerateOutput(Colour128[,] pixels)
+    private static void GenerateOutput(Colour[,] pixels)
     {
-        byte ConvertToByte(float value) => (byte)Math.Clamp(value * 255f, 0, 255);
-
         List<byte> buffer = new();
         for (int y = 0; y < pixels.GetLength(1); y++)
             for (int x = 0; x < pixels.GetLength(0); x++)
             {
-                buffer.Add(ConvertToByte(pixels[x, y].R));
-                buffer.Add(ConvertToByte(pixels[x, y].G));
-                buffer.Add(ConvertToByte(pixels[x, y].B));
-                buffer.Add(ConvertToByte(pixels[x, y].A));
+                buffer.Add(pixels[x, y].R);
+                buffer.Add(pixels[x, y].G);
+                buffer.Add(pixels[x, y].B);
+                buffer.Add(pixels[x, y].A);
             }
 
         using var image = Image.LoadPixelData<Rgba32>(buffer.ToArray(), pixels.GetLength(0), pixels.GetLength(1));
