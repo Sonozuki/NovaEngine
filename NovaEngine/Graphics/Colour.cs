@@ -462,6 +462,19 @@ public struct Colour
         A = a;
     }
 
+    /// <summary>Constructs an instance.</summary>
+    /// <param name="r">The red channel.</param>
+    /// <param name="g">The green channel.</param>
+    /// <param name="b">The blue channel.</param>
+    /// <param name="a">The alpha channel.</param>
+    public Colour(float r, float g, float b, float a)
+    {
+        R = (byte)(Math.Clamp(r, 0, 1) * 255);
+        G = (byte)(Math.Clamp(g, 0, 1) * 255);
+        B = (byte)(Math.Clamp(b, 0, 1) * 255);
+        A = (byte)(Math.Clamp(a, 0, 1) * 255);
+    }
+
     /// <inheritdoc/>
     public override bool Equals(object? obj)
     {
