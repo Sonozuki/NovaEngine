@@ -186,7 +186,7 @@ internal class TrueTypeFont : IDisposable
         // TODO: currently only reads ASCII glyphs
         var characterMap = CMaps.First();
 
-        Glyphs.Add(ReadGlyph(characterMap.Map(BinaryReader, 0)));
+        Glyphs.Add(ReadGlyph(characterMap.Map(BinaryReader, -1)));
         for (int i = 0x21; i < 0x7F; i++)
             Glyphs.Add(ReadGlyph(characterMap.Map(BinaryReader, i)));
         NumberOfGlyphs = (ushort)Glyphs.Count;
