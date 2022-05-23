@@ -34,9 +34,10 @@ internal static class GlyphPacker
 
     /// <summary>Tries to pack glyphs into the space that was defined when creating the packer.</summary>
     /// <param name="glyphs">The glyphs to pack.</param>
+    /// <param name="padding">The amount of padding between glyphs in the atlas.</param>
     /// <returns><see langword="true"/>, if all the glyphs could be successfully packed; otherwise, <see langword="false"/>.</returns>
     /// <remarks>The final atlas position of each glyph is stored in the scaled bounds X/Y of the glyph.</remarks>
-    public static bool TryPack(List<Glyph> glyphs)
+    public static bool TryPack(List<Glyph> glyphs, int padding)
     {
         var remainingGlyphs = new List<Glyph>(glyphs);
 
@@ -60,7 +61,7 @@ internal static class GlyphPacker
             bestGlyph.ScaledBounds.X = bestSpace.X;
             bestGlyph.ScaledBounds.Y = bestSpace.Y;
 
-            SplitSpace(bestSpaceIndex, (int)bestGlyph.ScaledBounds.Width, (int)bestGlyph.ScaledBounds.Height);
+            SplitSpace(bestSpaceIndex, (int)bestGlyph.ScaledBounds.Width + padding, (int)bestGlyph.ScaledBounds.Height + padding);
             remainingGlyphs.RemoveAt(bestGlyphIndex);
 
             // Finds a glyph and space pair that fit each other the best.
@@ -85,7 +86,7 @@ internal static class GlyphPacker
                         // otherwise, check which space and glyph fit the best together
                         if (glyph.ScaledBounds.Width <= space.Width && glyph.ScaledBounds.Height <= space.Height)
                         {
-                            var fit = RateFit((int)glyph.ScaledBounds.Width, (int)glyph.ScaledBounds.Height, (int)space.Width, (int)space.Height);
+                            var fit = RateFit((int)glyph.ScaledBounds.Width + padding, (int)glyph.ScaledBounds.Height + padding, (int)space.Width, (int)space.Height);
                             if (fit < bestFit)
                             {
                                 bestFit = fit;
