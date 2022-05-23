@@ -160,7 +160,7 @@ internal static class MTSDF
                 if (b.NearEdge != null)
                     b.NearEdge.DistanceToPseudoDistance(b.MinDistance, point, b.NearParam);
 
-                atlas[x + (int)glyph.ScaledBounds.X, (int)glyph.ScaledBounds.Height - 1 - y + (int)glyph.ScaledBounds.Y] = new Colour(
+                atlas[(int)glyph.ScaledBounds.Height - 1 - y + (int)glyph.ScaledBounds.Y, x + (int)glyph.ScaledBounds.X] = new Colour(
                     r.MinDistance.Distance / range + .5f,
                     g.MinDistance.Distance / range + .5f,
                     b.MinDistance.Distance / range + .5f,
