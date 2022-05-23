@@ -21,11 +21,10 @@ internal static class AtlasPacker
     /// <returns>The atlas for the font.</returns>
     public static Colour[,] CreateAtlas(TrueTypeFont font)
     {
-        var nonWhitespaceGlyphs = font.Glyphs.Where(glyph => glyph.ScaledBounds.Width > 0 && glyph.ScaledBounds.Height > 0).ToList();
-        Pack(nonWhitespaceGlyphs, out var atlasEdgeLength);
+        Pack(font.Glyphs, out var atlasEdgeLength);
 
         var atlas = new Colour[atlasEdgeLength, atlasEdgeLength];
-        foreach (var glyph in nonWhitespaceGlyphs)
+        foreach (var glyph in font.Glyphs)
             MTSDF.GenerateMTSDF(glyph, atlas, Range);
 
         return atlas;
