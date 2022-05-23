@@ -12,29 +12,38 @@ public class FontPacker : IContentPacker
     ** Public Methods
     *********/
     /// <inheritdoc/>
-    public Stream Write(string file)
+    public unsafe Stream Write(string file)
     {
-        var ttf = new TrueTypeFont(file);
+        using var ttf = new TrueTypeFont(file);
         var atlas = AtlasPacker.CreateAtlas(ttf);
 
-        GenerateOutput(atlas);
+        var memoryStream = new MemoryStream();
+        using var binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true);
 
-        return new MemoryStream();
-    }
+        // TODO: add support for multiple texture atlases
+        // texture atlas edge length
+        binaryWriter.Write(atlas.GetLength(0));
 
-    private static void GenerateOutput(Colour[,] pixels)
-    {
-        List<byte> buffer = new();
-        for (int y = 0; y < pixels.GetLength(1); y++)
-            for (int x = 0; x < pixels.GetLength(0); x++)
-            {
-                buffer.Add(pixels[x, y].R);
-                buffer.Add(pixels[x, y].G);
-                buffer.Add(pixels[x, y].B);
-                buffer.Add(pixels[x, y].A);
-            }
+        // atlas pixel data
+        var pixelsBuffer = new byte[atlas.GetLength(0) * atlas.GetLength(1) * 4];
+        fixed (Colour* atlasPointer = atlas)
+        fixed (byte* pixelsBufferPointer = pixelsBuffer)
+            Buffer.MemoryCopy(atlasPointer, pixelsBufferPointer, pixelsBuffer.Length, pixelsBuffer.Length);
+        binaryWriter.Write(pixelsBuffer);
 
-        using var image = Image.LoadPixelData<Rgba32>(buffer.ToArray(), pixels.GetLength(0), pixels.GetLength(1));
-        image.SaveAsPng(Path.Combine(Environment.CurrentDirectory, "test.png"));
+        // glyph atlas position data
+        binaryWriter.Write(ttf.Glyphs.Count);
+        foreach (var glyph in ttf.Glyphs)
+        {
+            binaryWriter.Write(glyph.Character);
+            binaryWriter.Write((ushort)glyph.ScaledBounds.X);
+            binaryWriter.Write((ushort)glyph.ScaledBounds.Y);
+            binaryWriter.Write((ushort)glyph.ScaledBounds.Width);
+            binaryWriter.Write((ushort)glyph.ScaledBounds.Height);
+        }
+
+        // TODO: kerning
+
+        return memoryStream;
     }
 }
