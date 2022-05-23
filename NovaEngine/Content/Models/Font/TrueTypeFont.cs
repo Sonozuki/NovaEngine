@@ -186,9 +186,9 @@ internal class TrueTypeFont : IDisposable
         // TODO: currently only reads ASCII glyphs
         var characterMap = CMaps.First();
 
-        Glyphs.Add(ReadGlyph(characterMap.Map(BinaryReader, -1)));
+        Glyphs.Add(ReadGlyph(characterMap.Map(BinaryReader, -1), '\0'));
         for (int i = 0x21; i < 0x7F; i++)
-            Glyphs.Add(ReadGlyph(characterMap.Map(BinaryReader, i)));
+            Glyphs.Add(ReadGlyph(characterMap.Map(BinaryReader, i), (char)i));
         NumberOfGlyphs = (ushort)Glyphs.Count;
 
         CalculateGlyphContours();
@@ -256,9 +256,10 @@ internal class TrueTypeFont : IDisposable
 
     /// <summary>Retrieves the glyph of a specified index.</summary>
     /// <param name="index">The index of the glyph.</param>
+    /// <param name="character">The character the glyph represents.</param>
     /// <returns>The glyph.</returns>
     /// <exception cref="ArgumentException">Thrown if the font doesn't contain a "glyf" table, or the glyph offset is invalid, or if the glyph contours are invlaid.</exception>
-    private Glyph ReadGlyph(uint index)
+    private Glyph ReadGlyph(uint index, char? character = null)
     {
         if (!Tables.ContainsKey("glyf"))
             throw new ArgumentException("'glyf' table doesn't exist.");
@@ -282,6 +283,9 @@ internal class TrueTypeFont : IDisposable
             ReadCompoundGlyph(glyph);
         else
             ReadSimpleGlyph(glyph);
+
+        if (character != null)
+            glyph.Character = character.Value;
 
         return glyph;
     }

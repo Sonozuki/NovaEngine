@@ -16,6 +16,9 @@ internal class Glyph
     /*********
     ** Accessors
     *********/
+    /// <summary>The character the glyph represents.</summary>
+    public char Character { get; set; }
+
     /// <summary>The indices in <see cref="Points"/> the represent the end of each contour.</summary>
     public List<ushort> ContourEnds { get; private set; } = new();
 
