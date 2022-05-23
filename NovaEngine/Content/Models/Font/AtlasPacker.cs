@@ -9,6 +9,9 @@ internal static class AtlasPacker
     /// <summary>The amount of padding between glyphs in the atlas.</summary>
     private const int Padding = 1;
 
+    /// <summary>The range (in pixels) of the signed distance around the glyphs.</summary>
+    private const float Range = 2;
+
 
     /*********
     ** Public Methods
@@ -23,7 +26,7 @@ internal static class AtlasPacker
 
         var atlas = new Colour128[atlasEdgeLength, atlasEdgeLength];
         foreach (var glyph in nonWhitespaceGlyphs)
-            MTSDF.GenerateMTSDF(glyph, atlas);
+            MTSDF.GenerateMTSDF(glyph, atlas, Range);
 
         return atlas;
     }

@@ -105,10 +105,10 @@ internal static class MTSDF
     /// <summary>Generates the MTSDF texture of a glyph.</summary>
     /// <param name="glyph">The glyph to calculate the texture of.</param>
     /// <param name="atlas">The atlas to draw the glyph on.</param>
-    public static void GenerateMTSDF(Glyph glyph, Colour128[,] atlas)
+    /// <param name="range">The range (in pixels) of the signed distance around the glyphs.</param>
+    public static void GenerateMTSDF(Glyph glyph, Colour128[,] atlas, float range)
     {
         // calculate glyph transformation
-        var range = 2f;
         var frame = new Vector2(glyph.ScaledBounds.Width - range, glyph.ScaledBounds.Height - range);
         var scale = frame.Y / glyph.UnscaledBounds.Height;
         var offset = new Vector2(MathF.Round(glyph.UnscaledBounds.X * scale), MathF.Round(glyph.UnscaledBounds.Y * scale));
