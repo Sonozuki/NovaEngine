@@ -94,23 +94,41 @@ public class Transform
     /// <summary>The game object the transform belongs to.</summary>
     public GameObject GameObject { get; }
 
+    /// <summary>The forward direction of the tranform in local space.</summary>
+    public Vector3 LocalForward => Vector3.UnitZ * LocalRotation;
+
+    /// <summary>The backward direction of the tranform in local space.</summary>
+    public Vector3 LocalBackward => (-Vector3.UnitZ) * LocalRotation;
+
+    /// <summary>The up direction of the tranform in local space.</summary>
+    public Vector3 LocalUp => Vector3.UnitY * LocalRotation;
+
+    /// <summary>The down direction of the tranform in local space.</summary>
+    public Vector3 LocalDown => (-Vector3.UnitY) * LocalRotation;
+
+    /// <summary>The left direction of the tranform in local space.</summary>
+    public Vector3 LocalLeft => (-Vector3.UnitX) * LocalRotation;
+
+    /// <summary>The right direction of the tranform in local space.</summary>
+    public Vector3 LocalRight => Vector3.UnitX * LocalRotation;
+
     /// <summary>The forward direction of the tranform in world space.</summary>
-    public Vector3 Forward => Vector3.UnitZ * GlobalRotation;
+    public Vector3 GlobalForward => Vector3.UnitZ * GlobalRotation;
 
     /// <summary>The backward direction of the tranform in world space.</summary>
-    public Vector3 Backward => (-Vector3.UnitZ) * GlobalRotation;
+    public Vector3 GlobalBackward => (-Vector3.UnitZ) * GlobalRotation;
 
     /// <summary>The up direction of the tranform in world space.</summary>
-    public Vector3 Up => Vector3.UnitY * GlobalRotation;
+    public Vector3 GlobalUp => Vector3.UnitY * GlobalRotation;
 
     /// <summary>The down direction of the tranform in world space.</summary>
-    public Vector3 Down => (-Vector3.UnitY) * GlobalRotation;
+    public Vector3 GlobalDown => (-Vector3.UnitY) * GlobalRotation;
 
     /// <summary>The left direction of the tranform in world space.</summary>
-    public Vector3 Left => (-Vector3.UnitX) * GlobalRotation;
+    public Vector3 GlobalLeft => (-Vector3.UnitX) * GlobalRotation;
 
     /// <summary>The right direction of the tranform in world space.</summary>
-    public Vector3 Right => Vector3.UnitX * GlobalRotation;
+    public Vector3 GlobalRight => Vector3.UnitX * GlobalRotation;
 
     /// <summary>The global position of the parent object.</summary>
     internal Vector3 ParentPosition
