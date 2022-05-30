@@ -31,6 +31,12 @@ public class GameObjectChildren : IList<GameObject>
         get => Children[index];
         set
         {
+            // unset the parent of the child being replaced
+            var oldChild = Children[index];
+            if (oldChild != null)
+                oldChild.Parent = null;
+
+            // set the parent of the new child
             value.Parent = Parent;
             Children[index] = value;
         }
@@ -43,10 +49,11 @@ public class GameObjectChildren : IList<GameObject>
     /// <inheritdoc/>
     public void Add(GameObject item)
     {
-        // TODO: ensure the game object isn't already a child
+        if (Children.Contains(item))
+            throw new InvalidOperationException("The item is already a child.");
 
+        item.Parent = Parent;
         Children.Add(item);
-        item.Parent = Parent; // this will remove the child from it's current parent (if it has one)
     }
 
     /// <inheritdoc/>
@@ -69,9 +76,19 @@ public class GameObjectChildren : IList<GameObject>
     
     /// <inheritdoc/>
     public int IndexOf(GameObject item) => Children.IndexOf(item);
-    
+
     /// <inheritdoc/>
-    public void Insert(int index, GameObject item) => Children.Insert(index, item);
+    public void Insert(int index, GameObject item)
+    {
+        // unset the parent of the child being replaced
+        var oldChild = Children[index];
+        if (oldChild != null)
+            oldChild.Parent = null;
+
+        // set the parent of the new child
+        item.Parent = Parent;
+        Children[index] = item;
+    }
 
     /// <inheritdoc/>
     public bool Remove(GameObject item)
