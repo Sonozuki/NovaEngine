@@ -49,6 +49,9 @@ public class SceneRootObjects : IList<GameObject>
     /// <inheritdoc/>
     public void Add(GameObject item)
     {
+        if (RootGameObjects.Contains(item))
+            throw new InvalidOperationException("The item is already a root object.");
+
         item.Scene = Scene;
         RootGameObjects.Add(item);
     }
