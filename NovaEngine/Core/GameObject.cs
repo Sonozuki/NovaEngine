@@ -28,19 +28,34 @@ public class GameObject : IDisposable
 
     /// <summary>The transform component of the game object.</summary>
     public Transform Transform { get; }
-
+    
     /// <summary>The parent of the game object.</summary>
     /// <remarks>This is <see langword="null"/> when it's a root game object.</remarks>
+    /// <exception cref="InvalidOperationException">Thrown if the parent being set is a child of the object.</exception>
     public GameObject? Parent
     {
         get => _Parent;
         set
         {
-            // TODO: ensure the new parent isn't a recursive child of this object
-            // TODO: remove the object as a child from it's current parent
-            // TODO: if the game object isn't already a child add it as a child
+            // ensure old and new parents are different
+            if (!object.ReferenceEquals(Parent, value))
+                return;
+
+            // ensure new parent is not a child of the object
+            var allChildren = GetAllGameObjects(true).Skip(1); // skip the first element as that is this instance
+            if (allChildren.Any(child => object.ReferenceEquals(this, child)))
+                throw new InvalidOperationException("Cannot set the parent as it's a child of the object, which would cause a circular dependency.");
+
+            // remove the object from the old parent
+            if (Parent != null)
+                Parent.Children.Remove(this);
 
             _Parent = value;
+
+            // add the object to the new parent
+            if (Parent != null)
+                Parent.Children.Add(this);
+
             Scene = Parent?.Scene;
 
             Transform.ParentPosition = Parent?.Transform.GlobalPosition ?? Vector3.Zero;
