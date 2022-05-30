@@ -11,6 +11,11 @@ public class GameObject : IDisposable
     [Serialisable]
     private GameObject? _Parent;
 
+    /// <summary>The scene the game object is in.</summary>
+    /// <remarks>This is <see langword="null"/> when it's not in a scene.</remarks>
+    [Serialisable]
+    private Scene? _Scene;
+
 
     /*********
     ** Accessors
@@ -53,6 +58,19 @@ public class GameObject : IDisposable
     [EditorBrowsable(EditorBrowsableState.Never)]
     [NonSerialisable]
     public RendererGameObjectBase RendererGameObject { get; private set; }
+
+    /// <summary>The scene the game object is in.</summary>
+    public Scene? Scene
+    {
+        get => _Scene;
+        internal set
+        {
+            _Scene = value;
+
+            foreach (var child in Children)
+                child.Scene = value;
+        }
+    }
 
     /// <summary>A game object with a mesh renderer containing a mesh of a unit size cube.</summary>
     internal static GameObject Cube => new("Cube", components: new[] { new MeshRenderer(Meshes.Cube) });

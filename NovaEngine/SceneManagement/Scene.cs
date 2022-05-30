@@ -13,7 +13,7 @@ public class Scene : IDisposable
     public bool IsActive { get; set; }
 
     /// <summary>The root game objects of the scene.</summary>
-    public List<GameObject> RootGameObjects { get; } = new List<GameObject>();
+    public SceneRootObjects RootGameObjects { get; }
 
 
     /*********
@@ -26,6 +26,8 @@ public class Scene : IDisposable
     {
         Name = name;
         IsActive = isActive;
+
+        RootGameObjects = new(this);
     }
 
     /// <inheritdoc/>
