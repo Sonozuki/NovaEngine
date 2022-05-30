@@ -41,6 +41,7 @@ public class GameObject : IDisposable
             // TODO: if the game object isn't already a child add it as a child
 
             _Parent = value;
+            Scene = Parent?.Scene;
 
             Transform.ParentPosition = Parent?.Transform.GlobalPosition ?? Vector3.Zero;
             Transform.ParentRotation = Parent?.Transform.GlobalRotation ?? Quaternion.Identity;
