@@ -47,13 +47,14 @@ public class GameObjectChildren : IList<GameObject>
     ** Public Methods
     *********/
     /// <inheritdoc/>
+    /// <exception cref="InvalidOperationException">Thrown if the item is already a child.</exception>
     public void Add(GameObject item)
     {
         if (Children.Contains(item))
             throw new InvalidOperationException("The item is already a child.");
 
-        item.Parent = Parent;
         Children.Add(item);
+        item.Parent = Parent;
     }
 
     /// <inheritdoc/>
