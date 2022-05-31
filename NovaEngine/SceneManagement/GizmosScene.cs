@@ -32,6 +32,15 @@ internal class GizmosScene : Scene
     /*********
     ** Public Methods
     *********/
+    /// <summary>Constructs an instance.</summary>
+    public GizmosScene()
+        : base("Gizmos", true)
+    {
+        CubesParent = new GameObject("Cubes");
+        SpheresParent = new GameObject("Spheres");
+        LinesParent = new GameObject("Lines");
+    }
+
     /// <summary>Adds a cube gizmo to the scene.</summary>
     /// <param name="position">The position of the cube.</param>
     /// <param name="rotation">The rotation of the cube.</param>
@@ -100,10 +109,6 @@ internal class GizmosScene : Scene
     /// <inheritdoc/>
     internal override void Start()
     {
-        CubesParent = new GameObject("Cubes");
-        SpheresParent = new GameObject("Spheres");
-        LinesParent = new GameObject("Lines");
-
         RootGameObjects.Add(CubesParent);
         RootGameObjects.Add(SpheresParent);
         RootGameObjects.Add(LinesParent);
