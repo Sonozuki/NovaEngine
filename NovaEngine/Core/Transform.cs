@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Core;
 
 /// <summary>Represents the transform for an <see cref="Core.GameObject"/>.</summary>
-public class Transform
+public class Transform : ComponentBase
 {
     /*********
     ** Fields

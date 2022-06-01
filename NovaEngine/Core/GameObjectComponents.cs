@@ -130,6 +130,10 @@ public class GameObjectComponents : IList<ComponentBase>
     public List<T> GetRange<T>(bool includeDisabled = true)
         where T : ComponentBase
     {
+        // check cache (for types that can't have multiple)
+        if (typeof(T) == typeof(Transform) || typeof(T) == typeof(UITransform))
+            return new List<T>() { (T)(object)GameObject.Transform };
+
         // get all the components of type T
         var components = Components
             .Where(component => component is T)
