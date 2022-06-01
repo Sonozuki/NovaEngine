@@ -113,7 +113,7 @@ public class GameObject : IDisposable
         Name = name;
         Children = new(this, children);
         Components = new(this, components);
-        Transform = new(this);
+        Transform = new UITransform(this); // most objects won't be UI controls, but it's doesn't get stored as such as will be cast to a UITransform if requested (and is actually in a UI scene) as to not cause confusion
         IsEnabled = isEnabled;
 
         if (parent != null)

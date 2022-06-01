@@ -179,12 +179,12 @@ public class Transform
 
 
     /*********
-    ** Protected Methods
+    ** Private Methods
     *********/
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     
     /// <summary>Constructs an instance.</summary>
-    protected Transform() { } // required for serialiser
+    private Transform() { } // required for serialiser
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

@@ -32,4 +32,12 @@ public sealed class UITransform : Transform
     /// <summary>The distance from the right of the element to the right of the screen, in pixels.</summary>
     /// <remarks>This is only used when the element has <see cref="HorizontalAnchor.Stretch"/>.</remarks>
     public float Right { get; set; }
+
+
+    /*********
+    ** Internal Methods
+    *********/
+    /// <inheritdoc/>
+    internal UITransform(GameObject gameObject)
+        : base(gameObject) { }
 }
