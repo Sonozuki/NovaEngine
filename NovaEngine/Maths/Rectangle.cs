@@ -1,8 +1,7 @@
-﻿namespace NovaEngine.Content.Models.Font;
+﻿namespace NovaEngine.Maths;
 
-// TODO: move this from font to the main engine
 /// <summary>Represents a rectangle.</summary>
-internal struct Rectangle
+public struct Rectangle
 {
     /*********
     ** Fields
