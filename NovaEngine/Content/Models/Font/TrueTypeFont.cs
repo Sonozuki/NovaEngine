@@ -35,6 +35,9 @@ internal class TrueTypeFont : IDisposable
     /*********
     ** Accessors
     *********/
+    /// <summary>The name of the font.</summary>
+    public string Name { get; internal set; }
+
     /// <summary>All the glyphs in the font file.</summary>
     public List<Glyph> Glyphs { get; } = new();
 
@@ -42,6 +45,8 @@ internal class TrueTypeFont : IDisposable
     /*********
     ** Public Methods
     *********/
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
     /// <summary>Constructs an instance.</summary>
     /// <param name="ttfFile">The path to the ttf file to load.</param>
     public TrueTypeFont(string ttfFile)
@@ -49,12 +54,15 @@ internal class TrueTypeFont : IDisposable
         BinaryReader = new BinaryReader(File.OpenRead(ttfFile));
 
         ReadTables();
+        ReadNameTable();
         ReadHeadTable();
         ReadCmapTable();
         ReadKernTable();
 
         ReadGlyphs();
     }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     /// <inheritdoc/>
     public void Dispose() => BinaryReader.Dispose();
@@ -75,6 +83,64 @@ internal class TrueTypeFont : IDisposable
                 new Table(BinaryReader.ReadUInt32BigEndian(), BinaryReader.ReadUInt32BigEndian(), BinaryReader.ReadUInt32BigEndian());
 
         // TODO: validate tables with checksums
+    }
+
+    /// <summary>Reads the content of the name table.</summary>
+    /// <exception cref="ContentException">Thrown if the font doesn't contain a "name" table or if the "name" table is invalid.</exception>
+    private void ReadNameTable()
+    {
+        if (!Tables.ContainsKey("name"))
+            throw new ContentException("'name' table doesn't exist.");
+
+        var tableOffset = Tables["name"].Offset;
+        BinaryReader.BaseStream.Position = tableOffset + 2;
+
+        var numberOfNameRecords = BinaryReader.ReadUInt16BigEndian();
+        var stringOffset = BinaryReader.ReadUInt16BigEndian();
+
+        var fontFamilyName = "";
+        var fontSubfamilyName = "";
+        for (int i = 0; i < numberOfNameRecords; i++)
+        {
+            var platformId = BinaryReader.ReadUInt16BigEndian();
+            BinaryReader.BaseStream.Position += 4;
+
+            // check what this record is corresponding to, and ignore any that aren't relevant (font family, font subfamily)
+            var nameId = BinaryReader.ReadUInt16BigEndian();
+            if (nameId != 1 && nameId != 2) // 1 = font family name, 2 = font subfamily name
+            {
+                BinaryReader.BaseStream.Position += 4;
+                continue;
+            }
+
+            // read name record value
+            var length = BinaryReader.ReadUInt16BigEndian();
+            var offset = BinaryReader.ReadUInt16BigEndian();
+
+            var oldPosition = BinaryReader.BaseStream.Position;
+            BinaryReader.BaseStream.Position = tableOffset + stringOffset + offset;
+
+            var name = "";
+            if (platformId == 0 || platformId == 3)
+                for (int j = 0; j < length; j += 2) // unicode needs to have endian reversed (as ttf files are big endian)
+                {
+                    var bytes = BinaryReader.ReadBytes(2);
+                    name += new string(Encoding.Unicode.GetChars(new[] { bytes[1], bytes[0] })); // TODO: could do with cleaning up
+                }
+            else
+                name = Encoding.ASCII.GetString(BinaryReader.ReadBytes(length));
+
+            BinaryReader.BaseStream.Position = oldPosition;
+
+            // set respective name
+            if (nameId == 1)
+                fontFamilyName = name;
+            else if (nameId == 2)
+                fontSubfamilyName = name;
+        }
+
+        // calculate final font name
+        Name = $"{fontFamilyName} ({fontSubfamilyName})";
     }
 
     /// <summary>Reads the content of the font header table.</summary>
