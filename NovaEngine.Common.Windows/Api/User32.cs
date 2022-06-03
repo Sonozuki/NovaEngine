@@ -1,4 +1,6 @@
-﻿namespace NovaEngine.Common.Windows.Api;
+﻿using Rectangle = NovaEngine.Common.Windows.Native.Rectangle;
+
+namespace NovaEngine.Common.Windows.Api;
 
 /// <summary>Exposes neccessary User32.dll apis.</summary>
 public static class User32

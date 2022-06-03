@@ -9,6 +9,8 @@ using NovaEngine.Maths;
 using System;
 using System.Runtime.InteropServices;
 
+using Rectangle = NovaEngine.Common.Windows.Native.Rectangle;
+
 namespace NovaEngine.InputHandler.RawWindows;
 
 /// <summary>Represents the raw Windows input handler.</summary>
