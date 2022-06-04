@@ -21,8 +21,8 @@ public class FontReader : IContentReader
         var pixels = MemoryMarshal.Cast<byte, Colour>(pixelBuffer);
         
         var atlas = new Texture2D(atlasEdgeLength, atlasEdgeLength);
-        // TODO: populate atlas
-         
+        atlas.SetPixels(pixels.ToArray());
+        
         // glyph positions
         var count = binaryReader.ReadInt32();
         var glyphPositions = new List<GlyphPosition>();
