@@ -7,7 +7,7 @@ namespace NovaEngine.Content.Readers;
 public class ModelReader : IContentReader
 {
     /*********
-    ** Accessors
+    ** Public Methods
     *********/
     /// <inheritdoc/>
     public object? Read(Stream stream, Type outputType)
