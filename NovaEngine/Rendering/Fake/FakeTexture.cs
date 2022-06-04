@@ -17,11 +17,11 @@ internal class FakeTexture : RendererTextureBase
     public override void GenerateMipChain() { }
     
     /// <inheritdoc/>
-    public override void Set1DPixels(Colour[] pixels, int xOffset = 0) { }
+    public override void SetPixels(Colour[] pixels, int offset = 0) { }
     
     /// <inheritdoc/>
-    public override void Set2DPixels(Colour[,] pixels, int xOffset = 0, int yOffset = 0) { }
+    public override void SetPixels(Colour[,] pixels, int xOffset = 0, int yOffset = 0) { }
 
     /// <inheritdoc/>
-    public override void Set3DPixels(Colour[,,] pixels, int xOffset = 0, int yOffset = 0, int zOffset = 0) { }
+    public override void SetPixels(Colour[,,] pixels, int xOffset = 0, int yOffset = 0, int zOffset = 0) { }
 }
