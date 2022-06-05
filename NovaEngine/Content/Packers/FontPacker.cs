@@ -1,6 +1,4 @@
 ﻿using NovaEngine.Content.Models.Font;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
 
 namespace NovaEngine.Content.Packers;
 
