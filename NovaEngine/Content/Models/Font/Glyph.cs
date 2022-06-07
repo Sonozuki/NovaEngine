@@ -39,12 +39,16 @@ internal class Glyph
     /*********
     ** Public Methods
     *********/
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
     /// <summary>Constructs an instance.</summary>
     /// <param name="numberOfContours">The number of contours in the glyph.</param>
     public Glyph(short numberOfContours)
     {
         NumberOfContours = numberOfContours;
     }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     /// <summary>Flushes the contour ends, points, and contours of the glyph.</summary>
     public void Flush()

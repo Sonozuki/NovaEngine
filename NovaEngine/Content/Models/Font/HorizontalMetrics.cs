@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Content.Models.Font;
 
 /// <summary>The horizontal metrics of a glyph.</summary>
-public struct HorizontalMetrics
+public class HorizontalMetrics
 {
     /*********
     ** Fields
