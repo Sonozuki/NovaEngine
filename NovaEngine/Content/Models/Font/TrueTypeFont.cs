@@ -314,6 +314,9 @@ internal class TrueTypeFont : IDisposable
         {
             glyph.ScaledBounds.Width = MathF.Ceiling(glyph.UnscaledBounds.Width / scale);
             glyph.ScaledBounds.Height = MathF.Ceiling(glyph.UnscaledBounds.Height / scale);
+
+            glyph.HorizontalMetrics.AdvanceWidth = (ushort)MathF.Round(glyph.HorizontalMetrics.AdvanceWidth / scale);
+            glyph.HorizontalMetrics.LeftSideBearing = (ushort)MathF.Round(glyph.HorizontalMetrics.LeftSideBearing / scale);
         }
     }
 
