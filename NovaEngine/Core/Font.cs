@@ -1,4 +1,6 @@
-﻿namespace NovaEngine.Core;
+﻿using NovaEngine.Content.Models.Font;
+
+namespace NovaEngine.Core;
 
 /// <summary>Represents a font.</summary>
 public class Font
@@ -13,8 +15,8 @@ public class Font
     /// <summary>The atlas of the font.</summary>
     public Texture2D Atlas { get; }
 
-    /// <summary>The positions of each glyph on the atlas.</summary>
-    public List<GlyphPosition> GlyphPositions { get; } 
+    /// <summary>The glyphs in the font.</summary>
+    public List<GlyphData> Glyphs{ get; } 
 
 
     /*********
@@ -23,11 +25,11 @@ public class Font
     /// <summary>Constructs an instance.</summary>
     /// <param name="name">The name of the font.</param>
     /// <param name="atlas">The atlas of the font.</param>
-    /// <param name="glyphPositions">The positions of each glyph on the atlas.</param>
-    public Font(string name, Texture2D atlas, IEnumerable<GlyphPosition> glyphPositions)
+    /// <param name="glyphs">The positions of each glyph on the atlas.</param>
+    public Font(string name, Texture2D atlas, IEnumerable<GlyphData> glyphs)
     {
         Name = name;
         Atlas = atlas;
-        GlyphPositions = glyphPositions.ToList();
+        Glyphs = glyphs.ToList();
     }
 }

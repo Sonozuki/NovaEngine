@@ -28,8 +28,14 @@ internal class TrueTypeFont : IDisposable
     /// <summary>Determines whether the font uses short offset or long offsets (0 for short, 1 for long).</summary>
     private short IndexToLocFormat;
 
-    /// <summary>The offsets of each glyph.</summary>
-    private readonly Dictionary<uint, uint> GlyphOffsets = new();
+    /// <summary>The number of horizontal metric entries in the 'hmtx' table.</summary>
+    private ushort NumberOfHorizontalMetrics;
+
+    /// <summary>The horizontal metrics for each glyph index.</summary>
+    private readonly Dictionary<ushort, HorizontalMetrics> HorizontalMetrics = new();
+
+    /// <summary>The offsets for each glyph index.</summary>
+    private readonly Dictionary<ushort, uint> GlyphOffsets = new();
 
 
     /*********
@@ -56,6 +62,7 @@ internal class TrueTypeFont : IDisposable
         ReadTables();
         ReadNameTable();
         ReadHeadTable();
+        ReadHheaTable();
         ReadCmapTable();
         ReadKernTable();
 
@@ -158,6 +165,17 @@ internal class TrueTypeFont : IDisposable
         IndexToLocFormat = BinaryReader.ReadInt16BigEndian();
     }
 
+    /// <summary>Reads the content of the horizontal header table.</summary>
+    /// <exception cref="ContentException">Thrown if the font doesn't contain a "hhea" table.</exception>
+    private void ReadHheaTable()
+    {
+        if (!Tables.ContainsKey("hhea"))
+            throw new ContentException("'hhea' table doesn't exist.");
+
+        BinaryReader.BaseStream.Position = Tables["hhea"].Offset + 34;
+        NumberOfHorizontalMetrics = BinaryReader.ReadUInt16BigEndian();
+    }
+
     /// <summary>Reads the content of the character code mapping table.</summary>
     /// <exception cref="ContentException">Thrown if the font doesn't contain a "cmap" table.</exception>
     private void ReadCmapTable()
@@ -214,6 +232,7 @@ internal class TrueTypeFont : IDisposable
             return;
 
         BinaryReader.BaseStream.Position = Tables["kern"].Offset + 2;
+
         var numberOfSubtables = BinaryReader.ReadUInt16BigEndian();
         for (int i = 0; i < numberOfSubtables; i++)
         {
@@ -241,21 +260,31 @@ internal class TrueTypeFont : IDisposable
     {
         if (!Tables.ContainsKey("glyf"))
             throw new ContentException("'glyf' table doesn't exist.");
-
         var glyfTable = Tables["glyf"];
-        var glyfTableOffset = glyfTable.Offset;
 
         ReadNumberOfGlyphs();
-        ReadGlyphOffsets(glyfTableOffset);
+        ReadHorizontalMetrics();
+        ReadGlyphOffsets(glyfTable.Offset);
 
         // read glyphs
         // TODO: currently only reads ASCII glyphs
-        var characterMap = CMaps.First();
+        {
+            var characterMap = CMaps.First();
 
-        Glyphs.Add(ReadGlyph(characterMap.Map(BinaryReader, -1), '\0'));
-        for (int i = 0x21; i < 0x7F; i++)
-            Glyphs.Add(ReadGlyph(characterMap.Map(BinaryReader, i), (char)i));
-        NumberOfGlyphs = (ushort)Glyphs.Count;
+            var glyph = ReadGlyph(characterMap.Map(BinaryReader, -1), '\0');
+            glyph.HorizontalMetrics = HorizontalMetrics[0];
+            Glyphs.Add(glyph);
+
+            for (ushort i = 0x21; i < 0x7F; i++)
+            {
+                var glyphIndex = characterMap.Map(BinaryReader, i);
+
+                glyph = ReadGlyph(characterMap.Map(BinaryReader, i), (char)i);
+                glyph.HorizontalMetrics = HorizontalMetrics[glyphIndex];
+                Glyphs.Add(glyph);
+            }
+            NumberOfGlyphs = (ushort)Glyphs.Count;
+        }
 
         CalculateGlyphContours();
 
@@ -288,6 +317,34 @@ internal class TrueTypeFont : IDisposable
         }
     }
 
+    /// <summary>Reads the horizontal metrics of glyphs in the font.</summary>
+    /// <exception cref="ContentException">Thrown if the font doesn't contain a "hmtx" table.</exception>
+    private void ReadHorizontalMetrics()
+    {
+        if (!Tables.ContainsKey("hmtx"))
+            throw new ContentException("'hmtx' table doesn't exist.");
+        var hmtxTable = Tables["hmtx"];
+
+        for (ushort i = 0; i < NumberOfGlyphs; i++)
+            if (i < NumberOfHorizontalMetrics)
+            {
+                BinaryReader.BaseStream.Position = hmtxTable.Offset + i * 4;
+                HorizontalMetrics[i] = new(advanceWidth: BinaryReader.ReadUInt16BigEndian(), leftSideBearing: BinaryReader.ReadUInt16BigEndian());
+            }
+            else
+            {
+                // if the glyph index is higher than the number of horizontal metrics, use the last horizontal metric
+                BinaryReader.BaseStream.Position = hmtxTable.Offset + (NumberOfHorizontalMetrics - 1) * 4;
+                var advanceWidth = BinaryReader.ReadUInt16BigEndian();
+
+                // get the left side bearing from the lsb array after the final advance width
+                BinaryReader.BaseStream.Position = hmtxTable.Offset + NumberOfHorizontalMetrics * 4 + 2 * (i - NumberOfHorizontalMetrics);
+                var leftSideBearing = BinaryReader.ReadUInt16BigEndian();
+
+                HorizontalMetrics[i] = new(advanceWidth, leftSideBearing);
+            }
+    }
+
     /// <summary>Reads the number of glyphs in the font.</summary>
     /// <remarks>This sets <see cref="NumberOfGlyphs"/>.</remarks>
     /// <exception cref="ContentException">Thrown if the font doesn't contain a "maxp" table.</exception>
@@ -313,10 +370,10 @@ internal class TrueTypeFont : IDisposable
         BinaryReader.BaseStream.Position = locaTable.Offset;
 
         if (IndexToLocFormat == 1)
-            for (uint i = 0; i < NumberOfGlyphs; i++)
+            for (ushort i = 0; i < NumberOfGlyphs; i++)
                 GlyphOffsets[i] = BinaryReader.ReadUInt32BigEndian() + glyfTableOffset;
         else
-            for (uint i = 0; i < NumberOfGlyphs; i++)
+            for (ushort i = 0; i < NumberOfGlyphs; i++)
                 GlyphOffsets[i] = BinaryReader.ReadUInt16BigEndian() * 2u + glyfTableOffset;
     }
 
@@ -325,7 +382,7 @@ internal class TrueTypeFont : IDisposable
     /// <param name="character">The character the glyph represents.</param>
     /// <returns>The glyph.</returns>
     /// <exception cref="ArgumentException">Thrown if the font doesn't contain a "glyf" table, or the glyph offset is invalid, or if the glyph contours are invlaid.</exception>
-    private Glyph ReadGlyph(uint index, char? character = null)
+    private Glyph ReadGlyph(ushort index, char? character = null)
     {
         if (!Tables.ContainsKey("glyf"))
             throw new ArgumentException("'glyf' table doesn't exist.");

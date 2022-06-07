@@ -1,4 +1,6 @@
-﻿namespace NovaEngine.Content.Readers;
+﻿using NovaEngine.Content.Models.Font;
+
+namespace NovaEngine.Content.Readers;
 
 /// <summary>Defines how a font should be read from a nova file.</summary>
 [ContentReader("font", typeof(Font))]
@@ -23,12 +25,17 @@ public class FontReader : IContentReader
         var atlas = new Texture2D(atlasEdgeLength, atlasEdgeLength);
         atlas.SetPixels(pixels.ToArray());
         
-        // glyph positions
+        // glyphs
         var count = binaryReader.ReadInt32();
-        var glyphPositions = new List<GlyphPosition>();
+        var glyphs = new List<GlyphData>();
         for (int i = 0; i < count; i++)
-            glyphPositions.Add(new(binaryReader.ReadChar(), new(binaryReader.ReadUInt16(), binaryReader.ReadUInt16(), binaryReader.ReadUInt16(), binaryReader.ReadUInt16())));
+        {
+            var atlasPosition = new GlyphPosition(binaryReader.ReadChar(), new(binaryReader.ReadUInt16(), binaryReader.ReadUInt16(), binaryReader.ReadUInt16(), binaryReader.ReadUInt16()));
+            var horizontalMetrics = new HorizontalMetrics(binaryReader.ReadUInt16(), binaryReader.ReadUInt16());
 
-        return new Font(name, atlas, glyphPositions);
+            glyphs.Add(new(atlasPosition, horizontalMetrics));
+        }
+
+        return new Font(name, atlas, glyphs);
     }
 }

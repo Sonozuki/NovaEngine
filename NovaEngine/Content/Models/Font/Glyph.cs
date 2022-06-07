@@ -1,6 +1,7 @@
 ﻿namespace NovaEngine.Content.Models.Font;
 
 /// <summary>Represents a font glyph.</summary>
+/// <remarks>This if used internally while parsing the font file for packing.</remarks>
 internal class Glyph
 {
     /*********
@@ -30,6 +31,9 @@ internal class Glyph
 
     /// <summary>The contours in the glyph.</summary>
     public List<Contour> Contours { get; private set; } = new();
+
+    /// <summary>The horizontal metrics of the glyph.</summary>
+    public HorizontalMetrics HorizontalMetrics { get; set; }
 
 
     /*********

@@ -32,15 +32,21 @@ public class FontPacker : IContentPacker
             Buffer.MemoryCopy(atlasPointer, pixelsBufferPointer, pixelsBuffer.Length, pixelsBuffer.Length);
         binaryWriter.Write(pixelsBuffer);
 
-        // glyph atlas position data
+        // glyphs
         binaryWriter.Write(ttf.Glyphs.Count);
         foreach (var glyph in ttf.Glyphs)
         {
             binaryWriter.Write(glyph.Character);
+
+            // text atlas rectangle
             binaryWriter.Write((ushort)glyph.ScaledBounds.X);
             binaryWriter.Write((ushort)glyph.ScaledBounds.Y);
             binaryWriter.Write((ushort)glyph.ScaledBounds.Width);
             binaryWriter.Write((ushort)glyph.ScaledBounds.Height);
+
+            // horizontal metrics
+            binaryWriter.Write(glyph.HorizontalMetrics.AdvanceWidth);
+            binaryWriter.Write(glyph.HorizontalMetrics.LeftSideBearing);
         }
 
         // TODO: kerning
