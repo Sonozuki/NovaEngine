@@ -10,5 +10,5 @@ internal interface ICmapFormat
     /// <param name="binaryReader">The binary reader; the position isn't reset automatically, so should be handled manually.</param>
     /// <param name="characterCode">The character code.</param>
     /// <returns>The glyph index.</returns>
-    public uint Map(BinaryReader binaryReader, int characterCode);
+    public ushort Map(BinaryReader binaryReader, int characterCode);
 }

@@ -41,7 +41,7 @@ internal class CmapFormat4 : ICmapFormat
     }
 
     /// <inheritdoc/>
-    public uint Map(BinaryReader binaryReader, int characterCode)
+    public ushort Map(BinaryReader binaryReader, int characterCode)
     {
         if (!Cache.TryGetValue(characterCode, out var glyphIndex))
             foreach (var segment in Segments)

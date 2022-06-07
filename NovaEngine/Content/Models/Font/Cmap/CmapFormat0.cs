@@ -21,7 +21,7 @@ internal class CmapFormat0 : ICmapFormat
     }
 
     /// <inheritdoc/>
-    public uint Map(BinaryReader binaryReader, int characterCode)
+    public ushort Map(BinaryReader binaryReader, int characterCode)
     {
         if (characterCode >= 0 && characterCode <= 255)
             return GlyphIndices[characterCode];
