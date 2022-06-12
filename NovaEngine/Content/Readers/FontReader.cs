@@ -30,10 +30,11 @@ public class FontReader : IContentReader
         var glyphs = new List<GlyphData>();
         for (int i = 0; i < count; i++)
         {
-            var atlasPosition = new GlyphPosition(binaryReader.ReadChar(), new(binaryReader.ReadUInt16(), binaryReader.ReadUInt16(), binaryReader.ReadUInt16(), binaryReader.ReadUInt16()));
+            var character = binaryReader.ReadChar();
+            var atlasPosition = new Rectangle(binaryReader.ReadUInt16(), binaryReader.ReadUInt16(), binaryReader.ReadUInt16(), binaryReader.ReadUInt16());
             var horizontalMetrics = new HorizontalMetrics(binaryReader.ReadUInt16(), binaryReader.ReadUInt16());
 
-            glyphs.Add(new(atlasPosition, horizontalMetrics));
+            glyphs.Add(new(character, atlasPosition, horizontalMetrics));
         }
 
         return new Font(name, atlas, glyphs);
