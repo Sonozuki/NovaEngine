@@ -54,7 +54,7 @@ internal class GizmosScene : Scene
         gameObject.Transform.LocalPosition = position;
         gameObject.Transform.LocalRotation = rotation;
         gameObject.Transform.LocalScale = scale;
-        gameObject.Components.MeshRenderer!.Material.Tint = colour;
+        gameObject.Components.Get<MeshRenderer>()!.Material.Tint = colour;
 
         CubesParent.Children.Add(gameObject);
     }
@@ -70,7 +70,7 @@ internal class GizmosScene : Scene
 
         gameObject.Transform.LocalPosition = position;
         gameObject.Transform.LocalScale = new(radius);
-        gameObject.Components.MeshRenderer!.Material.Tint = colour;
+        gameObject.Components.Get<MeshRenderer>()!.Material.Tint = colour;
 
         SpheresParent.Children.Add(gameObject);
     }
@@ -84,11 +84,12 @@ internal class GizmosScene : Scene
         var gameObject = LineGameObjects.GetObject();
         gameObject.IsEnabled = true;
 
-        gameObject.Components.MeshRenderer!.Mesh!.VertexData[0].Position = point1;
-        gameObject.Components.MeshRenderer!.Mesh!.VertexData[1].Position = point2;
-        gameObject.Components.MeshRenderer!.UpdateMesh();
+        var meshRenderer = gameObject.Components.Get<MeshRenderer>();
+        meshRenderer!.Mesh!.VertexData[0].Position = point1;
+        meshRenderer!.Mesh!.VertexData[1].Position = point2;
+        meshRenderer!.UpdateMesh();
 
-        gameObject.Components.MeshRenderer!.Material.Tint = colour;
+        meshRenderer!.Material.Tint = colour;
 
         LinesParent.Children.Add(gameObject);
     }

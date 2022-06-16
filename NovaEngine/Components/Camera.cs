@@ -130,7 +130,7 @@ public sealed class Camera : ComponentBase
         var gameObjects = SceneManager.LoadedScenes
             .SelectMany(scene => scene.RootGameObjects)
             .SelectMany(gameObject => gameObject.GetAllGameObjects(false))
-            .Where(gameObject => gameObject.Components.MeshRenderer != null)
+            .Where(gameObject => gameObject.Components.GetRange<MeshRenderer>().Any())
             .Select(gameObject => gameObject.RendererGameObject)
             .ToList();
         gameObjects.AddRange(SceneManager.GizmosScene.RootGameObjects

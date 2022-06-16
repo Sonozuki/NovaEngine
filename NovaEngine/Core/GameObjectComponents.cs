@@ -15,9 +15,6 @@ public class GameObjectComponents : IList<ComponentBase>
     /// <summary>The underlying collection of components.</summary>
     private readonly List<ComponentBase> Components = new();
 
-    /// <summary>The mesh renderer component of the game object.</summary>
-    private MeshRenderer? _MeshRenderer;
-
 
     /*********
     ** Accessors
@@ -39,18 +36,6 @@ public class GameObjectComponents : IList<ComponentBase>
         }
     }
 
-    /// <summary>The mesh renderer component of the game object.</summary>
-    [Serialisable]
-    public MeshRenderer? MeshRenderer
-    {
-        get => _MeshRenderer;
-        private set
-        {
-            _MeshRenderer = value;
-            _MeshRenderer?.UpdateMesh();
-        }
-    }
-
 
     /*********
     ** Public Methods
@@ -64,9 +49,9 @@ public class GameObjectComponents : IList<ComponentBase>
         component.GameObject = GameObject;
         Components.Add(component);
 
-        // cache specific components
-        if (component is MeshRenderer)
-            MeshRenderer = Get<MeshRenderer>();
+        // run specific component logic
+        if (component is MeshRenderer meshRenderer)
+            meshRenderer.UpdateMesh();
     }
 
     /// <inheritdoc/>
@@ -74,13 +59,7 @@ public class GameObjectComponents : IList<ComponentBase>
     {
         var wasRemoved = Components.Remove(item);
         if (wasRemoved)
-        {
             item.GameObject = null!; // setting this is null is fine as the no code will try to access it expecting a non null value
-
-            // update caches
-            if (item.GetType() == typeof(MeshRenderer))
-                MeshRenderer = Get<MeshRenderer>();
-        }
 
         return wasRemoved;
     }
@@ -104,10 +83,6 @@ public class GameObjectComponents : IList<ComponentBase>
             if (!removeAll)
                 break;
         }
-
-        // update caches
-        if (typeof(T) == typeof(MeshRenderer))
-            MeshRenderer = Get<MeshRenderer>(); // call GetComponent as there may be another mesh renderer component
     }
 
     /// <inheritdoc/>

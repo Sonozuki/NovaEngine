@@ -328,7 +328,7 @@ public unsafe class VulkanCamera : RendererCameraBase
         // Helper function that records the commands for PBR push constants
         static void SetPBRPushConstants(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, VulkanGameObject gameObject)
         {
-            var material = gameObject.BaseGameObject.Components.MeshRenderer!.Material;
+            var material = gameObject.BaseGameObject.Components.Get<MeshRenderer>()!.Material;
             var vulkanMaterial = new VulkanMaterial(new(material.Tint.R / 255f, material.Tint.G / 255f, material.Tint.B / 255f), material.Roughness, material.Metallicness);
 
             VK.CommandPushConstants(commandBuffer, pipelineLayout, VkShaderStageFlags.Fragment, 0, (uint)sizeof(VulkanMaterial), &vulkanMaterial);
