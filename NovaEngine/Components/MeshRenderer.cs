@@ -8,7 +8,7 @@ public class MeshRenderer : ComponentBase
     *********/
     /// <summary>The mesh to render.</summary>
     [Serialisable]
-    private Mesh _Mesh;
+    protected Mesh _Mesh;
 
 
     /*********
