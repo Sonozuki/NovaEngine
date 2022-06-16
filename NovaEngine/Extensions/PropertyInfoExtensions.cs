@@ -6,6 +6,11 @@ public static class PropertyInfoExtensions
     /*********
     ** Public Methods
     *********/
+    /// <summary>Gets whether the property is static.</summary>
+    /// <param name="propertyInfo">The property to check whether it's static.</param>
+    /// <returns><see langword="true"/>, if the property is static; otherwise, <see langword="false"/>.</returns>
+    public static bool IsStatic(this PropertyInfo propertyInfo) => propertyInfo.GetMethod!.IsStatic;
+
     /// <summary>Gets whether the property can be written to.</summary>
     /// <param name="propertyInfo">The property to check for the ability to write to.</param>
     /// <returns><see langword="true"/>, if the property can be written to; otherwise, <see langword="false"/>.</returns>
