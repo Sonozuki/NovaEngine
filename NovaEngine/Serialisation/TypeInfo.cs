@@ -48,7 +48,9 @@ internal class TypeInfo
             .Where(property => property.CanRead && property.CanWriteForSerialisation() // property must be readable and writable
                            && (property.HasBackingField() || property.HasCustomAttribute<SerialisableAttribute>()) // must be an auto property, or property with a serialisable attribute
                            && ((property.GetMethod!.IsPublic && !property.HasCustomAttribute<NonSerialisableAttribute>()) // getter must either be public without a non serialisable attribute
-                               || (!property.GetMethod!.IsPublic && property.HasCustomAttribute<SerialisableAttribute>()))); // or be non public with a serialisable attribute
+                               || (!property.GetMethod!.IsPublic && property.HasCustomAttribute<SerialisableAttribute>())) // or be non public with a serialisable attribute
+                           && (property.CanWrite || !property.IsStatic())); // must be writeable (have a specified set method), or not static (as static methods without a set method are initonly)
+
         foreach (var property in properties)
             if (property.HasBackingField()) // serialise the backing field directly (if it has one), instead of through the property
                 SerialisableFields.Add(property.GetBackingField()!);
