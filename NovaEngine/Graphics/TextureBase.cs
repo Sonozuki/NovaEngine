@@ -112,6 +112,17 @@ public abstract class TextureBase : IDisposable
 
 
     /*********
+    ** Protected Methods
+    *********/
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+    /// <summary>Constructs an instance.</summary>
+    protected TextureBase() { } // required for serialiser
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+
+    /*********
     ** Private Methods
     *********/
     /// <summary>Runs logic that is used when constructing the object manually, and when constructing the object through the serialiser.</summary>

@@ -61,4 +61,11 @@ public class Texture2D : TextureBase
     /// <param name="yOffset">The Y offset of the pixel data (from top of the texture).</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="pixels.GetLength(n)"/> + (n)Offset goes out of range of the axis length.</exception>
     public void SetPixels(Colour[,] pixels, int xOffset = 0, int yOffset = 0) => RendererTexture.SetPixels(pixels, xOffset, yOffset);
+
+
+    /*********
+    ** Protected Methods
+    *********/
+    /// <summary>Constructs an instance.</summary>
+    protected Texture2D() { } // required for serialiser
 }

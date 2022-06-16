@@ -24,4 +24,11 @@ public class HorizontalMetrics
         AdvanceWidth = advanceWidth;
         LeftSideBearing = leftSideBearing;
     }
+
+
+    /*********
+    ** Protected Methods
+    *********/
+    /// <summary>Constructs an instance.</summary>
+    protected HorizontalMetrics() { } // required for serialiser
 }
