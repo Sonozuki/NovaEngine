@@ -1,6 +1,7 @@
 ﻿using NovaEngine.Common.Windows;
 using NovaEngine.Common.Windows.Api;
 using NovaEngine.Common.Windows.Native;
+using NovaEngine.Extensions;
 using NovaEngine.External.Platform;
 using NovaEngine.Logging;
 using NovaEngine.Maths;
@@ -54,7 +55,7 @@ public class Win32Window : PlatformWindowBase
     ** Public Methods
     *********/
     /// <inheritdoc/>
-    public Win32Window(string title, Vector2I size)
+    public unsafe Win32Window(string title, Vector2I size)
     {
         WindowProcedure = Procedure;
         Size = size;
@@ -71,9 +72,23 @@ public class Win32Window : PlatformWindowBase
 
         User32.RegisterClass(in windowClass);
 
-        this.Handle = User32.CreateWindowEx(0, className, title, WindowStyle.OverlappedWindow, 0, 0, Size.X, Size.Y, IntPtr.Zero, IntPtr.Zero, Program.Handle, IntPtr.Zero);
+        // adjust window size so client area is the specified size
+        var rectangle = new Common.Windows.Native.Rectangle(Vector2I.Zero, Size);
+        var style = WindowStyle.OverlappedWindow;
+
+        if (!User32.AdjustWindowRect(&rectangle, style, false))
+            throw new ApplicationException("Failed to adjust Win32 window client area.").Log(LogSeverity.Fatal);
+
+        // change rectangle top left to be zero (so it's not off of the screen) // TODO: temp?
+        rectangle.Right -= rectangle.Left;
+        rectangle.Bottom -= rectangle.Top;
+        rectangle.Left = 0;
+        rectangle.Top = 0;
+
+        // create window
+        this.Handle = User32.CreateWindowEx(0, className, title, style, rectangle.Left, rectangle.Top, rectangle.Right - rectangle.Left, rectangle.Bottom - rectangle.Top, IntPtr.Zero, IntPtr.Zero, Program.Handle, IntPtr.Zero);
         if (this.Handle == IntPtr.Zero)
-            return;
+            throw new ApplicationException("Failed to craete Win32 window.").Log(LogSeverity.Fatal);
     }
 
     /// <inheritdoc/>

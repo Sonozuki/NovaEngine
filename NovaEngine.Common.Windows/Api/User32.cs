@@ -61,6 +61,14 @@ public static class User32
         return returnValue;
     }
 
+    /// <summary>Calculates the required size of the window rectangle, based on the desired client-rectangle size.</summary>
+    /// <param name="rectangle">A pointer to a <see cref="Rectangle"/> structure that contains the coordinates of the top-left and bottom-right corners of the desired client area. When the function returns, the structure contains the coordinates of the top-left and bottom-right corners of the window to accomodate the desired client area.</param>
+    /// <param name="style">The window style of the window whose required size is to be calculated. Note that you cannot specify the <see cref="WindowStyle.Overlapped"/> style.</param>
+    /// <param name="menu">Indicates whether the window has a menu.</param>
+    /// <returns><see langword="true"/>; if the call succeeds; otherwise, <see langword="false"/>.</returns>
+    [DllImport("User32", SetLastError = true)]
+    public unsafe static extern bool AdjustWindowRect(Rectangle* rectangle, WindowStyle style, bool menu);
+
     /// <summary>Passes message information to the specified window procedure.</summary>
     /// <param name="previousWindowProc">The previous window procedure to receive the message.</param>
     /// <param name="window">A handle to the window.</param>
