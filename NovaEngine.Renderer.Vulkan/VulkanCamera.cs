@@ -392,6 +392,7 @@ public unsafe class VulkanCamera : RendererCameraBase
         ComputeCommandPool.FreeCommandBuffers(new[] { GenerateFrustumsCommandBuffer });
         ComputeCommandPool.FreeCommandBuffers(CullLightsCommandBuffers);
         GraphicsCommandPool.FreeCommandBuffers(new[] { RenderingCommandBufferInFlight });
+        RenderingCommandBufferInFlight = new(); // reset so the rendering loop doesn't try to clean it up
 
         Pipelines.Dispose();
         VK.DestroyRenderPass(VulkanRenderer.Instance.Device.NativeDevice, DepthPrepassRenderPass, null);
