@@ -80,12 +80,12 @@ public class Scene : IDisposable
 
 
     /*********
-    ** Private Methods
+    ** Protected Methods
     *********/
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     
     /// <summary>Constructs an instance.</summary>
-    private Scene() { } // required for serialiser
+    protected Scene() { } // required for serialiser
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

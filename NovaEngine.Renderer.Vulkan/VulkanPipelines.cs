@@ -34,6 +34,9 @@ internal unsafe class VulkanPipelines : IDisposable
     /// <summary>The layout of <see cref="SolidColourLinePipeline"/>.</summary>
     public VkPipelineLayout SolidColourLinePipelineLayout { get; private set; }
 
+    /// <summary>The layout of <see cref="UIPipeline"/>.</summary>
+    public VkPipelineLayout UIPipelineLayout { get; private set; }
+
     /// <summary>The tile frustum generation pipeline.</summary>
     public VkPipeline GenerateFrustumsPipeline { get; private set; }
 
@@ -54,6 +57,9 @@ internal unsafe class VulkanPipelines : IDisposable
 
     /// <summary>The solid colour pipeline with a topology of <see cref="VkPrimitiveTopology.LineList"/>.</summary>
     public VkPipeline SolidColourLinePipeline { get; private set; }
+
+    /// <summary>The user interface pipeline.</summary>
+    public VkPipeline UIPipeline { get; private set; }
 
 
     /*********
@@ -80,6 +86,7 @@ internal unsafe class VulkanPipelines : IDisposable
         VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, PBRLinePipelineLayout, null);
         VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, SolidColourTrianglePipelineLayout, null);
         VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, SolidColourLinePipelineLayout, null);
+        VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, UIPipelineLayout, null);
 
         VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, GenerateFrustumsPipeline, null);
         VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, DepthPrepassPipeline, null);
@@ -88,6 +95,7 @@ internal unsafe class VulkanPipelines : IDisposable
         VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, PBRLinePipeline, null);
         VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, SolidColourTrianglePipeline, null);
         VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, SolidColourLinePipeline, null);
+        VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, UIPipeline, null);
     }
 
 
@@ -165,6 +173,17 @@ internal unsafe class VulkanPipelines : IDisposable
             SolidColourTrianglePipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, solidColourShaderStages, SolidColourTrianglePipelineLayout, VkPrimitiveTopology.TriangleList, RenderingSettings.Instance.SampleCount, Camera.FinalRenderingRenderPass);
             SolidColourLinePipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, solidColourShaderStages, SolidColourLinePipelineLayout, VkPrimitiveTopology.LineList, RenderingSettings.Instance.SampleCount, Camera.FinalRenderingRenderPass);
         }
+
+        // ui
+        {
+            // layout
+            UIPipelineLayout = CreatePipelineLayout(null, DescriptorSetLayouts.UIDescriptorSetLayout);
+
+            // pipeline
+            var uiColourShaderStages = new[] { ShaderStages.UIVertexShader, ShaderStages.UIFragmentShader };
+
+            UIPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, uiColourShaderStages, UIPipelineLayout, VkPrimitiveTopology.TriangleList, RenderingSettings.Instance.SampleCount, Camera.FinalRenderingRenderPass, 2);
+        }
     }
 
     /// <summary>Creates a <see cref="VkPipelineLayout"/>.</summary>
@@ -217,8 +236,9 @@ internal unsafe class VulkanPipelines : IDisposable
     /// <param name="topology">The topology of the meshes rendered through the pipeline.</param>
     /// <param name="sampleCount">The sample count to use when creating the pipeline.</param>
     /// <param name="renderPass">The render pass that the pipeline will use.</param>
+    /// <param name="subpass">The subpass the pipeline will be build for.</param>
     /// <returns>The created graphics pipeline.</returns>
-    private VkPipeline CreateGraphicsPipeline(VkVertexInputAttributeDescription[] vertexAttributeDescriptions, VkVertexInputBindingDescription[] vertexBindingDescriptions, VkPipelineShaderStageCreateInfo[] shaderStages, VkPipelineLayout layout, VkPrimitiveTopology topology, SampleCount sampleCount, VkRenderPass renderPass)
+    private VkPipeline CreateGraphicsPipeline(VkVertexInputAttributeDescription[] vertexAttributeDescriptions, VkVertexInputBindingDescription[] vertexBindingDescriptions, VkPipelineShaderStageCreateInfo[] shaderStages, VkPipelineLayout layout, VkPrimitiveTopology topology, SampleCount sampleCount, VkRenderPass renderPass, uint subpass = 0)
     {
         fixed (VkVertexInputAttributeDescription* vertexAttributeDescriptionsPointer = vertexAttributeDescriptions)
         fixed (VkVertexInputBindingDescription* vertexBindingDescriptionsPointer = vertexBindingDescriptions)
@@ -346,7 +366,7 @@ internal unsafe class VulkanPipelines : IDisposable
                 ColorBlendState = &colourBlendState,
                 Layout = layout,
                 RenderPass = renderPass,
-                Subpass = 0
+                Subpass = subpass
             };
 
             if (VK.CreateGraphicsPipelines(VulkanRenderer.Instance.Device.NativeDevice, VkPipelineCache.Null, 1, new[] { pipelineCreateInfo }, null, out var graphicsPipeline) != VkResult.Success)

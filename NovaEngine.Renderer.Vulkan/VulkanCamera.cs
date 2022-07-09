@@ -164,7 +164,7 @@ public unsafe class VulkanCamera : RendererCameraBase
     public override void OnVSyncChange() => RecreateSwapchain();
 
     /// <inheritdoc/>
-    public override void Render(IEnumerable<RendererGameObjectBase> gameObjects, bool presentRenderTarget)
+    public override void Render(IEnumerable<RendererGameObjectBase> gameObjects, IEnumerable<RendererGameObjectBase> uiGameObjects, bool presentRenderTarget)
     {
         // retrieve image to render to
         var imageIndex = Swapchain.AcquireNextImage(ImageAvailableSemaphores[CurrentFrameIndex]);
@@ -208,6 +208,10 @@ public unsafe class VulkanCamera : RendererCameraBase
         var lineVulkanGameObjects = vulkanGameObjects.Where(vulkanGameObject => vulkanGameObject.MeshType == MeshType.LineList).ToList();
         foreach (var vulkanGameObject in vulkanGameObjects)
             vulkanGameObject.PrepareForCamera(BaseCamera);
+
+        var vulkanUiGameObjects = uiGameObjects.Cast<VulkanGameObject>();
+        foreach (var vulkanUiGameObject in vulkanUiGameObjects)
+            vulkanUiGameObject.PrepareForCamera(BaseCamera);
 
         // depth pre-pass
         {
@@ -268,6 +272,10 @@ public unsafe class VulkanCamera : RendererCameraBase
                 // transparent
                 VK.CommandNextSubpass(commandBuffer, VkSubpassContents.Inline);
                 // TODO: pbr and solid
+
+                // ui
+                VK.CommandNextSubpass(commandBuffer, VkSubpassContents.Inline);
+                DrawObjects(commandBuffer, Pipelines.UIPipeline, Pipelines.UIPipelineLayout, vulkanUiGameObjects, vulkanUiGameObject => vulkanUiGameObject.UIDescriptorSet.NativeDescriptorSet, false);
 
                 VK.CommandEndRenderPass(commandBuffer);
                 VK.EndCommandBuffer(commandBuffer);
@@ -516,7 +524,13 @@ public unsafe class VulkanCamera : RendererCameraBase
                     PipelineBindPoint = VkPipelineBindPoint.Graphics,
                     ColorAttachmentCount = 1,
                     ColorAttachments = &colourAttachmentReference,
-                    DepthStencilAttachment = &depthWriteAttachmentReference,
+                    DepthStencilAttachment = &depthWriteAttachmentReference
+                },
+                new() // ui
+                {
+                    PipelineBindPoint = VkPipelineBindPoint.Graphics,
+                    ColorAttachmentCount = 1,
+                    ColorAttachments = &colourAttachmentReference,
                     ResolveAttachments = &resolveAttachmentReference
                 }
             };
@@ -539,6 +553,17 @@ public unsafe class VulkanCamera : RendererCameraBase
                     // opaque -> transparent
                     SourceSubpass = 0,
                     DestinationSubpass = 1,
+                    SourceStageMask = VkPipelineStageFlags.ColorAttachmentOutput,
+                    DestinationStageMask = VkPipelineStageFlags.ColorAttachmentOutput,
+                    SourceAccessMask = VkAccessFlags.ColorAttachmentWrite,
+                    DestinationAccessMask = VkAccessFlags.ColorAttachmentWrite,
+                    DependencyFlags = VkDependencyFlags.ByRegion
+                },
+                new()
+                {
+                    // trasparent -> ui
+                    SourceSubpass = 1,
+                    DestinationSubpass = 2,
                     SourceStageMask = VkPipelineStageFlags.ColorAttachmentOutput,
                     DestinationStageMask = VkPipelineStageFlags.ColorAttachmentOutput,
                     SourceAccessMask = VkAccessFlags.ColorAttachmentWrite,

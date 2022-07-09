@@ -124,20 +124,38 @@ public sealed class Camera : ComponentBase
         : this(CameraProjection.Othographic, 0, width, height, nearClippingPlane, farClippingPlane, resolution, null, setMainCamera) { }
 
     /// <summary>Renders a frame using the camera.</summary>
-    public void Render(bool presentRenderTarget)
+    public void Render(bool presentRenderTarget) // TODO: create a separate system for retrieving objects to render after frustum culling etc
     {
-        // TODO: create a separate system for retrieving objects to render after frustum culling etc
-        var gameObjects = SceneManager.LoadedScenes
+        var gameObjects = new List<RendererGameObjectBase>();
+        var uiGameObjects = new List<RendererGameObjectBase>();
+
+        // add all game objects from game object scenes
+        gameObjects.AddRange(SceneManager.LoadedScenes
+            .Where(scene => scene is not UIScene)
             .SelectMany(scene => scene.RootGameObjects)
             .SelectMany(gameObject => gameObject.GetAllGameObjects(false))
             .Where(gameObject => gameObject.Components.GetRange<MeshRenderer>().Any())
-            .Select(gameObject => gameObject.RendererGameObject)
-            .ToList();
+            .Select(gameObject => gameObject.RendererGameObject));
         gameObjects.AddRange(SceneManager.GizmosScene.RootGameObjects
             .SelectMany(gameObject => gameObject.Children)
             .Select(gameObject => gameObject.RendererGameObject));
 
-        RendererCamera.Render(gameObjects, presentRenderTarget);
+        // add all relevant ui control game objects
+        foreach (var uiScene in SceneManager.LoadedScenes.Where(scene => scene is UIScene).Cast<UIScene>())
+        {
+            if (uiScene.RenderMode == UISceneRenderMode.WorldSpace)
+                throw new NotImplementedException(); // TODO: implement
+
+            if (uiScene.RenderMode == UISceneRenderMode.ScreenSpaceCamera && uiScene.Camera != this)
+                continue;
+
+            uiGameObjects.AddRange(uiScene.RootGameObjects
+                .SelectMany(gameObject => gameObject.GetAllGameObjects(false))
+                .Where(gameObject => gameObject.Components.GetRange<MeshRenderer>().Any())
+                .Select(gameObject => gameObject.RendererGameObject));
+        }
+
+        RendererCamera.Render(gameObjects, uiGameObjects, presentRenderTarget);
     }
 
     /// <inheritdoc/>

@@ -21,6 +21,9 @@ internal unsafe static class DescriptorSetLayouts
     /// <summary>The descriptor set layout for the solid colour shaders.</summary>
     public static VkDescriptorSetLayout SolidColourDescriptorSetLayout { get; }
 
+    /// <summary>The descriptor set layout for the user interface shaders.</summary>
+    public static VkDescriptorSetLayout UIDescriptorSetLayout { get; }
+
 
     /*********
     ** Public Methods
@@ -78,6 +81,13 @@ internal unsafe static class DescriptorSetLayouts
             new() { Binding = 0, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Vertex } // mvp uniform
         };
         SolidColourDescriptorSetLayout = CreateDescriptorSetLayout(solidColourBindings);
+
+        // user interface
+        var uiBindings = new VkDescriptorSetLayoutBinding[]
+        {
+            new() { Binding = 0, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Vertex } // mvp uniform
+        };
+        UIDescriptorSetLayout = CreateDescriptorSetLayout(uiBindings);
     }
 
     /// <summary>Disposes unmanaged descriptor set layout resources.</summary>
@@ -88,6 +98,7 @@ internal unsafe static class DescriptorSetLayouts
         VK.DestroyDescriptorSetLayout(VulkanRenderer.Instance.Device.NativeDevice, CulLightsDescriptorSetLayout, null);
         VK.DestroyDescriptorSetLayout(VulkanRenderer.Instance.Device.NativeDevice, PBRDescriptorSetLayout, null);
         VK.DestroyDescriptorSetLayout(VulkanRenderer.Instance.Device.NativeDevice, SolidColourDescriptorSetLayout, null);
+        VK.DestroyDescriptorSetLayout(VulkanRenderer.Instance.Device.NativeDevice, UIDescriptorSetLayout, null);
     }
 
 
@@ -96,7 +107,7 @@ internal unsafe static class DescriptorSetLayouts
     *********/
     /// <summary>Creates a descriptor set layout.</summary>
     /// <param name="bindings">The bindings in the descriptor set layout.</param>
-    private static VkDescriptorSetLayout CreateDescriptorSetLayout(VkDescriptorSetLayoutBinding[] bindings)
+    private static VkDescriptorSetLayout CreateDescriptorSetLayout(VkDescriptorSetLayoutBinding[]? bindings)
     {
         bindings ??= Array.Empty<VkDescriptorSetLayoutBinding>();
 

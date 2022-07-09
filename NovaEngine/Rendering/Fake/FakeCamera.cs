@@ -24,7 +24,7 @@ internal class FakeCamera : RendererCameraBase
     public override void OnVSyncChange() { }
 
     /// <inheritdoc/>
-    public override void Render(IEnumerable<RendererGameObjectBase> gameObjects, bool presentRenderTarget) { }
+    public override void Render(IEnumerable<RendererGameObjectBase> gameObjects, IEnumerable<RendererGameObjectBase> uiGameObjects, bool presentRenderTarget) { }
 
     /// <inheritdoc/>
     public override void Dispose() { }

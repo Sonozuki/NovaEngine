@@ -31,8 +31,9 @@ public abstract class RendererCameraBase : IDisposable
 
     /// <summary>Renders all the specified objects to the camera's render target.</summary>
     /// <param name="gameObjects">The game objects which have <see cref="MeshRenderer"/>s to render.<br/>NOTE: it's the callers responsibility to ensure all game objects have a valid <see cref="MeshRenderer"/>, unexpected behaviour will happen otherwise.</param>
+    /// <param name="uiGameObjects">The game objects which have <see cref="MeshRenderer"/>s to render as part of the UI.<br/>NOTE: it's the callers responsibility to ensure all game objects have a valid <see cref="MeshRenderer"/>, unexpected behaviour will happen otherwise.</param>
     /// <param name="presentRenderTarget">Whether the camera's render target should get presented directly to the screen.</param>
-    public abstract void Render(IEnumerable<RendererGameObjectBase> gameObjects, bool presentRenderTarget);
+    public abstract void Render(IEnumerable<RendererGameObjectBase> gameObjects, IEnumerable<RendererGameObjectBase> uiGameObjects, bool presentRenderTarget);
 
     /// <inheritdoc/>
     public abstract void Dispose();

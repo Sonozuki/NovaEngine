@@ -1,4 +1,6 @@
-﻿namespace NovaEngine.Renderer.Vulkan;
+﻿using NovaEngine.SceneManagement;
+
+namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Represents a Vulkan game object.</summary>
 public class VulkanGameObject : RendererGameObjectBase
@@ -34,6 +36,9 @@ public class VulkanGameObject : RendererGameObjectBase
     /// <summary>The pbr descriptor set.</summary>
     internal VulkanDescriptorSet PBRDescriptorSet { get; private set; }
 
+    /// <summary>The user interface descriptor set.</summary>
+    internal VulkanDescriptorSet UIDescriptorSet { get; private set; }
+
 
     /*********
     ** Public Methods
@@ -60,8 +65,30 @@ public class VulkanGameObject : RendererGameObjectBase
     public override unsafe void PrepareForCamera(Camera camera)
     {
         var vulkanCamera = (camera.RendererCamera as VulkanCamera)!;
+        var isInUIScene = BaseGameObject.Scene is UIScene;
 
         // MVP UBO
+        if (isInUIScene)
+        {
+            // TODO: calculate position based on anchors
+            var uiTransform = (BaseGameObject.Transform as UITransform)!;
+
+            var position = new Vector3(uiTransform.Top, uiTransform.Left, 0);
+            var rotation = Quaternion.Identity;
+            var modelMatrix = Matrix4x4.CreateScale(Vector3.One)
+                            * Matrix4x4.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W))
+                            * Matrix4x4.CreateTranslation(new(position.X, position.Y, -position.Z));
+
+            var ubo = new MVPBuffer(
+                model: modelMatrix,
+                view: Matrix4x4.Identity,
+                projection: Matrix4x4.CreateTranslation(-Program.MainWindow.Size.X / 2f, -Program.MainWindow.Size.Y / 2f, 0)
+                          * Matrix4x4.CreateOrthographic(Program.MainWindow.Size.X, Program.MainWindow.Size.Y, 0, 1) // TODO: temp
+            );
+
+            MVPBuffer.CopyFrom(ubo);
+        }
+        else
         {
             var position = BaseGameObject.Transform.GlobalPosition;
             var rotation = BaseGameObject.Transform.GlobalRotation;
@@ -109,6 +136,7 @@ public class VulkanGameObject : RendererGameObjectBase
     {
         DescriptorPools.DepthPrepassDescriptorPool.DisposeDescriptorSet(DepthPrepassDescriptorSet);
         DescriptorPools.PBRDescriptorPool.DisposeDescriptorSet(PBRDescriptorSet);
+        DescriptorPools.UIDescriptorPool.DisposeDescriptorSet(UIDescriptorSet);
 
         MVPBuffer.Dispose();
         VertexBuffer?.Dispose();
@@ -136,6 +164,11 @@ public class VulkanGameObject : RendererGameObjectBase
 
         PBRDescriptorSet = DescriptorPools.PBRDescriptorPool.GetDescriptorSet();
         PBRDescriptorSet
+            .Bind(0, &bufferInfo, VkDescriptorType.UniformBuffer)
+            .UpdateBindings();
+
+        UIDescriptorSet = DescriptorPools.UIDescriptorPool.GetDescriptorSet();
+        UIDescriptorSet
             .Bind(0, &bufferInfo, VkDescriptorType.UniformBuffer)
             .UpdateBindings();
     }
