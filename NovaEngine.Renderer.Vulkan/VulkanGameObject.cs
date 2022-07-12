@@ -136,7 +136,7 @@ public class VulkanGameObject : RendererGameObjectBase
     {
         DescriptorPools.DepthPrepassDescriptorPool.DisposeDescriptorSet(DepthPrepassDescriptorSet);
         DescriptorPools.PBRDescriptorPool.DisposeDescriptorSet(PBRDescriptorSet);
-        DescriptorPools.UIDescriptorPool.DisposeDescriptorSet(UIDescriptorSet);
+        DescriptorPools.MTSDFTextDescriptorPool.DisposeDescriptorSet(UIDescriptorSet);
 
         MVPBuffer.Dispose();
         VertexBuffer?.Dispose();
@@ -167,7 +167,7 @@ public class VulkanGameObject : RendererGameObjectBase
             .Bind(0, &bufferInfo, VkDescriptorType.UniformBuffer)
             .UpdateBindings();
 
-        UIDescriptorSet = DescriptorPools.UIDescriptorPool.GetDescriptorSet();
+        UIDescriptorSet = DescriptorPools.MTSDFTextDescriptorPool.GetDescriptorSet();
         UIDescriptorSet
             .Bind(0, &bufferInfo, VkDescriptorType.UniformBuffer)
             .UpdateBindings();

@@ -37,11 +37,11 @@ internal unsafe static class ShaderStages
     /// <summary>The shader stage for the solid colour fragment shader.</summary>
     public static VkPipelineShaderStageCreateInfo SolidColourFragmentShader;
 
-    /// <summary>The shader stage for the user interface vertex shader.</summary>
-    public static VkPipelineShaderStageCreateInfo UIVertexShader;
+    /// <summary>The shader stage for the MTSDF text vertex shader.</summary>
+    public static VkPipelineShaderStageCreateInfo MTSDFTextVertexShader;
 
-    /// <summary>The shader stage for the user interface fragment shader.</summary>
-    public static VkPipelineShaderStageCreateInfo UIFragmentShader;
+    /// <summary>The shader stage for the MTSDF text fragment shader.</summary>
+    public static VkPipelineShaderStageCreateInfo MTSDFTextFragmentShader;
 
 
     /*********
@@ -58,8 +58,8 @@ internal unsafe static class ShaderStages
         PBRFragmentShader = LoadShader("Shaders/pbr_frag", VkShaderStageFlags.Fragment);
         SolidColourVertexShader = LoadShader("Shaders/solid_colour_vert", VkShaderStageFlags.Vertex);
         SolidColourFragmentShader = LoadShader("Shaders/solid_colour_frag", VkShaderStageFlags.Fragment);
-        UIVertexShader = LoadShader("Shaders/ui_vert", VkShaderStageFlags.Vertex);
-        UIFragmentShader = LoadShader("Shaders/ui_frag", VkShaderStageFlags.Fragment);
+        MTSDFTextVertexShader = LoadShader("Shaders/mtsdf_text_vert", VkShaderStageFlags.Vertex);
+        MTSDFTextFragmentShader = LoadShader("Shaders/mtsdf_text_frag", VkShaderStageFlags.Fragment);
     }
 
     /// <summary>Disposes unmanaged shader stage resources.</summary>

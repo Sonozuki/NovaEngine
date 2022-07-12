@@ -21,8 +21,8 @@ internal unsafe static class DescriptorSetLayouts
     /// <summary>The descriptor set layout for the solid colour shaders.</summary>
     public static VkDescriptorSetLayout SolidColourDescriptorSetLayout { get; }
 
-    /// <summary>The descriptor set layout for the user interface shaders.</summary>
-    public static VkDescriptorSetLayout UIDescriptorSetLayout { get; }
+    /// <summary>The descriptor set layout for the MTSDF text shaders.</summary>
+    public static VkDescriptorSetLayout MTSDFTextDescriptorSetLayout { get; }
 
 
     /*********
@@ -83,11 +83,11 @@ internal unsafe static class DescriptorSetLayouts
         SolidColourDescriptorSetLayout = CreateDescriptorSetLayout(solidColourBindings);
 
         // user interface
-        var uiBindings = new VkDescriptorSetLayoutBinding[]
+        var mtsdfTextBindings = new VkDescriptorSetLayoutBinding[]
         {
             new() { Binding = 0, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Vertex } // mvp uniform
         };
-        UIDescriptorSetLayout = CreateDescriptorSetLayout(uiBindings);
+        MTSDFTextDescriptorSetLayout = CreateDescriptorSetLayout(mtsdfTextBindings);
     }
 
     /// <summary>Disposes unmanaged descriptor set layout resources.</summary>
@@ -98,7 +98,7 @@ internal unsafe static class DescriptorSetLayouts
         VK.DestroyDescriptorSetLayout(VulkanRenderer.Instance.Device.NativeDevice, CulLightsDescriptorSetLayout, null);
         VK.DestroyDescriptorSetLayout(VulkanRenderer.Instance.Device.NativeDevice, PBRDescriptorSetLayout, null);
         VK.DestroyDescriptorSetLayout(VulkanRenderer.Instance.Device.NativeDevice, SolidColourDescriptorSetLayout, null);
-        VK.DestroyDescriptorSetLayout(VulkanRenderer.Instance.Device.NativeDevice, UIDescriptorSetLayout, null);
+        VK.DestroyDescriptorSetLayout(VulkanRenderer.Instance.Device.NativeDevice, MTSDFTextDescriptorSetLayout, null);
     }
 
 

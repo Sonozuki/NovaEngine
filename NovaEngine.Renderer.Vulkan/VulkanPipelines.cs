@@ -34,8 +34,8 @@ internal unsafe class VulkanPipelines : IDisposable
     /// <summary>The layout of <see cref="SolidColourLinePipeline"/>.</summary>
     public VkPipelineLayout SolidColourLinePipelineLayout { get; private set; }
 
-    /// <summary>The layout of <see cref="UIPipeline"/>.</summary>
-    public VkPipelineLayout UIPipelineLayout { get; private set; }
+    /// <summary>The layout of <see cref="MTSDFTextPipeline"/>.</summary>
+    public VkPipelineLayout MTSDFTextPipelineLayout { get; private set; }
 
     /// <summary>The tile frustum generation pipeline.</summary>
     public VkPipeline GenerateFrustumsPipeline { get; private set; }
@@ -58,8 +58,8 @@ internal unsafe class VulkanPipelines : IDisposable
     /// <summary>The solid colour pipeline with a topology of <see cref="VkPrimitiveTopology.LineList"/>.</summary>
     public VkPipeline SolidColourLinePipeline { get; private set; }
 
-    /// <summary>The user interface pipeline.</summary>
-    public VkPipeline UIPipeline { get; private set; }
+    /// <summary>The MTSDF text pipeline.</summary>
+    public VkPipeline MTSDFTextPipeline { get; private set; }
 
 
     /*********
@@ -86,7 +86,7 @@ internal unsafe class VulkanPipelines : IDisposable
         VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, PBRLinePipelineLayout, null);
         VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, SolidColourTrianglePipelineLayout, null);
         VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, SolidColourLinePipelineLayout, null);
-        VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, UIPipelineLayout, null);
+        VK.DestroyPipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, MTSDFTextPipelineLayout, null);
 
         VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, GenerateFrustumsPipeline, null);
         VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, DepthPrepassPipeline, null);
@@ -95,7 +95,7 @@ internal unsafe class VulkanPipelines : IDisposable
         VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, PBRLinePipeline, null);
         VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, SolidColourTrianglePipeline, null);
         VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, SolidColourLinePipeline, null);
-        VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, UIPipeline, null);
+        VK.DestroyPipeline(VulkanRenderer.Instance.Device.NativeDevice, MTSDFTextPipeline, null);
     }
 
 
@@ -177,12 +177,12 @@ internal unsafe class VulkanPipelines : IDisposable
         // ui
         {
             // layout
-            UIPipelineLayout = CreatePipelineLayout(null, DescriptorSetLayouts.UIDescriptorSetLayout);
+            MTSDFTextPipelineLayout = CreatePipelineLayout(null, DescriptorSetLayouts.MTSDFTextDescriptorSetLayout);
 
             // pipeline
-            var uiColourShaderStages = new[] { ShaderStages.UIVertexShader, ShaderStages.UIFragmentShader };
+            var uiColourShaderStages = new[] { ShaderStages.MTSDFTextVertexShader, ShaderStages.MTSDFTextFragmentShader };
 
-            UIPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, uiColourShaderStages, UIPipelineLayout, VkPrimitiveTopology.TriangleList, RenderingSettings.Instance.SampleCount, Camera.FinalRenderingRenderPass, 2);
+            MTSDFTextPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, uiColourShaderStages, MTSDFTextPipelineLayout, VkPrimitiveTopology.TriangleList, RenderingSettings.Instance.SampleCount, Camera.FinalRenderingRenderPass, 2);
         }
     }
 

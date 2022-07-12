@@ -22,7 +22,7 @@ internal static class DescriptorPools
     public static VulkanDescriptorPool SolidColourDescriptorPool { get; }
 
     /// <summary>The descriptor set layout for the user interface shaders.</summary>
-    public static VulkanDescriptorPool UIDescriptorPool { get; }
+    public static VulkanDescriptorPool MTSDFTextDescriptorPool { get; }
 
 
     /*********
@@ -36,7 +36,7 @@ internal static class DescriptorPools
         CullLightsDescriptorPool = new(DescriptorSetLayouts.CulLightsDescriptorSetLayout);
         PBRDescriptorPool = new(DescriptorSetLayouts.PBRDescriptorSetLayout);
         SolidColourDescriptorPool = new(DescriptorSetLayouts.SolidColourDescriptorSetLayout);
-        UIDescriptorPool = new(DescriptorSetLayouts.UIDescriptorSetLayout);
+        MTSDFTextDescriptorPool = new(DescriptorSetLayouts.MTSDFTextDescriptorSetLayout);
     }
 
     /// <summary>Disposes unmanaged descriptor pool resources.</summary>
@@ -47,6 +47,6 @@ internal static class DescriptorPools
         CullLightsDescriptorPool.Dispose();
         PBRDescriptorPool.Dispose();
         SolidColourDescriptorPool.Dispose();
-        UIDescriptorPool.Dispose();
+        MTSDFTextDescriptorPool.Dispose();
     }
 }
