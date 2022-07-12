@@ -10,7 +10,7 @@ internal class Glyph
     /// <summary>The bounds of the glyph in the font file.</summary>
     public Rectangle UnscaledBounds = new();
 
-    /// <summary>The bounds of the glyph in the texture atlas.</summary>
+    /// <summary>The bounds of the glyph in the texture atlas, in pixels.</summary>
     public Rectangle ScaledBounds = new();
 
 

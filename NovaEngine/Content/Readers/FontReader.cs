@@ -31,10 +31,11 @@ public class FontReader : IContentReader
         for (int i = 0; i < count; i++)
         {
             var character = binaryReader.ReadChar();
+            var size = new Vector2I(binaryReader.ReadUInt16(), binaryReader.ReadUInt16());
             var atlasPosition = new Rectangle(binaryReader.ReadUInt16(), binaryReader.ReadUInt16(), binaryReader.ReadUInt16(), binaryReader.ReadUInt16());
             var horizontalMetrics = new HorizontalMetrics(binaryReader.ReadUInt16(), binaryReader.ReadUInt16());
 
-            glyphs.Add(new(character, atlasPosition, horizontalMetrics));
+            glyphs.Add(new(character, size, atlasPosition, horizontalMetrics));
         }
 
         return new Font(name, atlas, glyphs);

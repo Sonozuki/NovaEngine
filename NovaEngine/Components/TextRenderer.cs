@@ -96,10 +96,10 @@ public class TextRenderer : MeshRenderer
 
             // draw glyph quad
             // TODO: don't assume 48, derive from font
-            vertices.Add(new Vertex(new(xPosition, yPosition + 48 - glyph.AtlasPosition.Height, 0)));
-            vertices.Add(new Vertex(new(xPosition + glyph.AtlasPosition.Width, yPosition + 48 - glyph.AtlasPosition.Height, 0)));
+            vertices.Add(new Vertex(new(xPosition, yPosition + 48 - glyph.Size.Y, 0)));
+            vertices.Add(new Vertex(new(xPosition + glyph.Size.X, yPosition + 48 - glyph.Size.Y, 0)));
             vertices.Add(new Vertex(new(xPosition, yPosition + 48, 0)));
-            vertices.Add(new Vertex(new(xPosition + glyph.AtlasPosition.Width, yPosition + 48, 0)));
+            vertices.Add(new Vertex(new(xPosition + glyph.Size.X, yPosition + 48, 0)));
 
             var topLeftIndex = (uint)vertices.Count - 4;
             var topRightIndex = (uint)vertices.Count - 3;
@@ -117,8 +117,8 @@ public class TextRenderer : MeshRenderer
             xPosition += glyph.HorizontalMetrics.AdvanceWidth;
 
             width = xPosition;
-            if (glyph.AtlasPosition.Height > height)
-                height = (int)glyph.AtlasPosition.Height; // TODO: consider multiple lines
+            if (glyph.Size.Y > height)
+                height = (int)glyph.Size.Y; // TODO: consider multiple lines
         }
 
         // adjust the vertex positions to centre the text mesh

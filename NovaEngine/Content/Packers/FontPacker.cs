@@ -23,10 +23,11 @@ public class FontPacker : IContentPacker
 
         // TODO: add support for multiple texture atlases
         // texture atlas edge length
-        binaryWriter.Write((uint)atlas.GetLength(0));
+        var atlasEdgeLength = (uint)atlas.GetLength(0);
+        binaryWriter.Write(atlasEdgeLength);
 
         // atlas pixel data
-        var pixelsBuffer = new byte[atlas.GetLength(0) * atlas.GetLength(1) * 4];
+        var pixelsBuffer = new byte[atlasEdgeLength * atlasEdgeLength * 4];
         fixed (Colour* atlasPointer = atlas)
         fixed (byte* pixelsBufferPointer = pixelsBuffer)
             Buffer.MemoryCopy(atlasPointer, pixelsBufferPointer, pixelsBuffer.Length, pixelsBuffer.Length);
@@ -38,11 +39,15 @@ public class FontPacker : IContentPacker
         {
             binaryWriter.Write(glyph.Character);
 
-            // text atlas rectangle
-            binaryWriter.Write((ushort)glyph.ScaledBounds.X);
-            binaryWriter.Write((ushort)glyph.ScaledBounds.Y);
+            // glyph size
             binaryWriter.Write((ushort)glyph.ScaledBounds.Width);
             binaryWriter.Write((ushort)glyph.ScaledBounds.Height);
+
+            // atlas rectangle
+            binaryWriter.Write((ushort)(glyph.ScaledBounds.X / atlasEdgeLength));
+            binaryWriter.Write((ushort)(glyph.ScaledBounds.Y / atlasEdgeLength));
+            binaryWriter.Write((ushort)(glyph.ScaledBounds.Width / atlasEdgeLength));
+            binaryWriter.Write((ushort)(glyph.ScaledBounds.Height / atlasEdgeLength));
 
             // horizontal metrics
             binaryWriter.Write(glyph.HorizontalMetrics.AdvanceWidth);
