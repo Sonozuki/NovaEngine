@@ -9,7 +9,6 @@ public class GameObjectChildren : IList<GameObject>
     *********/
     /// <summary>The game object whose children this collection contains.</summary>
     /// <remarks>This is used for automatically setting/unsetting the parent of children.</remarks>
-    [Serialisable]
     private readonly GameObject Parent;
 
     /// <summary>The underlying collection of children.</summary>

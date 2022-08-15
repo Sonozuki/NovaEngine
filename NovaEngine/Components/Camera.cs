@@ -7,15 +7,12 @@ public sealed class Camera : ComponentBase
     ** Fields
     *********/
     /// <summary>The resolution of the camera's render target.</summary>
-    [Serialisable]
     private Vector2I? _Resolution;
 
     /// <summary>The aspect ratio of the camera (width / height).</summary>
-    [Serialisable]
     private float? _AspectRatio;
 
     /// <summary>Whether VSync is enabled.</summary>
-    [Serialisable]
     private bool _IsVSyncEnabled;
 
 

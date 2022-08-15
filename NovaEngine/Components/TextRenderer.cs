@@ -7,11 +7,9 @@ public class TextRenderer : MeshRenderer
     ** Fields
     *********/
     /// <summary>The text to render.</summary>
-    [Serialisable]
     private string _Text = "";
 
     /// <summary>The font to use to render the text.</summary>
-    [Serialisable]
     private Font _Font;
 
 

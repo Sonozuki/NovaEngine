@@ -7,27 +7,21 @@ public class Transform : ComponentBase
     ** Fields
     *********/
     /// <summary>The position of the object relative to the object's parent.</summary>
-    [Serialisable]
     private Vector3 _LocalPosition;
 
     /// <summary>The rotation of the object relative to the object's parent.</summary>
-    [Serialisable]
     private Quaternion _LocalRotation = Quaternion.Identity;
 
     /// <summary>The scale of the object relative to the object's parent.</summary>
-    [Serialisable]
     private Vector3 _LocalScale = Vector3.One;
 
     /// <summary>The global position of the parent object.</summary>
-    [Serialisable]
     private Vector3 _ParentPosition;
 
     /// <summary>The global rotation of the parent object.</summary>
-    [Serialisable]
     private Quaternion _ParentRotation = Quaternion.Identity;
 
     /// <summary>The global scale of the parent object.</summary>
-    [Serialisable]
     private Vector3 _ParentScale = Vector3.One;
 
 

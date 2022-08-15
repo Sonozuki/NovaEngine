@@ -14,7 +14,6 @@ public abstract class ComponentBase : IDisposable
     public bool IsPausable { get; set; } = true;
 
     /// <summary>The game object the component is currently on.</summary>
-    [Serialisable]
     public GameObject GameObject { get; internal set; }
 
     /// <summary>The transform of the game object the component is currently attached to.</summary>

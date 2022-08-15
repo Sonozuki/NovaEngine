@@ -9,7 +9,6 @@ public class SceneRootObjects : IList<GameObject>
     *********/
     /// <summary>The scene whose root objects this collection contains.</summary>
     /// <remarks>This is used for automatically setting/unsetting the scene of root objects (which will then set/unset all recursive children).</remarks>
-    [Serialisable]
     private readonly Scene Scene;
 
     /// <summary>The underlying collection of root game objects.</summary>

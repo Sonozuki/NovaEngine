@@ -9,7 +9,6 @@ public class GameObjectComponents : IList<ComponentBase>
     *********/
     /// <summary>The game object whose components this collection contains.</summary>
     /// <remarks>This is used for automatically setting/unsetting the parent of component.</remarks>
-    [Serialisable]
     private readonly GameObject GameObject;
 
     /// <summary>The underlying collection of components.</summary>

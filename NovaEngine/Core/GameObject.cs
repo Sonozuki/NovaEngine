@@ -8,12 +8,10 @@ public sealed class GameObject : IDisposable
     *********/
     /// <summary>The parent of the game object.</summary>
     /// <remarks>This is <see langword="null"/> when it's a root game object.</remarks>
-    [Serialisable]
     private GameObject? _Parent;
 
     /// <summary>The scene the game object is in.</summary>
     /// <remarks>This is <see langword="null"/> when it's not in a scene.</remarks>
-    [Serialisable]
     private Scene? _Scene;
 
 
