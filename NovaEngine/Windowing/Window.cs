@@ -38,7 +38,7 @@ public class Window
     }
 
     /// <summary>Whether the window has closed.</summary>
-    public bool HasClosed { get; private set; }
+    public bool HasClosed { get; internal set; }
 
 
     /*********
