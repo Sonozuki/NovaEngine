@@ -48,13 +48,6 @@ public class MeshRenderer : ComponentBase
     /*********
     ** Protected Methods
     *********/
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    
-    /// <summary>Constructs an instance.</summary>
-    protected MeshRenderer() { } // required for serialiser
-
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-
     /// <summary>Invoked once the mesh renderer has been deserialised, used to update the mesh on the renderer game object.</summary>
     [OnDeserialised]
     protected void OnDeserialised() => UpdateMesh();

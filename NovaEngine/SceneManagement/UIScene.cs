@@ -20,11 +20,4 @@ public class UIScene : Scene
     /// <inheritdoc/>
     public UIScene(string name, bool isActive)
         : base(name, isActive) { }
-
-
-    /*********
-    ** Protected Methods
-    *********/
-    /// <summary>Constructs an instance.</summary>
-    protected UIScene() { } // required for serialiser
 }

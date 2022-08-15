@@ -40,12 +40,4 @@ public sealed class UITransform : Transform
     /// <inheritdoc/>
     internal UITransform(GameObject gameObject)
         : base(gameObject) { }
-
-
-    /*********
-    ** Private Methods
-    *********/
-    /// <summary>Constructs an instance.</summary>
-    private UITransform()
-        : base() { } // required for serialiser
 }

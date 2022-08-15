@@ -58,16 +58,6 @@ public class TextRenderer : MeshRenderer
 
 
     /*********
-    ** Protected Methods
-    *********/
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-
-    /// <summary>Constructs an instance.</summary>
-    protected TextRenderer() { } // required for serialiser
-
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-
-    /*********
     ** Private Methods
     *********/
     /// <summary>Generates the mesh for <see cref="Text"/>.</summary>
