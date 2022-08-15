@@ -27,7 +27,14 @@ internal static class SerialiserUtilities
         var typeInfo = allTypeInfos.Get(type);
 
         foreach (var methodInfo in typeInfo.SerialiserCallbacks.OnSerialisingMethods)
-            methodInfo.Invoke(@object, null);
+            try
+            {
+                methodInfo.Invoke(@object, null);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"OnSerialising callback crashed. Technical details:\n{ex}");
+            }
 
         // create the object info representing the object
         var id = allObjectInfos.Count == 0 ? 1 : allObjectInfos.Last().Id + 1;
@@ -68,7 +75,14 @@ internal static class SerialiserUtilities
         }
 
         foreach (var methodInfo in typeInfo.SerialiserCallbacks.OnSerialisedMethods)
-            methodInfo.Invoke(@object, null);
+            try
+            {
+                methodInfo.Invoke(@object, null);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"OnSerialised callback crashed. Technical details:\n{ex}");
+            }
 
         return id;
 

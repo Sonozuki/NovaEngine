@@ -95,7 +95,14 @@ public static class Serialiser
             // invoke OnDeserialised methods
             foreach (var objectInfo in allObjectInfos)
                 foreach (var methodInfo in objectInfo.TypeInfo.SerialiserCallbacks.OnDeserialisedMethods)
-                    methodInfo.Invoke(objectInfo.UnderlyingObject, null);
+                    try
+                    {
+                        methodInfo.Invoke(objectInfo.UnderlyingObject, null);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError($"OnDeserialised callback crashed. Technical details:\n{ex}");
+                    }
 
             return allObjectInfos[0].UnderlyingObject;
         }

@@ -78,7 +78,14 @@ internal class ObjectInfo
 
         // invoke OnDeserialising methods
         foreach (var methodInfo in TypeInfo.SerialiserCallbacks.OnDeserialisingMethods)
-            methodInfo.Invoke(UnderlyingObject, null);
+            try
+            {
+                methodInfo.Invoke(UnderlyingObject, null);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"OnDeserialising callback crashed. Technical details:\n{ex}");
+            }
 
         // link references of fields then collection elements
         foreach (var field in NonInlinableFields)
