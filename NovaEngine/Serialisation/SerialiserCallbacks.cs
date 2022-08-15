@@ -8,16 +8,16 @@ internal class SerialiserCallbacks
     ** Accessors
     *********/
     /// <summary>The methods that will automatically be called by the serialiser just before the object gets serialised.</summary>
-    public MethodInfo[] OnSerialisingMethods;
+    public MethodInfo[] OnSerialisingMethods { get; }
 
     /// <summary>The methods that will automatically be called by the serialiser after the object gets serialised.</summary>
-    public MethodInfo[] OnSerialisedMethods;
+    public MethodInfo[] OnSerialisedMethods { get; }
 
     /// <summary>The methods that will automatically be called by the serialiser just before the object gets deserialised.</summary>
-    public MethodInfo[] OnDeserialisingMethods;
+    public MethodInfo[] OnDeserialisingMethods { get; }
 
     /// <summary>The methods that will automatically be called by the serialiser after the object gets deserialised.</summary>
-    public MethodInfo[] OnDeserialisedMethods;
+    public MethodInfo[] OnDeserialisedMethods { get; }
 
 
     /*********
