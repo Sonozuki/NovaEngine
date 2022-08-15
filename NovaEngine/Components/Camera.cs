@@ -190,14 +190,14 @@ public sealed class Camera : ComponentBase
         if (setMainCamera)
             Main = this;
 
-        RunSharedLogic();
+        CreateRendererCamera();
     }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-    /// <summary>Runs logic that is used when constructing the object manually, and when constructing the object through the serialiser.</summary>
+    /// <summary>Creates the renderer camera.</summary>
     [OnDeserialised]
-    private void RunSharedLogic()
+    private void CreateRendererCamera()
     {
         if (_Resolution == null && Program.HasProgramInstance)
             Program.MainWindow.Resize += e => Resolution = e.NewSize;

@@ -102,7 +102,7 @@ public abstract class TextureBase : IDisposable
         Filter = filter;
         AutomaticallyGenerateMipChain = automaticallyGenerateMipChain;
 
-        RunSharedLogic();
+        CreateRendererTexture();
     }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -114,7 +114,7 @@ public abstract class TextureBase : IDisposable
     /*********
     ** Private Methods
     *********/
-    /// <summary>Runs logic that is used when constructing the object manually, and when constructing the object through the serialiser.</summary>
+    /// <summary>Creates the renderer texture.</summary>
     [OnDeserialised]
-    private void RunSharedLogic() => RendererTexture = RendererManager.CurrentRenderer.CreateRendererTexture(this);
+    private void CreateRendererTexture() => RendererTexture = RendererManager.CurrentRenderer.CreateRendererTexture(this);
 }
