@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Core;
 
 /// <summary>Represents a game object.</summary>
-public class GameObject : IDisposable
+public sealed class GameObject : IDisposable
 {
     /*********
     ** Fields
