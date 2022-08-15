@@ -22,7 +22,7 @@ internal class TypeInfo
     public List<PropertyInfo> SerialisableProperties { get; } = new();
 
     /// <summary>The methods that will get invoked when the object is reconstructed.</summary>
-    public List<MethodInfo> SerialiserCalledMethods { get; } = new();
+    public SerialiserCallbacks SerialiserCallbacks { get; }
 
 
     /*********
@@ -36,20 +36,11 @@ internal class TypeInfo
         IsInlinable = type.IsInlinable();
         IsUnmanaged = type.IsUnmanaged();
 
-        const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-
         // fields
-        SerialisableFields.AddRange(type.GetFields(bindingFlags)
-            .Where(field => (field.IsPublic && !field.HasCustomAttribute<NonSerialisableAttribute>()) // serialise public fields without a non serialisable attribute
-                         || (!field.IsPublic && field.HasCustomAttribute<SerialisableAttribute>()))); // serialise non public fields with a serialisable attribute
+        SerialisableFields.AddRange(type.GetSerialisableFields());
 
         // properties
-        var properties = type.GetProperties(bindingFlags)
-            .Where(property => property.CanRead && property.CanWriteForSerialisation() // property must be readable and writable
-                           && (property.HasBackingField() || property.HasCustomAttribute<SerialisableAttribute>()) // must be an auto property, or property with a serialisable attribute
-                           && ((property.GetMethod!.IsPublic && !property.HasCustomAttribute<NonSerialisableAttribute>()) // getter must either be public without a non serialisable attribute
-                               || (!property.GetMethod!.IsPublic && property.HasCustomAttribute<SerialisableAttribute>())) // or be non public with a serialisable attribute
-                           && (property.CanWrite || !property.IsStatic())); // must be writeable (have a specified set method), or not static (as static methods without a set method are initonly)
+        var properties = type.GetSerialisableProperties();
 
         foreach (var property in properties)
             if (property.HasBackingField()) // serialise the backing field directly (if it has one), instead of through the property
@@ -58,7 +49,6 @@ internal class TypeInfo
                 SerialisableProperties.Add(property);
 
         // callbacks
-        SerialiserCalledMethods.AddRange(type.GetMethods(bindingFlags)
-            .Where(method => method.HasCustomAttribute<SerialiserCalledAttribute>()));
+        SerialiserCallbacks = type.GetSerialiserCallbacks();
     }
 }

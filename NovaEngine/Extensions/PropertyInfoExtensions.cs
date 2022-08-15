@@ -1,8 +1,15 @@
 ﻿namespace NovaEngine.Extensions;
 
 /// <summary>Extension methods for <see cref="PropertyInfo"/>.</summary>
-public static class PropertyInfoExtensions
+internal static class PropertyInfoExtensions
 {
+    /*********
+    ** Fields
+    *********/
+    /// <summary>The cached backing field info for each property info.</summary>
+    private static readonly Dictionary<PropertyInfo, FieldInfo?> CachedPropertyBackingFields = new();
+
+
     /*********
     ** Public Methods
     *********/
@@ -25,8 +32,16 @@ public static class PropertyInfoExtensions
     /// <summary>Retrieves the backing field of the property.</summary>
     /// <param name="propertyInfo">The property whose backing field should be retrieved.</param>
     /// <returns>The backing field of the property, if the property has one; otherwise, <see langword="null"/>.</returns>
-    public static FieldInfo? GetBackingField(this PropertyInfo propertyInfo) =>
-        propertyInfo.DeclaringType?.GetField(propertyInfo.GetBackingFieldName(), BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic);
+    public static FieldInfo? GetBackingField(this PropertyInfo propertyInfo)
+    {
+        if (CachedPropertyBackingFields.TryGetValue(propertyInfo, out var fieldInfo))
+            return fieldInfo;
+
+        fieldInfo = propertyInfo.DeclaringType?.GetField(propertyInfo.GetBackingFieldName(), BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic);
+
+        CachedPropertyBackingFields[propertyInfo] = fieldInfo;
+        return fieldInfo;
+    }
 
     /// <summary>Retrieves the name of the backing field of the property.</summary>
     /// <param name="propertyInfo">The property whose backing field name should be retrieved.</param>

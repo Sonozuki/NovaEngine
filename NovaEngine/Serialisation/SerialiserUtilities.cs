@@ -6,6 +6,13 @@ namespace NovaEngine.Serialisation;
 internal static class SerialiserUtilities
 {
     /*********
+    ** Fields
+    *********/
+    /// <summary>The cached types by name.</summary>
+    private static readonly Dictionary<string, Type?> CachedTypes = new();
+
+
+    /*********
     ** Public Methods
     *********/
     /// <summary>Retrieves all the object infos that make up an object (including all recursive children).</summary>
@@ -18,6 +25,9 @@ internal static class SerialiserUtilities
         // get all serialisable members
         var type = @object.GetType();
         var typeInfo = allTypeInfos.Get(type);
+
+        foreach (var methodInfo in typeInfo.SerialiserCallbacks.OnSerialisingMethods)
+            methodInfo.Invoke(@object, null);
 
         // create the object info representing the object
         var id = allObjectInfos.Count == 0 ? 1 : allObjectInfos.Last().Id + 1;
@@ -70,6 +80,9 @@ internal static class SerialiserUtilities
             else
                 objectInfo.NonInlinableProperties[property.Name] = GetObjectInfoIdByObject(value);
         }
+
+        foreach (var methodInfo in typeInfo.SerialiserCallbacks.OnSerialisedMethods)
+            methodInfo.Invoke(@object, null);
 
         return id;
 
@@ -238,8 +251,11 @@ internal static class SerialiserUtilities
     /// <returns>The type with a full name of <paramref name="typeName"/>.</returns>
     public static Type? GetAnyType(string typeName)
     {
+        if (CachedTypes.TryGetValue(typeName, out var type))
+            return type;
+
         // try looking for the type in the engine dll and core library
-        var type = Type.GetType(typeName);
+        type = Type.GetType(typeName);
         if (type != null)
             return type;
 
@@ -248,9 +264,10 @@ internal static class SerialiserUtilities
         {
             type = assembly.GetType(typeName);
             if (type != null)
-                return type;
+                break;
         }
 
-        return null;
+        CachedTypes[typeName] = type;
+        return type;
     }
 }

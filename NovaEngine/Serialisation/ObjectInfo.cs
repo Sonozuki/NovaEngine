@@ -36,11 +36,6 @@ internal class ObjectInfo
     /// <remarks>This and <see cref="NonInlinableCollectionElements"/> will not ever be used at the same time.</remarks>
     public List<uint> NonInlinableCollectionElements { get; } = new();
 
-    // fields and properties are split here purely in the interest of performance, regardless of how small the gain is
-    // (as when looking for the member names, we don't need to look through both the fields and properties to find what we want)
-    // this does have the slight disadvantage of decreasing the effienciency of the final serialised result, as now 2 more shorts
-    // are used for specifiying the collection sizes, but using an additional 4 bytes per non inlinable object isn't that bad
-
     /// <summary>The fields of the object whose value can be inlined.</summary>
     /// <remarks>This is the byte representation of the field value.</remarks>
     public Dictionary<string, byte[]> InlinableFields { get; } = new();
@@ -74,12 +69,15 @@ internal class ObjectInfo
 
     /// <summary>Links the references of non inlinable objects, recursively.</summary>
     /// <param name="allObjectInfos">All the deserialised object infos.</param>
-    /// <remarks>This will also invoke all methods in the object which have a <see cref="SerialiserCalledAttribute"/>.</remarks>
     public void LinkReferences(List<ObjectInfo> allObjectInfos)
     {
         if (HaveReferencesBeenLinked)
             return;
         HaveReferencesBeenLinked = true;
+
+        // invoke OnDeserialising methods
+        foreach (var methodInfo in TypeInfo.SerialiserCallbacks.OnDeserialisingMethods)
+            methodInfo.Invoke(UnderlyingObject, null);
 
         // link references of fields then collection elements
         foreach (var field in NonInlinableFields)
@@ -113,8 +111,9 @@ internal class ObjectInfo
             AssignCollectionElements(collectionElements);
         }
 
-        // invoke serialiser callback methods
-        TypeInfo.SerialiserCalledMethods.ForEach(method => method.Invoke(UnderlyingObject, null));
+        // invoke OnDeserialised methods
+        foreach (var methodInfo in TypeInfo.SerialiserCallbacks.OnDeserialisedMethods)
+            methodInfo.Invoke(UnderlyingObject, null);
     }
 
     /// <summary>Writes the object info to a stream.</summary>
@@ -123,7 +122,7 @@ internal class ObjectInfo
     {
         binaryWriter.Write(TypeInfo.Type.FullName!);
 
-        var isArray = UnderlyingObject is Array array;
+        var isArray = UnderlyingObject is Array;
         binaryWriter.Write(isArray);
         if (isArray)
             binaryWriter.Write((UnderlyingObject as Array)!.Length);
@@ -159,7 +158,7 @@ internal class ObjectInfo
         var typeName = binaryReader.ReadString();
         var isArray = binaryReader.ReadBoolean();
         if (isArray)
-            typeName = typeName[..^2];
+            typeName = typeName[..^2]; // remove the "[]" on the type name
 
         // get underlying object type
         var type = SerialiserUtilities.GetAnyType(typeName)!;
@@ -170,7 +169,7 @@ internal class ObjectInfo
         if (isArray)
             underlyingObject = Array.CreateInstance(type, binaryReader.ReadInt32());
         else
-            underlyingObject = Activator.CreateInstance(type, true)!;
+            underlyingObject = Activator.CreateInstance(type, true)!; // TODO: stop using Activator
 
         var objectInfo = new ObjectInfo(binaryReader.ReadUInt32(), underlyingObject, typeInfo);
 

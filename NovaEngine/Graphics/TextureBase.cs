@@ -126,6 +126,6 @@ public abstract class TextureBase : IDisposable
     ** Private Methods
     *********/
     /// <summary>Runs logic that is used when constructing the object manually, and when constructing the object through the serialiser.</summary>
-    [SerialiserCalled]
+    [OnDeserialised]
     private void RunSharedLogic() => RendererTexture = RendererManager.CurrentRenderer.CreateRendererTexture(this);
 }
