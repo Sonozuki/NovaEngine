@@ -40,7 +40,8 @@ public static class Serialiser
                 SerialiserUtilities.FlattenObject(@object!, allObjectInfos, new());
 
                 binaryWriter.Write(allObjectInfos.Count);
-                allObjectInfos.ForEach(objectInfo => objectInfo.Write(binaryWriter));
+                foreach (var objectInfo in allObjectInfos)
+                    objectInfo.Write(binaryWriter);
             }
         }
         catch (Exception ex)
@@ -90,6 +91,12 @@ public static class Serialiser
 
             // link references of and retrieve root object
             allObjectInfos[0].LinkReferences(allObjectInfos); // this will link all references of child objects as required
+
+            // invoke OnDeserialised methods
+            foreach (var objectInfo in allObjectInfos)
+                foreach (var methodInfo in objectInfo.TypeInfo.SerialiserCallbacks.OnDeserialisedMethods)
+                    methodInfo.Invoke(objectInfo.UnderlyingObject, null);
+
             return allObjectInfos[0].UnderlyingObject;
         }
         catch (Exception ex)

@@ -34,28 +34,14 @@ internal static class SerialiserUtilities
         var objectInfo = new ObjectInfo(id, @object, typeInfo);
         allObjectInfos.Add(objectInfo);
 
-        // retrieve collection elements (if the object is an IEnumerable)
-        if (@object is IEnumerable iEnumerable)
+        // retrieve collection elements (if the object is an Array)
+        if (@object is Array array)
         {
-            (objectInfo.CollectionType, objectInfo.AreCollectionElementsInlinable) = @object switch
-            {
-                Array =>
-                    (CollectionType.Array, @object.GetType().GetElementType()?.IsInlinable() ?? false),
-                object when @object?.GetType().GetInterfaces().Any(@interface => @interface.Name == "IList`1") ?? false =>
-                    (CollectionType.GenericList, @object.GetType().GetInterfaces().First(@interface => @interface.Name == "IList`1").GetGenericArguments()[0].IsInlinable()),
-                object when @object?.GetType().GetInterfaces().Any(@interface => @interface.Name == "IDictionary`2") ?? false =>
-                    (CollectionType.GenericDictionary, false),
-                object when @object?.GetType().GetInterfaces().Contains(typeof(IList)) ?? false =>
-                    (CollectionType.List, false),
-                object when @object?.GetType().GetInterfaces().Contains(typeof(IDictionary)) ?? false =>
-                    (CollectionType.Dictionary, false),
-                _ => throw new NotSupportedException($"Type: {@object!.GetType()} isn't a supported {nameof(IEnumerable)} type.")
-            };
-
+            objectInfo.AreCollectionElementsInlinable = type.GetElementType()?.IsInlinable() ?? false;
             if (objectInfo.AreCollectionElementsInlinable)
-                objectInfo.InlinableCollectionElements.AddRange(iEnumerable.OfType<object>().Select(element => SerialiserUtilities.ConvertInlinableValueToBuffer(element, allTypeInfos.Get(element.GetType()))));
+                objectInfo.InlinableCollectionElements.AddRange(array.OfType<object>().Select(element => SerialiserUtilities.ConvertInlinableValueToBuffer(element, allTypeInfos.Get(element.GetType()))));
             else
-                objectInfo.NonInlinableCollectionElements.AddRange(iEnumerable.OfType<object>().Select(element => GetObjectInfoIdByObject(element)));
+                objectInfo.NonInlinableCollectionElements.AddRange(array.OfType<object>().Select(element => GetObjectInfoIdByObject(element)));
         }
 
         // flatten/inline all serialisable member values
@@ -256,15 +242,15 @@ internal static class SerialiserUtilities
 
         // try looking for the type in the engine dll and core library
         type = Type.GetType(typeName);
-        if (type != null)
-            return type;
-
-        // if the type is outside either of those, look in all loaded assemblies
-        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        if (type == null)
         {
-            type = assembly.GetType(typeName);
-            if (type != null)
-                break;
+            // if the type is outside either of those, look in all loaded assemblies
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                type = assembly.GetType(typeName);
+                if (type != null)
+                    break;
+            }
         }
 
         CachedTypes[typeName] = type;

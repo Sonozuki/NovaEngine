@@ -6,11 +6,12 @@ internal class ObjectInfo
     /*********
     ** Fields
     *********/
-    /// <summary>The type info of the object this represents.</summary>
-    private readonly TypeInfo TypeInfo;
-
     /// <summary>Whether the non inlinable members and collection elements have had their references linked.</summary>
     private bool HaveReferencesBeenLinked;
+
+    /// <summary>The deserialised elements of the object.</summary>
+    /// <remarks>This is used to store all deserialised collection elements before they are added to the array (after all references have been linked).</remarks>
+    private List<object?> CollectionElements { get; } = new();
 
 
     /*********
@@ -22,18 +23,18 @@ internal class ObjectInfo
     /// <summary>The object this object info represents.</summary>
     public object UnderlyingObject { get; private set; }
 
-    /// <summary>The type of the collection.</summary>
-    public CollectionType CollectionType { get; set; }
+    /// <summary>The type info of the object this represents.</summary>
+    public TypeInfo TypeInfo { get; }
 
-    /// <summary>If the object is a collection (inherits from <see cref="IEnumerable"/>), this will specify whether the elements are inlinable or non inlinable (whether <see cref="InlinableCollectionElements"/> or <see cref="NonInlinableCollectionElements"/>) stores the elements.</summary>
+    /// <summary>If the object is a array, this will specify whether the elements are inlinable or non inlinable (whether <see cref="InlinableCollectionElements"/> or <see cref="NonInlinableCollectionElements"/>) stores the elements).</summary>
     public bool AreCollectionElementsInlinable { get; set; }
 
-    /// <summary>The elements of the object, when it's an <see cref="IEnumerable"/> of inlinable objects.</summary>
+    /// <summary>The elements of the object, when it's an <see cref="Array"/> of inlinable objects.</summary>
     /// <remarks>This and <see cref="NonInlinableCollectionElements"/> will not ever be used at the same time.</remarks>
     public List<byte[]> InlinableCollectionElements { get; } = new();
 
-    /// <summary>The elements of the object, when it's an <see cref="IEnumerable"/> of non inlinable objects.</summary>
-    /// <remarks>This and <see cref="NonInlinableCollectionElements"/> will not ever be used at the same time.</remarks>
+    /// <summary>The elements of the object, when it's an <see cref="Array"/> of non inlinable objects.</summary>
+    /// <remarks>This and <see cref="InlinableCollectionElements"/> will not ever be used at the same time.</remarks>
     public List<uint> NonInlinableCollectionElements { get; } = new();
 
     /// <summary>The fields of the object whose value can be inlined.</summary>
@@ -98,22 +99,14 @@ internal class ObjectInfo
                 .SetValue(UnderlyingObject, objectInfo.UnderlyingObject);
         }
 
-        if (!AreCollectionElementsInlinable)
+        foreach (var element in NonInlinableCollectionElements)
         {
-            var collectionElements = new List<object?>();
-            foreach (var element in NonInlinableCollectionElements)
-            {
-                var objectInfo = allObjectInfos.First(objectInfo => objectInfo.Id == element);
-                objectInfo.LinkReferences(allObjectInfos);
+            var objectInfo = allObjectInfos.First(objectInfo => objectInfo.Id == element);
+            objectInfo.LinkReferences(allObjectInfos);
 
-                collectionElements.Add(objectInfo.UnderlyingObject);
-            }
-            AssignCollectionElements(collectionElements);
+            CollectionElements.Add(objectInfo.UnderlyingObject);
         }
-
-        // invoke OnDeserialised methods
-        foreach (var methodInfo in TypeInfo.SerialiserCallbacks.OnDeserialisedMethods)
-            methodInfo.Invoke(UnderlyingObject, null);
+        AssignCollectionElements();
     }
 
     /// <summary>Writes the object info to a stream.</summary>
@@ -140,7 +133,6 @@ internal class ObjectInfo
         binaryWriter.Write(hasCollectionElements);
         if (hasCollectionElements)
         {
-            binaryWriter.Write((byte)CollectionType);
             binaryWriter.Write(AreCollectionElementsInlinable);
             if (AreCollectionElementsInlinable)
                 binaryWriter.Write(InlinableCollectionElements);
@@ -157,8 +149,6 @@ internal class ObjectInfo
         // get type name
         var typeName = binaryReader.ReadString();
         var isArray = binaryReader.ReadBoolean();
-        if (isArray)
-            typeName = typeName[..^2]; // remove the "[]" on the type name
 
         // get underlying object type
         var type = SerialiserUtilities.GetAnyType(typeName)!;
@@ -167,9 +157,12 @@ internal class ObjectInfo
         // create underlying object instance
         object underlyingObject;
         if (isArray)
-            underlyingObject = Array.CreateInstance(type, binaryReader.ReadInt32());
+        {
+            var elementType = SerialiserUtilities.GetAnyType(typeName[..^2])!; // remove the "[]" on the type name
+            underlyingObject = Array.CreateInstance(elementType, binaryReader.ReadInt32());
+        }
         else
-            underlyingObject = Activator.CreateInstance(type, true)!; // TODO: stop using Activator
+            underlyingObject = RuntimeHelpers.GetUninitializedObject(type);
 
         var objectInfo = new ObjectInfo(binaryReader.ReadUInt32(), underlyingObject, typeInfo);
 
@@ -190,10 +183,9 @@ internal class ObjectInfo
         // collection elements
         if (binaryReader.ReadBoolean()) // hasCollectionElements
         {
-            objectInfo.CollectionType = (CollectionType)binaryReader.ReadByte();
             objectInfo.AreCollectionElementsInlinable = binaryReader.ReadBoolean();
             if (objectInfo.AreCollectionElementsInlinable)
-                objectInfo.AssignCollectionElements(binaryReader.ReadInlinableObjects());
+                objectInfo.CollectionElements.AddRange(binaryReader.ReadInlinableObjects());
             else
                 objectInfo.NonInlinableCollectionElements.AddRange(binaryReader.ReadNonInlinableObjects());
         }
@@ -206,32 +198,15 @@ internal class ObjectInfo
     ** Private Methods
     *********/
     /// <summary>Assigns the elements of the collection</summary>
-    /// <param name="elements">The elements to assign to the collection.</param>
-    private void AssignCollectionElements(List<object?> elements)
+    private void AssignCollectionElements()
     {
-        for (int i = 0; i < elements.Count; i++)
-        {
-            var element = elements[i];
+        if (CollectionElements.Count == 0)
+            return;
 
-            switch (CollectionType)
-            {
-                case CollectionType.Array:
-                    (UnderlyingObject as Array)!.SetValue(element, i);
-                    break;
-                case CollectionType.GenericList:
-                case CollectionType.GenericDictionary:
-                    UnderlyingObject!.GetType().GetInterfaces().Single(@interface => @interface.Name == "ICollection`1").GetMethod("Add")!.Invoke(UnderlyingObject, new[] { element });
-                    break;
-                case CollectionType.List:
-                    (UnderlyingObject as IList)!.Add(element);
-                    break;
-                case CollectionType.Dictionary:
-                    (UnderlyingObject as IDictionary)!.Add(
-                        element!.GetType().GetProperty("Key")!.GetValue(element)!,
-                        element!.GetType().GetProperty("Value")!.GetValue(element)
-                    );
-                    break;
-            }
-        }
+        if (UnderlyingObject is not Array array)
+            throw new SerialisationException("A non array object contains collection elements.");
+
+        for (int i = 0; i < CollectionElements.Count; i++)
+            array.SetValue(CollectionElements[i], i);
     }
 }

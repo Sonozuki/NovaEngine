@@ -101,6 +101,8 @@ public class GameObject : IDisposable
     /*********
     ** Public Methods
     *********/
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
     /// <summary>Constructs an instance.</summary>
     /// <param name="name">The name of the game object.</param>
     /// <param name="parent">The parent of the game object.</param>
@@ -108,7 +110,6 @@ public class GameObject : IDisposable
     /// <param name="components">The components to add to the game object.</param>
     /// <param name="children">The children to add to the game object.</param>
     public GameObject(string name, GameObject? parent = null, bool isEnabled = true, IEnumerable<ComponentBase>? components = null, IEnumerable<GameObject>? children = null)
-        : this()
     {
         Name = name;
         Children = new(this, children);
@@ -118,7 +119,11 @@ public class GameObject : IDisposable
 
         if (parent != null)
             Parent = parent;
+
+        CreateRendererGameObject();
     }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     /// <summary>Deep copies the game object, meaning it will clone all value and reference types.</summary>
     /// <returns>A clone of the object.</returns>
@@ -204,18 +209,9 @@ public class GameObject : IDisposable
 
 
     /*********
-    ** Protected Methods
+    ** Private Methods
     *********/
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    
-    /// <summary>Constructs an instance.</summary>
-    protected GameObject() // required for serialiser
-    {
-        // technically, this should be ran in a [SerialiserCalled] method, however, because Components.MeshRenderer.set requires
-        // the RendererGameObject to be non null, it has be populated here. this will only be a problem if the RendererGameObject
-        // requires the members of this object to be filled, which isn't the case for the Vulkan renderer and hopefully not others
-        RendererGameObject = RendererManager.CurrentRenderer.CreateRendererGameObject(this);
-    }
-
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    /// <summary>Creates the renderer game object.</summary>
+    [OnDeserialised]
+    private void CreateRendererGameObject() => RendererGameObject = RendererManager.CurrentRenderer.CreateRendererGameObject(this);
 }

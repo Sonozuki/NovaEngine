@@ -28,9 +28,9 @@ internal static class BinaryReaderExtensions
     /// <returns>A 2-byte floating-point number with the low 14 bits representing fraction.</returns>
     internal static float Read2Dot14(this BinaryReader binaryReader) => binaryReader.ReadInt16BigEndian() / (float)(1 << 14);
 
-    /// <summary>Writes a collection of inlinable object buffers to the current stream and advances the position.</summary>
+    /// <summary>Reads a collection of inlinable objects from the current stream and advances the position.</summary>
     /// <param name="binaryReader">The binary reader to read from.</param>
-    /// <returns>The read inlinable object buffers.</returns>
+    /// <returns>The read inlinable objects.</returns>
     internal static List<object?> ReadInlinableObjects(this BinaryReader binaryReader)
     {
         var list = new List<object?>();
@@ -42,7 +42,7 @@ internal static class BinaryReaderExtensions
         return list;
     }
 
-    /// <summary>Writes a collection of non inlinable object ids to the current stream and advances the position.</summary>
+    /// <summary>Reads a collection of non inlinable object ids from the current stream and advances the position.</summary>
     /// <param name="binaryReader">The binary reader to read from.</param>
     /// <returns>The read non inlinable object ids.</returns>
     internal static List<uint> ReadNonInlinableObjects(this BinaryReader binaryReader)

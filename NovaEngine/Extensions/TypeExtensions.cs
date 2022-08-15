@@ -34,10 +34,10 @@ internal static class TypeExtensions
             return fieldInfos;
 
         fieldInfos = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
-            .Where(fieldInfo => (fieldInfo.IsPublic && !fieldInfo.HasCustomAttribute<NonSerialisableAttribute>()) // serialise public fields without a non serialisable
-                             || (!fieldInfo.IsPublic && fieldInfo.HasCustomAttribute<SerialisableAttribute>()))   // serialise non public fields with a serialisable attribute
+            .Where(fieldInfo => !fieldInfo.HasCustomAttribute<NonSerialisableAttribute>()
+                             && !(fieldInfo.IsStatic && fieldInfo.IsInitOnly)) // the serialiser isn't able to set the value of static initonly fields
             .ToArray();
-
+        
         CachedTypeFieldInfos[type] = fieldInfos;
         return fieldInfos;
     }
