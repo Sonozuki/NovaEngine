@@ -54,6 +54,9 @@ public class TextRenderer : MeshRenderer
         GenerateMesh();
     }
 
+    /// <inheritdoc/>
+    public override void Dispose() => Font.Dispose();
+
 
     /*********
     ** Private Methods

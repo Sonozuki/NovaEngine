@@ -3,7 +3,7 @@
 namespace NovaEngine.Core;
 
 /// <summary>Represents a font.</summary>
-public class Font
+public class Font : IDisposable
 {
     /*********
     ** Accessors
@@ -32,4 +32,7 @@ public class Font
         Atlas = atlas;
         Glyphs = glyphs.ToList();
     }
+
+    /// <inheritdoc/>
+    public void Dispose() => Atlas.Dispose();
 }
