@@ -148,7 +148,7 @@ public sealed class Camera : ComponentBase
 
             uiGameObjects.AddRange(uiScene.RootGameObjects
                 .SelectMany(gameObject => gameObject.GetAllGameObjects(false))
-                .Where(gameObject => gameObject.Components.GetRange<MeshRenderer>().Any())
+                .Where(gameObject => gameObject.Components.GetRange<TextRenderer>().Any())
                 .Select(gameObject => gameObject.RendererGameObject));
         }
 

@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Components;
 
-/// <summary>Represents a component used for rendering a mesh.</summary>
-public class MeshRenderer : ComponentBase
+/// <summary>Represents a component used for rendering a mesh with a PBR material.</summary>
+public class MeshRenderer : MeshRenderingComponentBase
 {
     /*********
     ** Fields
@@ -13,14 +13,14 @@ public class MeshRenderer : ComponentBase
     /*********
     ** Accessors
     *********/
-    /// <summary>The mesh to render.</summary>
-    public Mesh? Mesh
+    /// <inheritdoc/>
+    public override Mesh Mesh
     {
         get => _Mesh;
         set
         {
-            _Mesh = value ?? Meshes.Empty;
-            UpdateMesh();
+            _Mesh = value;
+            this.UpdateMesh();
         }
     }
 
@@ -31,23 +31,16 @@ public class MeshRenderer : ComponentBase
     /*********
     ** Public Methods
     *********/
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
     /// <summary>Constructs an instance.</summary>
     /// <param name="mesh">The mesh to render.</param>
     /// <param name="material">The material to use when rendering the mesh.</param>
     public MeshRenderer(Mesh? mesh, Material? material = null)
     {
-        _Mesh = mesh ?? Meshes.Empty;
+        Mesh = mesh ?? Meshes.Empty;
         Material = material ?? Material.Default;
     }
 
-    /// <summary>Notifies the renderer that the mesh has been changed while the <see cref="Mesh"/> reference hasn't (i.e. vertex data was changed directly such as <c>Mesh.VertexData[0].Position = new(0, 1, 2);</c></summary>
-    public void UpdateMesh() => this.GameObject?.RendererGameObject.UpdateMesh(_Mesh);
-
-
-    /*********
-    ** Protected Methods
-    *********/
-    /// <summary>Invoked once the mesh renderer has been deserialised, used to update the mesh on the renderer game object.</summary>
-    [OnDeserialised]
-    protected void OnDeserialised() => UpdateMesh();
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

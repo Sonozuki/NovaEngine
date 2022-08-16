@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Components;
 
 /// <summary>Represents a component used for rendering text.</summary>
-public class TextRenderer : MeshRenderer
+public class TextRenderer : MeshRenderingComponentBase
 {
     /*********
     ** Fields
@@ -10,7 +10,7 @@ public class TextRenderer : MeshRenderer
     private string _Text = "";
 
     /// <summary>The font to use to render the text.</summary>
-    private Font _Font;
+    private readonly SerialiserLoadable<Font> _Font;
 
 
     /*********
@@ -30,29 +30,37 @@ public class TextRenderer : MeshRenderer
     /// <summary>The font to use to render the text.</summary>
     public Font Font
     {
-        get => _Font;
+        get => _Font.Value;
         set
         {
-            _Font = value;
+            _Font.Value = value;
             GenerateMesh();
         }
     }
+
+    /// <summary>The mesh of the text.</summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [NonSerialisable]
+    public override Mesh Mesh { get; set; }
 
 
     /*********
     ** Public Methods
     *********/
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
     /// <summary>Constructs an instance.</summary>
     /// <param name="text">The text to render.</param>
-    /// <param name="font">The font to use to render the text.</param>
-    public TextRenderer(string text, Font font)
-        : base(null, null)
+    /// <param name="fontPath">The path to the font to use to render the text.</param>
+    public TextRenderer(string text, string fontPath)
     {
         _Text = text;
-        _Font = font;
+        _Font = new(fontPath);
 
         GenerateMesh();
     }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     /// <inheritdoc/>
     public override void Dispose() => Font.Dispose();
@@ -62,6 +70,7 @@ public class TextRenderer : MeshRenderer
     ** Private Methods
     *********/
     /// <summary>Generates the mesh for <see cref="Text"/>.</summary>
+    [OnDeserialised(SerialiserCallbackPriority.High)]
     private void GenerateMesh()
     {
         // check there is text to render.
