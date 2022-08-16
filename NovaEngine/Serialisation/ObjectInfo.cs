@@ -76,17 +76,6 @@ internal class ObjectInfo
             return;
         HaveReferencesBeenLinked = true;
 
-        // invoke OnDeserialising methods
-        foreach (var methodInfo in TypeInfo.SerialiserCallbacks.OnDeserialisingMethods)
-            try
-            {
-                methodInfo.Invoke(UnderlyingObject, null);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError($"OnDeserialising callback crashed. Technical details:\n{ex}");
-            }
-
         // link references of fields then collection elements
         foreach (var field in NonInlinableFields)
         {
@@ -170,6 +159,17 @@ internal class ObjectInfo
         }
         else
             underlyingObject = RuntimeHelpers.GetUninitializedObject(type);
+
+        // invoke OnDeserialising methods
+        foreach (var methodInfo in typeInfo.SerialiserCallbacks.OnDeserialisingMethods)
+            try
+            {
+                methodInfo.Invoke(underlyingObject, null);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"OnDeserialising callback crashed. Technical details:\n{ex}");
+            }
 
         var objectInfo = new ObjectInfo(binaryReader.ReadUInt32(), underlyingObject, typeInfo);
 

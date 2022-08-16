@@ -72,10 +72,10 @@ internal static class TypeExtensions
 
         var methodInfos = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
 
-        var onSerialisingMethods = methodInfos.Where(methodInfo => methodInfo.HasCustomAttribute<OnSerialisingAttribute>()).ToArray();
-        var onSerialisedMethods = methodInfos.Where(methodInfo => methodInfo.HasCustomAttribute<OnSerialisedAttribute>()).ToArray();
-        var onDeserialisingMethods = methodInfos.Where(methodInfo => methodInfo.HasCustomAttribute<OnDeserialisingAttribute>()).ToArray();
-        var onDeserialisedMethods = methodInfos.Where(methodInfo => methodInfo.HasCustomAttribute<OnDeserialisedAttribute>()).ToArray();
+        var onSerialisingMethods = methodInfos.Where(methodInfo => methodInfo.HasCustomAttribute<OnSerialisingAttribute>()).OrderBy(methodInfo => methodInfo.GetCustomAttribute<OnSerialisingAttribute>()!.Priority).ToArray();
+        var onSerialisedMethods = methodInfos.Where(methodInfo => methodInfo.HasCustomAttribute<OnSerialisedAttribute>()).OrderBy(methodInfo => methodInfo.GetCustomAttribute<OnSerialisedAttribute>()!.Priority).ToArray();
+        var onDeserialisingMethods = methodInfos.Where(methodInfo => methodInfo.HasCustomAttribute<OnDeserialisingAttribute>()).OrderBy(methodInfo => methodInfo.GetCustomAttribute<OnDeserialisingAttribute>()!.Priority).ToArray();
+        var onDeserialisedMethods = methodInfos.Where(methodInfo => methodInfo.HasCustomAttribute<OnDeserialisedAttribute>()).ToArray(); // OnDeserialised doesn't get ordered here as they get all grouped together and ordered then, so priorities work across types
         callbacks = new(onSerialisingMethods, onSerialisedMethods, onDeserialisingMethods, onDeserialisedMethods);
 
         CachedTypeSerialiserCallbacks[type] = callbacks;

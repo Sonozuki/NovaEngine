@@ -93,16 +93,20 @@ public static class Serialiser
             allObjectInfos[0].LinkReferences(allObjectInfos); // this will link all references of child objects as required
 
             // invoke OnDeserialised methods
+            var onDeserialisedCallbacks = new List<(ObjectInfo ObjectInfo, MethodInfo MethodInfo)>();
             foreach (var objectInfo in allObjectInfos)
                 foreach (var methodInfo in objectInfo.TypeInfo.SerialiserCallbacks.OnDeserialisedMethods)
-                    try
-                    {
-                        methodInfo.Invoke(objectInfo.UnderlyingObject, null);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogError($"OnDeserialised callback crashed. Technical details:\n{ex}");
-                    }
+                    onDeserialisedCallbacks.Add((objectInfo, methodInfo));
+
+            foreach (var callback in onDeserialisedCallbacks.OrderBy(callback => callback.MethodInfo.GetCustomAttribute<OnDeserialisedAttribute>()!.Priority))
+                try
+                {
+                    callback.MethodInfo.Invoke(callback.ObjectInfo.UnderlyingObject, null);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError($"OnDeserialised callback crashed. Technical details:\n{ex}");
+                }
 
             return allObjectInfos[0].UnderlyingObject;
         }
