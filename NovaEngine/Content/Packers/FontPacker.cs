@@ -44,10 +44,10 @@ public class FontPacker : IContentPacker
             binaryWriter.Write((ushort)glyph.ScaledBounds.Height);
 
             // atlas rectangle
-            binaryWriter.Write((ushort)(glyph.ScaledBounds.X / atlasEdgeLength));
-            binaryWriter.Write((ushort)(glyph.ScaledBounds.Y / atlasEdgeLength));
-            binaryWriter.Write((ushort)(glyph.ScaledBounds.Width / atlasEdgeLength));
-            binaryWriter.Write((ushort)(glyph.ScaledBounds.Height / atlasEdgeLength));
+            binaryWriter.Write((float)(glyph.ScaledBounds.X / atlasEdgeLength));
+            binaryWriter.Write((float)(glyph.ScaledBounds.Y / atlasEdgeLength));
+            binaryWriter.Write((float)(glyph.ScaledBounds.Width / atlasEdgeLength));
+            binaryWriter.Write((float)(glyph.ScaledBounds.Height / atlasEdgeLength));
 
             // horizontal metrics
             binaryWriter.Write(glyph.HorizontalMetrics.AdvanceWidth);
