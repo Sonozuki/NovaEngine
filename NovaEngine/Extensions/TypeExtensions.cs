@@ -34,7 +34,8 @@ internal static class TypeExtensions
             return fieldInfos;
 
         fieldInfos = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
-            .Where(fieldInfo => !fieldInfo.HasCustomAttribute<NonSerialisableAttribute>()
+            .Where(fieldInfo => !fieldInfo.Name.EndsWith(">k__BackingField") // backing fields are serialised seperately, based on whether properties are serialisable, so exclude them here
+                             && !fieldInfo.HasCustomAttribute<NonSerialisableAttribute>()
                              && !(fieldInfo.IsStatic && fieldInfo.IsInitOnly)) // the serialiser isn't able to set the value of static initonly fields
             .ToArray();
         
