@@ -82,10 +82,11 @@ internal unsafe static class DescriptorSetLayouts
         };
         SolidColourDescriptorSetLayout = CreateDescriptorSetLayout(solidColourBindings);
 
-        // user interface
+        // mtsdf text
         var mtsdfTextBindings = new VkDescriptorSetLayoutBinding[]
         {
-            new() { Binding = 0, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Vertex } // mvp uniform
+            new() { Binding = 0, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Vertex }, // mvp uniform
+            new() { Binding = 1, DescriptorType = VkDescriptorType.CombinedImageSampler, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Fragment } // font atlas
         };
         MTSDFTextDescriptorSetLayout = CreateDescriptorSetLayout(mtsdfTextBindings);
     }

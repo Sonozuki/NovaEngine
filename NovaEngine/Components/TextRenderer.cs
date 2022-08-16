@@ -96,10 +96,10 @@ public class TextRenderer : MeshRenderingComponentBase
 
             // draw glyph quad
             // TODO: don't assume 48, derive from font
-            vertices.Add(new Vertex(new(xPosition, yPosition + 48 - glyph.Size.Y, 0)));
-            vertices.Add(new Vertex(new(xPosition + glyph.Size.X, yPosition + 48 - glyph.Size.Y, 0)));
-            vertices.Add(new Vertex(new(xPosition, yPosition + 48, 0)));
-            vertices.Add(new Vertex(new(xPosition + glyph.Size.X, yPosition + 48, 0)));
+            vertices.Add(new Vertex(new(xPosition, yPosition + 48 - glyph.Size.Y, 0), new(glyph.AtlasPosition.X, glyph.AtlasPosition.Y)));
+            vertices.Add(new Vertex(new(xPosition + glyph.Size.X, yPosition + 48 - glyph.Size.Y, 0), new(glyph.AtlasPosition.X + glyph.AtlasPosition.Width, glyph.AtlasPosition.Y)));
+            vertices.Add(new Vertex(new(xPosition, yPosition + 48, 0), new(glyph.AtlasPosition.X, glyph.AtlasPosition.Y + glyph.AtlasPosition.Height)));
+            vertices.Add(new Vertex(new(xPosition + glyph.Size.X, yPosition + 48, 0), new(glyph.AtlasPosition.X + glyph.AtlasPosition.Width, glyph.AtlasPosition.Y + glyph.AtlasPosition.Height)));
 
             var topLeftIndex = (uint)vertices.Count - 4;
             var topRightIndex = (uint)vertices.Count - 3;

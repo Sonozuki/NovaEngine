@@ -275,7 +275,7 @@ public unsafe class VulkanCamera : RendererCameraBase
 
                 // mtsdf text
                 VK.CommandNextSubpass(commandBuffer, VkSubpassContents.Inline);
-                DrawObjects(commandBuffer, Pipelines.MTSDFTextPipeline, Pipelines.MTSDFTextPipelineLayout, vulkanUiGameObjects, vulkanUiGameObject => vulkanUiGameObject.UIDescriptorSet.NativeDescriptorSet, false);
+                DrawObjects(commandBuffer, Pipelines.MTSDFTextPipeline, Pipelines.MTSDFTextPipelineLayout, vulkanUiGameObjects, vulkanUiGameObject => vulkanUiGameObject.MTSDFTextDescriptorSet.NativeDescriptorSet, false);
 
                 VK.CommandEndRenderPass(commandBuffer);
                 VK.EndCommandBuffer(commandBuffer);

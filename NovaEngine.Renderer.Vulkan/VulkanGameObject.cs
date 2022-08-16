@@ -36,8 +36,8 @@ public class VulkanGameObject : RendererGameObjectBase
     /// <summary>The pbr descriptor set.</summary>
     internal VulkanDescriptorSet PBRDescriptorSet { get; private set; }
 
-    /// <summary>The user interface descriptor set.</summary>
-    internal VulkanDescriptorSet UIDescriptorSet { get; private set; }
+    /// <summary>The MTSDF text descriptor set.</summary>
+    internal VulkanDescriptorSet MTSDFTextDescriptorSet { get; private set; }
 
 
     /*********
@@ -136,7 +136,7 @@ public class VulkanGameObject : RendererGameObjectBase
     {
         DescriptorPools.DepthPrepassDescriptorPool.DisposeDescriptorSet(DepthPrepassDescriptorSet);
         DescriptorPools.PBRDescriptorPool.DisposeDescriptorSet(PBRDescriptorSet);
-        DescriptorPools.MTSDFTextDescriptorPool.DisposeDescriptorSet(UIDescriptorSet);
+        DescriptorPools.MTSDFTextDescriptorPool.DisposeDescriptorSet(MTSDFTextDescriptorSet);
 
         MVPBuffer.Dispose();
         VertexBuffer?.Dispose();
@@ -157,6 +157,15 @@ public class VulkanGameObject : RendererGameObjectBase
         // create the descriptor sets for the object
         var bufferInfo = new VkDescriptorBufferInfo { Buffer = MVPBuffer.NativeBuffer, Offset = 0, Range = sizeof(MVPBuffer) };
 
+        // TODO: temp
+        VkDescriptorImageInfo? imageInfo = null;
+        var textRenderer = baseGameObject.Components.Get<TextRenderer>();
+        if (textRenderer != null)
+        {
+            var fontAtlas = (textRenderer.Font.Atlas.RendererTexture as VulkanTexture)!;
+            imageInfo = new() { ImageLayout = VkImageLayout.ShaderReadOnlyOptimal, ImageView = fontAtlas.NativeImageView, Sampler = fontAtlas.NativeSampler };
+        }
+
         DepthPrepassDescriptorSet = DescriptorPools.DepthPrepassDescriptorPool.GetDescriptorSet();
         DepthPrepassDescriptorSet
             .Bind(0, &bufferInfo, VkDescriptorType.UniformBuffer)
@@ -167,9 +176,18 @@ public class VulkanGameObject : RendererGameObjectBase
             .Bind(0, &bufferInfo, VkDescriptorType.UniformBuffer)
             .UpdateBindings();
 
-        UIDescriptorSet = DescriptorPools.MTSDFTextDescriptorPool.GetDescriptorSet();
-        UIDescriptorSet
-            .Bind(0, &bufferInfo, VkDescriptorType.UniformBuffer)
-            .UpdateBindings();
+        MTSDFTextDescriptorSet = DescriptorPools.MTSDFTextDescriptorPool.GetDescriptorSet();
+        MTSDFTextDescriptorSet.Bind(0, &bufferInfo, VkDescriptorType.UniformBuffer);
+
+        // TODO: temp
+        if (imageInfo != null)
+        {
+            var imageInfoCopy = imageInfo.Value;
+            MTSDFTextDescriptorSet
+                .Bind(1, &imageInfoCopy)
+                .UpdateBindings();
+        }
+        else
+            MTSDFTextDescriptorSet.UpdateBindings();
     }
 }
