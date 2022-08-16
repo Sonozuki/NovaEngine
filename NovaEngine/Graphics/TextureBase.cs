@@ -112,9 +112,9 @@ public abstract class TextureBase : IDisposable
 
 
     /*********
-    ** Private Methods
+    ** Protected Methods
     *********/
     /// <summary>Creates the renderer texture.</summary>
-    [OnDeserialised]
-    private void CreateRendererTexture() => RendererTexture = RendererManager.CurrentRenderer.CreateRendererTexture(this);
+    [OnDeserialised(SerialiserCallbackPriority.High)]
+    protected void CreateRendererTexture() => RendererTexture = RendererManager.CurrentRenderer.CreateRendererTexture(this);
 }
