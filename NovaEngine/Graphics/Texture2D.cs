@@ -10,7 +10,7 @@ public class Texture2D : TextureBase
     public uint Height => _Height;
 
     /// <inheritdoc/>
-    internal override TextureUsage Usage => TextureUsage.Colour;
+    internal override TextureUsage Usage => this.PixelType == TexturePixelType.Byte ? TextureUsage.Colour : TextureUsage.Colour32;
 
     /// <inheritdoc/>
     internal override TextureType Type => TextureType.Texture2D;
@@ -40,14 +40,15 @@ public class Texture2D : TextureBase
     /// <param name="height">The height of the texture.</param>
     /// <param name="automaticallyGenerateMipChain">Whether a mip chain will be generated for the texture and automatically regenerated when the texture is changed.</param>
     /// <param name="mipLodBias">The mip LOD (level of detail) bias of the texture.</param>
+    /// <param name="pixelType">The type of pixel the texture stores underlying data as.</param>
     /// <param name="sampleCount">The number of samples per pixel of the texture.</param>
     /// <param name="anisotropicFilteringEnabled">Whether the texture has anisotropic filtering enabled.</param>
     /// <param name="maxAnisotropicFilteringLevel">The max anisotropic filtering level of the texture.</param>
     /// <param name="wrapModeU">The texture wrap mode of the U axis.</param>
     /// <param name="wrapModeV">The texture wrap mode of the V axis.</param>
     /// <param name="filter">The filter mode of the texture.</param>
-    public Texture2D(uint width, uint height, bool automaticallyGenerateMipChain = true, float mipLodBias = 0, SampleCount sampleCount = SampleCount.Count1, bool anisotropicFilteringEnabled = true, float maxAnisotropicFilteringLevel = 16, TextureWrapMode wrapModeU = TextureWrapMode.Repeat, TextureWrapMode wrapModeV = TextureWrapMode.Repeat, TextureFilter filter = TextureFilter.Bilinear)
-        : base(width, height, 1, automaticallyGenerateMipChain, mipLodBias, 1, sampleCount, anisotropicFilteringEnabled, maxAnisotropicFilteringLevel, wrapModeU, wrapModeV, TextureWrapMode.Repeat, filter) { }
+    public Texture2D(uint width, uint height, bool automaticallyGenerateMipChain = true, float mipLodBias = 0, TexturePixelType pixelType = TexturePixelType.Byte, SampleCount sampleCount = SampleCount.Count1, bool anisotropicFilteringEnabled = true, float maxAnisotropicFilteringLevel = 16, TextureWrapMode wrapModeU = TextureWrapMode.Repeat, TextureWrapMode wrapModeV = TextureWrapMode.Repeat, TextureFilter filter = TextureFilter.Bilinear)
+        : base(width, height, 1, pixelType, automaticallyGenerateMipChain, mipLodBias, 1, sampleCount, anisotropicFilteringEnabled, maxAnisotropicFilteringLevel, wrapModeU, wrapModeV, TextureWrapMode.Repeat, filter) { }
 
     /// <summary>Sets pixel data for a specific one-dimensional location.</summary>
     /// <param name="pixels">The pixel data to set.</param>
@@ -55,10 +56,23 @@ public class Texture2D : TextureBase
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="pixels.Length"/> + offset goes out of range of the texture.</exception>
     public void SetPixels(Colour[] pixels, int offset = 0) => RendererTexture.SetPixels(pixels, offset);
 
+    /// <summary>Sets pixel data for a specific one-dimensional location.</summary>
+    /// <param name="pixels">The pixel data to set.</param>
+    /// <param name="offset">The pixel offset for setting pixel data.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="pixels.Length"/> + offset goes out of range of the texture.</exception>
+    public void SetPixels(Colour32[] pixels, int offset = 0) => RendererTexture.SetPixels(pixels, offset);
+
     /// <summary>Sets pixel data for a specific two-dimensional location.</summary>
     /// <param name="pixels">The pixel data to set.</param>
     /// <param name="xOffset">The X offset of the pixel data (from left of the texture).</param>
     /// <param name="yOffset">The Y offset of the pixel data (from top of the texture).</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="pixels.GetLength(n)"/> + (n)Offset goes out of range of the axis length.</exception>
     public void SetPixels(Colour[,] pixels, int xOffset = 0, int yOffset = 0) => RendererTexture.SetPixels(pixels, xOffset, yOffset);
+
+    /// <summary>Sets pixel data for a specific two-dimensional location.</summary>
+    /// <param name="pixels">The pixel data to set.</param>
+    /// <param name="xOffset">The X offset of the pixel data (from left of the texture).</param>
+    /// <param name="yOffset">The Y offset of the pixel data (from top of the texture).</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="pixels.GetLength(n)"/> + (n)Offset goes out of range of the axis length.</exception>
+    public void SetPixels(Colour32[,] pixels, int xOffset = 0, int yOffset = 0) => RendererTexture.SetPixels(pixels, xOffset, yOffset);
 }

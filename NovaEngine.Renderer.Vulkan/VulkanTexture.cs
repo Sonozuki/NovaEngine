@@ -54,6 +54,7 @@ public unsafe class VulkanTexture : RendererTextureBase
         Format = this.Usage switch
         {
             TextureUsage.Colour => VkFormat.B8G8R8A8UNorm,
+            TextureUsage.Colour32 => VkFormat.R32G32B32A32SFloat,
             TextureUsage.Depth => VulkanSwapchain.GetDepthFormat(),
             _ => throw new InvalidOperationException($"{nameof(this.Usage)} isn't valid.")
         };
@@ -62,6 +63,7 @@ public unsafe class VulkanTexture : RendererTextureBase
         (usage, AspectFlags) = this.Usage switch
         {
             TextureUsage.Colour => (VkImageUsageFlags.ColorAttachment, VkImageAspectFlags.Color),
+            TextureUsage.Colour32 => (VkImageUsageFlags.ColorAttachment, VkImageAspectFlags.Color),
             TextureUsage.Depth => (VkImageUsageFlags.DepthStencilAttachment, VkImageAspectFlags.Depth),
             _ => throw new InvalidOperationException($"{nameof(this.Usage)} isn't valid.")
         };
@@ -190,6 +192,34 @@ public unsafe class VulkanTexture : RendererTextureBase
     }
 
     /// <inheritdoc/>
+    public override void SetPixels(Colour32[] pixels, int offset = 0)
+    {
+        var bufferSize = this.Width * this.Height * sizeof(Colour32);
+
+        // transition layout to TransferSource
+        TransitionImageLayout(VkImageLayout.Undefined, VkImageLayout.TransferSourceOptimal, VkPipelineStageFlags.Transfer, VkPipelineStageFlags.Transfer);
+
+        // create a staging buffer and copy the texture to it
+        using var stagingBuffer = new VulkanBuffer(bufferSize, VkBufferUsageFlags.TransferSource | VkBufferUsageFlags.TransferDestination, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
+        stagingBuffer.CopyFrom(this);
+
+        // get the pixel data from the staging buffer
+        var pixelBuffer = new Colour32[this.Width * this.Height];
+        var pixelBufferSpan = pixelBuffer.AsSpan();
+        stagingBuffer.CopyTo(pixelBufferSpan);
+
+        // apply pixel changes
+        Array.Copy(pixels, 0, pixelBuffer, offset, pixels.Length);
+
+        stagingBuffer.CopyFrom(pixelBufferSpan);
+
+        // copy the staging buffer to the texture
+        TransitionImageLayout(VkImageLayout.TransferSourceOptimal, VkImageLayout.TransferDestinationOptimal, VkPipelineStageFlags.Transfer, VkPipelineStageFlags.Transfer);
+        stagingBuffer.CopyTo(this);
+        GenerateMipChain();
+    }
+
+    /// <inheritdoc/>
     public override void SetPixels(Colour[,] pixels, int xOffset = 0, int yOffset = 0)
     {
         var bufferSize = this.Width * this.Height * sizeof(Colour);
@@ -229,7 +259,19 @@ public unsafe class VulkanTexture : RendererTextureBase
     }
 
     /// <inheritdoc/>
+    public override void SetPixels(Colour32[,] pixels, int xOffset = 0, int yOffset = 0)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc/>
     public override void SetPixels(Colour[,,] pixels, int xOffset = 0, int yOffset = 0, int zOffset = 0)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc/>
+    public override void SetPixels(Colour32[,,] pixels, int xOffset = 0, int yOffset = 0, int zOffset = 0)
     {
         throw new NotImplementedException();
     }

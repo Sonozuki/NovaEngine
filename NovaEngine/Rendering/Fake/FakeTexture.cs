@@ -18,10 +18,19 @@ internal class FakeTexture : RendererTextureBase
     
     /// <inheritdoc/>
     public override void SetPixels(Colour[] pixels, int offset = 0) { }
-    
+
+    /// <inheritdoc/>
+    public override void SetPixels(Colour32[] pixels, int offset = 0) { }
+
     /// <inheritdoc/>
     public override void SetPixels(Colour[,] pixels, int xOffset = 0, int yOffset = 0) { }
 
     /// <inheritdoc/>
+    public override void SetPixels(Colour32[,] pixels, int xOffset = 0, int yOffset = 0) { }
+
+    /// <inheritdoc/>
     public override void SetPixels(Colour[,,] pixels, int xOffset = 0, int yOffset = 0, int zOffset = 0) { }
+
+    /// <inheritdoc/>
+    public override void SetPixels(Colour32[,,] pixels, int xOffset = 0, int yOffset = 0, int zOffset = 0) { }
 }

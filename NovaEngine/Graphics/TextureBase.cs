@@ -31,6 +31,9 @@ public abstract class TextureBase : IDisposable
     /// <summary>The width of the texture.</summary>
     public uint Width { get; }
 
+    /// <summary>The type of pixel the texture stores underlying data as.</summary>
+    public TexturePixelType PixelType { get; }
+
     /// <summary>The number of mip levels the texture has.</summary>
     public uint MipLevels => _MipLevels;
 
@@ -76,6 +79,7 @@ public abstract class TextureBase : IDisposable
     /// <param name="width">The width of the texture.</param>
     /// <param name="height">The height of the texture.</param>
     /// <param name="depth">The depth of the texture.</param>
+    /// <param name="pixelType">The type of pixel the texture stores underlying data as.</param>
     /// <param name="automaticallyGenerateMipChain">Whether a mip chain will be generated for the texture and automatically regenerated when the texture is changed.</param>
     /// <param name="mipLodBias">The mip LOD (level of detail) bias of the texture.</param>
     /// <param name="layerCount">The number of layers the texture has.</param>
@@ -86,11 +90,12 @@ public abstract class TextureBase : IDisposable
     /// <param name="wrapModeV">The texture wrap mode of the V axis.</param>
     /// <param name="wrapModeW">The texture wrap mode of the W axis.</param>
     /// <param name="filter">The filter mode of the texture.</param>
-    public TextureBase(uint width, uint height, uint depth, bool automaticallyGenerateMipChain, float mipLodBias, uint layerCount, SampleCount sampleCount, bool anisotropicFilteringEnabled, float maxAnisotropicFilteringLevel, TextureWrapMode wrapModeU, TextureWrapMode wrapModeV, TextureWrapMode wrapModeW, TextureFilter filter)
+    public TextureBase(uint width, uint height, uint depth, TexturePixelType pixelType, bool automaticallyGenerateMipChain, float mipLodBias, uint layerCount, SampleCount sampleCount, bool anisotropicFilteringEnabled, float maxAnisotropicFilteringLevel, TextureWrapMode wrapModeU, TextureWrapMode wrapModeV, TextureWrapMode wrapModeW, TextureFilter filter)
     {
         Width = width;
         _Height = height;
         _Depth = depth;
+        PixelType = pixelType;
         MipLodBias = mipLodBias;
         _LayerCount = layerCount;
         SampleCount = (SampleCount)Math.Clamp((int)sampleCount, 0, (int)RenderingSettings.Instance.MaxSampleCount);
