@@ -38,6 +38,24 @@ public class TextRenderer : MeshRenderingComponentBase
         }
     }
 
+    /// <summary>The max height of the text, in pixels.</summary>
+    public float FontSize { get; set; }
+
+    /// <summary>How the fill (inside) of the text should be rendered.</summary>
+    public MTSDFFillType FillType { get; set; }
+
+    /// <summary>The colour of the fill (inside).</summary>
+    public Colour FillColour { get; set; }
+
+    /// <summary>The width (in pixels) of the border.</summary>
+    public float BorderWidth { get; set; }
+
+    /// <summary>How the border of the text should be rendered.</summary>
+    public MTSDFBorderType BorderType { get; set; }
+
+    /// <summary>The colour of the border.</summary>
+    public Colour BorderColour { get; set; }
+
     /// <summary>The mesh of the text.</summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     [NonSerialisable]

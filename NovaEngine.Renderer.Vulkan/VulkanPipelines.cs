@@ -174,15 +174,20 @@ internal unsafe class VulkanPipelines : IDisposable
             SolidColourLinePipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, solidColourShaderStages, SolidColourLinePipelineLayout, VkPrimitiveTopology.LineList, RenderingSettings.Instance.SampleCount, Camera.FinalRenderingRenderPass);
         }
 
-        // ui
+        // mtsdf
         {
             // layout
-            MTSDFTextPipelineLayout = CreatePipelineLayout(null, DescriptorSetLayouts.MTSDFTextDescriptorSetLayout);
+            var mtsdfPushConstantRanges = new VkPushConstantRange[]
+            {
+                new() { StageFlags = VkShaderStageFlags.Fragment, Offset = 0, Size = (uint)sizeof(MTSDFParameters) }
+            };
+
+            MTSDFTextPipelineLayout = CreatePipelineLayout(mtsdfPushConstantRanges, DescriptorSetLayouts.MTSDFTextDescriptorSetLayout);
 
             // pipeline
-            var uiColourShaderStages = new[] { ShaderStages.MTSDFTextVertexShader, ShaderStages.MTSDFTextFragmentShader };
+            var mtsdfColourShaderStages = new[] { ShaderStages.MTSDFTextVertexShader, ShaderStages.MTSDFTextFragmentShader };
 
-            MTSDFTextPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, uiColourShaderStages, MTSDFTextPipelineLayout, VkPrimitiveTopology.TriangleList, RenderingSettings.Instance.SampleCount, Camera.FinalRenderingRenderPass, 2);
+            MTSDFTextPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, mtsdfColourShaderStages, MTSDFTextPipelineLayout, VkPrimitiveTopology.TriangleList, RenderingSettings.Instance.SampleCount, Camera.FinalRenderingRenderPass, 2);
         }
     }
 

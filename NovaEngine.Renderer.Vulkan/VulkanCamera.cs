@@ -230,7 +230,7 @@ public unsafe class VulkanCamera : RendererCameraBase
 
             VK.CommandBeginRenderPass(commandBuffer, ref renderPassBeginInfo, VkSubpassContents.Inline);
 
-            DrawObjects(commandBuffer, Pipelines.DepthPrepassPipeline, Pipelines.DepthPrepassPipelineLayout, triangleVulkanGameObjects, vulkanGameObject => vulkanGameObject.DepthPrepassDescriptorSet.NativeDescriptorSet, false);
+            DrawObjects(commandBuffer, Pipelines.DepthPrepassPipeline, Pipelines.DepthPrepassPipelineLayout, triangleVulkanGameObjects, vulkanGameObject => vulkanGameObject.DepthPrepassDescriptorSet.NativeDescriptorSet, false, false);
 
             VK.CommandEndRenderPass(commandBuffer);
             GraphicsCommandPool.SubmitCommandBuffer(true, commandBuffer, signalSemaphores: new[] { DepthPrepassFinishedSemaphores[CurrentFrameIndex] });
@@ -265,8 +265,8 @@ public unsafe class VulkanCamera : RendererCameraBase
                 VK.CommandBeginRenderPass(commandBuffer, ref renderPassBeginInfo, VkSubpassContents.Inline);
 
                 // opaque
-                DrawObjects(commandBuffer, Pipelines.PBRTrianglePipeline, Pipelines.PBRTrianglePipelineLayout, triangleVulkanGameObjects, vulkanGameObject => vulkanGameObject.PBRDescriptorSet.NativeDescriptorSet, true);
-                DrawObjects(commandBuffer, Pipelines.PBRLinePipeline, Pipelines.PBRLinePipelineLayout, lineVulkanGameObjects, vulkanGameObject => vulkanGameObject.PBRDescriptorSet.NativeDescriptorSet, true);
+                DrawObjects(commandBuffer, Pipelines.PBRTrianglePipeline, Pipelines.PBRTrianglePipelineLayout, triangleVulkanGameObjects, vulkanGameObject => vulkanGameObject.PBRDescriptorSet.NativeDescriptorSet, true, false);
+                DrawObjects(commandBuffer, Pipelines.PBRLinePipeline, Pipelines.PBRLinePipelineLayout, lineVulkanGameObjects, vulkanGameObject => vulkanGameObject.PBRDescriptorSet.NativeDescriptorSet, true, false);
                 // TODO: solid colour
 
                 // transparent
@@ -275,7 +275,7 @@ public unsafe class VulkanCamera : RendererCameraBase
 
                 // mtsdf text
                 VK.CommandNextSubpass(commandBuffer, VkSubpassContents.Inline);
-                DrawObjects(commandBuffer, Pipelines.MTSDFTextPipeline, Pipelines.MTSDFTextPipelineLayout, vulkanUiGameObjects, vulkanUiGameObject => vulkanUiGameObject.MTSDFTextDescriptorSet.NativeDescriptorSet, false);
+                DrawObjects(commandBuffer, Pipelines.MTSDFTextPipeline, Pipelines.MTSDFTextPipelineLayout, vulkanUiGameObjects, vulkanUiGameObject => vulkanUiGameObject.MTSDFTextDescriptorSet.NativeDescriptorSet, false, true);
 
                 VK.CommandEndRenderPass(commandBuffer);
                 VK.EndCommandBuffer(commandBuffer);
@@ -313,15 +313,17 @@ public unsafe class VulkanCamera : RendererCameraBase
         CurrentFrameIndex = (CurrentFrameIndex + 1) % ConcurrentFrames;
 
         // Helper function that records draw commands for a collection of game objects
-        static void DrawObjects(VkCommandBuffer commandBuffer, VkPipeline pipeline, VkPipelineLayout pipelineLayout, IEnumerable<VulkanGameObject> gameObjects, Func<VulkanGameObject, VkDescriptorSet> retrieveDescriptorSet, bool addPBRPushConstants)
+        static void DrawObjects(VkCommandBuffer commandBuffer, VkPipeline pipeline, VkPipelineLayout pipelineLayout, IEnumerable<VulkanGameObject> gameObjects, Func<VulkanGameObject, VkDescriptorSet> retrieveDescriptorSet, bool addPBRPushConstants, bool addMTSDFPushConstants)
         {
             VK.CommandBindPipeline(commandBuffer, VkPipelineBindPoint.Graphics, pipeline);
 
             foreach (var gameObject in gameObjects)
             {
-                // TODO: temp, this should also support non PBR pipelines
+                // TODO: temp, this should not be hard coded at all
                 if (addPBRPushConstants)
                     SetPBRPushConstants(commandBuffer, pipelineLayout, gameObject);
+                if (addMTSDFPushConstants)
+                    SetMTSDFPushConstants(commandBuffer, pipelineLayout, gameObject);
 
                 var vertexBuffer = gameObject.VertexBuffer!.NativeBuffer;
                 var offsets = (VkDeviceSize)0;
@@ -340,6 +342,15 @@ public unsafe class VulkanCamera : RendererCameraBase
             var vulkanMaterial = new VulkanMaterial(new(material.Tint.R / 255f, material.Tint.G / 255f, material.Tint.B / 255f), material.Roughness, material.Metallicness);
 
             VK.CommandPushConstants(commandBuffer, pipelineLayout, VkShaderStageFlags.Fragment, 0, (uint)sizeof(VulkanMaterial), &vulkanMaterial);
+        }
+
+        // Helper function that records the command for MTSDF push constants
+        static void SetMTSDFPushConstants(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, VulkanGameObject gameObject)
+        {
+            var textRenderer = gameObject.BaseGameObject.Components.Get<TextRenderer>()!;
+            var mtsdfParams = new MTSDFParameters(textRenderer.FontSize / textRenderer.Font.MaxGlyphHeight * textRenderer.Font.PixelRange, textRenderer.FillType, textRenderer.BorderType, textRenderer.BorderWidth, textRenderer.FillColour, textRenderer.BorderColour);
+        
+            VK.CommandPushConstants(commandBuffer, pipelineLayout, VkShaderStageFlags.Fragment, 0, (uint)sizeof(MTSDFParameters), &mtsdfParams);
         }
     }
 
