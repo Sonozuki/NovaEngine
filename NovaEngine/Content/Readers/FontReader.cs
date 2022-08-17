@@ -10,12 +10,14 @@ public class FontReader : IContentReader
     ** Public Methods
     *********/
     /// <inheritdoc/>
-    public object? Read(Stream stream, Type outputType)
+    public unsafe object? Read(Stream stream, Type outputType)
     {
         using var binaryReader = new BinaryReader(stream);
 
-        // name
+        // metadata
         var name = binaryReader.ReadString();
+        var maxGlyphHeight = binaryReader.ReadSingle();
+        var pixelRange = binaryReader.ReadSingle();
 
         // atlas
         var atlasEdgeLength = binaryReader.ReadUInt32();
@@ -38,6 +40,6 @@ public class FontReader : IContentReader
             glyphs.Add(new(character, size, atlasPosition, horizontalMetrics));
         }
 
-        return new Font(name, atlas, glyphs);
+        return new Font(name, maxGlyphHeight, pixelRange, atlas, glyphs);
     }
 }

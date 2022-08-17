@@ -18,8 +18,10 @@ public class FontPacker : IContentPacker
         var memoryStream = new MemoryStream();
         using var binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true);
 
-        // name
+        // meta data
         binaryWriter.Write(ttf.Name);
+        binaryWriter.Write(TrueTypeFont.MaxGlyphHeight);
+        binaryWriter.Write(AtlasPacker.PixelRange);
 
         // TODO: add support for multiple texture atlases
         // texture atlas edge length

@@ -8,6 +8,13 @@ namespace NovaEngine.Content.Models.Font;
 internal class TrueTypeFont : IDisposable
 {
     /*********
+    ** Constants
+    *********/
+    /// <summary>The max height of the glyphs after being scaled, in pixels.</summary>
+    public const float MaxGlyphHeight = 48;
+
+
+    /*********
     ** Fields
     *********/
     /// <summary>The reader for the font file.</summary>
@@ -309,7 +316,7 @@ internal class TrueTypeFont : IDisposable
         }
 
         // scale glyphs
-        var scale = maxGlyphHeight / 48f;
+        var scale = maxGlyphHeight / MaxGlyphHeight;
         foreach (var glyph in Glyphs)
         {
             glyph.ScaledBounds.Width = MathF.Ceiling(glyph.UnscaledBounds.Width / scale);
