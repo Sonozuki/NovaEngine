@@ -106,12 +106,12 @@ internal static class MTSDF
     /// <param name="glyph">The glyph to calculate the texture of.</param>
     /// <param name="atlas">The atlas to draw the glyph on.</param>
     /// <param name="range">The range (in pixels) of the signed distance around the glyphs.</param>
-    public static void GenerateMTSDF(Glyph glyph, Colour[,] atlas, float range)
+    public static void GenerateMTSDF(Glyph glyph, Colour32[,] atlas, float range)
     {
         // calculate glyph transformation
         var frame = new Vector2(glyph.ScaledBounds.Width - range, glyph.ScaledBounds.Height - range);
         var scale = frame.Y / glyph.UnscaledBounds.Height;
-        var offset = new Vector2(MathF.Round(glyph.UnscaledBounds.X * scale), MathF.Round(glyph.UnscaledBounds.Y * scale));
+        var offset = new Vector2(MathF.Floor(glyph.UnscaledBounds.X * scale), MathF.Ceiling(glyph.UnscaledBounds.Y * scale));
         range /= scale;
 
         // create texture
@@ -160,7 +160,7 @@ internal static class MTSDF
                 if (b.NearEdge != null)
                     b.NearEdge.DistanceToPseudoDistance(b.MinDistance, point, b.NearParam);
 
-                atlas[(int)glyph.ScaledBounds.Height - 1 - y + (int)glyph.ScaledBounds.Y, x + (int)glyph.ScaledBounds.X] = new Colour(
+                atlas[(int)glyph.ScaledBounds.Height - 1 - y + (int)glyph.ScaledBounds.Y, x + (int)glyph.ScaledBounds.X] = new Colour32(
                     r.MinDistance.Distance / range + .5f,
                     g.MinDistance.Distance / range + .5f,
                     b.MinDistance.Distance / range + .5f,

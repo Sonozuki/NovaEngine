@@ -19,11 +19,11 @@ internal static class AtlasPacker
     /// <summary>Creates the atlas for a font.</summary>
     /// <param name="font">The font to create the atlas for.</param>
     /// <returns>The atlas for the font.</returns>
-    public static Colour[,] CreateAtlas(TrueTypeFont font)
+    public static Colour32[,] CreateAtlas(TrueTypeFont font)
     {
         Pack(font.Glyphs, out var atlasEdgeLength);
 
-        var atlas = new Colour[atlasEdgeLength, atlasEdgeLength];
+        var atlas = new Colour32[atlasEdgeLength, atlasEdgeLength];
         foreach (var glyph in font.Glyphs)
             MTSDF.GenerateMTSDF(glyph, atlas, Range);
 

@@ -27,8 +27,8 @@ public class FontPacker : IContentPacker
         binaryWriter.Write(atlasEdgeLength);
 
         // atlas pixel data
-        var pixelsBuffer = new byte[atlasEdgeLength * atlasEdgeLength * 4];
-        fixed (Colour* atlasPointer = atlas)
+        var pixelsBuffer = new byte[atlasEdgeLength * atlasEdgeLength * sizeof(Colour32)];
+        fixed (Colour32* atlasPointer = atlas)
         fixed (byte* pixelsBufferPointer = pixelsBuffer)
             Buffer.MemoryCopy(atlasPointer, pixelsBufferPointer, pixelsBuffer.Length, pixelsBuffer.Length);
         binaryWriter.Write(pixelsBuffer);
