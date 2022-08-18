@@ -11,7 +11,7 @@ internal class TrueTypeFont : IDisposable
     ** Constants
     *********/
     /// <summary>The max height of the glyphs after being scaled, in pixels.</summary>
-    public const float MaxGlyphHeight = 48;
+    public const float MaxGlyphHeight = 64;
 
 
     /*********

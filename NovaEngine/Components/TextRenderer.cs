@@ -108,11 +108,11 @@ public class TextRenderer : MeshRenderingComponentBase
         var vertices = new List<Vertex>();
         var indices = new List<uint>();
 
-        var xPosition = 0;
-        var yPosition = 0;
+        var xPosition = 0f;
+        var yPosition = 0f;
 
-        var width = 0; // record the width and height (so the vertex positions can be adjusted to centre the text)
-        var height = 0;
+        var width = 0f; // record the width and height (so the vertex positions can be adjusted to centre the text)
+        var height = 0f;
         foreach (var character in Text)
         {
             var glyph = Font.Glyphs.FirstOrDefault(g => g.Character == character);
@@ -120,11 +120,13 @@ public class TextRenderer : MeshRenderingComponentBase
                 glyph = Font.Glyphs[0];
 
             // draw glyph quad
-            // TODO: don't assume 48, derive from font
-            vertices.Add(new Vertex(new(xPosition, yPosition + 48 - glyph.Size.Y, 0), new(glyph.AtlasPosition.X, glyph.AtlasPosition.Y)));
-            vertices.Add(new Vertex(new(xPosition + glyph.Size.X, yPosition + 48 - glyph.Size.Y, 0), new(glyph.AtlasPosition.X + glyph.AtlasPosition.Width, glyph.AtlasPosition.Y)));
-            vertices.Add(new Vertex(new(xPosition, yPosition + 48, 0), new(glyph.AtlasPosition.X, glyph.AtlasPosition.Y + glyph.AtlasPosition.Height)));
-            vertices.Add(new Vertex(new(xPosition + glyph.Size.X, yPosition + 48, 0), new(glyph.AtlasPosition.X + glyph.AtlasPosition.Width, glyph.AtlasPosition.Y + glyph.AtlasPosition.Height)));
+            var glyphScale = FontSize / Font.MaxGlyphHeight;
+            var scaledGlyphSize = glyph.Size.ToVector2() * glyphScale;
+
+            vertices.Add(new Vertex(new(xPosition                    , yPosition + FontSize - scaledGlyphSize.Y, 0), new(glyph.AtlasPosition.X                            , glyph.AtlasPosition.Y                             )));
+            vertices.Add(new Vertex(new(xPosition + scaledGlyphSize.X, yPosition + FontSize - scaledGlyphSize.Y, 0), new(glyph.AtlasPosition.X + glyph.AtlasPosition.Width, glyph.AtlasPosition.Y                             )));
+            vertices.Add(new Vertex(new(xPosition                    , yPosition + FontSize                    , 0), new(glyph.AtlasPosition.X                            , glyph.AtlasPosition.Y + glyph.AtlasPosition.Height)));
+            vertices.Add(new Vertex(new(xPosition + scaledGlyphSize.X, yPosition + FontSize                    , 0), new(glyph.AtlasPosition.X + glyph.AtlasPosition.Width, glyph.AtlasPosition.Y + glyph.AtlasPosition.Height)));
 
             var topLeftIndex = (uint)vertices.Count - 4;
             var topRightIndex = (uint)vertices.Count - 3;
@@ -139,11 +141,12 @@ public class TextRenderer : MeshRenderingComponentBase
             indices.Add(topRightIndex);
             indices.Add(bottomRightIndex);
 
-            xPosition += glyph.HorizontalMetrics.AdvanceWidth;
+            // TODO: consider multiple lines
+            xPosition += glyph.HorizontalMetrics.AdvanceWidth * glyphScale;
 
             width = xPosition;
-            if (glyph.Size.Y > height)
-                height = (int)glyph.Size.Y; // TODO: consider multiple lines
+            if (scaledGlyphSize.Y > height)
+                height = scaledGlyphSize.Y;
         }
 
         // adjust the vertex positions to centre the text mesh

@@ -106,17 +106,17 @@ internal static class MTSDF
     /// <param name="glyph">The glyph to calculate the texture of.</param>
     /// <param name="atlas">The atlas to draw the glyph on.</param>
     /// <param name="pixelRange">The range, in pixels, of the signed distance around the glyphs.</param>
-    public static void GenerateMTSDF(Glyph glyph, Colour32[,] atlas, float pixelRange)
+    public static void GenerateMTSDF(Glyph glyph, Colour32[,] atlas, int pixelRange)
     {
         // calculate glyph transformation
         var frame = new Vector2(glyph.ScaledBounds.Width - pixelRange, glyph.ScaledBounds.Height - pixelRange);
         var scale = frame.Y / glyph.UnscaledBounds.Height;
         var offset = new Vector2(MathF.Floor(glyph.UnscaledBounds.X * scale), MathF.Ceiling(glyph.UnscaledBounds.Y * scale));
-        pixelRange /= scale;
+        var scaledPixelRange = pixelRange / scale;
 
         // create texture
-        for (int y = 0; y < glyph.ScaledBounds.Height; y++)
-            for (int x = 0; x < glyph.ScaledBounds.Width; x++)
+        for (int y = -pixelRange; y < glyph.ScaledBounds.Height + pixelRange; y++)
+            for (int x = -pixelRange; x < glyph.ScaledBounds.Width + pixelRange; x++)
             {
                 var point = (new Vector2(x + .5f, y - .5f) + offset) / scale;
 
@@ -161,10 +161,10 @@ internal static class MTSDF
                     b.NearEdge.DistanceToPseudoDistance(b.MinDistance, point, b.NearParam);
 
                 atlas[(int)glyph.ScaledBounds.Height - 1 - y + (int)glyph.ScaledBounds.Y, x + (int)glyph.ScaledBounds.X] = new Colour32(
-                    r.MinDistance.Distance / pixelRange + .5f,
-                    g.MinDistance.Distance / pixelRange + .5f,
-                    b.MinDistance.Distance / pixelRange + .5f,
-                    a / pixelRange + .5f
+                    r.MinDistance.Distance / scaledPixelRange + .5f,
+                    g.MinDistance.Distance / scaledPixelRange + .5f,
+                    b.MinDistance.Distance / scaledPixelRange + .5f,
+                    a / scaledPixelRange + .5f
                 );
             }
     }

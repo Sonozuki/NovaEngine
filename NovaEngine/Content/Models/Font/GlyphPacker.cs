@@ -39,6 +39,7 @@ internal static class GlyphPacker
     /// <remarks>The final atlas position of each glyph is stored in the scaled bounds X/Y of the glyph.</remarks>
     public static bool TryPack(List<Glyph> glyphs, int padding)
     {
+        var halfPadding = padding / 2;
         var remainingGlyphs = new List<Glyph>(glyphs);
 
         while (remainingGlyphs.Any())
@@ -58,8 +59,8 @@ internal static class GlyphPacker
             var bestGlyph = remainingGlyphs[bestGlyphIndex];
             var bestSpace = Spaces[bestSpaceIndex];
 
-            bestGlyph.ScaledBounds.X = bestSpace.X;
-            bestGlyph.ScaledBounds.Y = bestSpace.Y;
+            bestGlyph.ScaledBounds.X = halfPadding + bestSpace.X;
+            bestGlyph.ScaledBounds.Y = halfPadding + bestSpace.Y;
 
             SplitSpace(bestSpaceIndex, (int)bestGlyph.ScaledBounds.Width + padding, (int)bestGlyph.ScaledBounds.Height + padding);
             remainingGlyphs.RemoveAt(bestGlyphIndex);
@@ -75,8 +76,11 @@ internal static class GlyphPacker
                     {
                         var glyph = remainingGlyphs[j];
 
+                        var glyphWidth = glyph.ScaledBounds.Width + padding;
+                        var glyphHeight = glyph.ScaledBounds.Height + padding;
+
                         // check if any glyphs fit a space perfectly
-                        if (glyph.ScaledBounds.Width == space.Width && glyph.ScaledBounds.Height == space.Height)
+                        if (glyphWidth == space.Width && glyphHeight == space.Height)
                         {
                             bestSpaceIndex = i;
                             bestGlyphIndex = j;
@@ -84,9 +88,9 @@ internal static class GlyphPacker
                         }
 
                         // otherwise, check which space and glyph fit the best together
-                        if (glyph.ScaledBounds.Width <= space.Width && glyph.ScaledBounds.Height <= space.Height)
+                        if (glyphWidth <= space.Width && glyphHeight <= space.Height)
                         {
-                            var fit = RateFit((int)glyph.ScaledBounds.Width + padding, (int)glyph.ScaledBounds.Height + padding, (int)space.Width, (int)space.Height);
+                            var fit = RateFit((int)glyphWidth, (int)glyphHeight, (int)space.Width, (int)space.Height);
                             if (fit < bestFit)
                             {
                                 bestFit = fit;

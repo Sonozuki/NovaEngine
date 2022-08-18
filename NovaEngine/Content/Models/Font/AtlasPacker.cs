@@ -6,11 +6,11 @@ internal static class AtlasPacker
     /*********
     ** Constants
     *********/
-    /// <summary>The amount of padding between glyphs in the atlas.</summary>
+    /// <summary>The amount of padding around the glyphs in the atlas.</summary>
     private const int Padding = 1;
 
     /// <summary>The range, in pixels, of the signed distance around the glyphs.</summary>
-    public const float PixelRange = 2;
+    public const int PixelRange = 4;
 
 
     /*********
@@ -40,19 +40,20 @@ internal static class AtlasPacker
     private static void Pack(List<Glyph> glyphs, out int atlasEdgeLength)
     {
         // calculate minimum possible required area
+        var totalPadding = (Padding + PixelRange) * 2;
         var totalArea = 0;
         foreach (var glyph in glyphs)
-            totalArea += (int)(glyph.ScaledBounds.Width + Padding * glyph.ScaledBounds.Height + Padding);
+            totalArea += (int)((glyph.ScaledBounds.Width + totalPadding) * (glyph.ScaledBounds.Height + totalPadding));
 
         // calculate the minimum atlas size and glyph positions
         atlasEdgeLength = (int)MathF.Ceiling(MathF.Sqrt(totalArea) / 4f) * 4;
-        var isAtlasBigEnough = false;
 
+        var isAtlasBigEnough = false;
         while (!isAtlasBigEnough)
         {
             atlasEdgeLength += 4;
             GlyphPacker.SetInitialSpaceSize(atlasEdgeLength);
-            isAtlasBigEnough = GlyphPacker.TryPack(glyphs, Padding);
+            isAtlasBigEnough = GlyphPacker.TryPack(glyphs, totalPadding);
 
             // TODO: make sure the texture is broken up when a large enough texture size is reached (only really an issue with languages such as Japanese)
         }

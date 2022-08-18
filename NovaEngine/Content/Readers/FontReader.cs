@@ -17,7 +17,7 @@ public class FontReader : IContentReader
         // metadata
         var name = binaryReader.ReadString();
         var maxGlyphHeight = binaryReader.ReadSingle();
-        var pixelRange = binaryReader.ReadSingle();
+        var pixelRange = binaryReader.ReadInt32();
 
         // atlas
         var atlasEdgeLength = binaryReader.ReadUInt32();
