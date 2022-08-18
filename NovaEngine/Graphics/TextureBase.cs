@@ -24,6 +24,10 @@ public abstract class TextureBase : IDisposable
     /// <summary>The number of layers the texture has.</summary>
     protected uint _LayerCount;
 
+    /// <summary>The pixel data of the texture.</summary>
+    /// <remarks>This will always be <see langword="null"/> when accessed manually.<br/>When a texture gets serialised it means it woun't be loaded through the content pipeline when deserialised, therefore, we need to store the pixel data for the serialiser to save; this will be populated just before being serialised and set to <see langword="null"/> straight after.</remarks>
+    protected Colour32[]? SerialiserPixelData;
+
 
     /*********
     ** Accessors
@@ -119,7 +123,25 @@ public abstract class TextureBase : IDisposable
     /*********
     ** Protected Methods
     *********/
+    /// <summary>Retrieves the texture pixel data ready for the serialiser.</summary>
+    [OnSerialising]
+    protected void StorePixelData() => SerialiserPixelData = this.RendererTexture.GetPixels();
+
+    /// <summary>Clears the pixel data.</summary>
+    /// <remarks>This is done so it's not accidently used, this is due to <see cref="SerialiserPixelData"/> being able to desync from the texture data until the texture is next serialised.</remarks>
+    [OnSerialised]
+    protected void ClearPixelData() => SerialiserPixelData = null;
+
     /// <summary>Creates the renderer texture.</summary>
     [OnDeserialised(SerialiserCallbackPriority.High)]
-    protected void CreateRendererTexture() => RendererTexture = RendererManager.CurrentRenderer.CreateRendererTexture(this);
+    protected void CreateRendererTexture()
+    {
+        RendererTexture = RendererManager.CurrentRenderer.CreateRendererTexture(this);
+
+        if (SerialiserPixelData != null)
+        {
+            RendererTexture.SetPixels(SerialiserPixelData);
+            ClearPixelData();
+        }
+    }
 }

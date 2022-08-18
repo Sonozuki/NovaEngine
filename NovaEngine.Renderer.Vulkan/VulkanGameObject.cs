@@ -158,12 +158,15 @@ public class VulkanGameObject : RendererGameObjectBase
         var bufferInfo = new VkDescriptorBufferInfo { Buffer = MVPBuffer.NativeBuffer, Offset = 0, Range = sizeof(MVPBuffer) };
 
         // TODO: temp
-        VkDescriptorImageInfo? imageInfo = null;
+        VkDescriptorImageInfo? imageInfo1 = null;
+        VkDescriptorImageInfo? imageInfo2 = null;
         var textRenderer = baseGameObject.Components.Get<TextRenderer>();
         if (textRenderer != null)
         {
             var fontAtlas = (textRenderer.Font.Atlas.RendererTexture as VulkanTexture)!;
-            imageInfo = new() { ImageLayout = VkImageLayout.ShaderReadOnlyOptimal, ImageView = fontAtlas.NativeImageView, Sampler = fontAtlas.NativeSampler };
+            var borderTexture = (textRenderer.BorderTexture.RendererTexture as VulkanTexture)!;
+            imageInfo1 = new() { ImageLayout = VkImageLayout.ShaderReadOnlyOptimal, ImageView = fontAtlas.NativeImageView, Sampler = fontAtlas.NativeSampler };
+            imageInfo2 = new() { ImageLayout = VkImageLayout.ShaderReadOnlyOptimal, ImageView = borderTexture.NativeImageView, Sampler = borderTexture.NativeSampler };
         }
 
         DepthPrepassDescriptorSet = DescriptorPools.DepthPrepassDescriptorPool.GetDescriptorSet();
@@ -180,11 +183,13 @@ public class VulkanGameObject : RendererGameObjectBase
         MTSDFTextDescriptorSet.Bind(0, &bufferInfo, VkDescriptorType.UniformBuffer);
 
         // TODO: temp
-        if (imageInfo != null)
+        if (textRenderer != null)
         {
-            var imageInfoCopy = imageInfo.Value;
+            var imageInfo1Copy = imageInfo1.Value;
+            var imageInfo2Copy = imageInfo2.Value;
             MTSDFTextDescriptorSet
-                .Bind(1, &imageInfoCopy)
+                .Bind(1, &imageInfo1Copy)
+                .Bind(2, &imageInfo2Copy)
                 .UpdateBindings();
         }
         else

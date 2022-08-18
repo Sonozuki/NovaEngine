@@ -15,6 +15,9 @@ const uint BORDER_TYPE_NONE = 0;
 // The solid colour border type.
 const uint BORDER_TYPE_COLOUR = 1;
 
+// The texture border type.
+const uint BORDER_TYPE_TEXTURE = 2;
+
 
 /*********
 ** Layouts
@@ -27,6 +30,9 @@ layout(location = 0) out vec4 outColour;
 
 // The sampler to the MTSDF font atlas
 layout(binding = 1) uniform sampler2D FontAtlasSampler;
+
+// The sampler to the border texture.
+layout(binding = 2) uniform sampler1D BorderTextureSampler;
 
 // The parameters for rendering the MTSDF.
 layout(push_constant) uniform PushConstants
@@ -69,10 +75,15 @@ void main()
     float screenPixelDistance = Params.ScreenPixelRange * (signedDistance - 0.5) + 0.5;
 
     // calculate fragment colour
-    if (Params.BorderType != BORDER_TYPE_NONE && abs(screenPixelDistance) < Params.BorderWidth / 2.0) // fragment is part of the border
+    if (Params.BorderType != BORDER_TYPE_NONE && abs(screenPixelDistance) < Params.BorderWidth * 0.5) // fragment is part of the border
     {
         if (Params.BorderType == BORDER_TYPE_COLOUR)
             outColour = Params.BorderColour;
+        else if (Params.BorderType == BORDER_TYPE_TEXTURE)
+        {
+            float t = screenPixelDistance / (Params.BorderWidth * 0.5);
+            outColour = texture(BorderTextureSampler, (t + 1) * 0.5);
+        }
     }
     else if (screenPixelDistance > 0) // fragment is "inside" (fill) of the MTSDF
     {

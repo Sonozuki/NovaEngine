@@ -63,7 +63,7 @@ public unsafe class VulkanTexture : RendererTextureBase
         (usage, AspectFlags) = this.Usage switch
         {
             TextureUsage.Colour => (VkImageUsageFlags.ColorAttachment, VkImageAspectFlags.Color),
-            TextureUsage.Colour32 => (VkImageUsageFlags.ColorAttachment, VkImageAspectFlags.Color),
+            TextureUsage.Colour32 => (VkImageUsageFlags.Sampled, VkImageAspectFlags.Color), // TODO: make this a little nicer than forcing all 32 to sampled
             TextureUsage.Depth => (VkImageUsageFlags.DepthStencilAttachment, VkImageAspectFlags.Depth),
             _ => throw new InvalidOperationException($"{nameof(this.Usage)} isn't valid.")
         };
@@ -163,6 +163,44 @@ public unsafe class VulkanTexture : RendererTextureBase
         CommandPool = new(CommandPoolUsage.Graphics, VkCommandPoolCreateFlags.Transient);
     }
 
+    // TODO: clean up
+    /// <inheritdoc/>
+    public override Colour32[] GetPixels()
+    {
+        var bufferSize = this.Width * this.Height * (this.Usage == TextureUsage.Colour32 ? sizeof(Colour32) : sizeof(Colour));
+
+        // transition layout to TransferSource
+        TransitionImageLayout(VkImageLayout.Undefined, VkImageLayout.TransferSourceOptimal, VkPipelineStageFlags.Transfer, VkPipelineStageFlags.Transfer);
+
+        // create a staging buffer and copy the texture to it
+        using var stagingBuffer = new VulkanBuffer(bufferSize, VkBufferUsageFlags.TransferSource | VkBufferUsageFlags.TransferDestination, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
+        stagingBuffer.CopyFrom(this);
+
+        // get the pixel data from the staging buffer
+        if (this.Usage == TextureUsage.Colour32)
+        {
+            var pixelBuffer = new Colour32[bufferSize / sizeof(Colour32)];
+            var pixelBufferSpan = pixelBuffer.AsSpan();
+            stagingBuffer.CopyTo(pixelBufferSpan);
+
+            TransitionImageLayout(VkImageLayout.TransferSourceOptimal, VkImageLayout.ShaderReadOnlyOptimal, VkPipelineStageFlags.Transfer, VkPipelineStageFlags.Transfer);
+            return pixelBuffer;
+        }
+        else
+        {
+            var pixelBuffer = new Colour[bufferSize / sizeof(Colour)];
+            var pixelBufferSpan = pixelBuffer.AsSpan();
+            stagingBuffer.CopyTo(pixelBufferSpan);
+
+            var convertedPixelBuffer = new Colour32[pixelBuffer.Length];
+            for (int i = 0; i < pixelBuffer.Length; i++)
+                convertedPixelBuffer[i] = pixelBuffer[i].ToColour32();
+
+            TransitionImageLayout(VkImageLayout.TransferSourceOptimal, VkImageLayout.ShaderReadOnlyOptimal, VkPipelineStageFlags.Transfer, VkPipelineStageFlags.Transfer);
+            return convertedPixelBuffer;
+        }
+    }
+
     /// <inheritdoc/>
     public override void SetPixels(Colour[] pixels, int offset = 0)
     {
@@ -188,13 +226,18 @@ public unsafe class VulkanTexture : RendererTextureBase
         // copy the staging buffer to the texture
         TransitionImageLayout(VkImageLayout.TransferSourceOptimal, VkImageLayout.TransferDestinationOptimal, VkPipelineStageFlags.Transfer, VkPipelineStageFlags.Transfer);
         stagingBuffer.CopyTo(this);
-        GenerateMipChain();
+
+        if (this.AutomaticallyGenerateMipChain)
+            GenerateMipChain();
+        else
+            TransitionImageLayout(VkImageLayout.Undefined, VkImageLayout.ShaderReadOnlyOptimal);
     }
 
+    // TODO: clean up
     /// <inheritdoc/>
     public override void SetPixels(Colour32[] pixels, int offset = 0)
     {
-        var bufferSize = this.Width * this.Height * sizeof(Colour32);
+        var bufferSize = this.Width * this.Height * (this.Usage == TextureUsage.Colour32 ? sizeof(Colour32) : sizeof(Colour));
 
         // transition layout to TransferSource
         TransitionImageLayout(VkImageLayout.Undefined, VkImageLayout.TransferSourceOptimal, VkPipelineStageFlags.Transfer, VkPipelineStageFlags.Transfer);
@@ -203,20 +246,40 @@ public unsafe class VulkanTexture : RendererTextureBase
         using var stagingBuffer = new VulkanBuffer(bufferSize, VkBufferUsageFlags.TransferSource | VkBufferUsageFlags.TransferDestination, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
         stagingBuffer.CopyFrom(this);
 
-        // get the pixel data from the staging buffer
-        var pixelBuffer = new Colour32[this.Width * this.Height];
-        var pixelBufferSpan = pixelBuffer.AsSpan();
-        stagingBuffer.CopyTo(pixelBufferSpan);
+        // get the pixel data from the staging buffer and apply pixel changes
+        if (this.Usage == TextureUsage.Colour32)
+        {
+            var pixelBuffer = new Colour32[this.Width * this.Height];
+            var pixelBufferSpan = pixelBuffer.AsSpan();
+            stagingBuffer.CopyTo(pixelBufferSpan);
 
-        // apply pixel changes
-        Array.Copy(pixels, 0, pixelBuffer, offset, pixels.Length);
+            Array.Copy(pixels, 0, pixelBuffer, offset, pixels.Length);
 
-        stagingBuffer.CopyFrom(pixelBufferSpan);
+            stagingBuffer.CopyFrom(pixelBufferSpan);
+        }
+        else
+        {
+            var pixelBuffer = new Colour[this.Width * this.Height];
+            var pixelBufferSpan = pixelBuffer.AsSpan();
+            stagingBuffer.CopyTo(pixelBufferSpan);
+
+            var convertedPixels = new Colour[pixels.Length];
+            for (int i = 0; i < pixels.Length; i++)
+                convertedPixels[i] = pixels[i].ToColour();
+
+            Array.Copy(convertedPixels, 0, pixelBuffer, offset, convertedPixels.Length);
+
+            stagingBuffer.CopyFrom(pixelBufferSpan);
+        }
 
         // copy the staging buffer to the texture
         TransitionImageLayout(VkImageLayout.TransferSourceOptimal, VkImageLayout.TransferDestinationOptimal, VkPipelineStageFlags.Transfer, VkPipelineStageFlags.Transfer);
         stagingBuffer.CopyTo(this);
-        GenerateMipChain();
+
+        if (this.AutomaticallyGenerateMipChain)
+            GenerateMipChain();
+        else
+            TransitionImageLayout(VkImageLayout.Undefined, VkImageLayout.ShaderReadOnlyOptimal);
     }
 
     /// <inheritdoc/>

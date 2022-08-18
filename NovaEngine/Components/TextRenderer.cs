@@ -56,6 +56,9 @@ public class TextRenderer : MeshRenderingComponentBase
     /// <summary>The colour of the border.</summary>
     public Colour BorderColour { get; set; }
 
+    /// <summary>The texture of the border.</summary>
+    public Texture1D BorderTexture { get; set; } = Texture1D.Undefined;
+
     /// <summary>The mesh of the text.</summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     [NonSerialisable]
@@ -81,7 +84,11 @@ public class TextRenderer : MeshRenderingComponentBase
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     /// <inheritdoc/>
-    public override void Dispose() => Font.Dispose();
+    public override void Dispose()
+    {
+        Font.Dispose();
+        BorderTexture.Dispose();
+    }
 
 
     /*********

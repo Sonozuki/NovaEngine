@@ -7,5 +7,8 @@ public enum MTSDFBorderType
     None,
 
     /// <summary>The MTSDF has a solid colour border.</summary>
-    Colour
+    Colour,
+
+    /// <summary>The MTSDF has a textured border.</summary>
+    Texture
 }

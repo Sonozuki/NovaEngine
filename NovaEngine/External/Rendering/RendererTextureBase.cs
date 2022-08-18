@@ -85,6 +85,10 @@ public abstract class RendererTextureBase : IDisposable
         WrapModeW = (TextureWrapMode?)typeof(TextureBase).GetField("_WrapModeW", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(BaseTexture) ?? throw new MissingMemberException("Couldn't find '_WrapModeW' field.");
     }
 
+    /// <summary>Retrieves the pixel data of the texture.</summary>
+    /// <returns>The pixel data of the texture.</returns>
+    public abstract Colour32[] GetPixels();
+
     /// <summary>Sets pixel data for a specific one-dimensional location.</summary>
     /// <param name="pixels">The pixel data to set.</param>
     /// <param name="offset">The pixel offset for setting pixel data.</param>

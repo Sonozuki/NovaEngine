@@ -86,7 +86,8 @@ internal unsafe static class DescriptorSetLayouts
         var mtsdfTextBindings = new VkDescriptorSetLayoutBinding[]
         {
             new() { Binding = 0, DescriptorType = VkDescriptorType.UniformBuffer, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Vertex }, // mvp uniform
-            new() { Binding = 1, DescriptorType = VkDescriptorType.CombinedImageSampler, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Fragment } // font atlas
+            new() { Binding = 1, DescriptorType = VkDescriptorType.CombinedImageSampler, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Fragment }, // font atlas
+            new() { Binding = 2, DescriptorType = VkDescriptorType.CombinedImageSampler, DescriptorCount = 1, StageFlags = VkShaderStageFlags.Fragment } // border texture
         };
         MTSDFTextDescriptorSetLayout = CreateDescriptorSetLayout(mtsdfTextBindings);
     }

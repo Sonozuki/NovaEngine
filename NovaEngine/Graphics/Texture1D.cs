@@ -12,10 +12,21 @@ public class Texture1D : TextureBase
     /// <inheritdoc/>
     internal override TextureType Type => TextureType.Texture1D;
 
+    /// <summary>The undefined texture.</summary>
+    /// <remarks>This is a blank white texture.</remarks>
+    public static Texture1D Undefined { get; }
+
 
     /*********
     ** Public Methods
     *********/
+    /// <summary>Initialises the class.</summary>
+    static Texture1D()
+    {
+        Undefined = new(1);
+        Undefined.SetPixels(new[] { Colour32.White });
+    }
+
     /// <summary>Constructs an instance.</summary>
     /// <param name="width">The width of the texture.</param>
     /// <param name="pixelType">The type of pixel the texture stores underlying data as.</param>
@@ -24,7 +35,7 @@ public class Texture1D : TextureBase
     /// <param name="maxAnisotropicFilteringLevel">The max anisotropic filtering level of the texture.</param>
     /// <param name="wrapModeU">The texture wrap mode of the U axis.</param>
     /// <param name="filter">The filter mode of the texture.</param>
-    public Texture1D(uint width, TexturePixelType pixelType = TexturePixelType.Byte, SampleCount sampleCount = SampleCount.Count1, bool anisotropicFilteringEnabled = true, float maxAnisotropicFilteringLevel = 16, TextureWrapMode wrapModeU = TextureWrapMode.Repeat, TextureFilter filter = TextureFilter.Bilinear)
+    public Texture1D(uint width, TexturePixelType pixelType = TexturePixelType.Float, SampleCount sampleCount = SampleCount.Count1, bool anisotropicFilteringEnabled = true, float maxAnisotropicFilteringLevel = 16, TextureWrapMode wrapModeU = TextureWrapMode.Repeat, TextureFilter filter = TextureFilter.Bilinear)
         : base(width, 1, 1, pixelType, false, 0, 1, sampleCount, anisotropicFilteringEnabled, maxAnisotropicFilteringLevel, wrapModeU, TextureWrapMode.Repeat, TextureWrapMode.Repeat, filter) { }
 
     /// <summary>Sets pixel data for a specific one-dimensional location.</summary>
