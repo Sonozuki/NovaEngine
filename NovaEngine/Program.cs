@@ -57,6 +57,7 @@ public static class Program
             foreach (var scene in SceneManager.LoadedScenes)
                 scene.Dispose();
 
+            Texture1D.Undefined.Dispose();
             Texture2D.Undefined.Dispose();
             RendererManager.CurrentRenderer.Dispose();
         }
