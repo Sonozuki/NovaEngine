@@ -35,16 +35,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Shaders\bin\**" />
-	  <EmbeddedResource Remove="Shaders\bin\**" />
-	  <None Remove="Shaders\bin\**" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Remove="Shaders\compile.bat" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="NVK" Version="1.0.4" />
 	</ItemGroup>
 
