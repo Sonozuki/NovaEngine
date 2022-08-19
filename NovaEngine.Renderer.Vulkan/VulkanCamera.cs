@@ -348,7 +348,7 @@ public unsafe class VulkanCamera : RendererCameraBase
         static void SetMTSDFPushConstants(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, VulkanGameObject gameObject)
         {
             var textRenderer = gameObject.BaseGameObject.Components.Get<TextRenderer>()!;
-            var mtsdfParams = new MTSDFParameters(textRenderer.FontSize / textRenderer.Font.MaxGlyphHeight * textRenderer.Font.PixelRange, textRenderer.FillType, textRenderer.BorderType, textRenderer.BorderWidth, textRenderer.FillColour, textRenderer.BorderColour);
+            var mtsdfParams = new MTSDFParameters(textRenderer.FontSize / textRenderer.Font.MaxGlyphHeight * textRenderer.Font.PixelRange, textRenderer.FillType, textRenderer.BorderType, textRenderer.BorderWidth, textRenderer.BloomPower, textRenderer.BloomBrightness, textRenderer.FillColour, textRenderer.BorderColour);
         
             VK.CommandPushConstants(commandBuffer, pipelineLayout, VkShaderStageFlags.Fragment, 0, (uint)sizeof(MTSDFParameters), &mtsdfParams);
         }

@@ -59,6 +59,12 @@ public class TextRenderer : MeshRenderingComponentBase
     /// <summary>The texture of the border.</summary>
     public Texture1D BorderTexture { get; set; } = Texture1D.Undefined;
 
+    /// <summary>The power of the bloom.</summary>
+    public float BloomPower { get; set; }
+
+    /// <summary>The brightness of the bloom.</summary>
+    public float BloomBrightness { get; set; }
+
     /// <summary>The mesh of the text.</summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     [NonSerialisable]

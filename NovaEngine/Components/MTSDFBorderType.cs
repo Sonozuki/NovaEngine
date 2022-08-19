@@ -10,5 +10,8 @@ public enum MTSDFBorderType
     Colour,
 
     /// <summary>The MTSDF has a textured border.</summary>
-    Texture
+    Texture,
+
+    /// <summary>The MTSDF has a bloom border.</summary>
+    Bloom
 }

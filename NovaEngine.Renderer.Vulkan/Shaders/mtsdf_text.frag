@@ -18,6 +18,9 @@ const uint BORDER_TYPE_COLOUR = 1;
 // The texture border type.
 const uint BORDER_TYPE_TEXTURE = 2;
 
+// The bloom border type.
+const uint BORDER_TYPE_BLOOM = 3;
+
 
 /*********
 ** Layouts
@@ -48,6 +51,15 @@ layout(push_constant) uniform PushConstants
     
     // The width (in pixels) of the border.
     float BorderWidth;
+
+    // The power of the bloom.
+    float BloomPower;
+
+    // The brightness of the bloom.
+    float BloomBrightness;
+
+    // Unused
+    vec2 _Padding;
 
     // The colour of the fill (if FillType is FILL_TYPE_COLOUR).
     vec4 FillColour;
@@ -84,8 +96,16 @@ void main()
             outColour = Params.BorderColour;
         else if (Params.BorderType == BORDER_TYPE_TEXTURE)
         {
-            float t = screenPixelDistance / (Params.BorderWidth * 0.5);
-            outColour = texture(BorderTextureSampler, (t + 1) * 0.5);
+            float t = screenPixelDistance / (Params.BorderWidth * 0.5); // -1 -> 1
+            outColour = texture(BorderTextureSampler, (t + 1) * 0.5);   // 0 -> 1
+        }
+        else if (Params.BorderType == BORDER_TYPE_BLOOM)
+        {
+            float t = screenPixelDistance / (Params.BorderWidth * 0.5); // -1 -> 1
+            t = 1 - abs(t);                                             // 0 -> 1 -> 0
+
+            outColour = mix(vec4(0), Params.BorderColour, t);
+            outColour.xyz += pow(t, Params.BloomPower) * Params.BloomBrightness;
         }
     }
     else if (screenPixelDistance > 0) // fragment is "inside" (fill) of the MTSDF
