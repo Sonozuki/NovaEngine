@@ -74,6 +74,9 @@ void main()
     float signedDistance = median(mtsdf.r, mtsdf.g, mtsdf.b);
     float screenPixelDistance = Params.ScreenPixelRange * (signedDistance - 0.5) + 0.5;
 
+    // initial colour for outside the border, or the fill/border when *_TYPE_NONE is used
+    outColour = vec4(0);
+
     // calculate fragment colour
     if (Params.BorderType != BORDER_TYPE_NONE && abs(screenPixelDistance) < Params.BorderWidth * 0.5) // fragment is part of the border
     {
@@ -90,6 +93,4 @@ void main()
         if (Params.FillType == FILL_TYPE_COLOUR)
             outColour = Params.FillColour;
     }
-    else // fragment is outside the border
-        outColour = vec4(0);
 }
