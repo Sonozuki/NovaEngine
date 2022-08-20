@@ -32,9 +32,9 @@ internal class CmapFormat4 : ICmapFormat
             Segments[i].IdDelta = binaryReader.ReadUInt16BigEndian();
         for (int i = 0; i < segmentCount; i++)
         {
-            var ro = binaryReader.ReadUInt16BigEndian();
-            if (ro != 0)
-                Segments[i].IdRangeOffset = (ushort)(binaryReader.BaseStream.Position - 2 + ro);
+            var rangeOffset = binaryReader.ReadUInt16BigEndian();
+            if (rangeOffset != 0)
+                Segments[i].IdRangeOffset = (ushort)(binaryReader.BaseStream.Position - 2 + rangeOffset);
             else
                 Segments[i].IdRangeOffset = 0;
         }
@@ -55,16 +55,16 @@ internal class CmapFormat4 : ICmapFormat
                     var oldPosition = binaryReader.BaseStream.Position;
 
                     binaryReader.BaseStream.Position = glyphIndexPosition;
-                    glyphIndex = binaryReader.ReadUInt16();
+                    glyphIndex = binaryReader.ReadUInt16BigEndian();
                     binaryReader.BaseStream.Position = oldPosition;
                 }
                 else
                     glyphIndex = (ushort)((segment.IdDelta + characterCode) & 0xFFFF);
 
-                Cache[characterCode] = glyphIndex;
                 break;
             }
 
+        Cache[characterCode] = glyphIndex;
         return glyphIndex;
     }
 }

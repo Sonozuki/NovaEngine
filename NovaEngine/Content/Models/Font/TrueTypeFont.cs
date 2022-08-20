@@ -286,7 +286,7 @@ internal class TrueTypeFont : IDisposable
             {
                 var glyphIndex = characterMap.Map(BinaryReader, i);
 
-                glyph = ReadGlyph(characterMap.Map(BinaryReader, i), (char)i);
+                glyph = ReadGlyph(glyphIndex, (char)i);
                 glyph.HorizontalMetrics = HorizontalMetrics[glyphIndex];
                 Glyphs.Add(glyph);
             }
