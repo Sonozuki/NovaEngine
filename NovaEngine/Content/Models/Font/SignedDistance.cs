@@ -29,6 +29,7 @@ internal class SignedDistance
         Dot = dot;
     }
 
+
     /*********
     ** Operators
     *********/

@@ -296,8 +296,8 @@ internal class TrueTypeFont : IDisposable
         CalculateGlyphContours();
 
         // calculate glyph edge colours
-        for (int i = 0; i < NumberOfGlyphs; i++)
-            MTSDF.ColourEdges(Glyphs[i]);
+        foreach (var glyph in Glyphs)
+            MTSDF.ColourEdges(glyph);
 
         // calculate bounds
         var maxGlyphHeight = -1;

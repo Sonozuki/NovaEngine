@@ -24,11 +24,11 @@ internal static class MTSDF
             if (contour.Edges.Any())
             {
                 var previousDirection = contour.Edges.Last().Direction(1); // get direction from final point to first point
-                var index = 0;
-                foreach (var edge in contour.Edges)
+                for (int index = 0; index < contour.Edges.Count; index++)
                 {
+                    var edge = contour.Edges[index];
                     if (IsCorner(previousDirection.Normalised, edge.Direction(0).Normalised, sinThreshold))
-                        corners.Add(index++);
+                        corners.Add(index);
                     previousDirection = edge.Direction(1);
                 }
             }
@@ -152,7 +152,6 @@ internal static class MTSDF
                 }
 
                 // calculate the pseudo distances for each channel
-                var a = minDistance.Distance;
                 if (r.NearEdge != null)
                     r.NearEdge.DistanceToPseudoDistance(r.MinDistance, point, r.NearParam);
                 if (g.NearEdge != null)
@@ -164,7 +163,7 @@ internal static class MTSDF
                     r.MinDistance.Distance / scaledPixelRange + .5f,
                     g.MinDistance.Distance / scaledPixelRange + .5f,
                     b.MinDistance.Distance / scaledPixelRange + .5f,
-                    a / scaledPixelRange + .5f
+                    minDistance.Distance / scaledPixelRange + .5f
                 );
             }
     }
