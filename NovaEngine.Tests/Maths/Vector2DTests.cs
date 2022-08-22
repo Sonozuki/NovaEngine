@@ -434,6 +434,61 @@ public class Vector2DTests
         Assert.IsFalse(areEqual);
     }
 
+    /// <summary>Tests <see cref="Vector2D.Angle(in Vector2D, in Vector2D)"/>.</summary>
+    /// <remarks>This tests that giving identical vectors returns an angle of 0 degrees.</remarks>
+    [Test]
+    public void Angle_VectorsAreIdentical_ReturnsZero()
+    {
+        var vector1 = new Vector2D(1, 0);
+        var vector2 = new Vector2D(1, 0);
+        var angle = Vector2D.Angle(vector1, vector2);
+        Assert.AreEqual(0, angle);
+    }
+
+    /// <summary>Tests <see cref="Vector2D.Angle(in Vector2D, in Vector2D)"/>.</summary>
+    /// <remarks>This tests that perpendicular vectors returns an angle of 90 degrees.</remarks>
+    [Test]
+    public void Angle_VectorsArePerpendicularLeft_Returns90()
+    {
+        var vector1 = new Vector2D(1, 0);
+        var vector2 = new Vector2D(0, 1);
+        var angle = Vector2D.Angle(vector1, vector2);
+        Assert.AreEqual(90, angle);
+    }
+
+    /// <summary>Tests <see cref="Vector2D.Angle(in Vector2D, in Vector2D)"/>.</summary>
+    /// <remarks>This tests that perpendicular vectors returns an angle of 90 degrees.</remarks>
+    [Test]
+    public void Angle_VectorsArePerpendicularRight_Returns90()
+    {
+        var vector1 = new Vector2D(1, 0);
+        var vector2 = new Vector2D(0, -1);
+        var angle = Vector2D.Angle(vector1, vector2);
+        Assert.AreEqual(90, angle);
+    }
+
+    /// <summary>Tests <see cref="Vector2D.Angle(in Vector2D, in Vector2D)"/>.</summary>
+    /// <remarks>This tests that giving opposite vectors returns an angle of 180 degrees.</remarks>
+    [Test]
+    public void Angle_VectorsAreOpposite_Returns180()
+    {
+        var vector1 = new Vector2D(1, 0);
+        var vector2 = new Vector2D(-1, 0);
+        var angle = Vector2D.Angle(vector1, vector2);
+        Assert.AreEqual(180, angle);
+    }
+
+    /// <summary>Tests <see cref="Vector2D.Angle(in Vector2D, in Vector2D)"/>.</summary>
+    /// <remarks>This tests that giving unnormalised vectors returns the correct angle degrees.</remarks>
+    [Test]
+    public void Angle_VectorsAreUnnormalised_ReturnsCorrectAngle()
+    {
+        var vector1 = new Vector2D(20, 30);
+        var vector2 = new Vector2D(-30, 20);
+        var angle = Vector2D.Angle(vector1, vector2);
+        Assert.AreEqual(90, angle);
+    }
+
     /// <summary>Tests <see cref="Vector2D.Clamp(in Vector2D, in Vector2D, in Vector2D)"/>.</summary>
     /// <remarks>This tests that giving a value that is between the min and max will result in the passed value.</remarks>
     [Test]

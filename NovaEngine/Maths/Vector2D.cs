@@ -160,6 +160,12 @@ public struct Vector2D : IEquatable<Vector2D>
     /// <inheritdoc/>
     public readonly override string ToString() => $"<X: {X}, Y: {Y}>";
 
+    /// <summary>Calculates the angle between two vectors.</summary>
+    /// <param name="vector1">The first vector.</param>
+    /// <param name="vector2">The second vector.</param>
+    /// <returns>The angle between the vectors, in degrees.</returns>
+    public static double Angle(in Vector2D vector1, in Vector2D vector2) => MathsHelper.RadiansToDegrees(Math.Acos(Vector2D.Dot(vector1, vector2) / (vector1.Length * vector2.Length)));
+
     /// <summary>Clamps a vector to the specified minimum and maximum vectors.</summary>
     /// <param name="value">The value to clamp.</param>
     /// <param name="min">The minimum value.</param>
