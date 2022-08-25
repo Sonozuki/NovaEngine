@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Maths;
 
 /// <summary>Represents a vector with two 32-bit integer values.</summary>
-public struct Vector2I : IEquatable<Vector2I>
+public struct Vector2I : IEquatable<Vector2I>, IComparable<Vector2I>
 {
     /*********
     ** Fields
@@ -112,6 +112,9 @@ public struct Vector2I : IEquatable<Vector2I>
 
     /// <inheritdoc/>
     public readonly bool Equals(Vector2I other) => this == other;
+
+    /// <inheritdoc/>
+    public readonly int CompareTo(Vector2I other) => LengthSquared - other.LengthSquared;
 
     /// <inheritdoc/>
     public readonly override bool Equals(object? obj) => obj is Vector2I vector && this == vector;

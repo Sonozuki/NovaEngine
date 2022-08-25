@@ -434,6 +434,83 @@ public class Vector2DTests
         Assert.IsFalse(areEqual);
     }
 
+    /// <summary>Tests <see cref="Vector2D.CompareTo(Vector2D)"/>.</summary>
+    /// <remarks>This tests that a vector is considered preceeding a vector with both components bigger.</remarks>
+    [Test]
+    public void CompareToVector2D_BothThisComponentsAreLessThanOtherComponents_ReturnsLessThanZero()
+    {
+        var thisVector = new Vector2D(.1f);
+        var otherVector = new Vector2D(1);
+        var result = thisVector.CompareTo(otherVector);
+        Assert.Less(result, 0);
+    }
+
+    /// <summary>Tests <see cref="Vector2D.CompareTo(Vector2D)"/>.</summary>
+    /// <remarks>This tests that a vector is considered equal to a vector with equal components.</remarks>
+    [Test]
+    public void CompareToVector2D_BothThisComponentsAreEqualToOtherComponents_ReturnsZero()
+    {
+        var thisVector = new Vector2D(.1f);
+        var otherVector = new Vector2D(.1f);
+        var result = thisVector.CompareTo(otherVector);
+        Assert.AreEqual(result, 0);
+    }
+
+    /// <summary>Tests <see cref="Vector2D.CompareTo(Vector2D)"/>.</summary>
+    /// <remarks>This tests that a vector is considered following a vector with both components smaller.</remarks>
+    [Test]
+    public void CompareToVector2D_BothThisComponentsAreMoreThanOtherComponents_ReturnsMoreThanZero()
+    {
+        var thisVector = new Vector2D(1);
+        var otherVector = new Vector2D(.1f);
+        var result = thisVector.CompareTo(otherVector);
+        Assert.Greater(result, 0);
+    }
+
+    /// <summary>Tests <see cref="Vector2D.CompareTo(Vector2D)"/>.</summary>
+    /// <remarks>This tests that a vector is considered preceeding a vector with a bigger X component.</remarks>
+    [Test]
+    public void CompareToVector2D_ThisXComponentIsLessThanOtherXComponent_ReturnsLessThanZero()
+    {
+        var thisVector = new Vector2D(.1f, 0);
+        var otherVector = new Vector2D(1, 0);
+        var result = thisVector.CompareTo(otherVector);
+        Assert.Less(result, 0);
+    }
+
+    /// <summary>Tests <see cref="Vector2D.CompareTo(Vector2D)"/>.</summary>
+    /// <remarks>This tests that a vector is considered preceeding a vector with a bigger Y component.</remarks>
+    [Test]
+    public void CompareToVector2D_ThisYComponentIsLessThanOtherYComponent_ReturnsLessThanZero()
+    {
+        var thisVector = new Vector2D(0, .1f);
+        var otherVector = new Vector2D(0, 1);
+        var result = thisVector.CompareTo(otherVector);
+        Assert.Less(result, 0);
+    }
+
+    /// <summary>Tests <see cref="Vector2D.CompareTo(Vector2D)"/>.</summary>
+    /// <remarks>This tests that a vector is considered following a vector with a smaller X component.</remarks>
+    [Test]
+    public void CompareToVector2D_ThisXComponentIsMoreThanOtherXComponent_ReturnsMoreThanZero()
+    {
+        var thisVector = new Vector2D(1, 0);
+        var otherVector = new Vector2D(.1f, 0);
+        var result = thisVector.CompareTo(otherVector);
+        Assert.Greater(result, 0);
+    }
+
+    /// <summary>Tests <see cref="Vector2D.CompareTo(Vector2D)"/>.</summary>
+    /// <remarks>This tests that a vector is considered following a vector with a smaller Y component.</remarks>
+    [Test]
+    public void CompareToVector2D_ThisYComponentIsMoreThanOtherYComponent_ReturnsMoreThanZero()
+    {
+        var thisVector = new Vector2D(0, 1);
+        var otherVector = new Vector2D(0, .1f);
+        var result = thisVector.CompareTo(otherVector);
+        Assert.Greater(result, 0);
+    }
+
     /// <summary>Tests <see cref="Vector2D.Angle(in Vector2D, in Vector2D)"/>.</summary>
     /// <remarks>This tests that giving identical vectors returns an angle of 0 degrees.</remarks>
     [Test]

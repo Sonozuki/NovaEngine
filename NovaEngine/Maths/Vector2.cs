@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Maths;
 
 /// <summary>Represents a vector with two single-precision floating-point values.</summary>
-public struct Vector2 : IEquatable<Vector2>
+public struct Vector2 : IEquatable<Vector2>, IComparable<Vector2>
 {
     /*********
     ** Fields
@@ -150,6 +150,13 @@ public struct Vector2 : IEquatable<Vector2>
 
     /// <inheritdoc/>
     public readonly bool Equals(Vector2 other) => this == other;
+
+    /// <inheritdoc/>
+    public readonly int CompareTo(Vector2 other)
+    {
+        var difference = LengthSquared - other.LengthSquared;
+        return difference > 0 ? (int)MathF.Ceiling(difference) : (int)MathF.Floor(difference);
+    }
 
     /// <inheritdoc/>
     public readonly override bool Equals(object? obj) => obj is Vector2 vector && this == vector;
