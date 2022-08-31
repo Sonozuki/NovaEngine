@@ -20,6 +20,9 @@ public class ConsoleSettings : SettingsBase<ConsoleSettings>
         set => _MaxNumberOfLines = Math.Max(1, value);
     }
 
+    /// <summary>The size of the font.</summary>
+    public int FontSize { get; set; } = 48;
+
     /// <inheritdoc/>
     protected override string Path => Constants.ConsoleSettingsFilePath;
 
