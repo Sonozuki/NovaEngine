@@ -68,7 +68,7 @@ public class CircularBuffer<T> : IEnumerable<T?>
     /// <param name="initialContents">The initial contents of the buffer.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="capacity"/> is less than one.</exception>
     /// <exception cref="ArgumentException">Thrown if <paramref name="initialContents"/> contains more elements than is allowed by <paramref name="capacity"/>.</exception>
-    public CircularBuffer(int capacity, IEnumerable<T>? initialContents = null)
+    public CircularBuffer(int capacity, IEnumerable<T?>? initialContents = null)
     {
         if (capacity < 1)
             throw new ArgumentOutOfRangeException(nameof(capacity), "Must be at least one.");
