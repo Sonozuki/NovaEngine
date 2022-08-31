@@ -38,6 +38,14 @@ internal class Log
     /// <summary>Writes the log to the console.</summary>
     public void WriteToConsole()
     {
+        // TODO: colours
+        InternalConsole.Write($"[{DateTime.ToLocalTime():HH:mm:ss} ");
+        InternalConsole.Write(SeverityInfo.Label);
+        InternalConsole.Write($" {Creator.Name}");
+        InternalConsole.Write("] ");
+        InternalConsole.Write($"{Message}\n");
+
+        // TODO: remove
         // write label
         Console.ResetColor();
         Console.Write($"[{DateTime.ToLocalTime():HH:mm:ss} ");
