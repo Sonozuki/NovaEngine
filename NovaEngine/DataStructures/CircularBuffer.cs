@@ -126,27 +126,37 @@ public class CircularBuffer<T> : IEnumerable<T?>
     }
 
     /// <summary>Removes the element at the front of the buffer.</summary>
+    /// <returns>The value that was popped.</returns>
     /// <remarks>This decrements <see cref="Size"/> by one.</remarks>
-    public void PopFront()
+    public T? PopFront()
     {
         if (IsEmpty)
             throw new InvalidOperationException("Cannot remove an element from an empty buffer.");
 
+        var poppedValue = Buffer[Start];
         Buffer[Start] = default;
-        IncrementIndex(ref Start);
         Size--;
+
+        IncrementIndex(ref Start);
+
+        return poppedValue;
     }
 
     /// <summary>Removes the element at the end of the buffer.</summary>
+    /// <returns>The value that was popped.</returns>
     /// <remarks>This decrements <see cref="Size"/> by one.</remarks>
-    public void PopBack()
+    public T? PopBack()
     {
         if (IsEmpty)
             throw new InvalidOperationException("Cannot remove an element from an empty buffer.");
 
         DecrementIndex(ref End);
+
+        var popperdValue = Buffer[End];
         Buffer[End] = default;
         Size--;
+
+        return popperdValue;
     }
 
     /// <summary>Clears the contents of the buffer.</summary>

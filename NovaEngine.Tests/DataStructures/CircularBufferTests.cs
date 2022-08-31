@@ -288,6 +288,15 @@ internal class CircularBufferTests
 
     /// <summary>Tests <see cref="CircularBuffer{T}.PopFront()"/>.</summary>
     [Test]
+    public void PopFront_BufferIsNotEmpty_ReturnsPoppedElement()
+    {
+        var buffer = new CircularBuffer<int>(3, new[] { 1, 2 });
+        var value = buffer.PopFront();
+        Assert.AreEqual(1, value);
+    }
+
+    /// <summary>Tests <see cref="CircularBuffer{T}.PopFront()"/>.</summary>
+    [Test]
     public void PopFront_BufferIsNotEmpty_DecrementsSize()
     {
         var buffer = new CircularBuffer<int>(3, new[] { 1, 2 });
@@ -310,6 +319,15 @@ internal class CircularBufferTests
         var buffer = new CircularBuffer<int>(3, new[] { 1, 2 });
         buffer.PopBack();
         Assert.AreEqual(1, buffer[0]);
+    }
+
+    /// <summary>Tests <see cref="CircularBuffer{T}.PopBack()"/>.</summary>
+    [Test]
+    public void PopBack_BufferIsNotEmpty_ReturnsPoppedElement()
+    {
+        var buffer = new CircularBuffer<int>(3, new[] { 1, 2 });
+        var value = buffer.PopBack();
+        Assert.AreEqual(2, value);
     }
 
     /// <summary>Tests <see cref="CircularBuffer{T}.PopBack()"/>.</summary>
