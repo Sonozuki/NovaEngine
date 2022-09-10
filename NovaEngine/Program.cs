@@ -102,7 +102,7 @@ public static class Program
     private static void LoadInitialScenes()
     {
         // initialise initial scenes
-        var initialScenes = ContentLoader.Load<List<string>>("InitialScenes");
+        var initialScenes = ContentLoader.Load<string[]>("InitialScenes");
         foreach (var scene in initialScenes)
             SceneManager.LoadScene(scene);
     }
