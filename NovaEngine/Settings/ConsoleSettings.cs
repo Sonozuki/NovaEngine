@@ -27,5 +27,5 @@ public class ConsoleSettings : SettingsBase<ConsoleSettings>
     protected override string Path => Constants.ConsoleSettingsFilePath;
 
     /// <inheritdoc/>
-    protected override string InvalidPath => Constants.InvalidConsoleSettintsFilePath;
+    protected override string InvalidPath => Constants.InvalidConsoleSettingsFilePath;
 }

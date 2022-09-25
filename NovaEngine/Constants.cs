@@ -33,7 +33,7 @@ public static class Constants
 
     /// <summary>The invalid console settings file.</summary>
     /// <remarks>If <see cref="ConsoleSettingsFilePath"/> failed to deserialise, it'll get moved here. This is so the existing settings can be recovered if a manual edit was invalid.</remarks>
-    public static string InvalidConsoleSettintsFilePath => Path.Combine(SettingsDirectory, "ConsoleSettings_Invalid.json");
+    public static string InvalidConsoleSettingsFilePath => Path.Combine(SettingsDirectory, "ConsoleSettings_Invalid.json");
 
     /// <summary>The root content directory.</summary>
     public static string ContentDirectory => Path.Combine(Environment.CurrentDirectory, "Data");
