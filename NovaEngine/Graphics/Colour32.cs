@@ -98,7 +98,7 @@ public struct Colour32
     public static Colour32 DarkGoldenrod => Colour.DarkGoldenrod.ToColour32();
 
     /// <summary>Gets a color with (R, G, B, A) = (169, 169, 169, 255).</summary>
-    public static Colour32 DarkGray => Colour.DarkGray.ToColour32();
+    public static Colour32 DarkGrey => Colour.DarkGrey.ToColour32();
 
     /// <summary>Gets a color with (R, G, B, A) = (0, 100, 0, 255).</summary>
     public static Colour32 DarkGreen => Colour.DarkGreen.ToColour32();
@@ -131,7 +131,7 @@ public struct Colour32
     public static Colour32 DarkSlateBlue => Colour.DarkSlateBlue.ToColour32();
 
     /// <summary>Gets a color with (R, G, B, A) = (47, 79, 79, 255).</summary>
-    public static Colour32 DarkSlateGray => Colour.DarkSlateGray.ToColour32();
+    public static Colour32 DarkSlateGrey => Colour.DarkSlateGrey.ToColour32();
 
     /// <summary>Gets a color with (R, G, B, A) = (0, 206, 209, 255).</summary>
     public static Colour32 DarkTurquoise => Colour.DarkTurquoise.ToColour32();
@@ -146,7 +146,7 @@ public struct Colour32
     public static Colour32 DeepSkyBlue => Colour.DeepSkyBlue.ToColour32();
 
     /// <summary>Gets a color with (R, G, B, A) = (105, 105, 105, 255).</summary>
-    public static Colour32 DimGray => Colour.DimGray.ToColour32();
+    public static Colour32 DimGrey => Colour.DimGrey.ToColour32();
 
     /// <summary>Gets a color with (R, G, B, A) = (30, 144, 255, 255).</summary>
     public static Colour32 DodgerBlue => Colour.DodgerBlue.ToColour32();
@@ -176,7 +176,7 @@ public struct Colour32
     public static Colour32 Goldenrod => Colour.Goldenrod.ToColour32();
 
     /// <summary>Gets a color with (R, G, B, A) = (128, 128, 128, 255).</summary>
-    public static Colour32 Gray => Colour.Gray.ToColour32();
+    public static Colour32 Grey => Colour.Grey.ToColour32();
 
     /// <summary>Gets a color with (R, G, B, A) = (0, 128, 0, 255).</summary>
     public static Colour32 Green => Colour.Green.ToColour32();
@@ -230,7 +230,7 @@ public struct Colour32
     public static Colour32 LightGreen => Colour.LightGreen.ToColour32();
 
     /// <summary>Gets a color with (R, G, B, A) = (211, 211, 211, 255).</summary>
-    public static Colour32 LightGray => Colour.LightGray.ToColour32();
+    public static Colour32 LightGrey => Colour.LightGrey.ToColour32();
 
     /// <summary>Gets a color with (R, G, B, A) = (255, 182, 193, 255).</summary>
     public static Colour32 LightPink => Colour.LightPink.ToColour32();
@@ -245,7 +245,7 @@ public struct Colour32
     public static Colour32 LightSkyBlue => Colour.LightSkyBlue.ToColour32();
 
     /// <summary>Gets a color with (R, G, B, A) = (119, 136, 153, 255).</summary>
-    public static Colour32 LightSlateGray => Colour.LightSlateGray.ToColour32();
+    public static Colour32 LightSlateGrey => Colour.LightSlateGrey.ToColour32();
 
     /// <summary>Gets a color with (R, G, B, A) = (176, 196, 222, 255).</summary>
     public static Colour32 LightSteelBlue => Colour.LightSteelBlue.ToColour32();
@@ -401,7 +401,7 @@ public struct Colour32
     public static Colour32 SlateBlue => Colour.SlateBlue.ToColour32();
 
     /// <summary>Gets a color with (R, G, B, A) = (112, 128, 144, 255).</summary>
-    public static Colour32 SlateGray => Colour.SlateGray.ToColour32();
+    public static Colour32 SlateGrey => Colour.SlateGrey.ToColour32();
 
     /// <summary>Gets a color with (R, G, B, A) = (255, 250, 250, 255).</summary>
     public static Colour32 Snow => Colour.Snow.ToColour32();

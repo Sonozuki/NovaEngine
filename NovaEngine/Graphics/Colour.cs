@@ -98,7 +98,7 @@ public struct Colour
     public static Colour DarkGoldenrod => new(184, 134, 11, 255);
 
     /// <summary>Gets a color with (R, G, B, A) = (169, 169, 169, 255).</summary>
-    public static Colour DarkGray => new(169, 169, 169, 255);
+    public static Colour DarkGrey => new(169, 169, 169, 255);
 
     /// <summary>Gets a color with (R, G, B, A) = (0, 100, 0, 255).</summary>
     public static Colour DarkGreen => new(0, 100, 0, 255);
@@ -131,7 +131,7 @@ public struct Colour
     public static Colour DarkSlateBlue => new(72, 61, 139, 255);
 
     /// <summary>Gets a color with (R, G, B, A) = (47, 79, 79, 255).</summary>
-    public static Colour DarkSlateGray => new(47, 79, 79, 255);
+    public static Colour DarkSlateGrey => new(47, 79, 79, 255);
 
     /// <summary>Gets a color with (R, G, B, A) = (0, 206, 209, 255).</summary>
     public static Colour DarkTurquoise => new(0, 206, 209, 255);
@@ -146,7 +146,7 @@ public struct Colour
     public static Colour DeepSkyBlue => new(0, 191, 255, 255);
 
     /// <summary>Gets a color with (R, G, B, A) = (105, 105, 105, 255).</summary>
-    public static Colour DimGray => new(105, 105, 105, 255);
+    public static Colour DimGrey => new(105, 105, 105, 255);
 
     /// <summary>Gets a color with (R, G, B, A) = (30, 144, 255, 255).</summary>
     public static Colour DodgerBlue => new(30, 144, 255, 255);
@@ -176,7 +176,7 @@ public struct Colour
     public static Colour Goldenrod => new(218, 165, 32, 255);
 
     /// <summary>Gets a color with (R, G, B, A) = (128, 128, 128, 255).</summary>
-    public static Colour Gray => new(128, 128, 128, 255);
+    public static Colour Grey => new(128, 128, 128, 255);
 
     /// <summary>Gets a color with (R, G, B, A) = (0, 128, 0, 255).</summary>
     public static Colour Green => new(0, 128, 0, 255);
@@ -230,7 +230,7 @@ public struct Colour
     public static Colour LightGreen => new(144, 238, 144, 255);
 
     /// <summary>Gets a color with (R, G, B, A) = (211, 211, 211, 255).</summary>
-    public static Colour LightGray => new(211, 211, 211, 255);
+    public static Colour LightGrey => new(211, 211, 211, 255);
 
     /// <summary>Gets a color with (R, G, B, A) = (255, 182, 193, 255).</summary>
     public static Colour LightPink => new(255, 182, 193, 255);
@@ -245,7 +245,7 @@ public struct Colour
     public static Colour LightSkyBlue => new(135, 206, 250, 255);
 
     /// <summary>Gets a color with (R, G, B, A) = (119, 136, 153, 255).</summary>
-    public static Colour LightSlateGray => new(119, 136, 153, 255);
+    public static Colour LightSlateGrey => new(119, 136, 153, 255);
 
     /// <summary>Gets a color with (R, G, B, A) = (176, 196, 222, 255).</summary>
     public static Colour LightSteelBlue => new(176, 196, 222, 255);
@@ -401,7 +401,7 @@ public struct Colour
     public static Colour SlateBlue => new(106, 90, 205, 255);
 
     /// <summary>Gets a color with (R, G, B, A) = (112, 128, 144, 255).</summary>
-    public static Colour SlateGray => new(112, 128, 144, 255);
+    public static Colour SlateGrey => new(112, 128, 144, 255);
 
     /// <summary>Gets a color with (R, G, B, A) = (255, 250, 250, 255).</summary>
     public static Colour Snow => new(255, 250, 250, 255);
