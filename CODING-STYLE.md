@@ -530,18 +530,9 @@ using System; // invalid
     <TargetFramework>net6.0</TargetFramework>
 </PropertyGroup>
 
-<PropertyGroup>
+<ItemGroup>
     <Using Include="System" />
-</PropertyGroup>
-```
-```xml
-<!-- invalid -->
-<PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-
-    <Using Include="System" />
-</PropertyGroup>
+</ItemGroup>
 ```
 
 11. Namespaces should always be file scoped and located at the very top of the file.
