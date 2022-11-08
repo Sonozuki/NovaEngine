@@ -21,6 +21,11 @@ TODO: local functions styles
 // multiple line comment
 
 /* this is invalid */
+
+/*
+this is an invalid
+multiple line comment
+*/
 ```
 
 2. Comments should start with a lower case and end with no full-stop, but otherwise follow standard grammar rules. Comments should also always have a single space betwee the `//` and the start of the comment.
