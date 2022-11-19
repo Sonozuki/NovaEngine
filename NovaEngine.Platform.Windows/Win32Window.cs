@@ -1,14 +1,4 @@
-﻿using NovaEngine.Common.Windows;
-using NovaEngine.Common.Windows.Api;
-using NovaEngine.Common.Windows.Native;
-using NovaEngine.Extensions;
-using NovaEngine.External.Platform;
-using NovaEngine.Logging;
-using NovaEngine.Maths;
-using NovaEngine.Windowing;
-using System;
-
-namespace NovaEngine.Platform.Windows;
+﻿namespace NovaEngine.Platform.Windows;
 
 /// <summary>Represents a Win32 window.</summary>
 public class Win32Window : PlatformWindowBase
