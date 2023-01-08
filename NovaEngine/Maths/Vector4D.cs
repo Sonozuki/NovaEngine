@@ -849,7 +849,7 @@ public struct Vector4D : IEquatable<Vector4D>
     /// <summary>Converts the vector to unit length.</summary>
     public void Normalise()
     {
-        if (Length == 0)
+        if (LengthSquared == 0)
             return;
 
         var scale = 1 / Length;

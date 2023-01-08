@@ -137,7 +137,7 @@ public struct QuaternionD : IEquatable<QuaternionD>
     /// <summary>Converts the quaternion to unit length.</summary> // TODO: change 'Converts' to 'Scales' (same for vector classes)
     public void Normalise()
     {
-        if (Length == 0)
+        if (LengthSquared == 0)
             return;
 
         var scale = 1 / Length;
