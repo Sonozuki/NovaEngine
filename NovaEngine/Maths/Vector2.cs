@@ -109,7 +109,7 @@ public struct Vector2 : IEquatable<Vector2>, IComparable<Vector2>
         Y = y;
     }
 
-    /// <summary>Converts the vector to unit length.</summary>
+    /// <summary>Scales the vector to unit length.</summary>
     public void Normalise()
     {
         if (LengthSquared == 0)

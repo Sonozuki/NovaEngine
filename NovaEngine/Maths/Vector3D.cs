@@ -241,7 +241,7 @@ public struct Vector3D : IEquatable<Vector3D>
         Z = z;
     }
 
-    /// <summary>Converts the vector to unit length.</summary>
+    /// <summary>Scales the vector to unit length.</summary>
     public void Normalise()
     {
         if (LengthSquared == 0)
