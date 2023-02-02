@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Content;
 
 /// <summary>Handles content loading.</summary>
-public class ContentLoader
+public static class ContentLoader
 {
     /*********
     ** Fields
