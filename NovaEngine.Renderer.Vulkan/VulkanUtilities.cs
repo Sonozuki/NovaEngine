@@ -64,13 +64,8 @@ internal unsafe static class VulkanUtilities
     {
         var bufferSize = vertices.Length * sizeof(Vertex);
 
-        // create staging buffer and copy verex data to it
-        using var stagingBuffer = new VulkanBuffer(bufferSize, VkBufferUsageFlags.TransferSource, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
-        stagingBuffer.CopyFrom(vertices);
-
-        // create vertex buffer and copy staging buffer to it
         var vertexBuffer = new VulkanBuffer(bufferSize, VkBufferUsageFlags.TransferDestination | VkBufferUsageFlags.VertexBuffer, VkMemoryPropertyFlags.DeviceLocal);
-        vertexBuffer.CopyFrom(stagingBuffer);
+        vertexBuffer.CopyFrom(vertices);
 
         return vertexBuffer;
     }
@@ -81,13 +76,8 @@ internal unsafe static class VulkanUtilities
     {
         var bufferSize = indices.Length * sizeof(uint);
 
-        // create staging buffer and copy index data to it
-        using var stagingBuffer = new VulkanBuffer(bufferSize, VkBufferUsageFlags.TransferSource, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
-        stagingBuffer.CopyFrom(indices);
-
-        // create index buffer and copy staging buffer to it
         var indexBuffer = new VulkanBuffer(bufferSize, VkBufferUsageFlags.TransferDestination | VkBufferUsageFlags.IndexBuffer, VkMemoryPropertyFlags.DeviceLocal);
-        indexBuffer.CopyFrom(stagingBuffer);
+        indexBuffer.CopyFrom(indices);
 
         return indexBuffer;
     }
