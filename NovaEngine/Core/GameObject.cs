@@ -162,6 +162,7 @@ public sealed class GameObject : IDisposable
     /// <inheritdoc/>
     public void Dispose()
     {
+        Parent = null; // this is to remove it from the child list
         RendererGameObject.Dispose();
 
         foreach (var component in Components)
