@@ -7,7 +7,7 @@ public sealed class RenderingSettings : SettingsBase<RenderingSettings>
     ** Fields
     *********/
     /// <summary>The current number of samples per pixel to use in multisample anti aliasing (MSAA).</summary>
-    private SampleCount _SampleCount = SampleCount.Count8;
+    private SampleCount _SampleCount = SampleCount._8;
 
 
     /*********

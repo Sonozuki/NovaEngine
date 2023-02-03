@@ -135,7 +135,7 @@ internal unsafe class VulkanPipelines : IDisposable
             DepthPrepassPipelineLayout = CreatePipelineLayout(null, DescriptorSetLayouts.DepthPrepassDescriptorSetLayout);
 
             // pipeline
-            DepthPrepassPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, new[] { ShaderStages.DepthShader }, DepthPrepassPipelineLayout, VkPrimitiveTopology.TriangleList, SampleCount.Count1, Camera.DepthPrepassRenderPass);
+            DepthPrepassPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, new[] { ShaderStages.DepthShader }, DepthPrepassPipelineLayout, VkPrimitiveTopology.TriangleList, SampleCount._1, Camera.DepthPrepassRenderPass);
         }
 
         // pbr

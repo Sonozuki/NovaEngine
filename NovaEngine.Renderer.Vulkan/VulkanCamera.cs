@@ -612,7 +612,7 @@ public unsafe class VulkanCamera : RendererCameraBase
         // textures
         DepthPrepassTextures = new DepthTexture[ConcurrentFrames];
         for (int i = 0; i < ConcurrentFrames; i++)
-            DepthPrepassTextures[i] = new DepthTexture(Swapchain.Extent.Width, Swapchain.Extent.Height, SampleCount.Count1);
+            DepthPrepassTextures[i] = new DepthTexture(Swapchain.Extent.Width, Swapchain.Extent.Height, SampleCount._1);
 
         // framebuffers
         DepthPrepassFramebuffers = new VkFramebuffer[ConcurrentFrames];

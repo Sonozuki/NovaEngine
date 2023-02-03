@@ -4,23 +4,23 @@
 public enum SampleCount
 {
     /// <summary>1 sample per pixel will be used (no MSAA).</summary>
-    Count1,
+    _1,
 
     /// <summary>2 samples per pixel will be used.</summary>
-    Count2,
+    _2,
 
     /// <summary>4 samples per pixel will be used.</summary>
-    Count4,
+    _4,
 
     /// <summary>8 samples per pixel will be used.</summary>
-    Count8,
+    _8,
 
     /// <summary>16 samples per pixel will be used.</summary>
-    Count16,
+    _16,
 
     /// <summary>32 samples per pixel will be used.</summary>
-    Count32,
+    _32,
 
     /// <summary>64 samples per pixel will be used.</summary>
-    Count64
+    _64
 }

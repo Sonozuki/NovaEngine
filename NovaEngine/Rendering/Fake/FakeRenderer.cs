@@ -10,7 +10,7 @@ internal class FakeRenderer : IRenderer
     public bool CanUseOnPlatform => true;
 
     /// <inheritdoc/>
-    public SampleCount MaxSampleCount => SampleCount.Count1;
+    public SampleCount MaxSampleCount => SampleCount._1;
 
     /// <inheritdoc/>
     public string DeviceName => "";

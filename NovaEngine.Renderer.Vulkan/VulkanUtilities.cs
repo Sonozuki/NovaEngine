@@ -34,12 +34,12 @@ internal unsafe static class VulkanUtilities
     public static VkSampleCountFlags ConvertSampleCount(SampleCount sampleCount) =>
         sampleCount switch
         {
-            SampleCount.Count64 => VkSampleCountFlags._64,
-            SampleCount.Count32 => VkSampleCountFlags._32,
-            SampleCount.Count16 => VkSampleCountFlags._16,
-            SampleCount.Count8 => VkSampleCountFlags._8,
-            SampleCount.Count4 => VkSampleCountFlags._4,
-            SampleCount.Count2 => VkSampleCountFlags._2,
+            SampleCount._64 => VkSampleCountFlags._64,
+            SampleCount._32 => VkSampleCountFlags._32,
+            SampleCount._16 => VkSampleCountFlags._16,
+            SampleCount._8 => VkSampleCountFlags._8,
+            SampleCount._4 => VkSampleCountFlags._4,
+            SampleCount._2 => VkSampleCountFlags._2,
             _ => VkSampleCountFlags._1,
         };
 
@@ -49,13 +49,13 @@ internal unsafe static class VulkanUtilities
     public static SampleCount ConvertSampleCount(VkSampleCountFlags sampleCount) =>
         sampleCount switch
         {
-            VkSampleCountFlags when sampleCount.HasFlag(VkSampleCountFlags._64) => SampleCount.Count64,
-            VkSampleCountFlags when sampleCount.HasFlag(VkSampleCountFlags._32) => SampleCount.Count32,
-            VkSampleCountFlags when sampleCount.HasFlag(VkSampleCountFlags._16) => SampleCount.Count16,
-            VkSampleCountFlags when sampleCount.HasFlag(VkSampleCountFlags._8) => SampleCount.Count8,
-            VkSampleCountFlags when sampleCount.HasFlag(VkSampleCountFlags._4) => SampleCount.Count4,
-            VkSampleCountFlags when sampleCount.HasFlag(VkSampleCountFlags._2) => SampleCount.Count2,
-            _ => SampleCount.Count1
+            VkSampleCountFlags when sampleCount.HasFlag(VkSampleCountFlags._64) => SampleCount._64,
+            VkSampleCountFlags when sampleCount.HasFlag(VkSampleCountFlags._32) => SampleCount._32,
+            VkSampleCountFlags when sampleCount.HasFlag(VkSampleCountFlags._16) => SampleCount._16,
+            VkSampleCountFlags when sampleCount.HasFlag(VkSampleCountFlags._8) => SampleCount._8,
+            VkSampleCountFlags when sampleCount.HasFlag(VkSampleCountFlags._4) => SampleCount._4,
+            VkSampleCountFlags when sampleCount.HasFlag(VkSampleCountFlags._2) => SampleCount._2,
+            _ => SampleCount._1
         };
 
     /// <summary>Creates a vertex buffer.</summary>
