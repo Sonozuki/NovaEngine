@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<Nullable>enable</Nullable>
@@ -28,7 +28,7 @@
 		<Using Include="NovaEngine.Maths"/>
 		<Using Include="System.Runtime.InteropServices"/>
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\NovaEngine.Common.Windows\NovaEngine.Common.Windows.csproj" />
 		<ProjectReference Include="..\NovaEngine\NovaEngine.csproj" />
