@@ -23,7 +23,7 @@
 		<Using Include="NovaEngine.Settings" />
 		<Using Include="System.Runtime.InteropServices" />
 		<Using Include="System.Text" />
-		<Using Include="Vulkan" />
+		<Using Include="Vulkan_1_3" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -35,7 +35,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NVK" Version="1.0.4" />
+		<PackageReference Include="NVK" Version="2.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

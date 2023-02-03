@@ -24,9 +24,6 @@ public unsafe class VulkanRenderer : IRenderer
     /// <summary>The Vulkan instance.</summary>
     private VkInstance NativeInstance;
 
-    /// <summary>The delegate that will store the debug report for getting a pointer to it.</summary>
-    private readonly DebugReportCallbackEXTDelegate DebugReportCallback = DebugReport;
-
     /// <summary>The Vulkan debug report.</summary>
     private VkDebugReportCallbackEXT NativeDebugReportCallback;
 
@@ -130,7 +127,7 @@ public unsafe class VulkanRenderer : IRenderer
         var applicationInfo = new VkApplicationInfo
         {
             SType = VkStructureType.ApplicationInfo,
-            ApiVersion = new VkVersion(0, 1, 2, 0)
+            ApiVersion = new VkVersion(0, 1, 3, 0)
         };
 
         var instanceCreateInfo = new VkInstanceCreateInfo
@@ -164,7 +161,7 @@ public unsafe class VulkanRenderer : IRenderer
                 var availableLayerNames = layerProperties.Select(property => Marshal.PtrToStringAnsi((IntPtr)property.LayerName));
                 enabledLayerNames = layerNames
                     .Where(layerName => availableLayerNames.Contains(layerName))
-                    .Select(layerName => Marshal.StringToHGlobalAnsi(layerName))
+                    .Select(Marshal.StringToHGlobalAnsi)
                     .ToArray();
 
                 if (enabledLayerNames.Length == 0)
@@ -176,9 +173,9 @@ public unsafe class VulkanRenderer : IRenderer
             // convert extension names to pointers
             enabledExtensionNames = new IntPtr[extensionNames.Count];
             var extensionPropertyCount = 0u;
-            VK.EnumerateInstanceExtensionProperties((byte*)null, ref extensionPropertyCount, null);
+            VK.EnumerateInstanceExtensionProperties(null, ref extensionPropertyCount, null);
             var extensionProperties = new VkExtensionProperties[extensionPropertyCount];
-            VK.EnumerateInstanceExtensionProperties((byte*)null, ref extensionPropertyCount, extensionProperties);
+            VK.EnumerateInstanceExtensionProperties(null, ref extensionPropertyCount, extensionProperties);
 
             var availableExtensionNames = extensionProperties.Select(property => Marshal.PtrToStringAnsi((IntPtr)property.ExtensionName));
             for (int i = 0; i < extensionNames.Count; i++)
@@ -211,9 +208,9 @@ public unsafe class VulkanRenderer : IRenderer
             {
                 var debugReportCallbackCreateInfo = new VkDebugReportCallbackCreateInfoEXT
                 {
-                    SType = VkStructureType.DebugReportCreateInfoExt,
-                    Flags = VkDebugReportFlagsEXT.ErrorExt | VkDebugReportFlagsEXT.WarningExt | VkDebugReportFlagsEXT.PerformanceWarningExt,
-                    Callback = Marshal.GetFunctionPointerForDelegate(DebugReportCallback)
+                    SType = VkStructureType.DebugReportCallbackCreateInfoEXT,
+                    Flags = VkDebugReportFlagsEXT.ErrorEXT | VkDebugReportFlagsEXT.WarningEXT | VkDebugReportFlagsEXT.PerformanceWarningEXT,
+                    Callback = &DebugReport
                 };
 
                 if (VK.CreateDebugReportCallbackEXT(NativeInstance, ref debugReportCallbackCreateInfo, null, out NativeDebugReportCallback) != VkResult.Success)
@@ -238,7 +235,7 @@ public unsafe class VulkanRenderer : IRenderer
         {
             var win32SurfaceCreateInfo = new VkWin32SurfaceCreateInfoKHR
             {
-                SType = VkStructureType.Win32SurfaceCreateInfoKhr,
+                SType = VkStructureType.Win32SurfaceCreateInfoKHR,
                 Hwnd = WindowHandle,
                 Hinstance = Program.Handle
             };
@@ -311,7 +308,7 @@ public unsafe class VulkanRenderer : IRenderer
             var score = 0f;
 
             // check if the device is decrete (typically have a major performance advantage)
-            if (deviceProperties.DeviceType == VkPhysicalDeviceType.DiscreteGpu)
+            if (deviceProperties.DeviceType == VkPhysicalDeviceType.DiscreteGPU)
                 score += 2;
 
             // maximum image size can be an indication of a devices performance

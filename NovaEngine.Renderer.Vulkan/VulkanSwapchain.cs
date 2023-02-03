@@ -68,8 +68,8 @@ internal unsafe class VulkanSwapchain : IDisposable
             imageUsage |= VkImageUsageFlags.TransferDestination;
 
         // find a supported composite alpha format (not all devices support CompositeAlphaFlags.Opaque)
-        var compositeAlpha = VkCompositeAlphaFlagsKHR.OpaqueKhr;
-        var compositeAlphaFlags = new[] { VkCompositeAlphaFlagsKHR.OpaqueKhr, VkCompositeAlphaFlagsKHR.PreMultipliedKhr, VkCompositeAlphaFlagsKHR.PostMultipliedKhr, VkCompositeAlphaFlagsKHR.InheritKhr };
+        var compositeAlpha = VkCompositeAlphaFlagsKHR.OpaqueKHR;
+        var compositeAlphaFlags = new[] { VkCompositeAlphaFlagsKHR.OpaqueKHR, VkCompositeAlphaFlagsKHR.PreMultipliedKHR, VkCompositeAlphaFlagsKHR.PostMultipliedKHR, VkCompositeAlphaFlagsKHR.InheritKHR };
         foreach (var compositeAlphaFlag in compositeAlphaFlags)
             if ((swapchainSupport.Capabilities.SupportedCompositeAlpha & compositeAlphaFlag) != 0)
             {
@@ -85,7 +85,7 @@ internal unsafe class VulkanSwapchain : IDisposable
         // create swapchain
         var swapchainCreateInfo = new VkSwapchainCreateInfoKHR
         {
-            SType = VkStructureType.SwapchainCreateInfoKhr,
+            SType = VkStructureType.SwapchainCreateInfoKHR,
             Surface = VulkanRenderer.Instance.NativeSurface,
             MinImageCount = imageCount,
             ImageFormat = surfaceFormat.Format,
@@ -119,7 +119,7 @@ internal unsafe class VulkanSwapchain : IDisposable
             {
                 SType = VkStructureType.ImageViewCreateInfo,
                 Image = NativeImages[i],
-                ViewType = VkImageViewType._2d,
+                ViewType = VkImageViewType._2D,
                 Format = ImageFormat,
                 Components = VkComponentMapping.Identity,
                 SubresourceRange = new(VkImageAspectFlags.Color, 0, 1, 0, 1)
@@ -186,7 +186,7 @@ internal unsafe class VulkanSwapchain : IDisposable
         var swapchain = NativeSwapchain;
         var presentInfo = new VkPresentInfoKHR
         {
-            SType = VkStructureType.PresentInfoKhr,
+            SType = VkStructureType.PresentInfoKHR,
             WaitSemaphoreCount = 1,
             WaitSemaphores = &waitSemaphore,
             ImageIndices = &imageIndex,
@@ -256,11 +256,11 @@ internal unsafe class VulkanSwapchain : IDisposable
         // if vsync isn't requested, try to find PresentMode.Mailbox as it's the lowest latency non-tearing presentation mode
         if (!vsync)
             foreach (var presentationMode in presentationModes)
-                if (presentationMode == VkPresentModeKHR.MailboxKhr)
+                if (presentationMode == VkPresentModeKHR.MailboxKHR)
                     return presentationMode;
 
         // otherwise, just return fifo. fifo waits for the vertical blank (vsync) and is always present as per spec
-        return VkPresentModeKHR.FifoKhr;
+        return VkPresentModeKHR.FifoKHR;
     }
 
     /// <summary>Gets the first format with the specified features.</summary>

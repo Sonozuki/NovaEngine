@@ -63,9 +63,9 @@ internal unsafe class VulkanDevice : IDisposable
             // convert extension names to pointers
             enabledExtensionNames = new IntPtr[extensionNames.Count];
             var extensionPropertyCount = 0u;
-            VK.EnumerateDeviceExtensionProperties(NativePhysicalDevice, (byte*)null, ref extensionPropertyCount, null);
+            VK.EnumerateDeviceExtensionProperties(NativePhysicalDevice, null, ref extensionPropertyCount, null);
             var extensionProperties = new VkExtensionProperties[extensionPropertyCount];
-            VK.EnumerateDeviceExtensionProperties(NativePhysicalDevice, (byte*)null, ref extensionPropertyCount, extensionProperties);
+            VK.EnumerateDeviceExtensionProperties(NativePhysicalDevice, null, ref extensionPropertyCount, extensionProperties);
 
             var availableExtensionNames = extensionProperties.Select(property => Marshal.PtrToStringAnsi((IntPtr)property.ExtensionName));
             for (int i = 0; i < extensionNames.Count; i++)

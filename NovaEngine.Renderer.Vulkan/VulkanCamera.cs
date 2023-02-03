@@ -330,7 +330,7 @@ public unsafe class VulkanCamera : RendererCameraBase
 
                 VK.CommandBindDescriptorSets(commandBuffer, VkPipelineBindPoint.Graphics, pipelineLayout, 0, 1, new[] { retrieveDescriptorSet(gameObject) }, 0, null);
                 VK.CommandBindVertexBuffers(commandBuffer, 0, 1, ref vertexBuffer, ref offsets);
-                VK.CommandBindIndexBuffer(commandBuffer, gameObject.IndexBuffer!.NativeBuffer, 0, VkIndexType.Uint32);
+                VK.CommandBindIndexBuffer(commandBuffer, gameObject.IndexBuffer!.NativeBuffer, 0, VkIndexType.UInt32);
                 VK.CommandDrawIndexed(commandBuffer, (uint)gameObject.IndexCount, 1, 0, 0, 0);
             }
         }
@@ -428,7 +428,7 @@ public unsafe class VulkanCamera : RendererCameraBase
             var attachment = new VkAttachmentDescription()
             {
                 Format = VulkanSwapchain.GetDepthFormat(),
-                Samples = VkSampleCountFlags.Count1,
+                Samples = VkSampleCountFlags._1,
                 LoadOp = VkAttachmentLoadOp.Clear,
                 StoreOp = VkAttachmentStoreOp.Store,
                 StencilLoadOp = VkAttachmentLoadOp.DontCare,
@@ -506,13 +506,13 @@ public unsafe class VulkanCamera : RendererCameraBase
                 new() // resolved colour
                 {
                     Format = Swapchain.ImageFormat,
-                    Samples = VkSampleCountFlags.Count1,
+                    Samples = VkSampleCountFlags._1,
                     LoadOp = VkAttachmentLoadOp.DontCare,
                     StoreOp = VkAttachmentStoreOp.Store,
                     StencilLoadOp = VkAttachmentLoadOp.DontCare,
                     StencilStoreOp = VkAttachmentStoreOp.DontCare,
                     InitialLayout = VkImageLayout.Undefined,
-                    FinalLayout = VkImageLayout.PresentSourceKhr
+                    FinalLayout = VkImageLayout.PresentSourceKHR
                 }
             };
 

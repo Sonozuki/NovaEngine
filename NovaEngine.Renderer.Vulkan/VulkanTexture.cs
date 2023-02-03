@@ -73,13 +73,13 @@ public unsafe class VulkanTexture : RendererTextureBase
         VkImageViewType imageViewType;
         (imageType, imageViewType) = this.Type switch
         {
-            TextureType.Texture1D => (VkImageType._1d, VkImageViewType._1d),
-            TextureType.Texture1DArray => (VkImageType._1d, VkImageViewType._1dArray),
-            TextureType.Texture2D => (VkImageType._2d, VkImageViewType._2d),
-            TextureType.Texture2DArray => (VkImageType._2d, VkImageViewType._2dArray),
-            TextureType.Texture3D => (VkImageType._3d, VkImageViewType._3d),
-            TextureType.CubeMap => (VkImageType._2d, VkImageViewType.Cube),
-            TextureType.CubeMapArray => (VkImageType._2d, VkImageViewType.CubeArray),
+            TextureType.Texture1D => (VkImageType._1D, VkImageViewType._1D),
+            TextureType.Texture1DArray => (VkImageType._1D, VkImageViewType._1DArray),
+            TextureType.Texture2D => (VkImageType._2D, VkImageViewType._2D),
+            TextureType.Texture2DArray => (VkImageType._2D, VkImageViewType._2DArray),
+            TextureType.Texture3D => (VkImageType._3D, VkImageViewType._3D),
+            TextureType.CubeMap => (VkImageType._2D, VkImageViewType.Cube),
+            TextureType.CubeMapArray => (VkImageType._2D, VkImageViewType.CubeArray),
             _ => throw new InvalidOperationException($"{nameof(this.Type)} isn't valid.")
         };
 
@@ -457,7 +457,7 @@ public unsafe class VulkanTexture : RendererTextureBase
             case VkImageLayout.Undefined:
                 // image layout is undefined (or doesn't matter)
                 // this is only valid as an initial layout, this isn't required but here for completeness
-                imageMemoryBarrier.SourceAccessMask = VkAccessFlags.NoneKhr;
+                imageMemoryBarrier.SourceAccessMask = VkAccessFlags.None;
                 break;
             case VkImageLayout.Preinitialized:
                 // image is preinitialised
@@ -518,7 +518,7 @@ public unsafe class VulkanTexture : RendererTextureBase
             case VkImageLayout.ShaderReadOnlyOptimal:
                 // image will be read in a shader
                 // make sure any writes to the image have been finished
-                if (imageMemoryBarrier.SourceAccessMask == VkAccessFlags.NoneKhr)
+                if (imageMemoryBarrier.SourceAccessMask == VkAccessFlags.None)
                     imageMemoryBarrier.SourceAccessMask = VkAccessFlags.HostWrite | VkAccessFlags.TransferWrite;
                 imageMemoryBarrier.DestinationAccessMask = VkAccessFlags.ShaderRead;
                 break;
