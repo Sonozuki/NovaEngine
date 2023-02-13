@@ -85,9 +85,6 @@ public class Transform : ComponentBase
         set => LocalScale = value / ParentScale;
     }
 
-    /// <summary>The game object the transform belongs to.</summary>
-    public GameObject GameObject { get; }
-
     /// <summary>The forward direction of the tranform in local space.</summary>
     public Vector3 LocalForward => Vector3.UnitZ * LocalRotation;
 

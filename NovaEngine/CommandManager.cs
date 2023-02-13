@@ -16,11 +16,9 @@ public static class CommandManager
     /// <summary>Initialises the class.</summary>
     static CommandManager()
     {
-        // set console input stream to read commands
         var standardInput = new StreamReader(Console.OpenStandardInput());
         ReadCommands(standardInput);
 
-        // add help command
         Add("help", "Lists all registered command documentation.\n\nUsage: help\nLists all the registered commands.\n\nUsage: help <command>\nLists the documentation about a specific command\n- command: The name of command to view the documentation of.", HelpCommand);
         Add("qqq", "Closes the application.\n\nUsage: qqq\nCloses the application.", (_) => Environment.Exit(0));
     }
@@ -36,14 +34,12 @@ public static class CommandManager
     {
         var command = new Command(name, documentation, callback);
 
-        // ensure command doesn't already exist
         if (Commands.Any(c => c.Name.ToLower() == command.Name.ToLower()))
         {
             Logger.LogError($"Cannot add command: '{command.Name}' as it already exists.");
             return false;
         }
 
-        // add command
         Commands.Add(command);
         return true;
     }
@@ -60,14 +56,12 @@ public static class CommandManager
         if (streamReader == null)
             throw new ArgumentNullException(nameof(streamReader));
 
-        // execute commands
         while (true)
         {
             var input = await streamReader.ReadLineAsync();
             if (string.IsNullOrWhiteSpace(input))
                 continue;
 
-            // ensure command exists
             var splitString = input.Split(' ');
             var commandName = splitString[0];
             var command = Commands.FirstOrDefault(command => command.Name.ToLower() == commandName.ToLower());
@@ -78,11 +72,9 @@ public static class CommandManager
                 continue;
             }
 
-            // execute command
-            var commandArgs = splitString[1..].Where(argument => !string.IsNullOrEmpty(argument));
-
             try
             {
+                var commandArgs = splitString[1..].Where(argument => !string.IsNullOrEmpty(argument));
                 command.Callback.Invoke(commandArgs.ToArray());
             }
             catch (Exception ex)
@@ -99,19 +91,16 @@ public static class CommandManager
         // check if a specific command was requested
         if (args.Length > 0)
         {
-            // get the command being requested
-            var requestedCommand = args[0];
-            var command = Commands.FirstOrDefault(command => command.Name.ToLower() == requestedCommand.ToLower());
-
-            // ensure command exists
-            if (command == null)
+            var requestedCommandName = args[0];
+            var requestedCommand = Commands.FirstOrDefault(command => command.Name.ToLower() == requestedCommandName.ToLower());
+            if (requestedCommand == null)
             {
-                Logger.LogError($"No command with the name: '{requestedCommand}' could be found.");
+                Logger.LogError($"No command with the name: '{requestedCommandName}' could be found.");
                 Logger.LogHelp("Type 'help' for a list of available commands.");
                 return;
             }
 
-            Logger.LogHelp($"{command.Name}: {command.Documentation}");
+            Logger.LogHelp($"{requestedCommand.Name}: {requestedCommand.Documentation}");
         }
         else // write out command list
         {

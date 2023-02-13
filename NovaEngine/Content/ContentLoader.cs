@@ -16,24 +16,21 @@ public static class ContentLoader
     /// <summary>Initialises the class.</summary>
     static ContentLoader()
     {
-        // load all content pipeline types from assemblies
         var types = AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(assembly => assembly.GetTypes())
             .Where(type => type.IsClass && !type.IsAbstract);
 
         foreach (var type in types)
         {
-            if (!type.GetInterfaces().Contains(typeof(IContentReader)))
+            if (!type.IsAssignableTo(typeof(IContentReader)))
                 continue;
 
-            // ensure the attribute exists
             if (!type.GetCustomAttributes(false).Any(attribute => attribute.GetType() == typeof(ContentReaderAttribute)))
             {
                 Logger.LogError($"ContentReader: {type.FullName} doesn't have a {nameof(ContentReaderAttribute)}");
                 continue;
             }
 
-            // create reader
             var reader = Activator.CreateInstance(type);
             if (reader != null)
                 ContentReaders.Add((IContentReader)reader);
@@ -56,45 +53,37 @@ public static class ContentLoader
     /// <exception cref="ContentException">Thrown if a content reader for <paramref name="returnType"/> couldn't be found, or if the file was invalid.</exception>
     public static object Load(string path, Type returnType)
     {
-        // convert path from relative to absolute
         path = Path.Combine(Constants.ContentDirectory, path);
 
-        // add file extension if needed
         var file = path;
         if (string.IsNullOrEmpty(new FileInfo(file).Extension))
             file += Constants.ContentFileExtension;
 
-        // ensure file exists
         if (!File.Exists(file))
             throw new FileNotFoundException($"Cannot find file: {file}.");
 
-        // create a file content stream and read an object from it
-        using (var stream = GetFileContentStream(file, out var contentType))
+        using var stream = GetFileContentStream(file, out var contentType);
+        object? readObject = null;
+
+        try
         {
-            object? readObject = null;
-
-            try
+            if (contentType.ToLower() == "serialised")
+                readObject = Serialiser.Deserialise(stream);
+            else
             {
-                // check if the file should be read using the deserialiser
-                if (contentType.ToLower() == "serialised")
-                    readObject = Serialiser.Deserialise(stream);
-                else
-                {
-                    // find a valid content reader
-                    var contentReader = GetContentReader(returnType, contentType);
-                    if (contentReader == null)
-                        throw new ContentException($"Cannot find content reader for object type: {returnType.FullName} and content type: {contentType}.");
+                var contentReader = GetContentReader(returnType, contentType);
+                if (contentReader == null)
+                    throw new ContentException($"Cannot find content reader for object type: {returnType.FullName} and content type: {contentType}.");
 
-                    readObject = contentReader.Read(stream, returnType);
-                }
+                readObject = contentReader.Read(stream, returnType);
             }
-            catch (Exception ex)
-            {
-                throw new ContentException("Failed to read content from file.", ex);
-            }
-
-            return readObject ?? throw new ContentException("Content reader returned null.");
         }
+        catch (Exception ex)
+        {
+            throw new ContentException("Failed to read content from file.", ex);
+        }
+
+        return readObject ?? throw new ContentException("Content reader returned null.");
     }
 
 
@@ -109,15 +98,12 @@ public static class ContentLoader
     /// <exception cref="ContentException">Thrown if <paramref name="file"/> doesn't have a valid header.</exception>
     private static Stream GetFileContentStream(string file, out string contentType)
     {
-        // ensure file exists
         if (!File.Exists(file))
             throw new FileNotFoundException($"Cannot find file: {file}.");
 
-        // create binary reader for file
         using var fileStream = File.OpenRead(file);
         using var binaryReader = new BinaryReader(fileStream);
 
-        // validate file
         var n = binaryReader.ReadByte();
         var o = binaryReader.ReadByte();
         var v = binaryReader.ReadByte();
@@ -126,11 +112,9 @@ public static class ContentLoader
         if (n != 'N' || o != 'O' || v != 'V' || a != 'A')
             throw new ContentException($"{file} isn't a valid nova file.");
 
-        // read header
         var version = binaryReader.ReadByte(); // unused for now, should always be 1
         contentType = binaryReader.ReadString();
 
-        // create content stream
         var stream = new MemoryStream();
         binaryReader.BaseStream.CopyTo(stream);
         stream.Position = 0;

@@ -47,13 +47,13 @@ internal static class AtlasPacker
 
         // calculate the minimum atlas size and glyph positions
         atlasEdgeLength = (int)MathF.Ceiling(MathF.Sqrt(totalArea) / 4f) * 4;
-
-        var isAtlasBigEnough = false;
-        while (!isAtlasBigEnough)
+        while (true)
         {
+            // TODO: improve algorithm for finding smallest atlas size
             atlasEdgeLength += 4;
             GlyphPacker.SetInitialSpaceSize(atlasEdgeLength);
-            isAtlasBigEnough = GlyphPacker.TryPack(glyphs, totalPadding);
+            if (GlyphPacker.TryPack(glyphs, totalPadding))
+                break;
 
             // TODO: make sure the texture is broken up when a large enough texture size is reached (only really an issue with languages such as Japanese)
         }

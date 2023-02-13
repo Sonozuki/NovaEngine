@@ -30,12 +30,10 @@ public class SceneRootObjects : IList<GameObject>
         get => RootGameObjects[index];
         set
         {
-            // unset the scene of the root object being replaced
             var oldRootObject = RootGameObjects[index];
             if (oldRootObject != null)
                 oldRootObject.Scene = null;
 
-            // set the scene of the new root object
             value.Scene = Scene;
             RootGameObjects[index] = value;
         }
@@ -79,12 +77,10 @@ public class SceneRootObjects : IList<GameObject>
     /// <inheritdoc/>
     public void Insert(int index, GameObject item)
     {
-        // unset the scene of the root object being replaced
         var oldRootObject = RootGameObjects[index];
         if (oldRootObject != null)
             oldRootObject.Scene = null;
 
-        // set the scene of the new root object
         item.Scene = Scene;
         RootGameObjects[index] = item;
     }

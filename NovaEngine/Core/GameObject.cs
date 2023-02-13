@@ -35,7 +35,6 @@ public sealed class GameObject : IDisposable
         get => _Parent;
         set
         {
-            // ensure old and new parents are different
             if (!object.ReferenceEquals(Parent, value))
                 return;
 
@@ -44,18 +43,11 @@ public sealed class GameObject : IDisposable
             if (allChildren.Any(child => object.ReferenceEquals(this, child)))
                 throw new InvalidOperationException("Cannot set the parent as it's a child of the object, which would cause a circular dependency.");
 
-            // remove the object from the old parent
-            if (Parent != null)
-                Parent.Children.Remove(this);
-
+            Parent?.Children.Remove(this);
             _Parent = value;
-
-            // add the object to the new parent
-            if (Parent != null)
-                Parent.Children.Add(this);
+            Parent?.Children.Add(this);
 
             Scene = Parent?.Scene;
-
             Transform.ParentPosition = Parent?.Transform.GlobalPosition ?? Vector3.Zero;
             Transform.ParentRotation = Parent?.Transform.GlobalRotation ?? Quaternion.Identity;
             Transform.ParentScale = Parent?.Transform.GlobalScale ?? Vector3.One;

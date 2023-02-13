@@ -19,11 +19,9 @@ internal class TypeInfos : IEnumerable<TypeInfo>
     /// <remarks>If a type info hasn't been calculated yet, one will get calculated and cached.</remarks>
     public TypeInfo Get(Type type)
     {
-        // check if type info has been cached
         if (CachedTypeInfos.TryGetValue(type, out var typeInfo))
             return typeInfo;
 
-        // calculate and cache type info
         typeInfo = new TypeInfo(type);
         CachedTypeInfos[type] = typeInfo;
         return typeInfo;

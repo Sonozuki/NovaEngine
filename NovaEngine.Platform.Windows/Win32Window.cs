@@ -75,7 +75,6 @@ public class Win32Window : PlatformWindowBase
         rectangle.Left = 0;
         rectangle.Top = 0;
 
-        // create window
         this.Handle = User32.CreateWindowEx(0, className, title, style, rectangle.Left, rectangle.Top, rectangle.Right - rectangle.Left, rectangle.Bottom - rectangle.Top, IntPtr.Zero, IntPtr.Zero, Program.Handle, IntPtr.Zero);
         if (this.Handle == IntPtr.Zero)
             throw new ApplicationException("Failed to craete Win32 window.").Log(LogSeverity.Fatal);

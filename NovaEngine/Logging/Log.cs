@@ -46,7 +46,7 @@ internal class Log
         InternalConsole.Write($"{Message}\n");
 
         // TODO: remove
-        // write label
+        // label
         Console.ResetColor();
         Console.Write($"[{DateTime.ToLocalTime():HH:mm:ss} ");
 
@@ -60,7 +60,7 @@ internal class Log
         Console.ResetColor();
         Console.Write("] ");
 
-        // write message
+        // message
         Console.ForegroundColor = SeverityInfo.ForegroundColour;
         if (SeverityInfo.BackgroundColour.HasValue)
             Console.BackgroundColor = SeverityInfo.BackgroundColour.Value;

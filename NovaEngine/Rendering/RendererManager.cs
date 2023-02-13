@@ -20,14 +20,12 @@ internal static class RendererManager
     /// <summary>Initialises the class.</summary>
     static RendererManager()
     {
-        // ensure a renderer should actually be used
-        if (!Program.HasProgramInstance)
+        if (!Program.HasProgramInstance) // ensure the app is being executed, not called externally
         {
             CurrentRenderer = new FakeRenderer();
             return;
         }
 
-        // get the current platform object
         var rendererFiles = Directory.GetFiles(Environment.CurrentDirectory, "NovaEngine.Renderer.*.dll");
         var types = rendererFiles
             .Select(rendererFile => Assembly.LoadFrom(rendererFile))
@@ -36,16 +34,13 @@ internal static class RendererManager
 
         foreach (var type in types)
         {
-            // ensure type is a renderer
-            if (!type.GetInterfaces().Contains(typeof(IRenderer)))
+            if (!type.IsAssignableTo(typeof(IRenderer)))
                 continue;
 
-            // try to create an instance
             var renderer = (IRenderer?)Activator.CreateInstance(type);
             if (renderer == null)
                 continue;
 
-            // set to the current renderer if it's usable
             if (!renderer.CanUseOnPlatform)
                 continue;
 

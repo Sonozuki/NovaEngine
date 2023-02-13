@@ -29,7 +29,6 @@ public class PerlinNoiseGenerator
     /// <param name="random">The rng to use when generating the noise.</param>
     public PerlinNoiseGenerator(Random random)
     {
-        // generate permutation table
         var shortPermutation = Enumerable.Range(0, 256).ToArray();
         for (int i = shortPermutation.Length - 1; i >= 0; i--) // shuffle using Fisher-Yates shuffle algorithm. see: https://blog.codinghorror.com/the-danger-of-naivete/
             Swap(ref shortPermutation[i], ref shortPermutation[random.Next(i + 1)]);

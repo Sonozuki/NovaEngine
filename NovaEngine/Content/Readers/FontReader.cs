@@ -14,12 +14,10 @@ public class FontReader : IContentReader
     {
         using var binaryReader = new BinaryReader(stream);
 
-        // metadata
         var name = binaryReader.ReadString();
         var maxGlyphHeight = binaryReader.ReadSingle();
         var pixelRange = binaryReader.ReadInt32();
 
-        // atlas
         var atlasEdgeLength = binaryReader.ReadUInt32();
         var pixelBuffer = binaryReader.ReadBytes((int)(atlasEdgeLength * atlasEdgeLength * sizeof(Colour32)));
         var pixels = MemoryMarshal.Cast<byte, Colour32>(pixelBuffer);
@@ -27,7 +25,6 @@ public class FontReader : IContentReader
         var atlas = new Texture2D(atlasEdgeLength, atlasEdgeLength, pixelType: TexturePixelType.Float);
         atlas.SetPixels(pixels.ToArray());
         
-        // glyphs
         var count = binaryReader.ReadInt32();
         var glyphs = new List<GlyphData>();
         for (int i = 0; i < count; i++)

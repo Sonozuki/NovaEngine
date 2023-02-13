@@ -36,19 +36,15 @@ internal class TypeInfo
         IsInlinable = type.IsInlinable();
         IsUnmanaged = type.IsUnmanaged();
 
-        // fields
         SerialisableFields.AddRange(type.GetSerialisableFields());
 
-        // properties
         var properties = type.GetSerialisableProperties();
-
         foreach (var property in properties)
             if (property.HasBackingField()) // serialise the backing field directly (if it has one), instead of through the property
                 SerialisableFields.Add(property.GetBackingField()!);
             else
                 SerialisableProperties.Add(property);
 
-        // callbacks
         SerialiserCallbacks = type.GetSerialiserCallbacks();
     }
 }

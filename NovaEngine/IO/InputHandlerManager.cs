@@ -20,14 +20,12 @@ internal static class InputHandlerManager
     /// <summary>Initialises the class.</summary>
     static InputHandlerManager()
     {
-        // ensure an input handler should actually be used
-        if (!Program.HasProgramInstance)
+        if (!Program.HasProgramInstance) // ensure the app is being executed, not called externally
         {
             CurrentInputHandler = new FakeInputHandler();
             return;
         }
 
-        // get the current input handler object
         var inputHandlerFiles = Directory.GetFiles(Environment.CurrentDirectory, "NovaEngine.InputHandler.*.dll");
         var types = inputHandlerFiles
             .Select(inputHandlerFile => Assembly.LoadFrom(inputHandlerFile))
@@ -36,16 +34,13 @@ internal static class InputHandlerManager
 
         foreach (var type in types)
         {
-            // ensure type is a renderer
-            if (!type.GetInterfaces().Contains(typeof(IInputHandler)))
+            if (!type.IsAssignableTo(typeof(IInputHandler)))
                 continue;
 
-            // try to create an instance
             var inputHandler = (IInputHandler?)Activator.CreateInstance(type);
             if (inputHandler == null)
                 continue;
 
-            // set to the current input handler if it's usable
             if (!inputHandler.CanUseOnPlatform)
                 continue;
 

@@ -173,7 +173,6 @@ public class Win32RawInput : IInputHandler
     {
         var rawMouse = rawInput.Data.Mouse;
 
-        // buttons
         if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.LeftButtonDown))
             _MouseState[MouseButton.LeftButton] = true;
         if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.LeftButtonUp))
@@ -199,13 +198,11 @@ public class Win32RawInput : IInputHandler
         if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.Button5Up))
             _MouseState[MouseButton.ForwardButton] = false;
 
-        // scroll wheels
         if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.Wheel))
             _MouseState.Scroll += new Vector2(0, rawMouse.ButtonData / 120f);
         if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.HWheel))
             _MouseState.Scroll += new Vector2(rawMouse.ButtonData / 120f, 0);
 
-        // position
         _MouseState.PositionDelta = new Vector2I(rawMouse.LastX, rawMouse.LastY);
         User32.GetCursorPos(ref _MouseState.Position); // delta follows the raw input meaning it can go out of sync with the cursor position, so get the position from Windows instead
         User32.ScreenToClient(Program.MainWindow.Handle, ref _MouseState.Position);

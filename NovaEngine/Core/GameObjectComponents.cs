@@ -42,13 +42,12 @@ public class GameObjectComponents : IList<ComponentBase>
     /// <inheritdoc/>
     public void Add(ComponentBase component)
     {
+        // TODO: ensure component isn't a transform
         // TODO: remove component from current gameobject, if it's attached to one, so it doesn't get updated twice
 
-        // add component
         component.GameObject = GameObject;
         Components.Add(component);
 
-        // run specific component logic
         if (component is MeshRenderer meshRenderer)
             meshRenderer.UpdateMesh();
     }
@@ -58,7 +57,7 @@ public class GameObjectComponents : IList<ComponentBase>
     {
         var wasRemoved = Components.Remove(item);
         if (wasRemoved)
-            item.GameObject = null!; // setting this is null is fine as the no code will try to access it expecting a non null value
+            item.GameObject = null!; // setting this is null is fine as no code will try to access it expecting a non null value
 
         return wasRemoved;
     }
@@ -78,7 +77,6 @@ public class GameObjectComponents : IList<ComponentBase>
             component.GameObject = null!; // setting this is null is fine as the no code will try to access it expecting a non null value
             Components.RemoveAt(i--);
 
-            // exit early if only the first component should be removed
             if (!removeAll)
                 break;
         }
@@ -104,21 +102,14 @@ public class GameObjectComponents : IList<ComponentBase>
     public List<T> GetRange<T>(bool includeDisabled = true)
         where T : ComponentBase
     {
-        // check cache (for types that can't have multiple)
-        if (typeof(T) == typeof(Transform) || typeof(T) == typeof(UITransform))
-            return new List<T>() { (T)(object)GameObject.Transform };
+        if (typeof(T).IsAssignableTo(typeof(Transform)))
+            return new List<T>() { (T)(object)GameObject.Transform }; // objects can only ever have one transform
 
-        // get all the components of type T
         var components = Components
             .Where(component => component is T)
+            .Where(component => includeDisabled || component.IsEnabled)
             .Cast<T>()
             .ToList();
-
-        // filter out disabled ones if necessary
-        if (!includeDisabled)
-            components = components
-                .Where(component => component.IsEnabled)
-                .ToList();
 
         return components;
     }
@@ -136,7 +127,6 @@ public class GameObjectComponents : IList<ComponentBase>
     public List<T> GetRangeFromChildren<T>(bool includeDisabled = true)
         where T : ComponentBase
     {
-        // get all the components of type T
         var components = new List<T>();
         foreach (var child in GameObject.Children)
             components.AddRange(child.Components.GetRange<T>(includeDisabled));
@@ -163,7 +153,6 @@ public class GameObjectComponents : IList<ComponentBase>
     public List<T> GetAll<T>(bool includeDisabled = true)
         where T : ComponentBase
     {
-        // get all components of type T
         var components = GetRange<T>(includeDisabled);
         foreach (var child in GameObject.Children)
             components.AddRange(child.Components.GetAll<T>(includeDisabled));

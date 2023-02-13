@@ -122,8 +122,8 @@ public static class Input
             throw new ArgumentNullException(nameof(callback));
 
         var listenerInfo = new MouseButtonEventListenerInfo(button, pressType);
-        if (MouseButtonEventHandlers.ContainsKey(listenerInfo))
-            MouseButtonEventHandlers[listenerInfo].Remove(callback);
+        if (MouseButtonEventHandlers.TryGetValue(listenerInfo, out var eventHandlers))
+            eventHandlers.Remove(callback);
     }
 
     /// <summary>Adds a key event handler.</summary>
@@ -145,8 +145,8 @@ public static class Input
             throw new ArgumentNullException(nameof(callback));
 
         var listenerInfo = new KeyEventListenerInfo(key, modifiers, pressType);
-        if (KeyEventHandlers.ContainsKey(listenerInfo))
-            KeyEventHandlers[listenerInfo].Add(callback);
+        if (KeyEventHandlers.TryGetValue(listenerInfo, out var eventHandlers))
+            eventHandlers.Add(callback);
         else
             KeyEventHandlers[listenerInfo] = new() { callback };
     }
@@ -170,8 +170,8 @@ public static class Input
             throw new ArgumentNullException(nameof(callback));
 
         var listenerInfo = new KeyEventListenerInfo(key, modifiers, pressType);
-        if (KeyEventHandlers.ContainsKey(listenerInfo))
-            KeyEventHandlers[listenerInfo].Remove(callback);
+        if (KeyEventHandlers.TryGetValue(listenerInfo, out var eventHandlers))
+            eventHandlers.Remove(callback);
     }
 
 
@@ -181,14 +181,12 @@ public static class Input
     /// <summary>Updates the state of the input system, as well as calling any input event handlers.</summary>
     internal static void Update()
     {
-        // update state
         PreviousMouseState = CurrentMouseState;
         CurrentMouseState = InputHandlerManager.CurrentInputHandler.MouseState;
 
         PreviousKeyboardState = CurrentKeyboardState;
         CurrentKeyboardState = InputHandlerManager.CurrentInputHandler.KeyboardState;
 
-        // call event handlers
         Enum.GetValues<MouseButton>().ToList().ForEach(button =>
         {
             switch (button)

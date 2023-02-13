@@ -35,7 +35,6 @@ public static class Serialiser
                 binaryWriter.Write(SerialiserUtilities.ConvertInlinableValueToBuffer(@object, objectTypeInfo!)); // ignoring that objectTypeInfo can be null, it's only null if @object is too (in which case it isn't used, so doesn't matter)
             else
             {
-                // write all object infos to the stream
                 var allObjectInfos = new List<ObjectInfo>();
                 SerialiserUtilities.FlattenObject(@object!, allObjectInfos, new());
 
@@ -92,7 +91,6 @@ public static class Serialiser
             // link references of and retrieve root object
             allObjectInfos[0].LinkReferences(allObjectInfos); // this will link all references of child objects as required
 
-            // invoke OnDeserialised methods
             var onDeserialisedCallbacks = new List<(ObjectInfo ObjectInfo, MethodInfo MethodInfo)>();
             foreach (var objectInfo in allObjectInfos)
                 foreach (var methodInfo in objectInfo.TypeInfo.SerialiserCallbacks.OnDeserialisedMethods)

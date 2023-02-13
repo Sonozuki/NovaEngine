@@ -41,7 +41,6 @@ internal class Simulation
 
         for (int i = 0; i < iterationCount; i++)
         {
-            // collision detection and resolution
             BroadPhase();
             NarrowPhase();
 
@@ -65,12 +64,10 @@ internal class Simulation
             if (body.InverseMass == 0)
                 continue;
 
-            // linear
             var linearAcceleration = body.Force * body.InverseMass;
             linearAcceleration += Gravity;
             body.LinearVelocity += linearAcceleration * deltaTime;
 
-            // angular
             CalculateInverseInertiaTensor(body);
             var angularAcceleration = body.InverseInertiaTensor * body.Torque;
             body.AngularVelocity += angularAcceleration * deltaTime;
@@ -96,11 +93,9 @@ internal class Simulation
 
         foreach (var body in Bodies)
         {
-            // linear
             body.GlobalPosition += body.LinearVelocity * deltaTime;
             body.LinearVelocity *= frameDamping;
 
-            // angular
             var rotation = body.GlobalRotation;
             rotation += new Quaternion(body.AngularVelocity * deltaTime * .5f, 0) * rotation;
             rotation.Normalise();

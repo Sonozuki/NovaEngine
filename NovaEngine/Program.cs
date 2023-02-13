@@ -36,22 +36,16 @@ public static class Program
         try
         {
             HasProgramInstance = true;
-
             Name = Process.GetCurrentProcess().ProcessName;
             Handle = Process.GetCurrentProcess().Handle;
 
-            // initialisation
             if (!InitialiseEngine())
                 return;
-
             LoadInitialScenes();
-
             MainWindow.Show();
 
-            // main loop
             ApplicationLoop.Run();
 
-            // clean up
             RendererManager.CurrentRenderer.PrepareDispose();
             SceneManager.GizmosScene.Dispose();
             foreach (var scene in SceneManager.LoadedScenes)
@@ -75,17 +69,14 @@ public static class Program
     /// <returns><see langword="true"/>, if the engine was successfully initialised; otherwise, <see langword="false"/>.</returns>
     private static bool InitialiseEngine()
     {
-        // initialise window
         if (PlatformManager.CurrentPlatform == null)
             return false; // manager has already created a fatal log
         MainWindow = new Window("NovaEngine", new(1280, 720)); // TODO: don't hardcode
 
-        // initialise input handler
         if (InputHandlerManager.CurrentInputHandler == null)
             return false; // manager has already created a fatal log
         InputHandlerManager.CurrentInputHandler.OnInitialise(MainWindow.Handle);
 
-        // initialise renderer
         if (RendererManager.CurrentRenderer == null)
             return false; // manager has already created a fatal log
         RendererManager.CurrentRenderer.OnInitialise(MainWindow.Handle);
@@ -101,7 +92,6 @@ public static class Program
     /// <summary>Loads the initial scenes.</summary>
     private static void LoadInitialScenes()
     {
-        // initialise initial scenes
         var initialScenes = ContentLoader.Load<string[]>("InitialScenes");
         foreach (var scene in initialScenes)
             SceneManager.LoadScene(scene);

@@ -31,14 +31,12 @@ public static class Debugger
     {
         var debugValue = new DebugValue<T>(name, documentation, callback);
 
-        // ensure debug value doesn't already exist
         if (DebugValues.Any(value => value.Name.ToLower() == debugValue.Name.ToLower()))
         {
             Logger.LogError($"Cannot add debug value: '{debugValue.Name}' as it already exists.");
             return false;
         }
 
-        // add debug value
         DebugValues.Add(debugValue);
         return true;
     }
@@ -51,10 +49,8 @@ public static class Debugger
     /// <param name="args">The command arguments.</param>
     private static void DebugCommand(string[] args)
     {
-        // remove empty array objects
         var trimmedArguments = args.Where(argument => !string.IsNullOrEmpty(argument)).ToArray();
 
-        // parse arguments
         if (trimmedArguments.Length == 0) // write out debug values list
         {
             Logger.LogHelp("All registered debug values are:");
@@ -86,16 +82,9 @@ public static class Debugger
         }
 
         // Retrieves a debug value from a name.
-        // name - The name of the debug value to retrieve.
-        // debugValue - The debug value whose name matches 'name'.
-        // returns true if a debug value with the specified name exists; otherwise, false.
-        // If the the debug value doesn't exist, it will log the necessary messages.
         bool TryGetDebugValueByName(string name, out DebugValueBase? debugValue)
         {
-            // get the debug value being requested
             debugValue = DebugValues.FirstOrDefault(value => value.Name.ToLower() == name.ToLower());
-
-            // ensure debug value exists
             if (debugValue == null)
             {
                 Logger.LogError($"No debug value with the name: '{name}' could be found.");

@@ -30,12 +30,10 @@ public class GameObjectChildren : IList<GameObject>
         get => Children[index];
         set
         {
-            // unset the parent of the child being replaced
             var oldChild = Children[index];
             if (oldChild != null)
                 oldChild.Parent = null;
 
-            // set the parent of the new child
             value.Parent = Parent;
             Children[index] = value;
         }
@@ -80,12 +78,10 @@ public class GameObjectChildren : IList<GameObject>
     /// <inheritdoc/>
     public void Insert(int index, GameObject item)
     {
-        // unset the parent of the child being replaced
         var oldChild = Children[index];
         if (oldChild != null)
             oldChild.Parent = null;
 
-        // set the parent of the new child
         item.Parent = Parent;
         Children[index] = item;
     }

@@ -111,7 +111,7 @@ internal class QuadraticSegment : EdgeSegmentBase
     /// <param name="c">The 'c' coefficient.</param>
     /// <param name="d">The 'd' coefficient.</param>
     /// <returns>The number of possible solutions.</returns>
-    private int SolveCubic(float[] x, float a, float b, float c, float d)
+    private static int SolveCubic(float[] x, float a, float b, float c, float d)
     {
         if (a != 0)
         {
@@ -133,7 +133,7 @@ internal class QuadraticSegment : EdgeSegmentBase
     /// <param name="b">The 'b' coefficient.</param>
     /// <param name="c">The 'c' coefficient.</param>
     /// <returns>The number of possible solutions.</returns>
-    private int SolveCubicNormed(float[] x, float a, float b, float c)
+    private static int SolveCubicNormed(float[] x, float a, float b, float c)
     {
         var a2 = a * a;
         var q = (a2 - 3 * b) / 9;
@@ -177,7 +177,7 @@ internal class QuadraticSegment : EdgeSegmentBase
     /// <param name="b">The 'b' coefficient.</param>
     /// <param name="c">The 'c' coefficient.</param>
     /// <returns>The number of possible solutions.</returns>
-    private int SolveQuadratic(float[] x, float a, float b, float c)
+    private static int SolveQuadratic(float[] x, float a, float b, float c)
     {
         // if a = 0, linear equation
         if (a == 0 || MathF.Abs(b) + MathF.Abs(c) > TooLargeRatio * MathF.Abs(a))

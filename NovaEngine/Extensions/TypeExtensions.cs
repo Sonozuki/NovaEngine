@@ -114,12 +114,8 @@ internal static class TypeExtensions
         CachedTypeInlinable[type] = isInlinable;
         return isInlinable;
     }
-
-
-    /*********
-    ** Classes
-    *********/
-    /// <summary>A class used for checking if a type is <see langword="unmanaged"/>.</summary>
-    /// <typeparam name="T">The type to check if it's unmanaged.</typeparam>
-    private class U<T> where T : unmanaged { }
 }
+
+/// <summary>A class used for checking if a type is <see langword="unmanaged"/>.</summary>
+/// <typeparam name="T">The type to check if it's unmanaged.</typeparam>
+file class U<T> where T : unmanaged { }

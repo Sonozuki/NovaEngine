@@ -89,7 +89,6 @@ internal static class SerialiserUtilities
         // Retrieves the id of an object info for a specified object
         uint GetObjectInfoIdByObject(object @object)
         {
-            // check if an object info has already been created for the object
             var objectInfo = allObjectInfos.FirstOrDefault(objectInfo => object.ReferenceEquals(objectInfo.UnderlyingObject, @object));
             if (objectInfo != null)
                 return objectInfo.Id;
@@ -167,22 +166,18 @@ internal static class SerialiserUtilities
             var typeNameBuffer = Encoding.UTF8.GetBytes(typeInfo.Type.FullName!);
             var objectSize = Marshal.SizeOf(value);
 
-            // populate buffer with object
             var buffer = new byte[1 + typeNameBuffer.Length + 1 + sizeof(int) + objectSize];
             buffer[0] = (byte)InlinedValueType.Unmanaged;
             fixed (byte* bufferPointer = buffer)
             {
                 var offset = 1;
 
-                // type name
                 Marshal.Copy(typeNameBuffer, 0, (IntPtr)bufferPointer + offset, typeNameBuffer.Length);
                 offset += typeNameBuffer.Length + 1;
 
-                // object size
                 Unsafe.CopyBlock(bufferPointer + offset, &objectSize, sizeof(int));
                 offset += sizeof(int);
 
-                // object data
                 Marshal.StructureToPtr(value!, (IntPtr)bufferPointer + offset, true);
             }
             return buffer;
@@ -219,7 +214,7 @@ internal static class SerialiserUtilities
             (byte)InlinedValueType.Unmanaged => ReadUnmanagedObjectFromStream(),
             _ => throw new SerialisationException("Invalid value type when reading inlined value.")
         };
-        
+
         // Reads a null-terminated string from the stream
         string ReadStringFromStream()
         {
@@ -254,10 +249,8 @@ internal static class SerialiserUtilities
         if (CachedTypes.TryGetValue(typeName, out var type))
             return type;
 
-        // try looking for the type in the engine dll and core library
-        type = Type.GetType(typeName);
+        type = Type.GetType(typeName); // try looking for the type in the engine dll and core library
         if (type == null)
-        {
             // if the type is outside either of those, look in all loaded assemblies
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
@@ -265,7 +258,6 @@ internal static class SerialiserUtilities
                 if (type != null)
                     break;
             }
-        }
 
         CachedTypes[typeName] = type;
         return type;

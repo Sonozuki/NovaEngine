@@ -20,14 +20,12 @@ internal static class PlatformManager
     /// <summary>Initialises the class.</summary>
     static PlatformManager()
     {
-        // ensure a platform should actually be used
-        if (!Program.HasProgramInstance)
+        if (!Program.HasProgramInstance) // ensure the app is being executed, not called externally
         {
             CurrentPlatform = new FakePlatform();
             return;
         }
 
-        // get the current platform object
         var platformFiles = Directory.GetFiles(Environment.CurrentDirectory, "NovaEngine.Platform.*.dll");
         var types = platformFiles
             .Select(platformFile => Assembly.LoadFrom(platformFile))
@@ -36,16 +34,13 @@ internal static class PlatformManager
             
         foreach (var type in types)
         {
-            // ensure type is a platform
-            if (!type.GetInterfaces().Contains(typeof(IPlatform)))
+            if (!type.IsAssignableTo(typeof(IPlatform)))
                 continue;
 
-            // try to create an instance
             var platform = (IPlatform?)Activator.CreateInstance(type);
             if (platform == null)
                 continue;
 
-            // set to the current platform if it's usable
             if (!platform.IsCurrentPlatform)
                 continue;
         

@@ -68,6 +68,7 @@ public abstract class RendererTextureBase : IDisposable
     {
         BaseTexture = baseTexture;
 
+        // TODO: fix this
         // fill in convenience properties. reflection is used instead of changing the accessibility as exposing these would lead to rather confusing Texture types (for example, having a '_Height' and 'Height' members, both of which would be public).
         Width = BaseTexture.Width;
         Height = (uint?)typeof(TextureBase).GetField("_Height", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(BaseTexture) ?? throw new MissingMemberException("Couldn't find '_Height' field.");

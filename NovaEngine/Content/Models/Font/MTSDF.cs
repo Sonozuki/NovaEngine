@@ -19,7 +19,6 @@ internal static class MTSDF
 
         foreach (var contour in glyph.Contours)
         {
-            // identify corners
             corners.Clear();
             if (contour.Edges.Any())
             {
@@ -108,13 +107,11 @@ internal static class MTSDF
     /// <param name="pixelRange">The range, in pixels, of the signed distance around the glyphs.</param>
     public static void GenerateMTSDF(Glyph glyph, Colour32[,] atlas, int pixelRange)
     {
-        // calculate glyph transformation
         var frame = new Vector2(glyph.ScaledBounds.Width - pixelRange, glyph.ScaledBounds.Height - pixelRange);
         var scale = frame.Y / glyph.UnscaledBounds.Height;
         var offset = new Vector2(MathF.Floor(glyph.UnscaledBounds.X * scale), MathF.Ceiling(glyph.UnscaledBounds.Y * scale));
         var scaledPixelRange = pixelRange / scale;
 
-        // create texture
         for (int y = -pixelRange; y < glyph.ScaledBounds.Height + pixelRange; y++)
             for (int x = -pixelRange; x < glyph.ScaledBounds.Width + pixelRange; x++)
             {
@@ -152,12 +149,9 @@ internal static class MTSDF
                 }
 
                 // calculate the pseudo distances for each channel
-                if (r.NearEdge != null)
-                    r.NearEdge.DistanceToPseudoDistance(r.MinDistance, point, r.NearParam);
-                if (g.NearEdge != null)
-                    g.NearEdge.DistanceToPseudoDistance(g.MinDistance, point, g.NearParam);
-                if (b.NearEdge != null)
-                    b.NearEdge.DistanceToPseudoDistance(b.MinDistance, point, b.NearParam);
+                r.NearEdge.DistanceToPseudoDistance(r.MinDistance, point, r.NearParam);
+                g.NearEdge.DistanceToPseudoDistance(g.MinDistance, point, g.NearParam);
+                b.NearEdge.DistanceToPseudoDistance(b.MinDistance, point, b.NearParam);
 
                 atlas[(int)glyph.ScaledBounds.Height - 1 - y + (int)glyph.ScaledBounds.Y, x + (int)glyph.ScaledBounds.X] = new Colour32(
                     r.MinDistance.Distance / scaledPixelRange + .5f,

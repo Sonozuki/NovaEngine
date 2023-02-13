@@ -29,10 +29,9 @@ public abstract class SettingsBase<TSelf>
             if (_Instance != null)
                 return _Instance;
 
-            var emptySettings = new TSelf();
-
-            // deserialise file if it already exists
             TSelf? instance = null;
+
+            var emptySettings = new TSelf();
             if (File.Exists(emptySettings.Path))
             {
                 try { instance = JsonSerializer.Deserialize<TSelf>(File.ReadAllText(emptySettings.Path)); }

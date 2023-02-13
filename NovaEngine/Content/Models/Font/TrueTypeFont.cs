@@ -127,7 +127,6 @@ internal class TrueTypeFont : IDisposable
                 continue;
             }
 
-            // read name record value
             var length = BinaryReader.ReadUInt16BigEndian();
             var offset = BinaryReader.ReadUInt16BigEndian();
 
@@ -146,14 +145,12 @@ internal class TrueTypeFont : IDisposable
 
             BinaryReader.BaseStream.Position = oldPosition;
 
-            // set respective name
             if (nameId == 1)
                 fontFamilyName = name;
             else if (nameId == 2)
                 fontSubfamilyName = name;
         }
 
-        // calculate final font name
         Name = $"{fontFamilyName} ({fontSubfamilyName})";
     }
 
@@ -211,12 +208,10 @@ internal class TrueTypeFont : IDisposable
         var oldOffset = BinaryReader.BaseStream.Position;
         BinaryReader.BaseStream.Position = offset;
 
-        // cmap header
-        var format = BinaryReader.ReadUInt16BigEndian();
+        var cmapFormat = BinaryReader.ReadUInt16BigEndian();
         BinaryReader.BaseStream.Position += 4;
 
-        // cmap content
-        switch (format)
+        switch (cmapFormat)
         {
             case 0:
                 CMaps.Add(new CmapFormat0(BinaryReader));
@@ -225,7 +220,7 @@ internal class TrueTypeFont : IDisposable
                 CMaps.Add(new CmapFormat4(BinaryReader));
                 break;
             default:
-                throw new ContentException($"CMap format: '{format}' is unknown.");
+                throw new ContentException($"CMap format: '{cmapFormat}' is unknown.");
         }
 
         BinaryReader.BaseStream.Position = oldOffset;
@@ -243,21 +238,19 @@ internal class TrueTypeFont : IDisposable
         var numberOfSubtables = BinaryReader.ReadUInt16BigEndian();
         for (int i = 0; i < numberOfSubtables; i++)
         {
-            // kern header
             BinaryReader.BaseStream.Position += 4;
             var coverage = BinaryReader.ReadUInt16BigEndian();
             var isVertical = (coverage & 0x8000) == 0;
             var hasCrossStream = (coverage & 0x4000) == 0;
-            var format = coverage & 0x00FF;
+            var kernFormat = coverage & 0x00FF;
 
-            // kern content
-            switch (format)
+            switch (kernFormat)
             {
                 case 0:
                     Kernings.Add(new KernFormat0(BinaryReader, isVertical, hasCrossStream));
                     break;
                 default:
-                    throw new ContentException($"Kerning format: '{format}' is unknown.");
+                    throw new ContentException($"Kerning format: '{kernFormat}' is unknown.");
             }
         }
     }
@@ -273,7 +266,6 @@ internal class TrueTypeFont : IDisposable
         ReadHorizontalMetrics();
         ReadGlyphOffsets(glyfTable.Offset);
 
-        // read glyphs
         // TODO: currently only reads ASCII glyphs
         {
             var characterMap = CMaps.First();
@@ -295,11 +287,9 @@ internal class TrueTypeFont : IDisposable
 
         CalculateGlyphContours();
 
-        // calculate glyph edge colours
         foreach (var glyph in Glyphs)
             MTSDF.ColourEdges(glyph);
 
-        // calculate bounds
         var maxGlyphHeight = -1;
         foreach (var glyph in Glyphs)
         {
@@ -315,7 +305,6 @@ internal class TrueTypeFont : IDisposable
                 maxGlyphHeight = (int)glyph.UnscaledBounds.Height;
         }
 
-        // scale glyphs
         var scale = maxGlyphHeight / MaxGlyphHeight;
         foreach (var glyph in Glyphs)
         {
@@ -379,11 +368,10 @@ internal class TrueTypeFont : IDisposable
 
         BinaryReader.BaseStream.Position = locaTable.Offset;
 
-        if (IndexToLocFormat == 1)
-            for (ushort i = 0; i < NumberOfGlyphs; i++)
+        for (ushort i = 0; i < NumberOfGlyphs; i++)
+            if (IndexToLocFormat == 1)
                 GlyphOffsets[i] = BinaryReader.ReadUInt32BigEndian() + glyfTableOffset;
-        else
-            for (ushort i = 0; i < NumberOfGlyphs; i++)
+            else
                 GlyphOffsets[i] = BinaryReader.ReadUInt16BigEndian() * 2u + glyfTableOffset;
     }
 
@@ -398,14 +386,12 @@ internal class TrueTypeFont : IDisposable
             throw new ArgumentException("'glyf' table doesn't exist.");
         var glyfTable = Tables["glyf"];
 
-        // calculate glyph offset
         var offset = GlyphOffsets[index];
         if (offset >= glyfTable.Offset + glyfTable.Length)
             throw new ContentException("Glyph offset is outside of glyph table.");
 
         BinaryReader.BaseStream.Position = offset;
 
-        // create glyph
         var glyph = new Glyph(BinaryReader.ReadInt16BigEndian());
         if (glyph.NumberOfContours < -1)
             throw new ContentException($"Number of contours for glyph: {index} is invalid.");
@@ -448,7 +434,6 @@ internal class TrueTypeFont : IDisposable
                     glyphContourEnds.Add(glyphPoints.Count - 1);
             }
 
-            // calculate contours
             var edges = new List<EdgeSegmentBase>();
 
             var currentContourStartIndex = 0;
@@ -472,7 +457,7 @@ internal class TrueTypeFont : IDisposable
                     edges.Add(new QuadraticSegment(previousPreviousPoint.ToVector2(), previousPoint.ToVector2(), point.ToVector2()));
                 }
 
-                // check if this is the end or the contour
+                // check if this is the end of the contour
                 if (i == glyphContourEnds[currentContourEndIndex])
                 {
                     var contourStartPoint = glyphPoints[currentContourStartIndex];
@@ -499,7 +484,6 @@ internal class TrueTypeFont : IDisposable
     {
         glyph.Flush(); // TODO: instead of flushing and rereading the glyph, just skip it as it already contains all the points
 
-        // read contour ends
         for (int i = 0; i < glyph.NumberOfContours; i++)
             glyph.ContourEnds.Add(BinaryReader.ReadUInt16BigEndian());
 

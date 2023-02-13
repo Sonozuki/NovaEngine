@@ -47,7 +47,7 @@ public static class User32
     public static IntPtr SetWindowLong(IntPtr window, WindowLongOffset index, IntPtr newValue)
     {
         // set the last error to zero, this is because SetWindowLongPtr will return 0 in the case of an error *or* if the previous value of the specified int is 0
-        // this means we can call GetLastError to determine if an error actually occured (GetLastError will return a non-zero value if an error occured
+        // this means we can call GetLastError to determine if an error actually occured (GetLastError will return a non-zero value if an error occured)
         Kernel32.SetLastError(0);
 
         var returnValue = SetWindowLongPtr(window, index, newValue);

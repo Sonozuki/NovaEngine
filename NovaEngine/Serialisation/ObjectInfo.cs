@@ -118,13 +118,11 @@ internal class ObjectInfo
 
         binaryWriter.Write(Id);
 
-        // members
         binaryWriter.Write(InlinableFields);
         binaryWriter.Write(InlinableProperties);
         binaryWriter.Write(NonInlinableFields);
         binaryWriter.Write(NonInlinableProperties);
 
-        // collection elements
         var hasCollectionElements = InlinableCollectionElements.Count != 0 || NonInlinableCollectionElements.Count != 0;
         binaryWriter.Write(hasCollectionElements);
         if (hasCollectionElements)
@@ -142,17 +140,12 @@ internal class ObjectInfo
     /// <param name="allTypeInfos">The collection to add all the cached type infos to.</param>
     public static ObjectInfo Read(BinaryReader binaryReader, TypeInfos allTypeInfos)
     {
-        // get type name
         var typeName = binaryReader.ReadString();
-        var isArray = binaryReader.ReadBoolean();
-
-        // get underlying object type
         var type = SerialiserUtilities.GetAnyType(typeName)!;
         var typeInfo = allTypeInfos.Get(type);
 
-        // create underlying object instance
         object underlyingObject;
-        if (isArray)
+        if (binaryReader.ReadBoolean()) // isArray
         {
             var elementType = SerialiserUtilities.GetAnyType(typeName[..^2])!; // remove the "[]" on the type name
             underlyingObject = Array.CreateInstance(elementType, binaryReader.ReadInt32());
@@ -160,7 +153,6 @@ internal class ObjectInfo
         else
             underlyingObject = RuntimeHelpers.GetUninitializedObject(type);
 
-        // invoke OnDeserialising methods
         foreach (var methodInfo in typeInfo.SerialiserCallbacks.OnDeserialisingMethods)
             try
             {
@@ -173,21 +165,17 @@ internal class ObjectInfo
 
         var objectInfo = new ObjectInfo(binaryReader.ReadUInt32(), underlyingObject, typeInfo);
 
-        // inlinable fields
         foreach (var kvp in binaryReader.ReadInlinableMembers())
             typeInfo.SerialisableFields.First(field => field.Name == kvp.Key)
                 .SetValue(objectInfo.UnderlyingObject, kvp.Value);
 
-        // inlinable properties
         foreach (var kvp in binaryReader.ReadInlinableMembers())
             typeInfo.SerialisableProperties.First(field => field.Name == kvp.Key)
                 .SetValue(objectInfo.UnderlyingObject, kvp.Value);
 
-        // non inlinable members
         objectInfo.NonInlinableFields = binaryReader.ReadNonInlinableMembers();
         objectInfo.NonInlinableProperties = binaryReader.ReadNonInlinableMembers();
 
-        // collection elements
         if (binaryReader.ReadBoolean()) // hasCollectionElements
         {
             objectInfo.AreCollectionElementsInlinable = binaryReader.ReadBoolean();

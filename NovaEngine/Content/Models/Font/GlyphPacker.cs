@@ -44,18 +44,10 @@ internal static class GlyphPacker
 
         while (remainingGlyphs.Any())
         {
-            var bestFit = WorstFit;
-            var bestSpaceIndex = -1;
-            var bestGlyphIndex = -1;
-
-            // find a space and glyph pair that matches the best
-            FindBestGlyphSpacePair();
-
-            // ensure a glyph was fit into one of the spaces
+            FindBestGlyphSpacePair(remainingGlyphs, padding, out var bestSpaceIndex, out var bestGlyphIndex);
             if (bestSpaceIndex < 0 || bestGlyphIndex < 0)
                 break;
 
-            // split the space
             var bestGlyph = remainingGlyphs[bestGlyphIndex];
             var bestSpace = Spaces[bestSpaceIndex];
 
@@ -64,43 +56,6 @@ internal static class GlyphPacker
 
             SplitSpace(bestSpaceIndex, (int)bestGlyph.ScaledBounds.Width + padding, (int)bestGlyph.ScaledBounds.Height + padding);
             remainingGlyphs.RemoveAt(bestGlyphIndex);
-
-            // Finds a glyph and space pair that fit each other the best.
-            // Remarks: This is a function so both for loops can be broken out of.
-            void FindBestGlyphSpacePair()
-            {
-                for (int i = 0; i < Spaces.Count; i++)
-                {
-                    var space = Spaces[i];
-                    for (int j = 0; j < remainingGlyphs.Count; j++)
-                    {
-                        var glyph = remainingGlyphs[j];
-
-                        var glyphWidth = glyph.ScaledBounds.Width + padding;
-                        var glyphHeight = glyph.ScaledBounds.Height + padding;
-
-                        // check if any glyphs fit a space perfectly
-                        if (glyphWidth == space.Width && glyphHeight == space.Height)
-                        {
-                            bestSpaceIndex = i;
-                            bestGlyphIndex = j;
-                            return;
-                        }
-
-                        // otherwise, check which space and glyph fit the best together
-                        if (glyphWidth <= space.Width && glyphHeight <= space.Height)
-                        {
-                            var fit = RateFit((int)glyphWidth, (int)glyphHeight, (int)space.Width, (int)space.Height);
-                            if (fit < bestFit)
-                            {
-                                bestFit = fit;
-                                bestSpaceIndex = i;
-                                bestGlyphIndex = j;
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         return !remainingGlyphs.Any();
@@ -110,6 +65,50 @@ internal static class GlyphPacker
     /*********
     ** Private Methods
     *********/
+    /// <summary>Finds a glyph and space pair that fit each other the best.</summary>
+    /// <param name="remainingGlyphs">The remaining glpyhs to check.</param>
+    /// <param name="padding">The amount of padding between glyphs in the atlas.</param>
+    /// <param name="bestSpaceIndex">The index of the space in the best pair.</param>
+    /// <param name="bestGlyphIndex">The index of the glyph in the best pair.</param>
+    private static void FindBestGlyphSpacePair(List<Glyph> remainingGlyphs, int padding, out int bestSpaceIndex, out int bestGlyphIndex)
+    {
+        bestSpaceIndex = -1;
+        bestGlyphIndex = -1;
+        var bestFit = WorstFit;
+
+        for (int i = 0; i < Spaces.Count; i++)
+        {
+            var space = Spaces[i];
+            for (int j = 0; j < remainingGlyphs.Count; j++)
+            {
+                var glyph = remainingGlyphs[j];
+
+                var glyphWidth = glyph.ScaledBounds.Width + padding;
+                var glyphHeight = glyph.ScaledBounds.Height + padding;
+
+                // check if any glyphs fit a space perfectly
+                if (glyphWidth == space.Width && glyphHeight == space.Height)
+                {
+                    bestSpaceIndex = i;
+                    bestGlyphIndex = j;
+                    return;
+                }
+
+                // otherwise, check which space and glyph fit the best together
+                if (glyphWidth <= space.Width && glyphHeight <= space.Height)
+                {
+                    var fit = RateFit((int)glyphWidth, (int)glyphHeight, (int)space.Width, (int)space.Height);
+                    if (fit < bestFit)
+                    {
+                        bestFit = fit;
+                        bestSpaceIndex = i;
+                        bestGlyphIndex = j;
+                    }
+                }
+            }
+        }
+    }
+
     /// <summary>Splits a space around a specified width and height.</summary>
     /// <param name="index">The index of the space to split.</param>
     /// <param name="width">The width from the top left corner that no split space should overlap.</param>

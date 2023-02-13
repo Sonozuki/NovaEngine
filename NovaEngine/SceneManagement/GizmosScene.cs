@@ -118,7 +118,6 @@ internal class GizmosScene : Scene
     /// <inheritdoc/>
     internal override void Update()
     {
-        // cubes
         while (CubesParent.Children.Count > 0)
         {
             var cube = CubesParent.Children[0];
@@ -126,7 +125,6 @@ internal class GizmosScene : Scene
             CubeGameObjects.ReturnObject(cube);
         }
 
-        // spheres
         while (SpheresParent.Children.Count > 0)
         {
             var sphere = SpheresParent.Children[0];
@@ -134,7 +132,6 @@ internal class GizmosScene : Scene
             SphereGameObjects.ReturnObject(sphere);
         }
 
-        // lines
         while (LinesParent.Children.Count > 0)
         {
             var line = LinesParent.Children[0];
