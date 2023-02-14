@@ -1,1088 +1,757 @@
 ﻿namespace NovaEngine.Tests.Maths;
 
-/// <summary>The <see cref="Vector2"/> tests.</summary>
-[TestFixture]
-public class Vector2Tests
+/// <summary>The <see cref="Vector2{T}"/> tests.</summary>
+internal class Vector2Tests
 {
-    /*********
-    ** Constants
-    *********/
-    /// <summary>The delta to use when checking if floating-point numbers are equal.</summary>
-    private const double FloatingPointEqualsDelta = .0000001;
-
-
     /*********
     ** Public Methods
     *********/
-    /// <summary>Tests <see cref="Vector2.Length"/>.</summary>
-    /// <remarks>This tests that the length is calculated correctly.</remarks>
     [Test]
-    public void Length_Get()
-    {
-        var vector = new Vector2(3, 4);
-        var length = vector.Length;
-        Assert.AreEqual(5, length);
-    }
+    public void Length_Get() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(3, 4).Length, Is.EqualTo(5f));
+            Assert.That(new Vector2<double>(3, 4).Length, Is.EqualTo(5d));
+        });
 
-    /// <summary>Tests <see cref="Vector2.LengthSquared"/>.</summary>
-    /// <remarks>This tests that the squared length is calculated correctly.</remarks>
     [Test]
-    public void LengthSquared_Get()
-    {
-        var vector = new Vector2(3, 4);
-        var lengthSquared = vector.LengthSquared;
-        Assert.AreEqual(25, lengthSquared);
-    }
+    public void LengthSquared_Get() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(3, 4).LengthSquared, Is.EqualTo(25f));
+            Assert.That(new Vector2<double>(3, 4).LengthSquared, Is.EqualTo(25d));
+        });
 
-    /// <summary>Tests <see cref="Vector2.PerpendicularLeft"/>.</summary>
-    /// <remarks>This tests that the left perpendicular is calculated correctly.</remarks>
     [Test]
-    public void PerpendicularLeft_Get()
-    {
-        var vector = new Vector2(1, 2);
-        var perpendicularLeft = vector.PerpendicularLeft;
-        Assert.AreEqual(new Vector2(-2, 1), perpendicularLeft);
-    }
+    public void PerpendicularLeft_Get() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1, 2).PerpendicularLeft, Is.EqualTo(new Vector2<float>(-2, 1)));
+            Assert.That(new Vector2<double>(1, 2).PerpendicularLeft, Is.EqualTo(new Vector2<double>(-2, 1)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.PerpendicularRight"/>.</summary>
-    /// <remarks>This tests that the right perpendicular is calculated correctly.</remarks>
     [Test]
-    public void PerpendicularRight_Get()
-    {
-        var vector = new Vector2(1, 2);
-        var perpendicularRight = vector.PerpendicularRight;
-        Assert.AreEqual(new Vector2(2, -1), perpendicularRight);
-    }
+    public void PerpendicularRight_Get() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1, 2).PerpendicularRight, Is.EqualTo(new Vector2<float>(2, -1)));
+            Assert.That(new Vector2<double>(1, 2).PerpendicularRight, Is.EqualTo(new Vector2<double>(2, -1)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Normalised"/>.</summary>
-    /// <remarks>This tests that the vector is unchanged when the length is '0'.</remarks>
     [Test]
-    public void Normalised_LengthEqualsZero_ReturnsIdenticalVector()
-    {
-        var vector = new Vector2(0);
-        var normalised = vector.Normalised;
-        Assert.AreEqual(new Vector2(0), normalised);
-    }
+    public void Normalised_LengthEqualsZero_ReturnsIdenticalVector() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(0).Normalised, Is.EqualTo(new Vector2<float>(0)));
+            Assert.That(new Vector2<double>(0).Normalised, Is.EqualTo(new Vector2<double>(0)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Normalised"/>.</summary>
-    /// <remarks>This tests that the vector is normalised when the length isn't '0'.</remarks>
     [Test]
-    public void Normalised_LengthIsNotZero_ReturnsNormalisedVector()
-    {
-        var vector = new Vector2(1, 2);
-        var normalised = vector.Normalised;
-        Assert.AreEqual(.4472135f, normalised.X, FloatingPointEqualsDelta);
-        Assert.AreEqual(.8944271f, normalised.Y, FloatingPointEqualsDelta);
-    }
+    public void Normalised_LengthIsNotZero_ReturnsNormalisedVector() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1, 2).Normalised, Is.EqualTo(new Vector2<float>(.4472136f, .8944272f)));
+            Assert.That(new Vector2<double>(1, 2).Normalised, Is.EqualTo(new Vector2<double>(.4472135954999579, .8944271909999159)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.YX"/>.</summary>
-    /// <remarks>This tests that the YX swizzle is retrieved correctly.</remarks>
     [Test]
-    public void YX_Get()
-    {
-        var vector = new Vector2(1, 2);
-        var yx = vector.YX;
-        Assert.AreEqual(new Vector2(2, 1), yx);
-    }
+    public void YX_Get() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1, 2).YX, Is.EqualTo(new Vector2<float>(2, 1)));
+            Assert.That(new Vector2<double>(1, 2).YX, Is.EqualTo(new Vector2<double>(2, 1)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.YX"/>.</summary>
-    /// <remarks>This tests that the YX swizzle is set correctly.</remarks>
     [Test]
     public void YX_Set()
     {
-        var vector = new Vector2(1, 2);
-        vector.YX = new Vector2(3, 4);
-        Assert.AreEqual(new Vector2(4, 3), vector);
+        var vectorFloat = new Vector2<float>(1, 2);
+        var vectorDouble = new Vector2<double>(1, 2);
+
+        vectorFloat.YX = new(3, 4);
+        vectorDouble.YX = new(3, 4);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(vectorFloat, Is.EqualTo(new Vector2<float>(4, 3)));
+            Assert.That(vectorDouble, Is.EqualTo(new Vector2<double>(4, 3)));
+        });
     }
 
-    /// <summary>Tests <see cref="Vector2.Zero"/>.</summary>
-    /// <remarks>This tests a zero vector is returned.</remarks>
     [Test]
-    public void Zero_Get()
-    {
-        var zero = Vector2.Zero;
-        Assert.AreEqual(new Vector2(0), zero);
-    }
+    public void Zero_Get() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Zero, Is.EqualTo(new Vector2<float>(0)));
+            Assert.That(Vector2<double>.Zero, Is.EqualTo(new Vector2<double>(0)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.One"/>.</summary>
-    /// <remarks>This tests that a vector with 1 x and 1 y is returned.</remarks>
     [Test]
-    public void One_Get()
-    {
-        var one = Vector2.One;
-        Assert.AreEqual(new Vector2(1), one);
-    }
+    public void One_Get() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.One, Is.EqualTo(new Vector2<float>(1)));
+            Assert.That(Vector2<double>.One, Is.EqualTo(new Vector2<double>(1)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.UnitX"/>.</summary>
-    /// <remarks>This tests that a unit x vector is returned.</remarks>
     [Test]
-    public void UnitX_Get()
-    {
-        var unitX = Vector2.UnitX;
-        Assert.AreEqual(new Vector2(1, 0), unitX);
-    }
+    public void UnitX_Get() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.UnitX, Is.EqualTo(new Vector2<float>(1, 0)));
+            Assert.That(Vector2<double>.UnitX, Is.EqualTo(new Vector2<double>(1, 0)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.UnitY"/>.</summary>
-    /// <remarks>This tests that a unit y vector is returned.</remarks>
     [Test]
-    public void UnitY_Get()
-    {
-        var unitY = Vector2.UnitY;
-        Assert.AreEqual(new Vector2(0, 1), unitY);
-    }
+    public void UnitY_Get() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.UnitY, Is.EqualTo(new Vector2<float>(0, 1)));
+            Assert.That(Vector2<double>.UnitY, Is.EqualTo(new Vector2<double>(0, 1)));
+        });
 
-    /// <summary>Tests <see cref="Vector2"/>[<see langword="int"/>].</summary>
-    /// <remarks>This tests that getting an element via indexing in-bounds returns the correct element.</remarks>
     [Test]
     public void IndexerGet_IndexBetweenZeroAndOne_ReturnsElement()
     {
-        var vector = new Vector2(1, 2);
-        var x = vector[0];
-        var y = vector[1];
-        Assert.AreEqual(1, x);
-        Assert.AreEqual(2, y);
+        var vectorFloat = new Vector2<float>(1, 2);
+        var vectorDouble = new Vector2<double>(1, 2);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(vectorFloat[0], Is.EqualTo(1));
+            Assert.That(vectorFloat[1], Is.EqualTo(2));
+
+            Assert.That(vectorDouble[0], Is.EqualTo(1));
+            Assert.That(vectorDouble[1], Is.EqualTo(2));
+        });
     }
 
-    /// <summary>Tests <see cref="Vector2"/>[<see langword="int"/>].</summary>
-    /// <remarks>This tests that getting an element via indexing less than '0' throws an <see cref="IndexOutOfRangeException"/>.</remarks>
     [Test]
-    public void IndexerGet_IndexLessThanZero_ThrowsIndexOutOfRangeException()
-    {
-        var vector = new Vector2(1, 2);
-        Action actual = () => _ = vector[-1];
-        Assert.Throws<IndexOutOfRangeException>(new(actual));
-    }
+    public void IndexerGet_IndexLessThanZero_ThrowsIndexOutOfRangeException() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(() => Vector2<float>.One[-1], Throws.InstanceOf<IndexOutOfRangeException>());
+            Assert.That(() => Vector2<double>.One[-1], Throws.InstanceOf<IndexOutOfRangeException>());
+        });
 
-    /// <summary>Tests <see cref="Vector2"/>[<see langword="int"/>].</summary>
-    /// <remarks>This tests that getting an element via indexing more than '1' throws an <see cref="IndexOutOfRangeException"/>.</remarks>
     [Test]
-    public void IndexerGet_IndexerMoreThanOne_ThrowsIndexOutOfRangeException()
-    {
-        var vector = new Vector2(1, 2);
-        Action actual = () => _ = vector[2];
-        Assert.Throws<IndexOutOfRangeException>(new(actual));
-    }
+    public void IndexerGet_IndexerMoreThanOne_ThrowsIndexOutOfRangeException() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(() => Vector2<float>.One[2], Throws.InstanceOf<IndexOutOfRangeException>());
+            Assert.That(() => Vector2<double>.One[2], Throws.InstanceOf<IndexOutOfRangeException>());
+        });
 
-    /// <summary>Tests <see cref="Vector2"/>[<see langword="int"/>].</summary>
-    /// <remarks>This tests that setting an element via indexing in-bounds sets the correct element.</remarks>
     [Test]
     public void IndexerSet_IndexBetweenZeroAndOne_ReturnsElement()
     {
-        var vector = new Vector2();
-        vector[0] = 1;
-        vector[1] = 2;
-        Assert.AreEqual(new Vector2(1, 2), vector);
+        var vectorFloat = new Vector2<float>();
+        var vectorDouble = new Vector2<double>();
+
+        vectorFloat[0] = 1;
+        vectorFloat[1] = 2;
+
+        vectorDouble[0] = 1;
+        vectorDouble[1] = 2;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(vectorFloat, Is.EqualTo(new Vector2<float>(1, 2)));
+            Assert.That(vectorDouble, Is.EqualTo(new Vector2<double>(1, 2)));
+        });
     }
 
-    /// <summary>Tests <see cref="Vector2"/>[<see langword="int"/>].</summary>
-    /// <remarks>This tests that setting an element via indexing less than '0' throws an <see cref="IndexOutOfRangeException"/>.</remarks>
     [Test]
     public void IndexerSet_IndexLessThanZero_ThrowsIndexOutOfRangeException()
     {
-        var vector = new Vector2();
-        Action actual = () => vector[-1] = 0;
-        Assert.Throws<IndexOutOfRangeException>(new(actual));
+        var vectorFloat = new Vector2<float>();
+        var vectorDouble = new Vector2<double>();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(() => vectorFloat[-1] = 0, Throws.InstanceOf<IndexOutOfRangeException>());
+            Assert.That(() => vectorDouble[-1] = 0, Throws.InstanceOf<IndexOutOfRangeException>());
+        });
     }
 
-    /// <summary>Tests <see cref="Vector2"/>[<see langword="int"/>].</summary>
-    /// <remarks>This tests that setting an element via indexing more than '1' throws an <see cref="IndexOutOfRangeException"/>.</remarks>
     [Test]
     public void IndexerSet_IndexerMoreThanOne_ThrowsIndexOutOfRangeException()
     {
-        var vector = new Vector2();
-        Action actual = () => vector[2] = 0;
-        Assert.Throws<IndexOutOfRangeException>(new(actual));
+        var vectorFloat = new Vector2<float>();
+        var vectorDouble = new Vector2<double>();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(() => vectorFloat[2] = 0, Throws.InstanceOf<IndexOutOfRangeException>());
+            Assert.That(() => vectorDouble[2] = 0, Throws.InstanceOf<IndexOutOfRangeException>());
+        });
     }
 
-    /// <summary>Tests <see cref="Vector2(float)"/>.</summary>
-    /// <remarks>This tests that the elements get set correctly.</remarks>
     [Test]
     public void ConstructorFloat_SetsElements()
     {
-        var vector = new Vector2(1);
-        var x = vector.X;
-        var y = vector.Y;
-        Assert.AreEqual(1, x);
-        Assert.AreEqual(1, y);
+        var vectorFloat = new Vector2<float>(1);
+        var vectorDouble = new Vector2<double>(1);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(vectorFloat.X, Is.EqualTo(1));
+            Assert.That(vectorFloat.Y, Is.EqualTo(1));
+
+            Assert.That(vectorDouble.X, Is.EqualTo(1));
+            Assert.That(vectorDouble.Y, Is.EqualTo(1));
+        });
     }
 
-    /// <summary>Tests <see cref="Vector2(float, float)"/>.</summary>
-    /// <remarks>This tests that the elements get set correctly.</remarks>
     [Test]
     public void ConstructorFloatFloat_SetsElements()
     {
-        var vector = new Vector2(1, 2);
-        var x = vector.X;
-        var y = vector.Y;
-        Assert.AreEqual(1, x);
-        Assert.AreEqual(2, y);
+        var vectorFloat = new Vector2<float>(1, 2);
+        var vectorDouble = new Vector2<double>(1, 2);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(vectorFloat.X, Is.EqualTo(1));
+            Assert.That(vectorFloat.Y, Is.EqualTo(2));
+
+            Assert.That(vectorDouble.X, Is.EqualTo(1));
+            Assert.That(vectorDouble.Y, Is.EqualTo(2));
+        });
     }
 
-    /// <summary>Tests <see cref="Vector2.Normalise"/>.</summary>
-    /// <remarks>This tests that the vector is unchanged when the length is '0'.</remarks>
     [Test]
     public void Normalise_LengthEqualsZero_VectorIsUnchanged()
     {
-        var vector = new Vector2(0);
-        var normalised = vector.Normalised;
-        Assert.AreEqual(new Vector2(0), normalised);
+        var vectorFloat = new Vector2<float>(0);
+        var vectorDouble = new Vector2<double>(0);
+
+        vectorFloat.Normalise();
+        vectorDouble.Normalise();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(vectorFloat, Is.EqualTo(new Vector2<float>(0)));
+            Assert.That(vectorDouble, Is.EqualTo(new Vector2<double>(0)));
+        });
     }
 
-    /// <summary>Tests <see cref="Vector2.Normalise"/>.</summary>
-    /// <remarks>This tests that the vector is normalised when the length isn't '0'.</remarks>
     [Test]
     public void Normalise_LengthIsNotZero_VectorIsNormalised()
     {
-        var vector = new Vector2(1, 2);
-        var normalised = vector.Normalised;
-        Assert.AreEqual(.4472135f, normalised.X, FloatingPointEqualsDelta);
-        Assert.AreEqual(.8944271f, normalised.Y, FloatingPointEqualsDelta);
-    }
-
-    /// <summary>Tests <see cref="Vector2.ToVector2D"/>.</summary>
-    /// <remarks>This tests that the vector is converted correctly.</remarks>
-    [Test]
-    public void ToVector2D_ConvertsElements()
-    {
-        var vector = new Vector2(.1234f, .5678f);
-        var vectorD = vector.ToVector2D();
-        Assert.AreEqual(.1234, vectorD.X, FloatingPointEqualsDelta);
-        Assert.AreEqual(.5678, vectorD.Y, FloatingPointEqualsDelta);
-    }
-
-    /// <summary>Tests <see cref="Vector2.ToFlooredVector2I"/>.</summary>
-    /// <remarks>This tests that the vector components get floored when the decimal portion is less than '.5'.</remarks>
-    [Test]
-    public void ToFlooredVector2I_DecimalLessThanPointFive_RoundsDown()
-    {
-        var vector = new Vector2(1.49f, 1.49f);
-        var vectorI = vector.ToFlooredVector2I();
-        Assert.AreEqual(new Vector2I(1), vectorI);
-    }
-
-    /// <summary>Tests <see cref="Vector2.ToFlooredVector2I"/>.</summary>
-    /// <remarks>This tests that the vector components get floored when the decimal portion is more than '.5'.</remarks>
-    [Test]
-    public void ToFlooredVector2I_DecimalMoreThanPointFive_RoundsDown()
-    {
-        var vector = new Vector2(1.51f, 1.51f);
-        var vectorI = vector.ToFlooredVector2I();
-        Assert.AreEqual(new Vector2I(1), vectorI);
-    }
-
-    /// <summary>Tests <see cref="Vector2.ToRoundedVector2I"/>.</summary>
-    /// <remarks>This tests that vector components get rounded down when the decimal portion is less than '.5'.</remarks>
-    [Test]
-    public void ToRoundedVector2I_DecimalLessThanPointFive_RoundsDown()
-    {
-        var vector = new Vector2(1.49f, 1.49f);
-        var vectorI = vector.ToRoundedVector2I();
-        Assert.AreEqual(new Vector2I(1), vectorI);
-    }
-
-    /// <summary>Tests <see cref="Vector2.ToRoundedVector2I"/>.</summary>
-    /// <remarks>This tests that the vector components get rounded up when the decimal portion is '.5'.</remarks>
-    [Test]
-    public void ToRoundedVector2I_DecimalEqualsPointFive_RoundsUp()
-    {
-        var vector = new Vector2(1.5f, 1.5f);
-        var vectorI = vector.ToRoundedVector2I();
-        Assert.AreEqual(new Vector2I(2), vectorI);
-    }
-
-    /// <summary>Tests <see cref="Vector2.ToRoundedVector2I"/>.</summary>
-    /// <remarks>This tests that the vector components get rounded up when the decimal portion is more than '.5'.</remarks>
-    [Test]
-    public void ToRoundedVector2I_DecimalMoreThanPointFive_RoundsUp()
-    {
-        var vector = new Vector2(1.51f, 1.51f);
-        var vectorI = vector.ToRoundedVector2I();
-        Assert.AreEqual(new Vector2I(2), vectorI);
-    }
-
-    /// <summary>Tests <see cref="Vector2.ToCeilingedVector2I"/>.</summary>
-    /// <remarks>This tests that the vector components are ceilinged when the decimal portion is less than '.5'.</remarks>
-    [Test]
-    public void ToCeilingVector2I_DecimalLessThanPointFive_RoundsUp()
-    {
-        var vector = new Vector2(1.49f, 1.49f);
-        var vectorI = vector.ToCeilingedVector2I();
-        Assert.AreEqual(new Vector2I(2), vectorI);
-    }
-
-    /// <summary>Tests <see cref="Vector2.ToCeilingedVector2I"/>.</summary>
-    /// <remarks>This tests that the vector components are ceilinged when the decimal portion is more than '.5'.</remarks>
-    [Test]
-    public void ToCeilingVector2I_DecimalMoreThanPointFive_RoundsUp()
-    {
-        var vector = new Vector2(1.51f, 1.51f);
-        var vectorI = vector.ToCeilingedVector2I();
-        Assert.AreEqual(new Vector2I(2), vectorI);
-    }
-
-    /// <summary>Tests <see cref="Vector2.ToFlooredVector2U"/>.</summary>
-    /// <remarks>This tests that the vector components get floored when the decimal portion is less than '.5'.</remarks>
-    [Test]
-    public void ToFlooredVector2U_DecimalLessThanPointFive_RoundsDown()
-    {
-        var vector = new Vector2(1.49f, 1.49f);
-        var vectorU = vector.ToFlooredVector2U();
-        Assert.AreEqual(new Vector2U(1), vectorU);
-    }
+        var vectorFloat = new Vector2<float>(1, 2);
+        var vectorDouble = new Vector2<double>(1, 2);
 
-    /// <summary>Tests <see cref="Vector2.ToFlooredVector2U"/>.</summary>
-    /// <remarks>This tests that the vector components get floored when the decimal portion is more than '.5'.</remarks>
-    [Test]
-    public void ToFlooredVector2U_DecimalMoreThanPointFive_RoundsDown()
-    {
-        var vector = new Vector2(1.51f, 1.51f);
-        var vectorU = vector.ToFlooredVector2U();
-        Assert.AreEqual(new Vector2U(1), vectorU);
-    }
-
-    /// <summary>Tests <see cref="Vector2.ToRoundedVector2U"/>.</summary>
-    /// <remarks>This tests that vector components get rounded down when the decimal portion is less than '.5'.</remarks>
-    [Test]
-    public void ToRoundedVector2U_DecimalLessThanPointFive_RoundsDown()
-    {
-        var vector = new Vector2(1.49f, 1.49f);
-        var vectorU = vector.ToRoundedVector2U();
-        Assert.AreEqual(new Vector2U(1), vectorU);
-    }
-
-    /// <summary>Tests <see cref="Vector2.ToRoundedVector2U"/>.</summary>
-    /// <remarks>This tests that the vector components get rounded up when the decimal portion is '.5'.</remarks>
-    [Test]
-    public void ToRoundedVector2U_DecimalEqualsPointFive_RoundsUp()
-    {
-        var vector = new Vector2(1.5f, 1.5f);
-        var vectorU = vector.ToRoundedVector2U();
-        Assert.AreEqual(new Vector2U(2), vectorU);
-    }
-
-    /// <summary>Tests <see cref="Vector2.ToRoundedVector2U"/>.</summary>
-    /// <remarks>This tests that the vector components get rounded up when the decimal portion is more than '.5'.</remarks>
-    [Test]
-    public void ToRoundedVector2U_DecimalMoreThanPointFive_RoundsUp()
-    {
-        var vector = new Vector2(1.51f, 1.51f);
-        var vectorU = vector.ToRoundedVector2U();
-        Assert.AreEqual(new Vector2U(2), vectorU);
-    }
-
-    /// <summary>Tests <see cref="Vector2.ToCeilingedVector2U"/>.</summary>
-    /// <remarks>This tests that the vector components are ceilinged when the decimal portion is less than '.5'.</remarks>
-    [Test]
-    public void ToCeilingVector2U_DecimalLessThanPointFive_RoundsUp()
-    {
-        var vector = new Vector2(1.49f, 1.49f);
-        var vectorU = vector.ToCeilingedVector2U();
-        Assert.AreEqual(new Vector2U(2), vectorU);
-    }
-
-    /// <summary>Tests <see cref="Vector2.ToCeilingedVector2U"/>.</summary>
-    /// <remarks>This tests that the vector components are ceilinged when the decimal portion is more than '.5'.</remarks>
-    [Test]
-    public void ToCeilingVector2U_DecimalMoreThanPointFive_RoundsUp()
-    {
-        var vector = new Vector2(1.51f, 1.51f);
-        var vectorU = vector.ToCeilingedVector2U();
-        Assert.AreEqual(new Vector2U(2), vectorU);
-    }
+        vectorFloat.Normalise();
+        vectorDouble.Normalise();
 
-    /// <summary>Tests <see cref="Vector2.Equals(Vector2)"/>.</summary>
-    /// <remarks>This tests that vectors are considered equal when they are equal.</remarks>
-    [Test]
-    public void EqualsVector2_ValuesAreEqual_ReturnsTrue()
-    {
-        var vector1 = new Vector2(1, 2);
-        var vector2 = new Vector2(1, 2);
-        var areEqual = vector1.Equals(vector2);
-        Assert.IsTrue(areEqual);
+        Assert.Multiple(() =>
+        {
+            Assert.That(vectorFloat, Is.EqualTo(new Vector2<float>(.4472136f, .8944272f)));
+            Assert.That(vectorDouble, Is.EqualTo(new Vector2<double>(.4472135954999579, .8944271909999159)));
+        });
     }
 
-    /// <summary>Tests <see cref="Vector2.Equals(Vector2)"/>.</summary>
-    /// <remarks>This tests that vectors aren't considered equal when they aren't equal.</remarks>
-    [Test]
-    public void EqualsVector2_ValuesAreNotEqual_ReturnsFalse()
-    {
-        var vector1 = new Vector2(1, 2);
-        var vector2 = new Vector2();
-        var areEqual = vector1.Equals(vector2);
-        Assert.IsFalse(areEqual);
-    }
+    [Test]
+    public void EqualsVector2_ValuesAreEqual_ReturnsTrue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1, 2).Equals(new Vector2<float>(1, 2)), Is.True);
+            Assert.That(new Vector2<double>(1, 2).Equals(new Vector2<double>(1, 2)), Is.True);
+        });
 
-    /// <summary>Tests <see cref="Vector2.Equals(object?)"/>.</summary>
-    /// <remarks>This tests that vectors are considered equal when they are equal.</remarks>
-    [Test]
-    public void EqualsObject_ValuesAreEqual_ReturnsTrue()
-    {
-        var vector1 = new Vector2(1, 2);
-        var vector2 = new Vector2(1, 2);
-        var areEqual = vector1.Equals((object)vector2);
-        Assert.IsTrue(areEqual);
-    }
+    [Test]
+    public void EqualsVector2_ValuesAreNotEqual_ReturnsFalse() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1, 2).Equals(new Vector2<float>(2, 1)), Is.False);
+            Assert.That(new Vector2<double>(1, 2).Equals(new Vector2<double>(2, 1)), Is.False);
+        });
 
-    /// <summary>Tests <see cref="Vector2.Equals(object?)"/>.</summary>
-    /// <remarks>This tests that vectors aren't considered equal when they aren't equal.</remarks>
-    [Test]
-    public void EqualsObject_ValuesAreNotEqual_ReturnsFalse()
-    {
-        var vector1 = new Vector2(1, 2);
-        var vector2 = new Vector2();
-        var areEqual = vector1.Equals((object)vector2);
-        Assert.IsFalse(areEqual);
-    }
+    [Test]
+    public void EqualsObject_ValuesAreEqual_ReturnsTrue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1, 2).Equals((object)new Vector2<float>(1, 2)), Is.True);
+            Assert.That(new Vector2<double>(1, 2).Equals((object)new Vector2<double>(1, 2)), Is.True);
+        });
 
-    /// <summary>Tests <see cref="Vector2.CompareTo(Vector2)"/>.</summary>
-    /// <remarks>This tests that a vector is considered preceeding a vector with both components bigger.</remarks>
-    [Test]
-    public void CompareToVector2_BothThisComponentsAreLessThanOtherComponents_ReturnsLessThanZero()
-    {
-        var thisVector = new Vector2(.1f);
-        var otherVector = new Vector2(1);
-        var result = thisVector.CompareTo(otherVector);
-        Assert.Less(result, 0);
-    }
+    [Test]
+    public void EqualsObject_ValuesAreNotEqual_ReturnsFalse() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1, 2).Equals((object)new Vector2<float>(2, 1)), Is.False);
+            Assert.That(new Vector2<double>(1, 2).Equals((object)new Vector2<double>(2, 1)), Is.False);
+        });
 
-    /// <summary>Tests <see cref="Vector2.CompareTo(Vector2)"/>.</summary>
-    /// <remarks>This tests that a vector is considered equal to a vector with equal components.</remarks>
-    [Test]
-    public void CompareToVector2_BothThisComponentsAreEqualToOtherComponents_ReturnsZero()
-    {
-        var thisVector = new Vector2(.1f);
-        var otherVector = new Vector2(.1f);
-        var result = thisVector.CompareTo(otherVector);
-        Assert.AreEqual(result, 0);
-    }
+    [Test]
+    public void CompareTo_BothFirstComponentsAreLessThanSecondComponents_ReturnsLessThanZero() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(.1f).CompareTo(new Vector2<float>(1)), Is.LessThan(0));
+            Assert.That(new Vector2<double>(.1).CompareTo(new Vector2<double>(1)), Is.LessThan(0));
+        });
 
-    /// <summary>Tests <see cref="Vector2.CompareTo(Vector2)"/>.</summary>
-    /// <remarks>This tests that a vector is considered following a vector with both components smaller.</remarks>
-    [Test]
-    public void CompareToVector2_BothThisComponentsAreMoreThanOtherComponents_ReturnsMoreThanZero()
-    {
-        var thisVector = new Vector2(1);
-        var otherVector = new Vector2(.1f);
-        var result = thisVector.CompareTo(otherVector);
-        Assert.Greater(result, 0);
-    }
+    [Test]
+    public void CompareTo_BothFirstComponentsAreEqualToSecondComponents_ReturnsZero() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(.1f).CompareTo(new Vector2<float>(.1f)), Is.Zero);
+            Assert.That(new Vector2<double>(.1).CompareTo(new Vector2<double>(.1)), Is.Zero);
+        });
 
-    /// <summary>Tests <see cref="Vector2.CompareTo(Vector2)"/>.</summary>
-    /// <remarks>This tests that a vector is considered preceeding a vector with a bigger X component.</remarks>
-    [Test]
-    public void CompareToVector2_ThisXComponentIsLessThanOtherXComponent_ReturnsLessThanZero()
-    {
-        var thisVector = new Vector2(.1f, 0);
-        var otherVector = new Vector2(1, 0);
-        var result = thisVector.CompareTo(otherVector);
-        Assert.Less(result, 0);
-    }
+    [Test]
+    public void CompareTo_BothFirstComponentsAreMoreThanSecondComponents_ReturnsMoreThanZero() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1).CompareTo(new Vector2<float>(.1f)), Is.GreaterThan(0));
+            Assert.That(new Vector2<double>(1).CompareTo(new Vector2<double>(.1)), Is.GreaterThan(0));
+        });
 
-    /// <summary>Tests <see cref="Vector2.CompareTo(Vector2)"/>.</summary>
-    /// <remarks>This tests that a vector is considered preceeding a vector with a bigger Y component.</remarks>
-    [Test]
-    public void CompareToVector2_ThisYComponentIsLessThanOtherYComponent_ReturnsLessThanZero()
-    {
-        var thisVector = new Vector2(0, .1f);
-        var otherVector = new Vector2(0, 1);
-        var result = thisVector.CompareTo(otherVector);
-        Assert.Less(result, 0);
-    }
+    [Test]
+    public void CompareTo_FirstXComponentIsLessThanSecondXComponent_ReturnsLessThanZero() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(.1f, 0).CompareTo(new Vector2<float>(1, 0)), Is.LessThan(0));
+            Assert.That(new Vector2<double>(.1, 0).CompareTo(new Vector2<double>(1, 0)), Is.LessThan(0));
+        });
 
-    /// <summary>Tests <see cref="Vector2.CompareTo(Vector2)"/>.</summary>
-    /// <remarks>This tests that a vector is considered following a vector with a smaller X component.</remarks>
-    [Test]
-    public void CompareToVector2_ThisXComponentIsMoreThanOtherXComponent_ReturnsMoreThanZero()
-    {
-        var thisVector = new Vector2(1, 0);
-        var otherVector = new Vector2(.1f, 0);
-        var result = thisVector.CompareTo(otherVector);
-        Assert.Greater(result, 0);
-    }
+    [Test]
+    public void CompareTo_FirstYComponentIsLessThanSecondYComponent_ReturnsLessThanZero() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(0, .1f).CompareTo(new Vector2<float>(0, 1)), Is.LessThan(0));
+            Assert.That(new Vector2<double>(0, .1).CompareTo(new Vector2<double>(0, 1)), Is.LessThan(0));
+        });
 
-    /// <summary>Tests <see cref="Vector2.CompareTo(Vector2)"/>.</summary>
-    /// <remarks>This tests that a vector is considered following a vector with a smaller Y component.</remarks>
-    [Test]
-    public void CompareToVector2_ThisYComponentIsMoreThanOtherYComponent_ReturnsMoreThanZero()
-    {
-        var thisVector = new Vector2(0, 1);
-        var otherVector = new Vector2(0, .1f);
-        var result = thisVector.CompareTo(otherVector);
-        Assert.Greater(result, 0);
-    }
+    [Test]
+    public void CompareTo_FirstXComponentIsMoreThanSecondXComponent_ReturnsMoreThanZero() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1, 0).CompareTo(new Vector2<float>(.1f, 0)), Is.GreaterThan(0));
+            Assert.That(new Vector2<double>(1, 0).CompareTo(new Vector2<double>(.1, 0)), Is.GreaterThan(0));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Angle(in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that giving identical vectors returns an angle of 0 degrees.</remarks>
-    [Test]
-    public void Angle_VectorsAreIdentical_ReturnsZero()
-    {
-        var vector1 = new Vector2(1, 0);
-        var vector2 = new Vector2(1, 0);
-        var angle = Vector2.Angle(vector1, vector2);
-        Assert.AreEqual(0, angle);
-    }
+    [Test]
+    public void CompareTo_FirstYComponentIsMoreThanSecondYComponent_ReturnsMoreThanZero() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(0, 1).CompareTo(new Vector2<float>(0, .1f)), Is.GreaterThan(0));
+            Assert.That(new Vector2<double>(0, 1).CompareTo(new Vector2<double>(0, .1)), Is.GreaterThan(0));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Angle(in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that perpendicular vectors returns an angle of 90 degrees.</remarks>
-    [Test]
-    public void Angle_VectorsArePerpendicularLeft_Returns90()
-    {
-        var vector1 = new Vector2(1, 0);
-        var vector2 = new Vector2(0, 1);
-        var angle = Vector2.Angle(vector1, vector2);
-        Assert.AreEqual(90, angle);
-    }
+    [Test]
+    public void Angle_VectorsAreIdentical_ReturnsZero() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Angle(new(1, 0), new(1, 0)), Is.EqualTo(0));
+            Assert.That(Vector2<double>.Angle(new(1, 0), new(1, 0)), Is.EqualTo(0));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Angle(in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that perpendicular vectors returns an angle of 90 degrees.</remarks>
-    [Test]
-    public void Angle_VectorsArePerpendicularRight_Returns90()
-    {
-        var vector1 = new Vector2(1, 0);
-        var vector2 = new Vector2(0, -1);
-        var angle = Vector2.Angle(vector1, vector2);
-        Assert.AreEqual(90, angle);
-    }
+    [Test]
+    public void Angle_VectorsArePerpendicularLeft_Returns90() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Angle(new(1, 0), new(0, 1)), Is.EqualTo(90));
+            Assert.That(Vector2<double>.Angle(new(1, 0), new(0, 1)), Is.EqualTo(90));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Angle(in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that giving opposite vectors returns an angle of 180 degrees.</remarks>
-    [Test]
-    public void Angle_VectorsAreOpposite_Returns180()
-    {
-        var vector1 = new Vector2(1, 0);
-        var vector2 = new Vector2(-1, 0);
-        var angle = Vector2.Angle(vector1, vector2);
-        Assert.AreEqual(180, angle);
-    }
+    [Test]
+    public void Angle_VectorsArePerpendicularRight_Returns90() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Angle(new(1, 0), new(0, -1)), Is.EqualTo(90));
+            Assert.That(Vector2<double>.Angle(new(1, 0), new(0, -1)), Is.EqualTo(90));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Angle(in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that giving unnormalised vectors returns the correct angle degrees.</remarks>
-    [Test]
-    public void Angle_VectorsAreUnnormalised_ReturnsCorrectAngle()
-    {
-        var vector1 = new Vector2(20, 30);
-        var vector2 = new Vector2(-30, 20);
-        var angle = Vector2.Angle(vector1, vector2);
-        Assert.AreEqual(90, angle);
-    }
+    [Test]
+    public void Angle_VectorsAreOpposite_Returns180() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Angle(new(1, 0), new(-1, 0)), Is.EqualTo(180));
+            Assert.That(Vector2<double>.Angle(new(1, 0), new(-1, 0)), Is.EqualTo(180));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Clamp(in Vector2, in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that giving a value that is between the min and max will result in the passed value.</remarks>
-    [Test]
-    public void Clamp_ValuesBetweenMinMax_ReturnsValue()
-    {
-        var value = new Vector2(1, 2);
-        var min = new Vector2();
-        var max = new Vector2(3);
-        var clampedValue = Vector2.Clamp(value, min, max);
-        Assert.AreEqual(new Vector2(1, 2), clampedValue);
-    }
+    [Test]
+    public void Angle_VectorsAreUnnormalised_ReturnsCorrectAngle() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Angle(new(20, 30), new(-30, 20)), Is.EqualTo(90));
+            Assert.That(Vector2<double>.Angle(new(20, 30), new(-30, 20)), Is.EqualTo(90));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Clamp(in Vector2, in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that giving a value that is less than the min will result in min.</remarks>
-    [Test]
-    public void Clamp_ValuesLessThanMin_ReturnsMin()
-    {
-        var value = new Vector2(1, 2);
-        var min = new Vector2(4);
-        var max = new Vector2(5);
-        var clampedValue = Vector2.Clamp(value, min, max);
-        Assert.AreEqual(new Vector2(4), clampedValue);
-    }
+    [Test]
+    public void Clamp_ValuesBetweenMinMax_ReturnsValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Clamp(new(1, 2), new(0), new(3)), Is.EqualTo(new Vector2<float>(1, 2)));
+            Assert.That(Vector2<double>.Clamp(new(1, 2), new(0), new(3)), Is.EqualTo(new Vector2<double>(1, 2)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Clamp(in Vector2, in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that giving a value that is more than the max will result in max.</remarks>
-    [Test]
-    public void Clamp_ValuesMoreThanMax_ReturnsMax()
-    {
-        var value = new Vector2(4, 5);
-        var min = new Vector2(2);
-        var max = new Vector2(3);
-        var clampedValue = Vector2.Clamp(value, min, max);
-        Assert.AreEqual(new Vector2(3), clampedValue);
-    }
+    [Test]
+    public void Clamp_ValuesLessThanMin_ReturnsMin() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Clamp(new(1, 2), new(3), new(6)), Is.EqualTo(new Vector2<float>(3)));
+            Assert.That(Vector2<double>.Clamp(new(1, 2), new(3), new(6)), Is.EqualTo(new Vector2<double>(3)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.ComponentMin(in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that vector1's X component is used if it's less than vector2's.</remarks>
-    [Test]
-    public void ComponentMin_Vector1XLessThanVector2X_UsesVector1X()
-    {
-        var vector1 = new Vector2(1, 0);
-        var vector2 = new Vector2(2, 0);
-        var minVector = Vector2.ComponentMin(vector1, vector2);
-        Assert.AreEqual(new Vector2(1, 0), minVector);
-    }
+    [Test]
+    public void Clamp_ValuesMoreThanMax_ReturnsMax() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Clamp(new(4, 5), new(0), new(3)), Is.EqualTo(new Vector2<float>(3)));
+            Assert.That(Vector2<double>.Clamp(new(4, 5), new(0), new(3)), Is.EqualTo(new Vector2<double>(3)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.ComponentMin(in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that vector2's X component is used if it's less than vector1's.</remarks>
-    [Test]
-    public void ComponentMin_Vector1XMoreThanVector2X_UsesVector2X()
-    {
-        var vector1 = new Vector2(2, 0);
-        var vector2 = new Vector2(1, 0);
-        var minVector = Vector2.ComponentMin(vector1, vector2);
-        Assert.AreEqual(new Vector2(1, 0), minVector);
-    }
+    [Test]
+    public void ClampValueXLessThanMin_ReturnsMinXValueY() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Clamp(new(1, 5), new(3), new(6)), Is.EqualTo(new Vector2<float>(3, 5)));
+            Assert.That(Vector2<double>.Clamp(new(1, 5), new(3), new(6)), Is.EqualTo(new Vector2<double>(3, 5)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.ComponentMin(in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that vector1's Y component is used if it's less than vector2's.</remarks>
-    [Test]
-    public void ComponentMin_Vector1YLessThanVector2Y_UsesVector1Y()
-    {
-        var vector1 = new Vector2(0, 1);
-        var vector2 = new Vector2(0, 2);
-        var minVector = Vector2.ComponentMin(vector1, vector2);
-        Assert.AreEqual(new Vector2(0, 1), minVector);
-    }
+    [Test]
+    public void ClampValueYLessThanMin_ReturnsValueXMinY() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Clamp(new(5, 1), new(3), new(6)), Is.EqualTo(new Vector2<float>(5, 3)));
+            Assert.That(Vector2<double>.Clamp(new(5, 1), new(3), new(6)), Is.EqualTo(new Vector2<double>(5, 3)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.ComponentMin(in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that vector2's Y component is used if it's less than vector1's.</remarks>
-    [Test]
-    public void ComponentMin_Vector1YMoreThanVector2Y_UsesVector2Y()
-    {
-        var vector1 = new Vector2(0, 2);
-        var vector2 = new Vector2(0, 1);
-        var minVector = Vector2.ComponentMin(vector1, vector2);
-        Assert.AreEqual(new Vector2(0, 1), minVector);
-    }
+    [Test]
+    public void ClampValueXMoreThanMax_ReturnsMaxXValueY() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Clamp(new(5, 2), new(0), new(3)), Is.EqualTo(new Vector2<float>(3, 2)));
+            Assert.That(Vector2<double>.Clamp(new(5, 2), new(0), new(3)), Is.EqualTo(new Vector2<double>(3, 2)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.ComponentMax(in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that vector2's X component is used if it's more than vector1's.</remarks>
-    [Test]
-    public void ComponentMax_Vector1XLessThanVector2X_UsesVector2X()
-    {
-        var vector1 = new Vector2(1, 0);
-        var vector2 = new Vector2(2, 0);
-        var maxVector = Vector2.ComponentMax(vector1, vector2);
-        Assert.AreEqual(new Vector2(2, 0), maxVector);
-    }
+    [Test]
+    public void ClampValueYMoreThanMax_ReturnsValueXMaxY() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Clamp(new(2, 5), new(0), new(3)), Is.EqualTo(new Vector2<float>(2, 3)));
+            Assert.That(Vector2<double>.Clamp(new(2, 5), new(0), new(3)), Is.EqualTo(new Vector2<double>(2, 3)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.ComponentMax(in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that vector1's X component is used if it's more than vector2's.</remarks>
-    [Test]
-    public void ComponentMax_Vector1XMoreThanVector2X_UsesVector1X()
-    {
-        var vector1 = new Vector2(2, 0);
-        var vector2 = new Vector2(1, 0);
-        var maxVector = Vector2.ComponentMax(vector1, vector2);
-        Assert.AreEqual(new Vector2(2, 0), maxVector);
-    }
+    [Test]
+    public void ComponentMax_Vector1XLessThanVector2X_UsesVector2X() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.ComponentMax(new(1, 0), new(2, 0)), Is.EqualTo(new Vector2<float>(2, 0)));
+            Assert.That(Vector2<double>.ComponentMax(new(1, 0), new(2, 0)), Is.EqualTo(new Vector2<double>(2, 0)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.ComponentMax(in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that vector2's Y component is used if it's more than vector1's.</remarks>
-    [Test]
-    public void ComponentMax_Vector1YLessThanVector2Y_UsesVector2Y()
-    {
-        var vector1 = new Vector2(0, 1);
-        var vector2 = new Vector2(0, 2);
-        var maxVector = Vector2.ComponentMax(vector1, vector2);
-        Assert.AreEqual(new Vector2(0, 2), maxVector);
-    }
+    [Test]
+    public void ComponentMax_Vector1XMoreThanVector2X_UsesVector1X() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.ComponentMax(new(2, 0), new(1, 0)), Is.EqualTo(new Vector2<float>(2, 0)));
+            Assert.That(Vector2<double>.ComponentMax(new(2, 0), new(1, 0)), Is.EqualTo(new Vector2<double>(2, 0)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.ComponentMax(in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that vector1's Y component is used if it's more than vector2's.</remarks>
-    [Test]
-    public void ComponentMax_Vector1YMoreThanVector2Y_UsesVector1Y()
-    {
-        var vector1 = new Vector2(0, 2);
-        var vector2 = new Vector2(0, 1);
-        var maxVector = Vector2.ComponentMax(vector1, vector2);
-        Assert.AreEqual(new Vector2(0, 2), maxVector);
-    }
+    [Test]
+    public void ComponentMax_Vector1YLessThanVector2Y_UsesVector2Y() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.ComponentMax(new(0, 1), new(0, 2)), Is.EqualTo(new Vector2<float>(0, 2)));
+            Assert.That(Vector2<double>.ComponentMax(new(0, 1), new(0, 2)), Is.EqualTo(new Vector2<double>(0, 2)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Distance(in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that the distance is calculated correctly.</remarks>
-    [Test]
-    public void Distance_Get()
-    {
-        var vector1 = Vector2.Zero;
-        var vector2 = Vector2.One;
-        var distance = Vector2.Distance(vector1, vector2);
-        Assert.AreEqual(1.4142135f, distance, FloatingPointEqualsDelta);
-    }
+    [Test]
+    public void ComponentMax_Vector1YMoreThanVector2Y_UsesVector1Y() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.ComponentMax(new(0, 2), new(0, 1)), Is.EqualTo(new Vector2<float>(0, 2)));
+            Assert.That(Vector2<double>.ComponentMax(new(0, 2), new(0, 1)), Is.EqualTo(new Vector2<double>(0, 2)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.DistanceSquared(in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that the squared distance is calculated correctly.</remarks>
-    [Test]
-    public void DistanceSquared_Get()
-    {
-        var vector1 = Vector2.Zero;
-        var vector2 = Vector2.One;
-        var distance = Vector2.DistanceSquared(vector1, vector2);
-        Assert.AreEqual(2, distance);
-    }
+    [Test]
+    public void ComponentMin_Vector1XLessThanVector2X_UsesVector1X() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.ComponentMin(new(1, 0), new(2, 0)), Is.EqualTo(new Vector2<float>(1, 0)));
+            Assert.That(Vector2<double>.ComponentMin(new(1, 0), new(2, 0)), Is.EqualTo(new Vector2<double>(1, 0)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Dot(in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that the dot product of two opposite vectors is '-1'.</remarks>
-    [Test]
-    public void Dot_VectorsOpposite_ReturnsMinusOne()
-    {
-        var vector1 = new Vector2(0, 1);
-        var vector2 = new Vector2(0, -1);
-        var dot = Vector2.Dot(vector1, vector2);
-        Assert.AreEqual(-1, dot);
-    }
+    [Test]
+    public void ComponentMin_Vector1XMoreThanVector2X_UsesVector2X() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.ComponentMin(new(2, 0), new(1, 0)), Is.EqualTo(new Vector2<float>(1, 0)));
+            Assert.That(Vector2<double>.ComponentMin(new(2, 0), new(1, 0)), Is.EqualTo(new Vector2<double>(1, 0)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Dot(in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that the dot product of two perpendicular vectors is '0'.</remarks>
-    [Test]
-    public void Dot_VectorsPerpendicular_ReturnsZero()
-    {
-        var vector1 = new Vector2(0, 1);
-        var vector2 = new Vector2(1, 0);
-        var dot = Vector2.Dot(vector1, vector2);
-        Assert.AreEqual(0, dot);
-    }
+    [Test]
+    public void ComponentMin_Vector1YLessThanVector2Y_UsesVector1Y() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.ComponentMin(new(0, 1), new(0, 2)), Is.EqualTo(new Vector2<float>(0, 1)));
+            Assert.That(Vector2<double>.ComponentMin(new(0, 1), new(0, 2)), Is.EqualTo(new Vector2<double>(0, 1)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Dot(in Vector2, in Vector2)"/>.</summary>
-    /// <remarks>This tests that the dot product between two identical vecrtors is '1'.</remarks>
-    [Test]
-    public void Dot_VectorsSame_ReturnsOne()
-    {
-        var vector1 = new Vector2(0, 1);
-        var vector2 = new Vector2(0, 1);
-        var dot = Vector2.Dot(vector1, vector2);
-        Assert.AreEqual(1, dot);
-    }
+    [Test]
+    public void ComponentMin_Vector1YMoreThanVector2Y_UsesVector2Y() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.ComponentMin(new(0, 2), new(0, 1)), Is.EqualTo(new Vector2<float>(0, 1)));
+            Assert.That(Vector2<double>.ComponentMin(new(0, 2), new(0, 1)), Is.EqualTo(new Vector2<double>(0, 1)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Lerp(in Vector2, in Vector2, float)"/>.</summary>
-    /// <remarks>This tests that giving an amount that is in between '0' and '1' will result in a value that's correctly interpolated between the two values.</remarks>
-    [Test]
-    public void Lerp_AmountBetweenZeroAndOne_ReturnsInterpolatedValue()
-    {
-        var vector1 = new Vector2(0);
-        var vector2 = new Vector2(10);
-        var lerpValue = Vector2.Lerp(vector1, vector2, .5f);
-        Assert.AreEqual(new Vector2(5), lerpValue);
-    }
+    [Test]
+    public void Distance_Get() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Distance(new(0), new(1)), Is.EqualTo(1.4142135f));
+            Assert.That(Vector2<double>.Distance(new(0), new(1)), Is.EqualTo(1.4142135623730951));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Lerp(in Vector2, in Vector2, float)"/>.</summary>
-    /// <remarks>This tests that giving an amount that is less than '0' will result in a value that's less than the first value (meaning the method is unclamped).</remarks>
-    [Test]
-    public void Lerp_AmountLessThanZero_ReturnsLessThanFirstValue()
-    {
-        var vector1 = new Vector2(0);
-        var vector2 = new Vector2(10);
-        var lerpValue = Vector2.Lerp(vector1, vector2, -1);
-        Assert.AreEqual(new Vector2(-10), lerpValue);
-    }
+    [Test]
+    public void DistanceSquared_Get() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.DistanceSquared(new(0), new(1)), Is.EqualTo(2));
+            Assert.That(Vector2<double>.DistanceSquared(new(0), new(1)), Is.EqualTo(2));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Lerp(in Vector2, in Vector2, float)"/>.</summary>
-    /// <remarks>This tests that giving an amount that is more than '1' will result in a value that's more than the second value (meaning the method is unclamped).</remarks>
-    [Test]
-    public void Lerp_AmountMoreThanOne_ReturnsMoreThanSecondValue()
-    {
-        var vector1 = new Vector2(0);
-        var vector2 = new Vector2(10);
-        var lerpValue = Vector2.Lerp(vector1, vector2, 2);
-        Assert.AreEqual(new Vector2(20), lerpValue);
-    }
+    [Test]
+    public void Dot_VectorsOpposite_ReturnsMinusOne() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Dot(new(0, 1), new(0, -1)), Is.EqualTo(-1));
+            Assert.That(Vector2<double>.Dot(new(0, 1), new(0, -1)), Is.EqualTo(-1));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Lerp(in Vector2, in Vector2, float)"/>.</summary>
-    /// <remarks>This tests that giving the amount '0' will result in the first value.</remarks>
-    [Test]
-    public void Lerp_AmountIsZero_ReturnsFirstValue()
-    {
-        var vector1 = new Vector2(0);
-        var vector2 = new Vector2(10);
-        var lerpValue = Vector2.Lerp(vector1, vector2, 0);
-        Assert.AreEqual(new Vector2(0), lerpValue);
-    }
+    [Test]
+    public void Dot_VectorsPerpendicular_ReturnsZero() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Dot(new(0, 1), new(1, 0)), Is.EqualTo(0));
+            Assert.That(Vector2<double>.Dot(new(0, 1), new(1, 0)), Is.EqualTo(0));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Lerp(in Vector2, in Vector2, float)"/>.</summary>
-    /// <remarks>This tests that giving the amount '1' will result in the second value.</remarks>
-    [Test]
-    public void Lerp_AmountIsOne_ReturnsSecondValue()
-    {
-        var vector1 = new Vector2(0);
-        var vector2 = new Vector2(10);
-        var lerpValue = Vector2.Lerp(vector1, vector2, 1);
-        Assert.AreEqual(new Vector2(10), lerpValue);
-    }
+    [Test]
+    public void Dot_VectorsSame_ReturnsOne() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Dot(new(0, 1), new(0, 1)), Is.EqualTo(1));
+            Assert.That(Vector2<double>.Dot(new(0, 1), new(0, 1)), Is.EqualTo(1));
+        });
 
-    /// <summary>Tests <see cref="Vector2.LerpClamped(in Vector2, in Vector2, float)"/>.</summary>
-    /// <remarks>This tests that giving an amount that is in between '0' and '1' will result in a value that's correctly interpolated between the two values.</remarks>
-    [Test]
-    public void LerpClamped_AmountBetweenZeroAndOne_ReturnsInterpolatedValue()
-    {
-        var vector1 = new Vector2(0);
-        var vector2 = new Vector2(10);
-        var lerpValue = Vector2.LerpClamped(vector1, vector2, .5f);
-        Assert.AreEqual(new Vector2(5), lerpValue);
-    }
+    [Test]
+    public void Lerp_AmountBetweenZeroAndOne_ReturnsInterpolatedValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Lerp(new(0), new(10), .5f), Is.EqualTo(new Vector2<float>(5)));
+            Assert.That(Vector2<double>.Lerp(new(0), new(10), .5), Is.EqualTo(new Vector2<double>(5)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.LerpClamped(in Vector2, in Vector2, float)"/>.</summary>
-    /// <remarks>This tests that giving an amount that is less than '0' will result in the first value (meaning the method is clamped).</remarks>
-    [Test]
-    public void LerpClamped_AmountLessThanZero_ReturnsFirstValue()
-    {
-        var vector1 = new Vector2(0);
-        var vector2 = new Vector2(10);
-        var lerpValue = Vector2.LerpClamped(vector1, vector2, -1);
-        Assert.AreEqual(new Vector2(0), lerpValue);
-    }
+    [Test]
+    public void Lerp_AmountLessThanZero_ReturnsLessThanFirstValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Lerp(new(0), new(10), -1), Is.EqualTo(new Vector2<float>(-10)));
+            Assert.That(Vector2<double>.Lerp(new(0), new(10), -1), Is.EqualTo(new Vector2<double>(-10)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.LerpClamped(in Vector2, in Vector2, float)"/>.</summary>
-    /// <remarks>This tests that giving an amount that is more than '1' will result in the second value (meaning the method is clamped).</remarks>
-    [Test]
-    public void LerpClamped_AmountMoreThanOne_ReturnsSecondValue()
-    {
-        var vector1 = new Vector2(0);
-        var vector2 = new Vector2(10);
-        var lerpValue = Vector2.LerpClamped(vector1, vector2, 2);
-        Assert.AreEqual(new Vector2(10), lerpValue);
-    }
+    [Test]
+    public void Lerp_AmountMoreThanOne_ReturnsMoreThanSecondValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Lerp(new(0), new(10), 2), Is.EqualTo(new Vector2<float>(20)));
+            Assert.That(Vector2<double>.Lerp(new(0), new(10), 2), Is.EqualTo(new Vector2<double>(20)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.LerpClamped(in Vector2, in Vector2, float)"/>.</summary>
-    /// <remarks>This tests that giving the amount '0' will result in the first value.</remarks>
-    [Test]
-    public void LerpClamped_AmountIsZero_ReturnsFirstValue()
-    {
-        var vector1 = new Vector2(0);
-        var vector2 = new Vector2(10);
-        var lerpValue = Vector2.LerpClamped(vector1, vector2, 0);
-        Assert.AreEqual(new Vector2(0), lerpValue);
-    }
+    [Test]
+    public void Lerp_AmountIsZero_ReturnsFirstValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Lerp(new(0), new(10), 0), Is.EqualTo(new Vector2<float>(0)));
+            Assert.That(Vector2<double>.Lerp(new(0), new(10), 0), Is.EqualTo(new Vector2<double>(0)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.LerpClamped(in Vector2, in Vector2, float)"/>.</summary>
-    /// <remarks>This tests that giving the amount '1' will result in the second value.</remarks>
-    [Test]
-    public void LerpClamped_AmountIsOne_ReturnsSecondValue()
-    {
-        var vector1 = new Vector2(0);
-        var vector2 = new Vector2(10);
-        var lerpValue = Vector2.LerpClamped(vector1, vector2, 1);
-        Assert.AreEqual(new Vector2(10), lerpValue);
-    }
+    [Test]
+    public void Lerp_AmountIsOne_ReturnsSecondValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Lerp(new(0), new(10), 1), Is.EqualTo(new Vector2<float>(10)));
+            Assert.That(Vector2<double>.Lerp(new(0), new(10), 1), Is.EqualTo(new Vector2<double>(10)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Reflect(in Vector2, Vector2)"/>.</summary>
-    /// <remarks>This tests that the vector correctly gets reflected when the direction comes from the positive half-space.<br/>Example tested: <c>d🡖 🡑n 🡕r</c></remarks>
-    [Test]
-    public void Reflect_DirectionFromPositiveHalfSpace_ReturnsReflectedDirection()
-    {
-        var direction = new Vector2(1, -1);
-        var normal = new Vector2(0, 1);
-        var reflected = Vector2.Reflect(direction, normal);
-        Assert.AreEqual(new Vector2(1, 1), reflected);
-    }
+    [Test]
+    public void LerpClamped_AmountBetweenZeroAndOne_ReturnsInterpolatedValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.LerpClamped(new(0), new(10), .5f), Is.EqualTo(new Vector2<float>(5)));
+            Assert.That(Vector2<double>.LerpClamped(new(0), new(10), .5f), Is.EqualTo(new Vector2<double>(5)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Reflect(in Vector2, Vector2)"/>.</summary>
-    /// <remarks>This tests that the vector correctly get reflected when the direction comes from the negative half-space.<br/>Example tested: <c>d🡖 🡒n 🡗r</c></remarks>
-    [Test]
-    public void Reflect_DirectionFromNegativeHalfSpace_ReturnsReflectedDirection()
-    {
-        var direction = new Vector2(1, -1);
-        var normal = new Vector2(1, 0);
-        var reflected = Vector2.Reflect(direction, normal);
-        Assert.AreEqual(new Vector2(-1, -1), reflected);
-    }
+    [Test]
+    public void LerpClamped_AmountLessThanZero_ReturnsFirstValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.LerpClamped(new(0), new(10), -1), Is.EqualTo(new Vector2<float>(0)));
+            Assert.That(Vector2<double>.LerpClamped(new(0), new(10), -1), Is.EqualTo(new Vector2<double>(0)));
+        });
 
-    /// <summary>Tests <see cref="Vector2.Reflect(in Vector2, Vector2)"/>.</summary>
-    /// <remarks>This tests that the vector doesn't get reflected when the direction and normal are perpendicular (meaning the reflection plane and direction are parallel).<br/>Example tested: <c>d🡓 🡐n 🡓r</c></remarks>
-    [Test]
-    public void Reflect_DirectionAndNormalArePerpendicular_ReturnsNonReflectedDirection()
-    {
-        var direction = new Vector2(0, -1);
-        var normal = new Vector2(-1, 0);
-        var reflected = Vector2.Reflect(direction, normal);
-        Assert.AreEqual(new Vector2(0, -1), reflected);
-    }
+    [Test]
+    public void LerpClamped_AmountMoreThanOne_ReturnsSecondValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.LerpClamped(new(0), new(10), 2), Is.EqualTo(new Vector2<float>(10)));
+            Assert.That(Vector2<double>.LerpClamped(new(0), new(10), 2), Is.EqualTo(new Vector2<double>(10)));
+        });
 
-    /// <summary>Tests <see cref="Vector2"/> + <see langword="float"/>.</summary>
-    /// <remarks>This tests that components are added correctly.</remarks>
-    [Test]
-    public void OperatorAddVector2Float_AddsVectorComponents()
-    {
-        var vector = new Vector2(1, 2);
-        var result = vector + 1;
-        Assert.AreEqual(new Vector2(2, 3), result);
-    }
+    [Test]
+    public void LerpClamped_AmountIsZero_ReturnsFirstValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.LerpClamped(new(0), new(10), 0), Is.EqualTo(new Vector2<float>(0)));
+            Assert.That(Vector2<double>.LerpClamped(new(0), new(10), 0), Is.EqualTo(new Vector2<double>(0)));
+        });
 
-    /// <summary>Tests <see cref="Vector2"/> + <see cref="Vector2"/>.</summary>
-    /// <remarks>This tests that vectors are added correctly.</remarks>
-    [Test]
-    public void OperatorAddVector2Vector2_AddsVectorsComponents()
-    {
-        var vector1 = new Vector2(1, 2);
-        var vector2 = new Vector2(3, 4);
-        var result = vector1 + vector2;
-        Assert.AreEqual(new Vector2(4, 6), result);
-    }
+    [Test]
+    public void LerpClamped_AmountIsOne_ReturnsSecondValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.LerpClamped(new(0), new(10), 1), Is.EqualTo(new Vector2<float>(10)));
+            Assert.That(Vector2<double>.LerpClamped(new(0), new(10), 1), Is.EqualTo(new Vector2<double>(10)));
+        });
 
-    /// <summary>Tests <see cref="Vector2"/> - <see langword="float"/>.</summary>
-    /// <remarks>This tests that components are subtracted correctly.</remarks>
-    [Test]
-    public void OperatorSubtractVector2Float_SubtractsVectorComponents()
-    {
-        var vector = new Vector2(1, 2);
-        var result = vector - 1;
-        Assert.AreEqual(new Vector2(0, 1), result);
-    }
+    [Test]
+    public void Reflect_DirectionFromPositiveHalfSpace_ReturnsReflectedDirection() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Reflect(new(1, -1), new(0, 1)), Is.EqualTo(new Vector2<float>(1, 1)));
+            Assert.That(Vector2<double>.Reflect(new(1, -1), new(0, 1)), Is.EqualTo(new Vector2<double>(1, 1)));
+        });
 
-    /// <summary>Tests <see cref="Vector2"/> - <see cref="Vector2"/>.</summary>
-    /// <remarks>This tests that vectors are subtracted correctly.</remarks>
-    [Test]
-    public void OperatorSubtractVector2Vector2_SubtractsVectorComponents()
-    {
-        var vector1 = new Vector2(3, 4);
-        var vector2 = new Vector2(1, 3);
-        var result = vector1 - vector2;
-        Assert.AreEqual(new Vector2(2, 1), result);
-    }
+    [Test]
+    public void Reflect_DirectionFromNegativeHalfSpace_ReturnsReflectedDirection() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Reflect(new(1, -1), new(1, 0)), Is.EqualTo(new Vector2<float>(-1, -1)));
+            Assert.That(Vector2<double>.Reflect(new(1, -1), new(1, 0)), Is.EqualTo(new Vector2<double>(-1, -1)));
+        });
 
-    /// <summary>Tests -<see cref="Vector2"/>.</summary>
-    /// <remarks>This tests that vectors are inverted correctly.</remarks>
-    [Test]
-    public void OperatorInvert_InvertsVectorComponents()
-    {
-        var vector = new Vector2(1, 2);
-        var result = -vector;
-        Assert.AreEqual(new Vector2(-1, -2), result);
-    }
+    [Test]
+    public void Reflect_DirectionAndNormalArePerpendicular_ReturnsNonReflectedDirection() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(Vector2<float>.Reflect(new(0, -1), new(-1, 0)), Is.EqualTo(new Vector2<float>(0, -1)));
+            Assert.That(Vector2<double>.Reflect(new(0, -1), new(-1, 0)), Is.EqualTo(new Vector2<double>(0, -1)));
+        });
 
-    /// <summary>Tests <see langword="float"/> * <see cref="Vector2"/>.</summary>
-    /// <remarks>This tests that vectors are scaled correctly.</remarks>
-    [Test]
-    public void OperatorMultiplyFloatVector2_MultiplesVectorComponents()
-    {
-        var vector = new Vector2(1, 2);
-        var result = 2 * vector;
-        Assert.AreEqual(new Vector2(2, 4), result);
-    }
+    [Test]
+    public void OperatorAddVector2FloatingPoint_AddsVectorComponents() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1, 2) + 1, Is.EqualTo(new Vector2<float>(2, 3)));
+            Assert.That(new Vector2<double>(1, 2) + 1, Is.EqualTo(new Vector2<double>(2, 3)));
+        });
 
-    /// <summary>Tests <see cref="Vector2"/> * <see langword="float"/>.</summary>
-    /// <remarks>This tests that vectors are scaled correctly.</remarks>
-    [Test]
-    public void OperatorMultipleVector2Float_MultiplesVectorComponents()
-    {
-        var vector = new Vector2(1, 2);
-        var result = vector * 2;
-        Assert.AreEqual(new Vector2(2, 4), result);
-    }
+    [Test]
+    public void OperatorAddVector2Vector2_AddsVectorsComponents() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1, 2) + new Vector2<float>(3, 4), Is.EqualTo(new Vector2<float>(4, 6)));
+            Assert.That(new Vector2<double>(1, 2) + new Vector2<double>(3, 4), Is.EqualTo(new Vector2<double>(4, 6)));
+        });
 
-    /// <summary>Tests <see cref="Vector2"/> * <see cref="Vector2"/>.</summary>
-    /// <remarks>This tests that vectors are scaled correctly.</remarks>
-    [Test]
-    public void OperatorMultipleVector2Vector2_MultiplesVectorComponents()
-    {
-        var vector1 = new Vector2(1, 2);
-        var vector2 = new Vector2(3, 4);
-        var result = vector1 * vector2;
-        Assert.AreEqual(new Vector2(3, 8), result);
-    }
+    [Test]
+    public void OperatorSubtractVector2FloatingPoint_SubtractsVectorComponents() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1, 2) - 1, Is.EqualTo(new Vector2<float>(0, 1)));
+            Assert.That(new Vector2<double>(1, 2) - 1, Is.EqualTo(new Vector2<double>(0, 1)));
+        });
 
-    /// <summary>Tests <see cref="Vector2"/> / <see langword="float"/>.</summary>
-    /// <remarks>This tests that vectors are divided correctly.</remarks>
-    [Test]
-    public void OperatorDivideVector2Float_DividesVectorComponents()
-    {
-        var vector = new Vector2(2, 3);
-        var result = vector / 2;
-        Assert.AreEqual(new Vector2(1, 1.5f), result);
-    }
+    [Test]
+    public void OperatorSubtractVector2Vector2_SubtractsVectorComponents() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(3, 4) - new Vector2<float>(1, 3), Is.EqualTo(new Vector2<float>(2, 1)));
+            Assert.That(new Vector2<double>(3, 4) - new Vector2<double>(1, 3), Is.EqualTo(new Vector2<double>(2, 1)));
+        });
 
-    /// <summary>Tests <see cref="Vector2"/> / <see cref="Vector2"/>.</summary>
-    /// <remarks>This tests that vectors are divided correctly.</remarks>
-    [Test]
-    public void OperatorDivideVector2Vector2_DividesVectorComponents()
-    {
-        var vector1 = new Vector2(2, 12);
-        var vector2 = new Vector2(2, 4);
-        var result = vector1 / vector2;
-        Assert.AreEqual(new Vector2(1, 3), result);
-    }
+    [Test]
+    public void OperatorNegate_NegatesVectorComponents() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(-new Vector2<float>(1, 2), Is.EqualTo(new Vector2<float>(-1, -2)));
+            Assert.That(-new Vector2<double>(1, 2), Is.EqualTo(new Vector2<double>(-1, -2)));
+        });
 
-    /// <summary>Tests <see cref="Vector2"/> == <see cref="Vector2"/>.</summary>
-    /// <remarks>This tests that vectors are considered equal when they are equal.</remarks>
-    [Test]
-    public void OperatorEquals_ValuesAreEqual_ReturnsTrue()
-    {
-        var vector1 = new Vector2(1, 2);
-        var vector2 = new Vector2(1, 2);
-        var areEqual = vector1 == vector2;
-        Assert.IsTrue(areEqual);
-    }
+    [Test]
+    public void OperatorMultiplyFloatingPointVector2_MultiplesVectorComponents() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(2 * new Vector2<float>(1, 2), Is.EqualTo(new Vector2<float>(2, 4)));
+            Assert.That(2 * new Vector2<double>(1, 2), Is.EqualTo(new Vector2<double>(2, 4)));
+        });
 
-    /// <summary>Tests <see cref="Vector2"/> == <see cref="Vector2"/>.</summary>
-    /// <remarks>This tests that vectors aren't considered equal when they aren't equal.</remarks>
-    [Test]
-    public void OperatorEquals_ValuesAreNotEqual_ReturnsFalse()
-    {
-        var vector1 = new Vector2(1, 2);
-        var vector2 = new Vector2();
-        var areEqual = vector1 == vector2;
-        Assert.IsFalse(areEqual);
-    }
+    [Test]
+    public void OperatorMultipleVector2FloatingPoint_MultiplesVectorComponents() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1, 2) * 2, Is.EqualTo(new Vector2<float>(2, 4)));
+            Assert.That(new Vector2<double>(1, 2) * 2, Is.EqualTo(new Vector2<double>(2, 4)));
+        });
 
-    /// <summary>Tests <see cref="Vector2"/> != <see cref="Vector2"/>.</summary>
-    /// <remarks>This tests that vectors are considered equal when they are equal.</remarks>
-    [Test]
-    public void OperatorNotEquals_ValuesAreEqual_ReturnsFalse()
-    {
-        var vector1 = new Vector2(1, 2);
-        var vector2 = new Vector2(1, 2);
-        var areEqual = vector1 != vector2;
-        Assert.IsFalse(areEqual);
-    }
+    [Test]
+    public void OperatorMultipleVector2Vector2_MultiplesVectorComponents() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1, 2) * new Vector2<float>(3, 4), Is.EqualTo(new Vector2<float>(3, 8)));
+            Assert.That(new Vector2<double>(1, 2) * new Vector2<double>(3, 4), Is.EqualTo(new Vector2<double>(3, 8)));
+        });
 
-    /// <summary>Tests <see cref="Vector2"/> != <see cref="Vector2"/>.</summary>
-    /// <remarks>This tests that vectors aren't considered equal when they aren't equal.</remarks>
-    [Test]
-    public void OperatorNotEquals_ValuesAreNotEqual_ReturnsTrue()
-    {
-        var vector1 = new Vector2(1, 2);
-        var vector2 = new Vector2();
-        var areEqual = vector1 != vector2;
-        Assert.IsTrue(areEqual);
-    }
+    [Test]
+    public void OperatorDivideVector2FloatingPoint_DividesVectorComponents() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(2, 3) / 2, Is.EqualTo(new Vector2<float>(1, 1.5f)));
+            Assert.That(new Vector2<double>(2, 3) / 2, Is.EqualTo(new Vector2<double>(1, 1.5)));
+        });
 
-    /// <summary>Tests (<see cref="Vector2"/>)(<see langword="float"/>, <see langword="float"/>).</summary>
-    /// <remarks>This tests that tuples are cast correctly.</remarks>
-    [Test]
-    public void OperatorCastTupleFloatFloatToVector2_CastsTuple()
-    {
-        var tuple = (1.5f, 2.5f);
-        var vector = (Vector2)tuple;
-        Assert.AreEqual(new Vector2(1.5f, 2.5f), vector);
-    }
+    [Test]
+    public void OperatorDivideVector2Vector2_DividesVectorComponents() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(2, 12) / new Vector2<float>(2, 4), Is.EqualTo(new Vector2<float>(1, 3)));
+            Assert.That(new Vector2<double>(2, 12) / new Vector2<double>(2, 4), Is.EqualTo(new Vector2<double>(1, 3)));
+        });
 
-    /// <summary>Tests ((<see langword="float"/>, <see langword="float"/>))<see cref="Vector2"/>.</summary>
-    /// <remarks>This tests that vectors are cast correctly.</remarks>
-    [Test]
-    public void OperatorCastVector2ToTupleFloatFloat_CastsVector()
-    {
-        var vector = new Vector2(1.5f, 2.5f);
-        var tuple = ((float, float))vector;
-        Assert.AreEqual((1.5f, 2.5f), tuple);
-    }
+    [Test]
+    public void OperatorEquals_ValuesAreEqual_ReturnsTrue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1, 2) == new Vector2<float>(1, 2), Is.True);
+            Assert.That(new Vector2<double>(1, 2) == new Vector2<double>(1, 2), Is.True);
+        });
 
-    /// <summary>Tests (<see cref="Vector2D"/>)<see cref="Vector2"/>.</summary>
-    /// <remarks>This tests that vectors are cast correctly.</remarks>
-    [Test]
-    public void OperatorCastVector2ToVector2D_CastsVector()
-    {
-        var vector = new Vector2(1.5f, 2.5f);
-        var vectorD = (Vector2D)vector;
-        Assert.AreEqual(new Vector2D(1.5, 2.5), vectorD);
-    }
+    [Test]
+    public void OperatorEquals_ValuesAreNotEqual_ReturnsFalse() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1, 2) == new Vector2<float>(), Is.False);
+            Assert.That(new Vector2<double>(1, 2) == new Vector2<double>(), Is.False);
+        });
 
-    /// <summary>Tests (<see cref="Vector2I"/>)<see cref="Vector2"/>.</summary>
-    /// <remarks>This tests that vectors are cast correctly.</remarks>
-    [Test]
-    public void OperatorCastVector2ToVector2I_CastsVector()
-    {
-        var vector = new Vector2(1.49f, 2.51f);
-        var vectorI = (Vector2I)vector;
-        Assert.AreEqual(new Vector2I(1, 2), vectorI);
-    }
+    [Test]
+    public void OperatorNotEquals_ValuesAreEqual_ReturnsFalse() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1, 2) != new Vector2<float>(1, 2), Is.False);
+            Assert.That(new Vector2<double>(1, 2) != new Vector2<double>(1, 2), Is.False);
+        });
 
-    /// <summary>Tests (<see cref="Vector2U"/>)<see cref="Vector2"/>.</summary>
-    /// <remarks>This tests that vectors are cast correctly.</remarks>
-    [Test]
-    public void OperatorCastVector2ToVector2U_CastsVector()
-    {
-        var vector = new Vector2(1.49f, 2.51f);
-        var vectorU = (Vector2U)vector;
-        Assert.AreEqual(new Vector2U(1, 2), vectorU);
-    }
+    [Test]
+    public void OperatorNotEquals_ValuesAreNotEqual_ReturnsTrue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1, 2) != new Vector2<float>(), Is.True);
+            Assert.That(new Vector2<double>(1, 2) != new Vector2<double>(), Is.True);
+        });
 }
