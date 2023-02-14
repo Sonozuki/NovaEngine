@@ -75,15 +75,15 @@ public class VulkanGameObject : RendererGameObjectBase
 
             var position = new Vector3<float>(uiTransform.Left, uiTransform.Top, 0);
             var rotation = Quaternion<float>.Identity;
-            var modelMatrix = Matrix4x4.CreateScale(Vector3<float>.One)
-                            * Matrix4x4.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W))
-                            * Matrix4x4.CreateTranslation(new(position.X, position.Y, -position.Z));
+            var modelMatrix = Matrix4x4<float>.CreateScale(Vector3<float>.One)
+                            * Matrix4x4<float>.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W))
+                            * Matrix4x4<float>.CreateTranslation(new(position.X, position.Y, -position.Z));
 
             var ubo = new MVPBuffer(
                 model: modelMatrix,
-                view: Matrix4x4.Identity,
-                projection: Matrix4x4.CreateTranslation(-Program.MainWindow.Size.X / 2f, -Program.MainWindow.Size.Y / 2f, 0)
-                          * Matrix4x4.CreateOrthographic(Program.MainWindow.Size.X, Program.MainWindow.Size.Y, 0, 1) // TODO: temp
+                view: Matrix4x4<float>.Identity,
+                projection: Matrix4x4<float>.CreateTranslation(-Program.MainWindow.Size.X / 2f, -Program.MainWindow.Size.Y / 2f, 0)
+                          * Matrix4x4<float>.CreateOrthographic(Program.MainWindow.Size.X, Program.MainWindow.Size.Y, 0, 1) // TODO: temp
             );
 
             MVPBuffer.CopyFrom(ubo);
@@ -92,14 +92,14 @@ public class VulkanGameObject : RendererGameObjectBase
         {
             var position = BaseGameObject.Transform.GlobalPosition;
             var rotation = BaseGameObject.Transform.GlobalRotation;
-            var modelMatrix = Matrix4x4.CreateScale(BaseGameObject.Transform.GlobalScale)
-                            * Matrix4x4.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W))
-                            * Matrix4x4.CreateTranslation(new(position.X, position.Y, -position.Z));
+            var modelMatrix = Matrix4x4<float>.CreateScale(BaseGameObject.Transform.GlobalScale)
+                            * Matrix4x4<float>.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W))
+                            * Matrix4x4<float>.CreateTranslation(new(position.X, position.Y, -position.Z));
 
             position = -camera.Transform.GlobalPosition;
             rotation = camera.Transform.GlobalRotation.Inverse;
-            var viewMatrix = Matrix4x4.CreateTranslation(new(position.X, position.Y, -position.Z))
-                           * Matrix4x4.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W));
+            var viewMatrix = Matrix4x4<float>.CreateTranslation(new(position.X, position.Y, -position.Z))
+                           * Matrix4x4<float>.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W));
 
             var ubo = new MVPBuffer(
                 model: modelMatrix,

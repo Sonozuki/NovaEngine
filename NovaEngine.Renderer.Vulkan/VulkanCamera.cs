@@ -186,8 +186,8 @@ public unsafe class VulkanCamera : RendererCameraBase
         // TODO: temp
         var position = -Camera.Main!.Transform.GlobalPosition;
         var rotation = Camera.Main.Transform.GlobalRotation;
-        var viewMatrix = Matrix4x4.CreateTranslation(position)
-                       * Matrix4x4.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W));
+        var viewMatrix = Matrix4x4<float>.CreateTranslation(position)
+                       * Matrix4x4<float>.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W));
         viewMatrix.Transpose();
 
         var worldSpace = new Vector4<float>(0, 0, 4.5f, 1);

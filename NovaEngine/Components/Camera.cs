@@ -71,14 +71,14 @@ public sealed class Camera : ComponentBase
 
     /// <summary>The projection matrix of the camera.</summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public Matrix4x4 ProjectionMatrix
+    public Matrix4x4<float> ProjectionMatrix
     {
         get
         {
             if (Projection == CameraProjection.Perspective)
-                return Matrix4x4.CreatePerspectiveFieldOfView(FieldOfView, AspectRatio, NearClippingPlane, FarClippingPlane);
+                return Matrix4x4<float>.CreatePerspectiveFieldOfView(FieldOfView, AspectRatio, NearClippingPlane, FarClippingPlane);
             else
-                return Matrix4x4.CreateOrthographic(Width, Height, NearClippingPlane, FarClippingPlane);
+                return Matrix4x4<float>.CreateOrthographic(Width, Height, NearClippingPlane, FarClippingPlane);
         }
     }
 

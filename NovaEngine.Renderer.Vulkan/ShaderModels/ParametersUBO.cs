@@ -7,7 +7,7 @@ internal struct ParametersUBO
     ** Fields
     *********/
     /// <summary>The inverse projection matrix.</summary>
-    public Matrix4x4 InverseProjection;
+    public Matrix4x4<float> InverseProjection;
 
     /// <summary>The resolution of the render target.</summary>
     public Vector2I ScreenResolution;

@@ -65,7 +65,7 @@ public class RigidBody : ComponentBase
     internal Vector3<float> InverseInertia { get; set; }
 
     /// <summary>The inverse inertia tensor of the body.</summary>
-    internal Matrix3x3 InverseInertiaTensor { get; set; }
+    internal Matrix3x3<float> InverseInertiaTensor { get; set; }
 
     /// <summary>The force of the body.</summary>
     internal Vector3<float> Force { get; set; }

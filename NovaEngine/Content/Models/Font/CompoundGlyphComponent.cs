@@ -10,5 +10,5 @@ internal struct CompoundGlyphComponent
     public ushort GlyphIndex;
 
     /// <summary>The matrix for the component glyph.</summary>
-    public Matrix3x2 Matrix;
+    public Matrix3x2<float> Matrix;
 }

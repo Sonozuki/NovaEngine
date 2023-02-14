@@ -1,56 +1,59 @@
-﻿namespace NovaEngine.Maths;
+﻿using System.Numerics;
 
-/// <summary>Represents a 4x3 matrix using single-precision floating-point numbers.</summary>
-public struct Matrix4x3 : IEquatable<Matrix4x3>
+namespace NovaEngine.Maths;
+
+/// <summary>Represents a 4x3 matrix using floating-point numbers.</summary>
+public struct Matrix4x3<T> : IEquatable<Matrix4x3<T>>
+    where T : IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>, IConvertible
 {
     /*********
     ** Fields
     *********/
     /// <summary>The first element of the first row.</summary>
-    public float M11;
+    public T M11;
 
     /// <summary>The second element of the first row.</summary>
-    public float M12;
+    public T M12;
 
     /// <summary>The third element of the first row.</summary>
-    public float M13;
+    public T M13;
 
     /// <summary>The first element of the second row.</summary>
-    public float M21;
+    public T M21;
 
     /// <summary>The second element of the second row.</summary>
-    public float M22;
+    public T M22;
 
     /// <summary>The third element of the second row.</summary>
-    public float M23;
+    public T M23;
 
     /// <summary>The first element of the third row.</summary>
-    public float M31;
+    public T M31;
 
     /// <summary>The second element of the third row.</summary>
-    public float M32;
+    public T M32;
 
     /// <summary>The third element of the third row.</summary>
-    public float M33;
+    public T M33;
 
     /// <summary>The first element of the fourth row.</summary>
-    public float M41;
+    public T M41;
 
     /// <summary>The second element of the fourth row.</summary>
-    public float M42;
+    public T M42;
 
     /// <summary>The third element of the fourth row.</summary>
-    public float M43;
+    public T M43;
 
 
     /*********
     ** Accessors
     *********/
     /// <summary>The trace of the matrix (the sum of the values along the diagonal).</summary>
-    public readonly float Trace => M11 + M22 + M33;
+    public readonly T Trace => M11 + M22 + M33;
 
     /// <summary>The diagonal of the matrix.</summary>
-    public Vector3<float> Diagonal
+    public Vector3<T> Diagonal
     {
         readonly get => new(M11, M22, M33);
         set
@@ -62,10 +65,10 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     }
 
     /// <summary>The transposed matrix.</summary>
-    public readonly Matrix3x4 Transposed => new(M11, M21, M31, M41, M12, M22, M32, M42, M13, M23, M33, M43);
+    public readonly Matrix3x4<T> Transposed => new(M11, M21, M31, M41, M12, M22, M32, M42, M13, M23, M33, M43);
 
     /// <summary>The matrix without the translation.</summary>
-    public readonly Matrix4x3 TranslationRemoved
+    public readonly Matrix4x3<T> TranslationRemoved
     {
         get
         {
@@ -76,7 +79,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     }
 
     /// <summary>The matrix without the rotation.</summary>
-    public readonly Matrix4x3 RotationRemoved
+    public readonly Matrix4x3<T> RotationRemoved
     {
         get
         {
@@ -87,7 +90,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     }
 
     /// <summary>The matrix without the scale.</summary>
-    public readonly Matrix4x3 ScaleRemoved
+    public readonly Matrix4x3<T> ScaleRemoved
     {
         get
         {
@@ -98,47 +101,47 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     }
 
     /// <summary>The translation of the matrix.</summary>
-    public readonly Vector3<float> Translation => new(M41, M42, M43);
+    public readonly Vector3<T> Translation => new(M41, M42, M43);
 
     /// <summary>The rotation of the matrix.</summary>
-    public readonly Quaternion<float> Rotation
+    public readonly Quaternion<T> Rotation
     {
         get
         {
             var copy = this;
             copy.RemoveScale();
 
-            var quaternion = new Quaternion<float>();
-            if (Trace > 0)
+            var quaternion = new Quaternion<T>();
+            if (Trace > T.Zero)
             {
-                var sq = .5f / MathF.Sqrt(Trace + 1);
-                quaternion.W = .25f / sq;
+                var sq = T.CreateChecked(.5f) / T.Sqrt(Trace + T.One);
+                quaternion.W = T.CreateChecked(.25f) / sq;
                 quaternion.X = (M31 - M23) * sq;
                 quaternion.Y = (M13 - M31) * sq;
                 quaternion.Z = (M21 - M12) * sq;
             }
             else if (M11 > M22 && M11 > M33)
             {
-                var sq = 2 * MathF.Sqrt(1 + M11 - M22 - M33);
-                quaternion.X = .25f * sq;
+                var sq = T.CreateChecked(2) * T.Sqrt(T.One + M11 - M22 - M33);
+                quaternion.X = T.CreateChecked(.25f) * sq;
                 quaternion.Y = (M12 + M21) / sq;
                 quaternion.Z = (M13 + M31) / sq;
                 quaternion.W = (M32 - M23) / sq;
             }
             else if (M22 > M33)
             {
-                var sq = 2 * MathF.Sqrt(1 + M22 - M11 - M33);
+                var sq = T.CreateChecked(2) * T.Sqrt(T.One + M22 - M11 - M33);
                 quaternion.X = (M12 + M21) / sq;
-                quaternion.Y = .25f * sq;
+                quaternion.Y = T.CreateChecked(.25f) * sq;
                 quaternion.Z = (M23 + M32) / sq;
                 quaternion.W = (M13 - M31) / sq;
             }
             else
             {
-                var sq = 2 * MathF.Sqrt(1 + M33 - M11 - M22);
+                var sq = T.CreateChecked(2) * T.Sqrt(T.One + M33 - M11 - M22);
                 quaternion.X = (M13 + M31) / sq;
                 quaternion.Y = (M23 + M32) / sq;
-                quaternion.Z = .25f * sq;
+                quaternion.Z = T.CreateChecked(.25f) * sq;
                 quaternion.W = (M21 - M12) / sq;
             }
 
@@ -147,10 +150,10 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     }
 
     /// <summary>The scale of the matrix.</summary>
-    public readonly Vector3<float> Scale => new(Row1.Length, Row2.Length, Row3.Length);
+    public readonly Vector3<T> Scale => new(Row1.Length, Row2.Length, Row3.Length);
 
     /// <summary>The first row of the matrix.</summary>
-    public Vector3<float> Row1
+    public Vector3<T> Row1
     {
         readonly get => new(M11, M12, M13);
         set
@@ -162,7 +165,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     }
 
     /// <summary>The second row of the matrix.</summary>
-    public Vector3<float> Row2
+    public Vector3<T> Row2
     {
         readonly get => new(M21, M22, M23);
         set
@@ -174,7 +177,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     }
 
     /// <summary>The third row of the matrix.</summary>
-    public Vector3<float> Row3
+    public Vector3<T> Row3
     {
         readonly get => new(M31, M32, M33);
         set
@@ -186,7 +189,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     }
 
     /// <summary>The fourth row of the matrix.</summary>
-    public Vector3<float> Row4
+    public Vector3<T> Row4
     {
         readonly get => new(M41, M42, M43);
         set
@@ -198,7 +201,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     }
 
     /// <summary>The first column of the matrix.</summary>
-    public Vector4<float> Column1
+    public Vector4<T> Column1
     {
         readonly get => new(M11, M21, M31, M41);
         set
@@ -211,7 +214,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     }
 
     /// <summary>The second column of the matrix.</summary>
-    public Vector4<float> Column2
+    public Vector4<T> Column2
     {
         readonly get => new(M12, M22, M32, M42);
         set
@@ -224,7 +227,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     }
 
     /// <summary>The third column of the matrix.</summary>
-    public Vector4<float> Column3
+    public Vector4<T> Column3
     {
         readonly get => new(M13, M23, M33, M43);
         set
@@ -236,13 +239,13 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
         }
     }
 
-    /// <summary>The zero matrix.</summary>
-    public static Matrix4x3 Zero => new(0);
+    /// <summary>A zero matrix.</summary>
+    public static Matrix4x3<T> Zero => new(T.Zero);
 
     /// <summary>Gets or sets the value at a specified position.</summary>
     /// <param name="index">The position index.</param>
     /// <returns>The value at the specified position.</returns>
-    public float this[int index]
+    public T this[int index]
     {
         readonly get
         {
@@ -292,7 +295,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     /// <param name="rowIndex">The row index.</param>
     /// <param name="columnIndex">The column index.</param>
     /// <returns>The value at the specified position.</returns>
-    public float this[int rowIndex, int columnIndex]
+    public T this[int rowIndex, int columnIndex]
     {
         readonly get
         {
@@ -348,7 +351,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="value">The value of all the matrix components.</param>
-    public Matrix4x3(float value)
+    public Matrix4x3(T value)
     {
         M11 = value;
         M12 = value;
@@ -377,7 +380,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     /// <param name="m41">The first element of the fourth row.</param>
     /// <param name="m42">The second element of the fourth row.</param>
     /// <param name="m43">The third element of the fourth row.</param>
-    public Matrix4x3(float m11, float m12, float m13, float m21, float m22, float m23, float m31, float m32, float m33, float m41, float m42, float m43)
+    public Matrix4x3(T m11, T m12, T m13, T m21, T m22, T m23, T m31, T m32, T m33, T m41, T m42, T m43)
     {
         M11 = m11;
         M12 = m12;
@@ -398,7 +401,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     /// <param name="row2">The second row of the matrix.</param>
     /// <param name="row3">The third row of the matrix.</param>
     /// <param name="row4">The fourth row of the matrix.</param>
-    public Matrix4x3(in Vector3<float> row1, in Vector3<float> row2, in Vector3<float> row3, in Vector3<float> row4)
+    public Matrix4x3(in Vector3<T> row1, in Vector3<T> row2, in Vector3<T> row3, in Vector3<T> row4)
     {
         M11 = row1.X;
         M12 = row1.Y;
@@ -424,7 +427,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     /// <param name="m41">The first element of the fourth row.</param>
     /// <param name="m42">The second element of the fourth row.</param>
     /// <param name="m43">The third element of the fourth row.</param>
-    public Matrix4x3(in Matrix2x2 matrix, float m13 = 0, float m23 = 0, float m31 = 0, float m32 = 0, float m33 = 1, float m41 = 0, float m42 = 0, float m43 = 0)
+    public Matrix4x3(in Matrix2x2<T> matrix, T m13, T m23, T m31, T m32, T m33, T m41, T m42, T m43)
     {
         M11 = matrix.M11;
         M12 = matrix.M12;
@@ -448,7 +451,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     /// <param name="m41">The first element of the fourth row.</param>
     /// <param name="m42">The second element of the fourth row.</param>
     /// <param name="m43">The third element of the fourth row.</param>
-    public Matrix4x3(in Matrix2x3 matrix, float m31 = 0, float m32 = 0, float m33 = 1, float m41 = 0, float m42 = 0, float m43 = 0)
+    public Matrix4x3(in Matrix2x3<T> matrix, T m31, T m32, T m33, T m41, T m42, T m43)
     {
         M11 = matrix.M11;
         M12 = matrix.M12;
@@ -472,7 +475,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     /// <param name="m41">The first element of the fourth row.</param>
     /// <param name="m42">The second element of the fourth row.</param>
     /// <param name="m43">The third element of the fourth row.</param>
-    public Matrix4x3(in Matrix3x2 matrix, float m13 = 0, float m23 = 0, float m33 = 1, float m41 = 0, float m42 = 0, float m43 = 0)
+    public Matrix4x3(in Matrix3x2<T> matrix, T m13, T m23, T m33, T m41, T m42, T m43)
     {
         M11 = matrix.M11;
         M12 = matrix.M12;
@@ -493,7 +496,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     /// <param name="m41">The first element of the fourth row.</param>
     /// <param name="m42">The second element of the fourth row.</param>
     /// <param name="m43">The third element of the fourth row.</param>
-    public Matrix4x3(in Matrix3x3 matrix, float m41 = 0, float m42 = 0, float m43 = 0)
+    public Matrix4x3(in Matrix3x3<T> matrix, T m41, T m42, T m43)
     {
         M11 = matrix.M11;
         M12 = matrix.M12;
@@ -515,7 +518,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     /// <param name="m23">The third element of the second row.</param>
     /// <param name="m33">The third element of the third row.</param>
     /// <param name="m43">The third element of the fourth row.</param>
-    public Matrix4x3(in Matrix4x2 matrix, float m13 = 0, float m23 = 0, float m33 = 1, float m43 = 0)
+    public Matrix4x3(in Matrix4x2<T> matrix, T m13, T m23, T m33, T m43)
     {
         M11 = matrix.M11;
         M12 = matrix.M12;
@@ -532,14 +535,14 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     }
 
     /// <summary>Removes the translation from the matrix.</summary>
-    public void RemoveTranslation() => Row4 = Vector3<float>.Zero;
+    public void RemoveTranslation() => Row4 = Vector3<T>.Zero;
 
     /// <summary>Removes the rotation from the matrix.</summary>
     public void RemoveRotation()
     {
-        Row1 = new(Row1.Length, 0, 0);
-        Row2 = new(0, Row2.Length, 0);
-        Row3 = new(0, 0, Row3.Length);
+        Row1 = new(Row1.Length, T.Zero, T.Zero);
+        Row2 = new(T.Zero, Row2.Length, T.Zero);
+        Row3 = new(T.Zero, T.Zero, Row3.Length);
     }
 
     /// <summary>Removes the scale from the matrix.</summary>
@@ -550,45 +553,47 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
         Row3.Normalise();
     }
 
-    /// <summary>Gets the matrix as a <see cref="Matrix4x3D"/>.</summary>
-    /// <returns>The matrix as a <see cref="Matrix4x3D"/>.</returns>
-    public readonly Matrix4x3D ToMatrix4x3D() => new(M11, M12, M13, M21, M22, M23, M31, M32, M33, M41, M42, M43);
+    /// <summary>Checks two matrices for equality.</summary>
+    /// <param name="other">The matrix to check equality with.</param>
+    /// <returns><see langword="true"/> if the matrices are equal; otherwise, <see langword="false"/>.</returns>
+    public readonly bool Equals(Matrix4x3<T> other) => this == other;
 
-    /// <inheritdoc/>
-    public readonly bool Equals(Matrix4x3 other) => this == other;
+    /// <summary>Checks the matrix and an object for equality.</summary>
+    /// <param name="obj">The object to check equality with.</param>
+    /// <returns><see langword="true"/> if the matrix and object are equal; otherwise, <see langword="false"/>.</returns>
+    public readonly override bool Equals(object? obj) => obj is Matrix4x3<T> matrix && this == matrix;
 
-    /// <inheritdoc/>
-    public readonly override bool Equals(object? obj) => obj is Matrix4x3 matrix && this == matrix;
-
-    /// <inheritdoc/>
+    /// <summary>Retrieves the hash code of the matrix.</summary>
+    /// <returns>The hash code of the matrix.</returns>
     public readonly override int GetHashCode() => (M11, M12, M13, M21, M22, M23, M31, M32, M33, M41, M42, M43).GetHashCode();
 
-    /// <inheritdoc/>
+    /// <summary>Calculates a string representation of the matrix.</summary>
+    /// <returns>A string representation of the matrix.</returns>
     public readonly override string ToString() => $"<M11: {M11}, M12: {M12}, M13: {M13}, M21: {M21}, M22: {M22}, M23: {M23}, M31: {M31}, M32: {M32}, M33: {M33}, M41: {M41}, M42: {M42}, M43: {M43}>";
 
     /// <summary>Creates a rotation matrix from an axis and an angle.</summary>
     /// <param name="axis">The axis to rotate around.</param>
     /// <param name="angle">The angle, in degrees, to rotate around the axis.</param>
     /// <returns>The created matrix.</returns>
-    public static Matrix4x3 CreateFromAxisAngle(Vector3<float> axis, float angle) => new(Matrix3x3.CreateFromAxisAngle(axis, angle));
+    public static Matrix4x3<T> CreateFromAxisAngle(Vector3<T> axis, T angle) => new(Matrix3x3<T>.CreateFromAxisAngle(axis, angle), T.Zero, T.Zero, T.Zero);
 
     /// <summary>Creates a rotation matrix from a quaternion.</summary>
     /// <param name="quaternion">The quaternion to create a rotation matrix from.</param>
     /// <returns>The created matrix.</returns>
-    public static Matrix4x3 CreateFromQuaternion(Quaternion<float> quaternion) => new(Matrix3x3.CreateFromQuaternion(quaternion));
+    public static Matrix4x3<T> CreateFromQuaternion(Quaternion<T> quaternion) => new(Matrix3x3<T>.CreateFromQuaternion(quaternion), T.Zero, T.Zero, T.Zero);
 
     /// <summary>Creates a rotation matrix for a rotation about the X axis.</summary>
     /// <param name="angle">The clockwise angle, in degrees.</param>
     /// <returns>The created matrix.</returns>
-    public static Matrix4x3 CreateRotationX(float angle)
+    public static Matrix4x3<T> CreateRotationX(T angle)
     {
-        angle = MathsHelper<float>.DegreesToRadians(angle);
-        var sinAngle = MathF.Sin(angle);
-        var cosAngle = MathF.Cos(angle);
+        angle = MathsHelper<T>.DegreesToRadians(angle);
+        var sinAngle = T.Sin(angle);
+        var cosAngle = T.Cos(angle);
 
         return new()
         {
-            M11 = 1,
+            M11 = T.One,
             M22 = cosAngle,
             M23 = -sinAngle,
             M32 = sinAngle,
@@ -599,17 +604,17 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     /// <summary>Creates a rotation matrix for a rotation about the Y axis.</summary>
     /// <param name="angle">The clockwise angle, in degrees.</param>
     /// <returns>The created matrix.</returns>
-    public static Matrix4x3 CreateRotationY(float angle)
+    public static Matrix4x3<T> CreateRotationY(T angle)
     {
-        angle = MathsHelper<float>.DegreesToRadians(angle);
-        var sinAngle = MathF.Sin(angle);
-        var cosAngle = MathF.Cos(angle);
+        angle = MathsHelper<T>.DegreesToRadians(angle);
+        var sinAngle = T.Sin(angle);
+        var cosAngle = T.Cos(angle);
 
         return new()
         {
             M11 = cosAngle,
             M13 = sinAngle,
-            M22 = 1,
+            M22 = T.One,
             M31 = -sinAngle,
             M33 = cosAngle
         };
@@ -618,11 +623,11 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     /// <summary>Creates a rotation matrix for a rotation about the Z axis.</summary>
     /// <param name="angle">The clockwise angle, in degrees.</param>
     /// <returns>The created matrix.</returns>
-    public static Matrix4x3 CreateRotationZ(float angle)
+    public static Matrix4x3<T> CreateRotationZ(T angle)
     {
-        angle = MathsHelper<float>.DegreesToRadians(angle);
-        var sinAngle = MathF.Sin(angle);
-        var cosAngle = MathF.Cos(angle);
+        angle = MathsHelper<T>.DegreesToRadians(angle);
+        var sinAngle = T.Sin(angle);
+        var cosAngle = T.Cos(angle);
 
         return new()
         {
@@ -630,26 +635,26 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
             M12 = -sinAngle,
             M21 = sinAngle,
             M22 = cosAngle,
-            M33 = 1
+            M33 = T.One
         };
     }
 
     /// <summary>Creates a scale matrix.</summary>
     /// <param name="scale">The uniform scale factor.</param>
     /// <returns>The created matrix.</returns>
-    public static Matrix4x3 CreateScale(float scale) => new(scale, 0, 0, 0, scale, 0, 0, 0, scale, 0, 0, 0);
+    public static Matrix4x3<T> CreateScale(T scale) => new(scale, T.Zero, T.Zero, T.Zero, scale, T.Zero, T.Zero, T.Zero, scale, T.Zero, T.Zero, T.Zero);
 
     /// <summary>Creates a scale matrix.</summary>
     /// <param name="x">The scale factor of the X axis.</param>
     /// <param name="y">The scale factor of the Y axis.</param>
     /// <param name="z">The scale factor of the Z axis.</param>
     /// <returns>The created matrix.</returns>
-    public static Matrix4x3 CreateScale(float x, float y, float z) => new(x, 0, 0, 0, y, 0, 0, 0, z, 0, 0, 0);
+    public static Matrix4x3<T> CreateScale(T x, T y, T z) => new(x, T.Zero, T.Zero, T.Zero, y, T.Zero, T.Zero, T.Zero, z, T.Zero, T.Zero, T.Zero);
 
     /// <summary>Creates a scale matrix.</summary>
     /// <param name="scale">The scale factor of the X, Y, and Z axis.</param>
     /// <returns>The created matrix.</returns>
-    public static Matrix4x3 CreateScale(Vector3<float> scale) => new(scale.X, 0, 0, 0, scale.Y, 0, 0, 0, scale.Z, 0, 0, 0);
+    public static Matrix4x3<T> CreateScale(Vector3<T> scale) => new(scale.X, T.Zero, T.Zero, T.Zero, scale.Y, T.Zero, T.Zero, T.Zero, scale.Z, T.Zero, T.Zero, T.Zero);
 
 
     /*********
@@ -659,7 +664,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the addition.</returns>
-    public static Matrix4x3 operator +(Matrix4x3 left, Matrix4x3 right)
+    public static Matrix4x3<T> operator +(Matrix4x3<T> left, Matrix4x3<T> right)
     {
         return new(
             m11: left.M11 + right.M11,
@@ -681,7 +686,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the subtraction.</returns>
-    public static Matrix4x3 operator -(Matrix4x3 left, Matrix4x3 right)
+    public static Matrix4x3<T> operator -(Matrix4x3<T> left, Matrix4x3<T> right)
     {
         return new(
             m11: left.M11 - right.M11,
@@ -702,13 +707,13 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     /// <summary>Flips the sign of each component of a matrix.</summary>
     /// <param name="matrix">The matrix to flip the component signs of.</param>
     /// <returns><paramref name="matrix"/> with the sign of its components flipped.</returns>
-    public static Matrix4x3 operator -(Matrix4x3 matrix) => matrix * -1;
+    public static Matrix4x3<T> operator -(Matrix4x3<T> matrix) => matrix * T.CreateChecked(-1);
 
     /// <summary>Multiplies a matrix by a scalar.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the multiplication.</returns>
-    public static Matrix4x3 operator *(float left, Matrix4x3 right)
+    public static Matrix4x3<T> operator *(T left, Matrix4x3<T> right)
     {
         return new(
             m11: left * right.M11,
@@ -730,23 +735,23 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the multiplication.</returns>
-    public static Matrix4x3 operator *(Matrix4x3 left, float right) => right * left;
+    public static Matrix4x3<T> operator *(Matrix4x3<T> left, T right) => right * left;
 
     /// <summary>Multiplies two matrices together.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the multiplication.</returns>
-    public static Matrix4x2 operator *(Matrix4x3 left, Matrix3x2 right)
+    public static Matrix4x2<T> operator *(Matrix4x3<T> left, Matrix3x2<T> right)
     {
         return new(
-            m11: Vector3<float>.Dot(left.Row1, right.Column1),
-            m12: Vector3<float>.Dot(left.Row1, right.Column2),
-            m21: Vector3<float>.Dot(left.Row2, right.Column1),
-            m22: Vector3<float>.Dot(left.Row2, right.Column2),
-            m31: Vector3<float>.Dot(left.Row3, right.Column1),
-            m32: Vector3<float>.Dot(left.Row3, right.Column2),
-            m41: Vector3<float>.Dot(left.Row4, right.Column1),
-            m42: Vector3<float>.Dot(left.Row4, right.Column2)
+            m11: Vector3<T>.Dot(left.Row1, right.Column1),
+            m12: Vector3<T>.Dot(left.Row1, right.Column2),
+            m21: Vector3<T>.Dot(left.Row2, right.Column1),
+            m22: Vector3<T>.Dot(left.Row2, right.Column2),
+            m31: Vector3<T>.Dot(left.Row3, right.Column1),
+            m32: Vector3<T>.Dot(left.Row3, right.Column2),
+            m41: Vector3<T>.Dot(left.Row4, right.Column1),
+            m42: Vector3<T>.Dot(left.Row4, right.Column2)
         );
     }
 
@@ -754,21 +759,21 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the multiplication.</returns>
-    public static Matrix4x3 operator *(Matrix4x3 left, Matrix3x3 right)
+    public static Matrix4x3<T> operator *(Matrix4x3<T> left, Matrix3x3<T> right)
     {
         return new(
-            m11: Vector3<float>.Dot(left.Row1, right.Column1),
-            m12: Vector3<float>.Dot(left.Row1, right.Column2),
-            m13: Vector3<float>.Dot(left.Row1, right.Column3),
-            m21: Vector3<float>.Dot(left.Row2, right.Column1),
-            m22: Vector3<float>.Dot(left.Row2, right.Column2),
-            m23: Vector3<float>.Dot(left.Row2, right.Column3),
-            m31: Vector3<float>.Dot(left.Row3, right.Column1),
-            m32: Vector3<float>.Dot(left.Row3, right.Column2),
-            m33: Vector3<float>.Dot(left.Row3, right.Column3),
-            m41: Vector3<float>.Dot(left.Row4, right.Column1),
-            m42: Vector3<float>.Dot(left.Row4, right.Column2),
-            m43: Vector3<float>.Dot(left.Row4, right.Column3)
+            m11: Vector3<T>.Dot(left.Row1, right.Column1),
+            m12: Vector3<T>.Dot(left.Row1, right.Column2),
+            m13: Vector3<T>.Dot(left.Row1, right.Column3),
+            m21: Vector3<T>.Dot(left.Row2, right.Column1),
+            m22: Vector3<T>.Dot(left.Row2, right.Column2),
+            m23: Vector3<T>.Dot(left.Row2, right.Column3),
+            m31: Vector3<T>.Dot(left.Row3, right.Column1),
+            m32: Vector3<T>.Dot(left.Row3, right.Column2),
+            m33: Vector3<T>.Dot(left.Row3, right.Column3),
+            m41: Vector3<T>.Dot(left.Row4, right.Column1),
+            m42: Vector3<T>.Dot(left.Row4, right.Column2),
+            m43: Vector3<T>.Dot(left.Row4, right.Column3)
         );
     }
 
@@ -776,25 +781,25 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the multiplication.</returns>
-    public static Matrix4x4 operator *(Matrix4x3 left, Matrix3x4 right)
+    public static Matrix4x4<T> operator *(Matrix4x3<T> left, Matrix3x4<T> right)
     {
         return new(
-            m11: Vector3<float>.Dot(left.Row1, right.Column1),
-            m12: Vector3<float>.Dot(left.Row1, right.Column2),
-            m13: Vector3<float>.Dot(left.Row1, right.Column3),
-            m14: Vector3<float>.Dot(left.Row1, right.Column4),
-            m21: Vector3<float>.Dot(left.Row2, right.Column1),
-            m22: Vector3<float>.Dot(left.Row2, right.Column2),
-            m23: Vector3<float>.Dot(left.Row2, right.Column3),
-            m24: Vector3<float>.Dot(left.Row2, right.Column4),
-            m31: Vector3<float>.Dot(left.Row3, right.Column1),
-            m32: Vector3<float>.Dot(left.Row3, right.Column2),
-            m33: Vector3<float>.Dot(left.Row3, right.Column3),
-            m34: Vector3<float>.Dot(left.Row3, right.Column4),
-            m41: Vector3<float>.Dot(left.Row4, right.Column1),
-            m42: Vector3<float>.Dot(left.Row4, right.Column2),
-            m43: Vector3<float>.Dot(left.Row4, right.Column3),
-            m44: Vector3<float>.Dot(left.Row4, right.Column4)
+            m11: Vector3<T>.Dot(left.Row1, right.Column1),
+            m12: Vector3<T>.Dot(left.Row1, right.Column2),
+            m13: Vector3<T>.Dot(left.Row1, right.Column3),
+            m14: Vector3<T>.Dot(left.Row1, right.Column4),
+            m21: Vector3<T>.Dot(left.Row2, right.Column1),
+            m22: Vector3<T>.Dot(left.Row2, right.Column2),
+            m23: Vector3<T>.Dot(left.Row2, right.Column3),
+            m24: Vector3<T>.Dot(left.Row2, right.Column4),
+            m31: Vector3<T>.Dot(left.Row3, right.Column1),
+            m32: Vector3<T>.Dot(left.Row3, right.Column2),
+            m33: Vector3<T>.Dot(left.Row3, right.Column3),
+            m34: Vector3<T>.Dot(left.Row3, right.Column4),
+            m41: Vector3<T>.Dot(left.Row4, right.Column1),
+            m42: Vector3<T>.Dot(left.Row4, right.Column2),
+            m43: Vector3<T>.Dot(left.Row4, right.Column3),
+            m44: Vector3<T>.Dot(left.Row4, right.Column4)
         );
     }
 
@@ -802,7 +807,7 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     /// <param name="matrix1">The first matrix.</param>
     /// <param name="matrix2">The second matrix.</param>
     /// <returns><see langword="true"/> if the matrices are equal; otherwise, <see langword="false"/>.</returns>
-    public static bool operator ==(Matrix4x3 matrix1, Matrix4x3 matrix2)
+    public static bool operator ==(Matrix4x3<T> matrix1, Matrix4x3<T> matrix2)
     {
         return matrix1.M11 == matrix2.M11
             && matrix1.M12 == matrix2.M12
@@ -822,17 +827,13 @@ public struct Matrix4x3 : IEquatable<Matrix4x3>
     /// <param name="matrix1">The first matrix.</param>
     /// <param name="matrix2">The second matrix.</param>
     /// <returns><see langword="true"/> if the matrices are not equal; otherwise, <see langword="false"/>.</returns>
-    public static bool operator !=(Matrix4x3 matrix1, Matrix4x3 matrix2) => !(matrix1 == matrix2);
+    public static bool operator !=(Matrix4x3<T> matrix1, Matrix4x3<T> matrix2) => !(matrix1 == matrix2);
 
     /// <summary>Converts a matrix to a tuple.</summary>
     /// <param name="matrix">The matrix to convert.</param>
-    public static implicit operator (float M11, float M12, float M13, float M21, float M22, float M23, float M31, float M32, float M33, float M41, float M42, float M43)(Matrix4x3 matrix) => (matrix.M11, matrix.M12, matrix.M13, matrix.M21, matrix.M22, matrix.M23, matrix.M31, matrix.M32, matrix.M33, matrix.M41, matrix.M42, matrix.M43);
+    public static implicit operator (T M11, T M12, T M13, T M21, T M22, T M23, T M31, T M32, T M33, T M41, T M42, T M43)(Matrix4x3<T> matrix) => (matrix.M11, matrix.M12, matrix.M13, matrix.M21, matrix.M22, matrix.M23, matrix.M31, matrix.M32, matrix.M33, matrix.M41, matrix.M42, matrix.M43);
 
     /// <summary>Converts a tuple to a matrix.</summary>
     /// <param name="tuple">The tuple to convert.</param>
-    public static implicit operator Matrix4x3((float M11, float M12, float M13, float M21, float M22, float M23, float M31, float M32, float M33, float M41, float M42, float M43) tuple) => new(tuple.M11, tuple.M12, tuple.M13, tuple.M21, tuple.M22, tuple.M23, tuple.M31, tuple.M32, tuple.M33, tuple.M41, tuple.M42, tuple.M43);
-
-    /// <summary>Converts a <see cref="Matrix4x3"/> to a <see cref="Matrix4x3D"/>.</summary>
-    /// <param name="matrix">The matrix to convert.</param>
-    public static implicit operator Matrix4x3D(Matrix4x3 matrix) => matrix.ToMatrix4x3D();
+    public static implicit operator Matrix4x3<T>((T M11, T M12, T M13, T M21, T M22, T M23, T M31, T M32, T M33, T M41, T M42, T M43) tuple) => new(tuple.M11, tuple.M12, tuple.M13, tuple.M21, tuple.M22, tuple.M23, tuple.M31, tuple.M32, tuple.M33, tuple.M41, tuple.M42, tuple.M43);
 }

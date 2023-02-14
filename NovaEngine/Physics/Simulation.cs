@@ -78,9 +78,9 @@ internal class Simulation
         {
             var inverseInertia = new Vector3<float>(2.5f * body.InverseMass / .25f);
 
-            var inverseRotation = Matrix3x3.CreateFromQuaternion(body.GlobalRotation.Inverse);
-            var rotation = Matrix3x3.CreateFromQuaternion(body.GlobalRotation);
-            body.InverseInertiaTensor = rotation * Matrix3x3.CreateScale(inverseInertia) * inverseRotation;
+            var inverseRotation = Matrix3x3<float>.CreateFromQuaternion(body.GlobalRotation.Inverse);
+            var rotation = Matrix3x3<float>.CreateFromQuaternion(body.GlobalRotation);
+            body.InverseInertiaTensor = rotation * Matrix3x3<float>.CreateScale(inverseInertia) * inverseRotation;
         }
     }
 

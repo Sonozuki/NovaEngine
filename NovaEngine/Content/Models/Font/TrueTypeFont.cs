@@ -559,7 +559,7 @@ internal class TrueTypeFont : IDisposable
         while (flags.HasFlag(CompoundGlyphFlags.MoreComponents))
         {
             flags = (CompoundGlyphFlags)BinaryReader.ReadUInt16BigEndian();
-            var component = new CompoundGlyphComponent() { GlyphIndex = BinaryReader.ReadUInt16BigEndian(), Matrix = new Matrix3x2(1, 0, 0, 1, 0, 0) };
+            var component = new CompoundGlyphComponent() { GlyphIndex = BinaryReader.ReadUInt16BigEndian(), Matrix = new Matrix3x2<float>(1, 0, 0, 1, 0, 0) };
 
             // read scale and position of the component glyph
             short arg1;
