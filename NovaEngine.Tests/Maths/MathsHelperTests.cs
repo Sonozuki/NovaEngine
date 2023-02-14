@@ -1,285 +1,148 @@
 ﻿namespace NovaEngine.Tests.Maths;
 
-/// <summary>The <see cref="MathsHelper"/> tests.</summary>
-[TestFixture]
+/// <summary>The <see cref="MathsHelper{T}"/> tests.</summary>
 public class MathsHelperTests
 {
     /*********
     ** Public Methods
     *********/
-    /****
-    ** Lerp (float)
-    ****/
-    /// <summary>Tests <see cref="MathsHelper.Lerp(float, float, float)"/>.</summary>
-    /// <remarks>This tests that giving an amount that is in between '0' and '1' will result in a value that's correctly interpolated between the two values.</remarks>
     [Test]
-    public void LerpFloat_AmountBetweenZeroAndOne_ReturnsInterpolatedValue()
-    {
-        var lerpValue = MathsHelper.Lerp(0, 10, .5f);
-        Assert.AreEqual(5, lerpValue);
-    }
+    public void Lerp_AmountBetweenZeroAndOne_ReturnsInterpolatedValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(MathsHelper<Half>.Lerp((Half)0, (Half)10, (Half).5), Is.EqualTo((Half)5));
+            Assert.That(MathsHelper<float>.Lerp(0, 10, .5f), Is.EqualTo(5f));
+            Assert.That(MathsHelper<double>.Lerp(0, 10, .5), Is.EqualTo(5d));
+            Assert.That(MathsHelper<decimal>.Lerp(0, 10, .5m), Is.EqualTo(5m));
+        });
 
-    /// <summary>Tests <see cref="MathsHelper.Lerp(float, float, float)"/>.</summary>
-    /// <remarks>This tests that giving an amount that is less than '0' will result in a value that's less than the first value (meaning the method is unclamped).</remarks>
     [Test]
-    public void LerpFloat_AmountLessThanZero_ReturnsLessThanFirstValue()
-    {
-        var lerpValue = MathsHelper.Lerp(0, 10, -1f);
-        Assert.AreEqual(-10, lerpValue);
-    }
+    public void Lerp_AmountLessThanZero_ReturnsLessThanFirstValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(MathsHelper<Half>.Lerp((Half)0, (Half)10, (Half)(-1)), Is.EqualTo((Half)(-10)));
+            Assert.That(MathsHelper<float>.Lerp(0, 10, -1), Is.EqualTo(-10f));
+            Assert.That(MathsHelper<double>.Lerp(0, 10, -1), Is.EqualTo(-10d));
+            Assert.That(MathsHelper<decimal>.Lerp(0, 10, -1), Is.EqualTo(-10m));
+        });
 
-    /// <summary>Tests <see cref="MathsHelper.Lerp(float, float, float)"/>.</summary>
-    /// <remarks>This tests that giving an amount that is more than '1' will result in a value that's more than the second value (meaning the method is unclamped).</remarks>
     [Test]
-    public void LerpFloat_AmountMoreThanOne_ReturnsMoreThanSecondValue()
-    {
-        var lerpValue = MathsHelper.Lerp(0, 10, 2f);
-        Assert.AreEqual(20, lerpValue);
-    }
+    public void Lerp_AmountMoreThanOne_ReturnsMoreThanSecondValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(MathsHelper<Half>.Lerp((Half)0, (Half)10, (Half)2), Is.EqualTo((Half)20));
+            Assert.That(MathsHelper<float>.Lerp(0, 10, 2), Is.EqualTo(20f));
+            Assert.That(MathsHelper<double>.Lerp(0, 10, 2), Is.EqualTo(20d));
+            Assert.That(MathsHelper<decimal>.Lerp(0, 10, 2), Is.EqualTo(20m));
+        });
 
-    /// <summary>Tests <see cref="MathsHelper.Lerp(float, float, float)"/>.</summary>
-    /// <remarks>This tests that giving the amount '0' will result in the first value.</remarks>
     [Test]
-    public void LerpFloat_AmountIsZero_ReturnsFirstValue()
-    {
-        var lerpValue = MathsHelper.Lerp(0, 10, 0f);
-        Assert.AreEqual(0, lerpValue);
-    }
+    public void Lerp_AmountIsZero_ReturnsFirstValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(MathsHelper<Half>.Lerp((Half)0, (Half)10, (Half)0), Is.EqualTo((Half)0));
+            Assert.That(MathsHelper<float>.Lerp(0, 10, 0), Is.EqualTo(0f));
+            Assert.That(MathsHelper<double>.Lerp(0, 10, 0), Is.EqualTo(0d));
+            Assert.That(MathsHelper<decimal>.Lerp(0, 10, 0), Is.EqualTo(0m));
+        });
 
-    /// <summary>Tests <see cref="MathsHelper.Lerp(float, float, float)"/>.</summary>
-    /// <remarks>This tests that giving the amount '1' will result in the second value.</remarks>
     [Test]
-    public void LerpFloat_AmountIsOne_ReturnsSecondValue()
-    {
-        var lerpValue = MathsHelper.Lerp(0, 10, 1f);
-        Assert.AreEqual(10, lerpValue);
-    }
+    public void Lerp_AmountIsOne_ReturnsSecondValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(MathsHelper<Half>.Lerp((Half)0, (Half)10, (Half)1), Is.EqualTo((Half)10));
+            Assert.That(MathsHelper<float>.Lerp(0, 10, 1), Is.EqualTo(10f));
+            Assert.That(MathsHelper<double>.Lerp(0, 10, 1), Is.EqualTo(10d));
+            Assert.That(MathsHelper<decimal>.Lerp(0, 10, 1), Is.EqualTo(10m));
+        });
 
-    /****
-    ** Lerp (double)
-    ****/
-    /// <summary>Tests <see cref="MathsHelper.Lerp(double, double, double)"/>.</summary>
-    /// <remarks>This tests that giving an amount that is in between '0' and '1' will result in a value that's correctly interpolated between the two values.</remarks>
     [Test]
-    public void LerpDouble_AmountBetweenZeroAndOne_ReturnsInterpolatedValue()
-    {
-        var lerpValue = MathsHelper.Lerp(0, 10, .5d);
-        Assert.AreEqual(5, lerpValue);
-    }
+    public void LerpClamped_AmountBetweenZeroAndOne_ReturnsInterpolatedValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(MathsHelper<Half>.LerpClamped((Half)0, (Half)10, (Half).5), Is.EqualTo((Half)5));
+            Assert.That(MathsHelper<float>.LerpClamped(0, 10, .5f), Is.EqualTo(5f));
+            Assert.That(MathsHelper<double>.LerpClamped(0, 10, .5), Is.EqualTo(5d));
+            Assert.That(MathsHelper<decimal>.LerpClamped(0, 10, .5m), Is.EqualTo(5m));
+        });
 
-    /// <summary>Tests <see cref="MathsHelper.Lerp(double, double, double)"/>.</summary>
-    /// <remarks>This tests that giving an amount that is less than '0' will result in a value that's less than the first value (meaning the method is unclamped).</remarks>
     [Test]
-    public void LerpDouble_AmountLessThanZero_ReturnsLessThanFirstValue()
-    {
-        var lerpValue = MathsHelper.Lerp(0, 10, -1d);
-        Assert.AreEqual(-10, lerpValue);
-    }
+    public void LerpClamped_AmountLessThanZero_ReturnsFirstValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(MathsHelper<Half>.LerpClamped((Half)0, (Half)10, (Half)(-1)), Is.EqualTo((Half)0));
+            Assert.That(MathsHelper<float>.LerpClamped(0, 10, -1), Is.EqualTo(0f));
+            Assert.That(MathsHelper<double>.LerpClamped(0, 10, -1), Is.EqualTo(0d));
+            Assert.That(MathsHelper<decimal>.LerpClamped(0, 10, -1), Is.EqualTo(0m));
+        });
 
-    /// <summary>Tests <see cref="MathsHelper.Lerp(double, double, double)"/>.</summary>
-    /// <remarks>This tests that giving an amount that is more than '1' will result in a value that's more than the second value (meaning the method is unclamped).</remarks>
     [Test]
-    public void LerpDouble_AmountMoreThanOne_ReturnsMoreThanSecondValue()
-    {
-        var lerpValue = MathsHelper.Lerp(0, 10, 2d);
-        Assert.AreEqual(20, lerpValue);
-    }
+    public void LerpClamped_AmountMoreThanOne_ReturnsSecondValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(MathsHelper<Half>.LerpClamped((Half)0, (Half)10, (Half)2), Is.EqualTo((Half)10));
+            Assert.That(MathsHelper<float>.LerpClamped(0, 10, 2), Is.EqualTo(10f));
+            Assert.That(MathsHelper<double>.LerpClamped(0, 10, 2), Is.EqualTo(10d));
+            Assert.That(MathsHelper<decimal>.LerpClamped(0, 10, 2), Is.EqualTo(10m));
+        });
 
-    /// <summary>Tests <see cref="MathsHelper.Lerp(double, double, double)"/>.</summary>
-    /// <remarks>This tests that giving the amount '0' will result in the first value.</remarks>
     [Test]
-    public void LerpDouble_AmountIsZero_ReturnsFirstValue()
-    {
-        var lerpValue = MathsHelper.Lerp(0, 10, 0d);
-        Assert.AreEqual(0, lerpValue);
-    }
+    public void LerpClamped_AmountIsZero_ReturnsFirstValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(MathsHelper<Half>.LerpClamped((Half)0, (Half)10, (Half)0), Is.EqualTo((Half)0));
+            Assert.That(MathsHelper<float>.LerpClamped(0, 10, 0), Is.EqualTo(0f));
+            Assert.That(MathsHelper<double>.LerpClamped(0, 10, 0), Is.EqualTo(0d));
+            Assert.That(MathsHelper<decimal>.LerpClamped(0, 10, 0), Is.EqualTo(0m));
+        });
 
-    /// <summary>Tests <see cref="MathsHelper.Lerp(double, double, double)"/>.</summary>
-    /// <remarks>This tests that giving the amount '1' will result in the second value.</remarks>
     [Test]
-    public void LerpDouble_AmountIsOne_ReturnsSecondValue()
-    {
-        var lerpValue = MathsHelper.Lerp(0, 10, 1d);
-        Assert.AreEqual(10, lerpValue);
-    }
+    public void LerpClamped_AmountIsOne_ReturnsSecondValue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(MathsHelper<Half>.LerpClamped((Half)0, (Half)10, (Half)1), Is.EqualTo((Half)10));
+            Assert.That(MathsHelper<float>.LerpClamped(0, 10, 1), Is.EqualTo(10f));
+            Assert.That(MathsHelper<double>.LerpClamped(0, 10, 1), Is.EqualTo(10d));
+            Assert.That(MathsHelper<decimal>.LerpClamped(0, 10, 1), Is.EqualTo(10m));
+        });
 
-    /****
-    ** ClampedLerp (float)
-    ****/
-    /// <summary>Tests <see cref="MathsHelper.LerpClamped(float, float, float)"/>.</summary>
-    /// <remarks>This tests that giving an amount that is in between '0' and '1' will result in a value that's correctly interpolated between the two values.</remarks>
     [Test]
-    public void LerpClampedFloat_AmountBetweenZeroAndOne_ReturnsInterpolatedValue()
-    {
-        var lerpValue = MathsHelper.LerpClamped(0, 10, .5f);
-        Assert.AreEqual(5, lerpValue);
-    }
+    public void DegreesToRadians_DegreesIsZero_ReturnsZero() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(MathsHelper<Half>.DegreesToRadians((Half)0), Is.EqualTo((Half)0));
+            Assert.That(MathsHelper<float>.DegreesToRadians(0), Is.EqualTo(0f));
+            Assert.That(MathsHelper<double>.DegreesToRadians(0), Is.EqualTo(0d));
+            Assert.That(MathsHelper<decimal>.DegreesToRadians(0), Is.EqualTo(0m));
+        });
 
-    /// <summary>Tests <see cref="MathsHelper.LerpClamped(float, float, float)"/>.</summary>
-    /// <remarks>This tests that giving an amount that is less than '0' will result in the first value (meaning the method is clamped).</remarks>
     [Test]
-    public void LerpClampedFloat_AmountLessThanZero_ReturnsFirstValue()
-    {
-        var lerpValue = MathsHelper.LerpClamped(0, 10, -1f);
-        Assert.AreEqual(00, lerpValue);
-    }
+    public void DegreesToRadians_DegreesIsNotZero_ReturnsRadians() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(MathsHelper<Half>.DegreesToRadians((Half)90), Is.EqualTo((Half)1.569));
+            Assert.That(MathsHelper<float>.DegreesToRadians(90), Is.EqualTo(1.5707964f));
+            Assert.That(MathsHelper<double>.DegreesToRadians(90), Is.EqualTo(1.5707963267948966));
+            Assert.That(MathsHelper<decimal>.DegreesToRadians(90), Is.EqualTo(1.570796326794896619231321693m));
+        });
 
-    /// <summary>Tests <see cref="MathsHelper.LerpClamped(float, float, float)"/>.</summary>
-    /// <remarks>This tests that giving an amount that is more than '1' will result in the second value (meaning the method is clamped).</remarks>
     [Test]
-    public void LerpClampedFloat_AmountMoreThanOne_ReturnsSecondValue()
-    {
-        var lerpValue = MathsHelper.LerpClamped(0, 10, 2f);
-        Assert.AreEqual(10, lerpValue);
-    }
+    public void RadiansToDegrees_RadiansIsZero_ReturnsZero() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(MathsHelper<Half>.RadiansToDegrees((Half)0), Is.EqualTo((Half)0));
+            Assert.That(MathsHelper<float>.RadiansToDegrees(0), Is.EqualTo(0f));
+            Assert.That(MathsHelper<double>.RadiansToDegrees(0), Is.EqualTo(0d));
+            Assert.That(MathsHelper<decimal>.RadiansToDegrees(0), Is.EqualTo(0m));
+        });
 
-    /// <summary>Tests <see cref="MathsHelper.LerpClamped(float, float, float)"/>.</summary>
-    /// <remarks>This tests that giving the amount '0' will result in the first value.</remarks>
     [Test]
-    public void LerpClampedFloat_AmountIsZero_ReturnsFirstValue()
-    {
-        var lerpValue = MathsHelper.LerpClamped(0, 10, 0f);
-        Assert.AreEqual(0, lerpValue);
-    }
-
-    /// <summary>Tests <see cref="MathsHelper.LerpClamped(float, float, float)"/>.</summary>
-    /// <remarks>This tests that giving the amount '1' will result in the second value.</remarks>
-    [Test]
-    public void LerpClampedFloat_AmountIsOne_ReturnsSecondValue()
-    {
-        var lerpValue = MathsHelper.LerpClamped(0, 10, 1f);
-        Assert.AreEqual(10, lerpValue);
-    }
-
-    /****
-    ** ClampedLerp (double)
-    ****/
-    /// <summary>Tests <see cref="MathsHelper.LerpClamped(double, double, double)"/>.</summary>
-    /// <remarks>This tests that giving an amount that is in between '0' and '1' will result in a value that's correctly interpolated between the two values.</remarks>
-    [Test]
-    public void LerpClampedDouble_AmountBetweenZeroAndOne_ReturnsInterpolatedValue()
-    {
-        var lerpValue = MathsHelper.LerpClamped(0, 10, .5d);
-        Assert.AreEqual(5, lerpValue);
-    }
-
-    /// <summary>Tests <see cref="MathsHelper.LerpClamped(double, double, double)"/>.</summary>
-    /// <remarks>This tests that giving an amount that is less than '0' will result in the first value (meaning the method is clamped).</remarks>
-    [Test]
-    public void LerpClampedDouble_AmountLessThanZero_ReturnsFirstValue()
-    {
-        var lerpValue = MathsHelper.LerpClamped(0, 10, -1d);
-        Assert.AreEqual(0, lerpValue);
-    }
-
-    /// <summary>Tests <see cref="MathsHelper.LerpClamped(double, double, double)"/>.</summary>
-    /// <remarks>This tests that giving an amount that is more than '1' will result in the second value (meaning the method is clamped).</remarks>
-    [Test]
-    public void LerpClampedDouble_AmountMoreThanOne_ReturnsSecondValue()
-    {
-        var lerpValue = MathsHelper.LerpClamped(0, 10, 2d);
-        Assert.AreEqual(10, lerpValue);
-    }
-
-    /// <summary>Tests <see cref="MathsHelper.LerpClamped(double, double, double)"/>.</summary>
-    /// <remarks>This tests that giving the amount '0' will result in the first value.</remarks>
-    [Test]
-    public void LerpClampedDouble_AmountIsZero_ReturnsFirstValue()
-    {
-        var lerpValue = MathsHelper.LerpClamped(0, 10, 0d);
-        Assert.AreEqual(0, lerpValue);
-    }
-
-    /// <summary>Tests <see cref="MathsHelper.LerpClamped(double, double, double)"/>.</summary>
-    /// <remarks>This tests that giving the amount '1' will result in the second value.</remarks>
-    [Test]
-    public void LerpClampedDouble_AmountIsOne_ReturnsSecondValue()
-    {
-        var lerpValue = MathsHelper.LerpClamped(0, 10, 1d);
-        Assert.AreEqual(10, lerpValue);
-    }
-
-    /****
-    ** DegreesToRadians (float)
-    ****/
-    /// <summary>Tests <see cref="MathsHelper.DegreesToRadians(float)"/>.</summary>
-    /// <remarks>This tests that giving the degrees '0' will result in '0'.</remarks>
-    [Test]
-    public void DegreesToRadiansFloat_DegreesIsZero_ReturnsZero()
-    {
-        var radians = MathsHelper.DegreesToRadians(0f);
-        Assert.AreEqual(0, radians);
-    }
-
-    /// <summary>Tests <see cref="MathsHelper.DegreesToRadians(float)"/>.</summary>
-    /// <remarks>This tests that any given value will result in the radians equivalent.</remarks>
-    [Test]
-    public void DegreesToRadiansFloat_DegreesIsNotZero_ReturnsRadians()
-    {
-        var radians = MathsHelper.DegreesToRadians(90f);
-        Assert.AreEqual(1.57079633f, radians);
-    }
-
-    /****
-    ** DegreesToRadians (double)
-    ****/
-    /// <summary>Tests <see cref="MathsHelper.DegreesToRadians(double)"/>.</summary>
-    /// <remarks>This tests that giving the degrees '0' will result in '0'.</remarks>
-    [Test]
-    public void DegreesToRadiansDouble_DegreesIsZero_ReturnsZero()
-    {
-        var radians = MathsHelper.DegreesToRadians(0d);
-        Assert.AreEqual(0, radians);
-    }
-
-    /// <summary>Tests <see cref="MathsHelper.DegreesToRadians(double)"/>.</summary>
-    /// <remarks>This tests that any given value will result in the radians equivalent.</remarks>
-    [Test]
-    public void DegreesToRadiansDouble_DegreesIsNotZero_ReturnsRadians()
-    {
-        var radians = MathsHelper.DegreesToRadians(90d);
-        Assert.AreEqual(1.5707963267948966d, radians);
-    }
-
-    /****
-    ** RadiansToDegrees (float)
-    ****/
-    /// <summary>Tests <see cref="MathsHelper.RadiansToDegrees(float)"/>.</summary>
-    /// <remarks>This tests that giving the radians '0' will result in '0'.</remarks>
-    [Test]
-    public void RadiansToDegreesFloat_RadiansIsZero_ReturnsZero()
-    {
-        var degrees = MathsHelper.RadiansToDegrees(0f);
-        Assert.AreEqual(0, degrees);
-    }
-
-    /// <summary>Tests <see cref="MathsHelper.RadiansToDegrees(float)"/>.</summary>
-    /// <remarks>This tests that any given value will result in the degrees equivalent.</remarks>
-    [Test]
-    public void RadiansToDegreesFloat_RadiansIsNotZero_ReturnsDegrees()
-    {
-        var degrees = MathsHelper.RadiansToDegrees(1.57079633f);
-        Assert.AreEqual(90, degrees);
-    }
-
-    /****
-    ** RadiansToDegrees (double)
-    ****/
-    /// <summary>Tests <see cref="MathsHelper.RadiansToDegrees(double)"/>.</summary>
-    /// <remarks>This tests that giving the radians '0' will result in '0'.</remarks>
-    [Test]
-    public void RadiansToDegreesDouble_RadiansIsZero_ReturnsZero()
-    {
-        var degrees = MathsHelper.RadiansToDegrees(0d);
-        Assert.AreEqual(0, degrees);
-    }
-
-    /// <summary>Tests <see cref="MathsHelper.RadiansToDegrees(double)"/>.</summary>
-    /// <remarks>This tests that any given value will result in the degrees equivalent.</remarks>
-    [Test]
-    public void RadiansToDegreesDouble_RadiansIsNotZero_ReturnsDegrees()
-    {
-        var degrees = MathsHelper.RadiansToDegrees(1.5707963267948966d);
-        Assert.AreEqual(90, degrees);
-    }
+    public void RadiansToDegrees_RadiansIsNotZero_ReturnsDegrees() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(MathsHelper<Half>.RadiansToDegrees((Half)1.569), Is.EqualTo((Half)89.94));
+            Assert.That(MathsHelper<float>.RadiansToDegrees(1.5707964f), Is.EqualTo(90f));
+            Assert.That(MathsHelper<double>.RadiansToDegrees(1.5707963267948966), Is.EqualTo(90d));
+            Assert.That(MathsHelper<decimal>.RadiansToDegrees(1.570796326794896619231321692m), Is.EqualTo(90.00000000000000000000000002m));
+        });
 }
