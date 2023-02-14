@@ -38,7 +38,7 @@ public struct Matrix2x4D : IEquatable<Matrix2x4D>
     public readonly double Trace => M11 + M22;
 
     /// <summary>The diagonal of the matrix.</summary>
-    public Vector2D Diagonal
+    public Vector2<double> Diagonal
     {
         readonly get => new(M11, M22);
         set
@@ -52,7 +52,7 @@ public struct Matrix2x4D : IEquatable<Matrix2x4D>
     public readonly Matrix4x2D Transposed => new(M11, M21, M12, M22, M13, M23, M14, M24);
 
     /// <summary>The first row of the matrix.</summary>
-    public Vector4D Row1
+    public Vector4<double> Row1
     {
         readonly get => new(M11, M12, M13, M14);
         set
@@ -65,7 +65,7 @@ public struct Matrix2x4D : IEquatable<Matrix2x4D>
     }
 
     /// <summary>The second row of the matrix.</summary>
-    public Vector4D Row2
+    public Vector4<double> Row2
     {
         readonly get => new(M21, M22, M23, M24);
         set
@@ -78,7 +78,7 @@ public struct Matrix2x4D : IEquatable<Matrix2x4D>
     }
 
     /// <summary>The first column of the matrix.</summary>
-    public Vector2D Column1
+    public Vector2<double> Column1
     {
         readonly get => new(M11, M21);
         set
@@ -89,7 +89,7 @@ public struct Matrix2x4D : IEquatable<Matrix2x4D>
     }
 
     /// <summary>The second column of the matrix.</summary>
-    public Vector2D Column2
+    public Vector2<double> Column2
     {
         readonly get => new(M12, M22);
         set
@@ -100,7 +100,7 @@ public struct Matrix2x4D : IEquatable<Matrix2x4D>
     }
 
     /// <summary>The third column of the matrix.</summary>
-    public Vector2D Column3
+    public Vector2<double> Column3
     {
         readonly get => new(M13, M23);
         set
@@ -111,7 +111,7 @@ public struct Matrix2x4D : IEquatable<Matrix2x4D>
     }
 
     /// <summary>The fourth column of the matrix.</summary>
-    public Vector2D Column4
+    public Vector2<double> Column4
     {
         readonly get => new(M14, M24);
         set
@@ -253,7 +253,7 @@ public struct Matrix2x4D : IEquatable<Matrix2x4D>
     /// <summary>Constructs an instance.</summary>
     /// <param name="row1">The first row of the matrix.</param>
     /// <param name="row2">The second row of the matrix.</param>
-    public Matrix2x4D(in Vector4D row1, in Vector4D row2)
+    public Matrix2x4D(in Vector4<double> row1, in Vector4<double> row2)
     {
         M11 = row1.X;
         M12 = row1.Y;
@@ -320,7 +320,7 @@ public struct Matrix2x4D : IEquatable<Matrix2x4D>
     /// <returns>The created matrix.</returns>
     public static Matrix2x4D CreateRotation(double angle)
     {
-        angle = MathsHelper.DegreesToRadians(angle);
+        angle = MathsHelper<double>.DegreesToRadians(angle);
         var sinAngle = Math.Sin(angle);
         var cosAngle = Math.Cos(angle);
 
@@ -341,7 +341,7 @@ public struct Matrix2x4D : IEquatable<Matrix2x4D>
     /// <summary>Creates a scale matrix.</summary>
     /// <param name="scale">The scale factor of the X and Y axis.</param>
     /// <returns>The created matrix.</returns>
-    public static Matrix2x4D CreateScale(Vector2D scale) => new(scale.X, 0, 0, 0, 0, scale.Y, 0, 0);
+    public static Matrix2x4D CreateScale(Vector2<double> scale) => new(scale.X, 0, 0, 0, 0, scale.Y, 0, 0);
 
 
     /*********
@@ -419,10 +419,10 @@ public struct Matrix2x4D : IEquatable<Matrix2x4D>
     public static Matrix2x2D operator *(Matrix2x4D left, Matrix4x2D right)
     {
         return new(
-            m11: Vector4D.Dot(left.Row1, right.Column1),
-            m12: Vector4D.Dot(left.Row1, right.Column2),
-            m21: Vector4D.Dot(left.Row2, right.Column1),
-            m22: Vector4D.Dot(left.Row2, right.Column2)
+            m11: Vector4<double>.Dot(left.Row1, right.Column1),
+            m12: Vector4<double>.Dot(left.Row1, right.Column2),
+            m21: Vector4<double>.Dot(left.Row2, right.Column1),
+            m22: Vector4<double>.Dot(left.Row2, right.Column2)
         );
     }
 
@@ -433,12 +433,12 @@ public struct Matrix2x4D : IEquatable<Matrix2x4D>
     public static Matrix2x3D operator *(Matrix2x4D left, Matrix4x3D right)
     {
         return new(
-            m11: Vector4D.Dot(left.Row1, right.Column1),
-            m12: Vector4D.Dot(left.Row1, right.Column2),
-            m13: Vector4D.Dot(left.Row1, right.Column3),
-            m21: Vector4D.Dot(left.Row2, right.Column1),
-            m22: Vector4D.Dot(left.Row2, right.Column2),
-            m23: Vector4D.Dot(left.Row2, right.Column3)
+            m11: Vector4<double>.Dot(left.Row1, right.Column1),
+            m12: Vector4<double>.Dot(left.Row1, right.Column2),
+            m13: Vector4<double>.Dot(left.Row1, right.Column3),
+            m21: Vector4<double>.Dot(left.Row2, right.Column1),
+            m22: Vector4<double>.Dot(left.Row2, right.Column2),
+            m23: Vector4<double>.Dot(left.Row2, right.Column3)
         );
     }
 
@@ -449,14 +449,14 @@ public struct Matrix2x4D : IEquatable<Matrix2x4D>
     public static Matrix2x4D operator *(Matrix2x4D left, Matrix4x4D right)
     {
         return new(
-            m11: Vector4D.Dot(left.Row1, right.Column1),
-            m12: Vector4D.Dot(left.Row1, right.Column2),
-            m13: Vector4D.Dot(left.Row1, right.Column3),
-            m14: Vector4D.Dot(left.Row1, right.Column4),
-            m21: Vector4D.Dot(left.Row2, right.Column1),
-            m22: Vector4D.Dot(left.Row2, right.Column2),
-            m23: Vector4D.Dot(left.Row2, right.Column3),
-            m24: Vector4D.Dot(left.Row2, right.Column4)
+            m11: Vector4<double>.Dot(left.Row1, right.Column1),
+            m12: Vector4<double>.Dot(left.Row1, right.Column2),
+            m13: Vector4<double>.Dot(left.Row1, right.Column3),
+            m14: Vector4<double>.Dot(left.Row1, right.Column4),
+            m21: Vector4<double>.Dot(left.Row2, right.Column1),
+            m22: Vector4<double>.Dot(left.Row2, right.Column2),
+            m23: Vector4<double>.Dot(left.Row2, right.Column3),
+            m24: Vector4<double>.Dot(left.Row2, right.Column4)
         );
     }
 

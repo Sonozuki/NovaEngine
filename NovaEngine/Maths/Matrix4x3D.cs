@@ -50,7 +50,7 @@ public struct Matrix4x3D : IEquatable<Matrix4x3D>
     public readonly double Trace => M11 + M22 + M33;
 
     /// <summary>The diagonal of the matrix.</summary>
-    public Vector3D Diagonal
+    public Vector3<double> Diagonal
     {
         readonly get => new(M11, M22, M33);
         set
@@ -98,17 +98,17 @@ public struct Matrix4x3D : IEquatable<Matrix4x3D>
     }
 
     /// <summary>The translation of the matrix.</summary>
-    public readonly Vector3D Translation => new(M41, M42, M43);
+    public readonly Vector3<double> Translation => new(M41, M42, M43);
 
     /// <summary>The rotation of the matrix.</summary>
-    public readonly QuaternionD Rotation
+    public readonly Quaternion<double> Rotation
     {
         get
         {
             var copy = this;
             copy.RemoveScale();
 
-            var quaternion = new QuaternionD();
+            var quaternion = new Quaternion<double>();
             if (Trace > 0)
             {
                 var sq = .5f / Math.Sqrt(Trace + 1);
@@ -147,10 +147,10 @@ public struct Matrix4x3D : IEquatable<Matrix4x3D>
     }
 
     /// <summary>The scale of the matrix.</summary>
-    public readonly Vector3D Scale => new(Row1.Length, Row2.Length, Row3.Length);
+    public readonly Vector3<double> Scale => new(Row1.Length, Row2.Length, Row3.Length);
 
     /// <summary>The first row of the matrix.</summary>
-    public Vector3D Row1
+    public Vector3<double> Row1
     {
         readonly get => new(M11, M12, M13);
         set
@@ -162,7 +162,7 @@ public struct Matrix4x3D : IEquatable<Matrix4x3D>
     }
 
     /// <summary>The second row of the matrix.</summary>
-    public Vector3D Row2
+    public Vector3<double> Row2
     {
         readonly get => new(M21, M22, M23);
         set
@@ -174,7 +174,7 @@ public struct Matrix4x3D : IEquatable<Matrix4x3D>
     }
 
     /// <summary>The third row of the matrix.</summary>
-    public Vector3D Row3
+    public Vector3<double> Row3
     {
         readonly get => new(M31, M32, M33);
         set
@@ -186,7 +186,7 @@ public struct Matrix4x3D : IEquatable<Matrix4x3D>
     }
 
     /// <summary>The fourth row of the matrix.</summary>
-    public Vector3D Row4
+    public Vector3<double> Row4
     {
         readonly get => new(M41, M42, M43);
         set
@@ -198,7 +198,7 @@ public struct Matrix4x3D : IEquatable<Matrix4x3D>
     }
 
     /// <summary>The first column of the matrix.</summary>
-    public Vector4D Column1
+    public Vector4<double> Column1
     {
         readonly get => new(M11, M21, M31, M41);
         set
@@ -211,7 +211,7 @@ public struct Matrix4x3D : IEquatable<Matrix4x3D>
     }
 
     /// <summary>The second column of the matrix.</summary>
-    public Vector4D Column2
+    public Vector4<double> Column2
     {
         readonly get => new(M12, M22, M32, M42);
         set
@@ -224,7 +224,7 @@ public struct Matrix4x3D : IEquatable<Matrix4x3D>
     }
 
     /// <summary>The third column of the matrix.</summary>
-    public Vector4D Column3
+    public Vector4<double> Column3
     {
         readonly get => new(M13, M23, M33, M43);
         set
@@ -398,7 +398,7 @@ public struct Matrix4x3D : IEquatable<Matrix4x3D>
     /// <param name="row2">The second row of the matrix.</param>
     /// <param name="row3">The third row of the matrix.</param>
     /// <param name="row4">The fourth row of the matrix.</param>
-    public Matrix4x3D(in Vector3D row1, in Vector3D row2, in Vector3D row3, in Vector3D row4)
+    public Matrix4x3D(in Vector3<double> row1, in Vector3<double> row2, in Vector3<double> row3, in Vector3<double> row4)
     {
         M11 = row1.X;
         M12 = row1.Y;
@@ -532,7 +532,7 @@ public struct Matrix4x3D : IEquatable<Matrix4x3D>
     }
 
     /// <summary>Removes the translation from the matrix.</summary>
-    public void RemoveTranslation() => Row4 = Vector3D.Zero;
+    public void RemoveTranslation() => Row4 = Vector3<double>.Zero;
 
     /// <summary>Removes the rotation from the matrix.</summary>
     public void RemoveRotation()
@@ -570,19 +570,19 @@ public struct Matrix4x3D : IEquatable<Matrix4x3D>
     /// <param name="axis">The axis to rotate around.</param>
     /// <param name="angle">The angle, in degrees, to rotate around the axis.</param>
     /// <returns>The created matrix.</returns>
-    public static Matrix4x3D CreateFromAxisAngle(Vector3D axis, double angle) => new(Matrix3x3D.CreateFromAxisAngle(axis, angle));
+    public static Matrix4x3D CreateFromAxisAngle(Vector3<double> axis, double angle) => new(Matrix3x3D.CreateFromAxisAngle(axis, angle));
 
     /// <summary>Creates a rotation matrix from a quaternion.</summary>
     /// <param name="quaternion">The quaternion to create a rotation matrix from.</param>
     /// <returns>The created matrix.</returns>
-    public static Matrix4x3D CreateFromQuaternion(QuaternionD quaternion) => new(Matrix3x3D.CreateFromQuaternion(quaternion));
+    public static Matrix4x3D CreateFromQuaternion(Quaternion<double> quaternion) => new(Matrix3x3D.CreateFromQuaternion(quaternion));
 
     /// <summary>Creates a rotation matrix for a rotation about the X axis.</summary>
     /// <param name="angle">The clockwise angle, in degrees.</param>
     /// <returns>The created matrix.</returns>
     public static Matrix4x3D CreateRotationX(double angle)
     {
-        angle = MathsHelper.DegreesToRadians(angle);
+        angle = MathsHelper<double>.DegreesToRadians(angle);
         var sinAngle = Math.Sin(angle);
         var cosAngle = Math.Cos(angle);
 
@@ -601,7 +601,7 @@ public struct Matrix4x3D : IEquatable<Matrix4x3D>
     /// <returns>The created matrix.</returns>
     public static Matrix4x3D CreateRotationY(double angle)
     {
-        angle = MathsHelper.DegreesToRadians(angle);
+        angle = MathsHelper<double>.DegreesToRadians(angle);
         var sinAngle = Math.Sin(angle);
         var cosAngle = Math.Cos(angle);
 
@@ -620,7 +620,7 @@ public struct Matrix4x3D : IEquatable<Matrix4x3D>
     /// <returns>The created matrix.</returns>
     public static Matrix4x3D CreateRotationZ(double angle)
     {
-        angle = MathsHelper.DegreesToRadians(angle);
+        angle = MathsHelper<double>.DegreesToRadians(angle);
         var sinAngle = Math.Sin(angle);
         var cosAngle = Math.Cos(angle);
 
@@ -649,7 +649,7 @@ public struct Matrix4x3D : IEquatable<Matrix4x3D>
     /// <summary>Creates a scale matrix.</summary>
     /// <param name="scale">The scale factor of the X, Y, and Z axis.</param>
     /// <returns>The created matrix.</returns>
-    public static Matrix4x3D CreateScale(Vector3D scale) => new(scale.X, 0, 0, 0, scale.Y, 0, 0, 0, scale.Z, 0, 0, 0);
+    public static Matrix4x3D CreateScale(Vector3<double> scale) => new(scale.X, 0, 0, 0, scale.Y, 0, 0, 0, scale.Z, 0, 0, 0);
 
 
     /*********
@@ -739,14 +739,14 @@ public struct Matrix4x3D : IEquatable<Matrix4x3D>
     public static Matrix4x2D operator *(Matrix4x3D left, Matrix3x2D right)
     {
         return new(
-            m11: Vector3D.Dot(left.Row1, right.Column1),
-            m12: Vector3D.Dot(left.Row1, right.Column2),
-            m21: Vector3D.Dot(left.Row2, right.Column1),
-            m22: Vector3D.Dot(left.Row2, right.Column2),
-            m31: Vector3D.Dot(left.Row3, right.Column1),
-            m32: Vector3D.Dot(left.Row3, right.Column2),
-            m41: Vector3D.Dot(left.Row4, right.Column1),
-            m42: Vector3D.Dot(left.Row4, right.Column2)
+            m11: Vector3<double>.Dot(left.Row1, right.Column1),
+            m12: Vector3<double>.Dot(left.Row1, right.Column2),
+            m21: Vector3<double>.Dot(left.Row2, right.Column1),
+            m22: Vector3<double>.Dot(left.Row2, right.Column2),
+            m31: Vector3<double>.Dot(left.Row3, right.Column1),
+            m32: Vector3<double>.Dot(left.Row3, right.Column2),
+            m41: Vector3<double>.Dot(left.Row4, right.Column1),
+            m42: Vector3<double>.Dot(left.Row4, right.Column2)
         );
     }
 
@@ -757,18 +757,18 @@ public struct Matrix4x3D : IEquatable<Matrix4x3D>
     public static Matrix4x3D operator *(Matrix4x3D left, Matrix3x3D right)
     {
         return new(
-            m11: Vector3D.Dot(left.Row1, right.Column1),
-            m12: Vector3D.Dot(left.Row1, right.Column2),
-            m13: Vector3D.Dot(left.Row1, right.Column3),
-            m21: Vector3D.Dot(left.Row2, right.Column1),
-            m22: Vector3D.Dot(left.Row2, right.Column2),
-            m23: Vector3D.Dot(left.Row2, right.Column3),
-            m31: Vector3D.Dot(left.Row3, right.Column1),
-            m32: Vector3D.Dot(left.Row3, right.Column2),
-            m33: Vector3D.Dot(left.Row3, right.Column3),
-            m41: Vector3D.Dot(left.Row4, right.Column1),
-            m42: Vector3D.Dot(left.Row4, right.Column2),
-            m43: Vector3D.Dot(left.Row4, right.Column3)
+            m11: Vector3<double>.Dot(left.Row1, right.Column1),
+            m12: Vector3<double>.Dot(left.Row1, right.Column2),
+            m13: Vector3<double>.Dot(left.Row1, right.Column3),
+            m21: Vector3<double>.Dot(left.Row2, right.Column1),
+            m22: Vector3<double>.Dot(left.Row2, right.Column2),
+            m23: Vector3<double>.Dot(left.Row2, right.Column3),
+            m31: Vector3<double>.Dot(left.Row3, right.Column1),
+            m32: Vector3<double>.Dot(left.Row3, right.Column2),
+            m33: Vector3<double>.Dot(left.Row3, right.Column3),
+            m41: Vector3<double>.Dot(left.Row4, right.Column1),
+            m42: Vector3<double>.Dot(left.Row4, right.Column2),
+            m43: Vector3<double>.Dot(left.Row4, right.Column3)
         );
     }
 
@@ -779,22 +779,22 @@ public struct Matrix4x3D : IEquatable<Matrix4x3D>
     public static Matrix4x4D operator *(Matrix4x3D left, Matrix3x4D right)
     {
         return new(
-            m11: Vector3D.Dot(left.Row1, right.Column1),
-            m12: Vector3D.Dot(left.Row1, right.Column2),
-            m13: Vector3D.Dot(left.Row1, right.Column3),
-            m14: Vector3D.Dot(left.Row1, right.Column4),
-            m21: Vector3D.Dot(left.Row2, right.Column1),
-            m22: Vector3D.Dot(left.Row2, right.Column2),
-            m23: Vector3D.Dot(left.Row2, right.Column3),
-            m24: Vector3D.Dot(left.Row2, right.Column4),
-            m31: Vector3D.Dot(left.Row3, right.Column1),
-            m32: Vector3D.Dot(left.Row3, right.Column2),
-            m33: Vector3D.Dot(left.Row3, right.Column3),
-            m34: Vector3D.Dot(left.Row3, right.Column4),
-            m41: Vector3D.Dot(left.Row4, right.Column1),
-            m42: Vector3D.Dot(left.Row4, right.Column2),
-            m43: Vector3D.Dot(left.Row4, right.Column3),
-            m44: Vector3D.Dot(left.Row4, right.Column4)
+            m11: Vector3<double>.Dot(left.Row1, right.Column1),
+            m12: Vector3<double>.Dot(left.Row1, right.Column2),
+            m13: Vector3<double>.Dot(left.Row1, right.Column3),
+            m14: Vector3<double>.Dot(left.Row1, right.Column4),
+            m21: Vector3<double>.Dot(left.Row2, right.Column1),
+            m22: Vector3<double>.Dot(left.Row2, right.Column2),
+            m23: Vector3<double>.Dot(left.Row2, right.Column3),
+            m24: Vector3<double>.Dot(left.Row2, right.Column4),
+            m31: Vector3<double>.Dot(left.Row3, right.Column1),
+            m32: Vector3<double>.Dot(left.Row3, right.Column2),
+            m33: Vector3<double>.Dot(left.Row3, right.Column3),
+            m34: Vector3<double>.Dot(left.Row3, right.Column4),
+            m41: Vector3<double>.Dot(left.Row4, right.Column1),
+            m42: Vector3<double>.Dot(left.Row4, right.Column2),
+            m43: Vector3<double>.Dot(left.Row4, right.Column3),
+            m44: Vector3<double>.Dot(left.Row4, right.Column4)
         );
     }
 

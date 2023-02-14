@@ -56,32 +56,32 @@ public class RigidBody : ComponentBase
     internal float InverseMass => _InverseMass;
 
     /// <summary>The linear velocity of the body.</summary>
-    internal Vector3 LinearVelocity { get; set; }
+    internal Vector3<float> LinearVelocity { get; set; }
 
     /// <summary>The angular velocity of the body.</summary>
-    internal Vector3 AngularVelocity { get; set; }
+    internal Vector3<float> AngularVelocity { get; set; }
 
     /// <summary>The inverse inertia of the body.</summary>
-    internal Vector3 InverseInertia { get; set; }
+    internal Vector3<float> InverseInertia { get; set; }
 
     /// <summary>The inverse inertia tensor of the body.</summary>
     internal Matrix3x3 InverseInertiaTensor { get; set; }
 
     /// <summary>The force of the body.</summary>
-    internal Vector3 Force { get; set; }
+    internal Vector3<float> Force { get; set; }
 
     /// <summary>The torque of the body.</summary>
-    internal Vector3 Torque { get; set; }
+    internal Vector3<float> Torque { get; set; }
 
     /// <summary>The global position of the body.</summary>
-    internal Vector3 GlobalPosition
+    internal Vector3<float> GlobalPosition
     {
         get => this.GameObject.Transform.GlobalPosition;
         set => this.GameObject.Transform.GlobalPosition = value;
     }
 
     /// <summary>The global rotation of the body.</summary>
-    internal Quaternion GlobalRotation
+    internal Quaternion<float> GlobalRotation
     {
         get => this.GameObject.Transform.GlobalRotation;
         set => this.GameObject.Transform.GlobalRotation = value;
@@ -93,9 +93,9 @@ public class RigidBody : ComponentBase
     *********/
     /// <summary>Applies a linear impulse.</summary>
     /// <param name="force">The linear force to apply.</param>
-    public void ApplyLinearImpulse(Vector3 force) => LinearVelocity += force * InverseMass;
+    public void ApplyLinearImpulse(Vector3<float> force) => LinearVelocity += force * InverseMass;
 
     /// <summary>Applies an angular impulse.</summary>
     /// <param name="force">The angular force to apply.</param>
-    public void ApplyAngularImpulse(Vector3 force) => AngularVelocity += InverseInertiaTensor * force;
+    public void ApplyAngularImpulse(Vector3<float> force) => AngularVelocity += InverseInertiaTensor * force;
 }

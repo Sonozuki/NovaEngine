@@ -7,10 +7,10 @@ public struct BoundingBox
     ** Fields
     *********/
     /// <summary>The centre of the bounding box.</summary>
-    public Vector3 Centre;
+    public Vector3<float> Centre;
 
     /// <summary>The half-size of the axis.</summary>
-    public Vector3 HalfSize;
+    public Vector3<float> HalfSize;
 
 
     /*********
@@ -19,7 +19,7 @@ public struct BoundingBox
     /// <summary>Constructs an instance.</summary>
     /// <param name="centre">The centre of the bounding box.</param>
     /// <param name="halfSize">The half-size of the axis.</param>
-    public BoundingBox(Vector3 centre, Vector3 halfSize)
+    public BoundingBox(Vector3<float> centre, Vector3<float> halfSize)
     {
         Centre = centre;
         HalfSize = halfSize;

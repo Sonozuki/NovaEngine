@@ -7,7 +7,7 @@ internal struct VulkanMaterial
     ** Fields
     *********/
     /// <summary>The tint of the material.</summary>
-    public Vector3 Tint;
+    public Vector3<float> Tint;
 
     /// <summary>The roughness of the material.</summary>
     public float Roughness;
@@ -23,7 +23,7 @@ internal struct VulkanMaterial
     /// <param name="tint">The tint of the material.</param>
     /// <param name="roughness">The roughness of the material.</param>
     /// <param name="metallicness">The metallicness of the material.</param>
-    public VulkanMaterial(Vector3 tint, float roughness, float metallicness)
+    public VulkanMaterial(Vector3<float> tint, float roughness, float metallicness)
     {
         Tint = tint;
         Roughness = roughness;

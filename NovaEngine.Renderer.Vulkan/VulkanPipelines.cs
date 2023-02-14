@@ -161,7 +161,7 @@ internal unsafe class VulkanPipelines : IDisposable
             // layouts
             var solidColourPushConstantRanges = new VkPushConstantRange[]
             {
-                new() { StageFlags = VkShaderStageFlags.Fragment, Offset = 0, Size = (uint)sizeof(Vector3) },
+                new() { StageFlags = VkShaderStageFlags.Fragment, Offset = 0, Size = (uint)sizeof(Vector3<float>) },
             };
 
             SolidColourTrianglePipelineLayout = CreatePipelineLayout(solidColourPushConstantRanges, DescriptorSetLayouts.SolidColourDescriptorSetLayout);

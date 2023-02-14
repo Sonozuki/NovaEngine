@@ -7,13 +7,13 @@ public struct Vertex
     ** Fields
     *********/
     /// <summary>The position of the vertex.</summary>
-    public Vector3 Position;
+    public Vector3<float> Position;
 
     /// <summary>The texture coordinates of the vertex.</summary>
-    public Vector2 TextureCoordinates;
+    public Vector2<float> TextureCoordinates;
 
     /// <summary>The normal of the vertex.</summary>
-    public Vector3 Normal;
+    public Vector3<float> Normal;
 
 
     /*********
@@ -23,7 +23,7 @@ public struct Vertex
     /// <param name="position">The position of the vertex.</param>
     /// <param name="textureCoordinates">The texture coordinates of the vertex.</param>
     /// <param name="normal">The normal of the vertex.</param>
-    public Vertex(Vector3 position = default, Vector2 textureCoordinates = default, Vector3 normal = default)
+    public Vertex(Vector3<float> position = default, Vector2<float> textureCoordinates = default, Vector3<float> normal = default)
     {
         Position = position;
         TextureCoordinates = textureCoordinates;

@@ -1,36 +1,39 @@
-﻿namespace NovaEngine.Maths;
+﻿using System.Numerics;
 
-/// <summary>Represents a vector with four single-precision floating-point values.</summary>
-public struct Vector4 : IEquatable<Vector4>
+namespace NovaEngine.Maths;
+
+/// <summary>Represents a vector with four floating-point values.</summary>
+public struct Vector4<T> : IEquatable<Vector4<T>>
+    where T : IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>, IConvertible
 {
     /*********
     ** Fields
     *********/
     /// <summary>The X component of the vector.</summary>
-    public float X;
+    public T X;
 
     /// <summary>The Y component of the vector.</summary>
-    public float Y;
+    public T Y;
 
     /// <summary>The Z component of the vector.</summary>
-    public float Z;
+    public T Z;
 
     /// <summary>The W component of the vector.</summary>
-    public float W;
+    public T W;
 
 
     /*********
     ** Accessors
     *********/
     /// <summary>The length of the vector.</summary>
-    public readonly float Length => MathF.Sqrt(LengthSquared);
+    public readonly T Length => T.Sqrt(LengthSquared);
 
     /// <summary>The squared length of the vector.</summary>
     /// <remarks>This is preferred for comparison as it avoids the square root operation.</remarks>
-    public readonly float LengthSquared => X * X + Y * Y + Z * Z + W * W;
+    public readonly T LengthSquared => X * X + Y * Y + Z * Z + W * W;
 
     /// <summary>The vector with unit length.</summary>
-    public readonly Vector4 Normalised
+    public readonly Vector4<T> Normalised
     {
         get
         {
@@ -41,7 +44,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="X"/>, <see cref="Y"/>, <see cref="W"/>, and <see cref="Z"/> components.</summary>
-    public Vector4 XYWZ
+    public Vector4<T> XYWZ
     {
         readonly get => new(X, Y, W, Z);
         set
@@ -54,7 +57,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="X"/>, <see cref="Z"/>, <see cref="Y"/>, and <see cref="W"/> components.</summary>
-    public Vector4 XZYW
+    public Vector4<T> XZYW
     {
         readonly get => new(X, Z, Y, W);
         set
@@ -67,7 +70,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="X"/>, <see cref="Z"/>, <see cref="W"/>, and <see cref="Y"/> components.</summary>
-    public Vector4 XZWY
+    public Vector4<T> XZWY
     {
         readonly get => new(X, Z, W, Y);
         set
@@ -80,7 +83,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="X"/>, <see cref="W"/>, <see cref="Y"/>, and <see cref="Z"/> components.</summary>
-    public Vector4 XWYZ
+    public Vector4<T> XWYZ
     {
         readonly get => new(X, W, Y, Z);
         set
@@ -93,7 +96,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="X"/>, <see cref="W"/>, <see cref="Z"/>, and <see cref="Y"/> components.</summary>
-    public Vector4 XWZY
+    public Vector4<T> XWZY
     {
         readonly get => new(X, W, Z, Y);
         set
@@ -106,7 +109,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Y"/>, <see cref="X"/>, <see cref="Z"/>, and <see cref="W"/> components.</summary>
-    public Vector4 YXZW
+    public Vector4<T> YXZW
     {
         readonly get => new(Y, X, Z, W);
         set
@@ -119,7 +122,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Y"/>, <see cref="X"/>, <see cref="W"/>, and <see cref="Z"/> components.</summary>
-    public Vector4 YXWZ
+    public Vector4<T> YXWZ
     {
         readonly get => new(Y, X, W, Z);
         set
@@ -132,7 +135,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Y"/>, <see cref="Z"/>, <see cref="X"/>, and <see cref="W"/> components.</summary>
-    public Vector4 YZXW
+    public Vector4<T> YZXW
     {
         readonly get => new(Y, Z, X, W);
         set
@@ -145,7 +148,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Y"/>, <see cref="Z"/>, <see cref="W"/>, and <see cref="X"/> components.</summary>
-    public Vector4 YZWX
+    public Vector4<T> YZWX
     {
         readonly get => new(Y, Z, W, X);
         set
@@ -158,7 +161,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Y"/>, <see cref="W"/>, <see cref="X"/>, and <see cref="Z"/> components.</summary>
-    public Vector4 YWXZ
+    public Vector4<T> YWXZ
     {
         readonly get => new(Y, W, X, Z);
         set
@@ -171,7 +174,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Y"/>, <see cref="W"/>, <see cref="Z"/>, and <see cref="X"/> components.</summary>
-    public Vector4 YWZX
+    public Vector4<T> YWZX
     {
         readonly get => new(Y, W, Z, X);
         set
@@ -184,7 +187,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Z"/>, <see cref="X"/>, <see cref="Y"/>, and <see cref="W"/> components.</summary>
-    public Vector4 ZXYW
+    public Vector4<T> ZXYW
     {
         readonly get => new(Z, X, Y, W);
         set
@@ -197,7 +200,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Z"/>, <see cref="X"/>, <see cref="W"/>, and <see cref="Y"/> components.</summary>
-    public Vector4 ZXWY
+    public Vector4<T> ZXWY
     {
         readonly get => new(Z, X, W, Y);
         set
@@ -210,7 +213,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Z"/>, <see cref="Y"/>, <see cref="X"/>, and <see cref="W"/> components.</summary>
-    public Vector4 ZYXW
+    public Vector4<T> ZYXW
     {
         readonly get => new(Z, Y, X, W);
         set
@@ -223,7 +226,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Z"/>, <see cref="Y"/>, <see cref="W"/>, and <see cref="X"/> components.</summary>
-    public Vector4 ZYWX
+    public Vector4<T> ZYWX
     {
         readonly get => new(Z, Y, W, X);
         set
@@ -236,7 +239,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Z"/>, <see cref="W"/>, <see cref="X"/>, and <see cref="Y"/> components.</summary>
-    public Vector4 ZWXY
+    public Vector4<T> ZWXY
     {
         readonly get => new(Z, W, X, Y);
         set
@@ -249,7 +252,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Z"/>, <see cref="W"/>, <see cref="Y"/>, and <see cref="X"/> components.</summary>
-    public Vector4 ZWYX
+    public Vector4<T> ZWYX
     {
         readonly get => new(Z, W, Y, X);
         set
@@ -262,7 +265,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="W"/>, <see cref="X"/>, <see cref="Y"/>, and <see cref="Z"/> components.</summary>
-    public Vector4 WXYZ
+    public Vector4<T> WXYZ
     {
         readonly get => new(W, X, Y, Z);
         set
@@ -275,7 +278,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="W"/>, <see cref="X"/>, <see cref="Z"/>, and <see cref="Y"/> components.</summary>
-    public Vector4 WXZY
+    public Vector4<T> WXZY
     {
         readonly get => new(W, X, Z, Y);
         set
@@ -288,7 +291,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="W"/>, <see cref="Y"/>, <see cref="X"/>, and <see cref="Z"/> components.</summary>
-    public Vector4 WYXZ
+    public Vector4<T> WYXZ
     {
         readonly get => new(W, Y, X, Z);
         set
@@ -301,7 +304,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="W"/>, <see cref="Y"/>, <see cref="Z"/>, and <see cref="X"/> components.</summary>
-    public Vector4 WYZX
+    public Vector4<T> WYZX
     {
         readonly get => new(W, Y, Z, X);
         set
@@ -314,7 +317,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="W"/>, <see cref="Z"/>, <see cref="X"/>, and <see cref="Y"/> components.</summary>
-    public Vector4 WZXY
+    public Vector4<T> WZXY
     {
         readonly get => new(W, Z, X, Y);
         set
@@ -327,7 +330,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="W"/>, <see cref="Z"/>, <see cref="Y"/>, and <see cref="X"/> components.</summary>
-    public Vector4 WZYX
+    public Vector4<T> WZYX
     {
         readonly get => new(W, Z, Y, X);
         set
@@ -340,7 +343,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="X"/>, <see cref="Y"/>, and <see cref="Z"/> components.</summary>
-    public Vector3 XYZ
+    public Vector3<T> XYZ
     {
         readonly get => new(X, Y, Z);
         set
@@ -352,7 +355,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="X"/>, <see cref="Y"/>, and <see cref="W"/> components.</summary>
-    public Vector3 XYW
+    public Vector3<T> XYW
     {
         readonly get => new(X, Y, W);
         set
@@ -364,7 +367,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="X"/>, <see cref="Z"/>, and <see cref="Y"/> components.</summary>
-    public Vector3 XZY
+    public Vector3<T> XZY
     {
         readonly get => new(X, Z, Y);
         set
@@ -376,7 +379,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="X"/>, <see cref="Z"/>, and <see cref="W"/> components.</summary>
-    public Vector3 XZW
+    public Vector3<T> XZW
     {
         readonly get => new(X, Z, W);
         set
@@ -388,7 +391,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="X"/>, <see cref="W"/>, and <see cref="Y"/> components.</summary>
-    public Vector3 XWY
+    public Vector3<T> XWY
     {
         readonly get => new(X, W, Y);
         set
@@ -400,7 +403,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="X"/>, <see cref="W"/>, and <see cref="Z"/> components.</summary>
-    public Vector3 XWZ
+    public Vector3<T> XWZ
     {
         readonly get => new(X, W, Z);
         set
@@ -412,7 +415,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Y"/>, <see cref="X"/>, and <see cref="Z"/> components.</summary>
-    public Vector3 YXZ
+    public Vector3<T> YXZ
     {
         readonly get => new(Y, X, Z);
         set
@@ -424,7 +427,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Y"/>, <see cref="X"/>, and <see cref="W"/> components.</summary>
-    public Vector3 YXW
+    public Vector3<T> YXW
     {
         readonly get => new(Y, X, W);
         set
@@ -436,7 +439,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Y"/>, <see cref="Z"/>, and <see cref="X"/> components.</summary>
-    public Vector3 YZX
+    public Vector3<T> YZX
     {
         readonly get => new(Y, Z, X);
         set
@@ -448,7 +451,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Y"/>, <see cref="Z"/>, and <see cref="W"/> components.</summary>
-    public Vector3 YZW
+    public Vector3<T> YZW
     {
         readonly get => new(Y, Z, W);
         set
@@ -460,7 +463,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Y"/>, <see cref="W"/>, and <see cref="X"/> components.</summary>
-    public Vector3 YWX
+    public Vector3<T> YWX
     {
         readonly get => new(Y, W, X);
         set
@@ -472,7 +475,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Y"/>, <see cref="W"/>, and <see cref="Z"/> components.</summary>
-    public Vector3 YWZ
+    public Vector3<T> YWZ
     {
         readonly get => new(Y, W, Z);
         set
@@ -484,7 +487,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Z"/>, <see cref="X"/>, and <see cref="Y"/> components.</summary>
-    public Vector3 ZXY
+    public Vector3<T> ZXY
     {
         readonly get => new(Z, X, Y);
         set
@@ -496,7 +499,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Z"/>, <see cref="X"/>, and <see cref="W"/> components.</summary>
-    public Vector3 ZXW
+    public Vector3<T> ZXW
     {
         readonly get => new(Z, X, W);
         set
@@ -508,7 +511,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Z"/>, <see cref="Y"/>, and <see cref="X"/> components.</summary>
-    public Vector3 ZYX
+    public Vector3<T> ZYX
     {
         readonly get => new(Z, Y, X);
         set
@@ -520,7 +523,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Z"/>, <see cref="Y"/>, and <see cref="W"/> components.</summary>
-    public Vector3 ZYW
+    public Vector3<T> ZYW
     {
         readonly get => new(Z, Y, W);
         set
@@ -532,7 +535,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="W"/>, <see cref="X"/>, and <see cref="Y"/> components.</summary>
-    public Vector3 WXY
+    public Vector3<T> WXY
     {
         readonly get => new(W, X, Y);
         set
@@ -544,7 +547,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="W"/>, <see cref="X"/>, and <see cref="Z"/> components.</summary>
-    public Vector3 WXZ
+    public Vector3<T> WXZ
     {
         readonly get => new(W, X, Z);
         set
@@ -556,7 +559,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="W"/>, <see cref="Y"/>, and <see cref="X"/> components.</summary>
-    public Vector3 WYX
+    public Vector3<T> WYX
     {
         readonly get => new(W, Y, X);
         set
@@ -568,7 +571,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="W"/>, <see cref="Y"/>, and <see cref="Z"/> components.</summary>
-    public Vector3 WYZ
+    public Vector3<T> WYZ
     {
         readonly get => new(W, Y, Z);
         set
@@ -580,7 +583,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="W"/>, <see cref="Z"/>, and <see cref="X"/> components.</summary>
-    public Vector3 WZX
+    public Vector3<T> WZX
     {
         readonly get => new(W, Z, X);
         set
@@ -592,7 +595,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="W"/>, <see cref="Z"/>, and <see cref="Y"/> components.</summary>
-    public Vector3 WZY
+    public Vector3<T> WZY
     {
         readonly get => new(W, Z, Y);
         set
@@ -604,7 +607,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="X"/> and <see cref="Y"/> components.</summary>
-    public Vector2 XY
+    public Vector2<T> XY
     {
         readonly get => new(X, Y);
         set
@@ -615,7 +618,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="X"/> and <see cref="Z"/> components.</summary>
-    public Vector2 XZ
+    public Vector2<T> XZ
     {
         readonly get => new(X, Z);
         set
@@ -626,7 +629,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="X"/> and <see cref="W"/> components.</summary>
-    public Vector2 XW
+    public Vector2<T> XW
     {
         readonly get => new(X, W);
         set
@@ -637,7 +640,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Y"/> and <see cref="X"/> components.</summary>
-    public Vector2 YX
+    public Vector2<T> YX
     {
         readonly get => new(Y, X);
         set
@@ -648,7 +651,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Y"/> and <see cref="Z"/> components.</summary>
-    public Vector2 YZ
+    public Vector2<T> YZ
     {
         readonly get => new(Y, Z);
         set
@@ -659,7 +662,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Y"/> and <see cref="W"/> components.</summary>
-    public Vector2 YW
+    public Vector2<T> YW
     {
         readonly get => new(Y, W);
         set
@@ -670,7 +673,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Z"/> and <see cref="X"/> components.</summary>
-    public Vector2 ZX
+    public Vector2<T> ZX
     {
         readonly get => new(Z, X);
         set
@@ -681,7 +684,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Z"/> and <see cref="Y"/> components.</summary>
-    public Vector2 ZY
+    public Vector2<T> ZY
     {
         readonly get => new(Z, Y);
         set
@@ -692,7 +695,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="Z"/> and <see cref="W"/> components.</summary>
-    public Vector2 ZW
+    public Vector2<T> ZW
     {
         readonly get => new(Z, W);
         set
@@ -703,7 +706,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="W"/> and <see cref="X"/> components.</summary>
-    public Vector2 WX
+    public Vector2<T> WX
     {
         readonly get => new(W, X);
         set
@@ -714,7 +717,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="W"/> and <see cref="Y"/> components.</summary>
-    public Vector2 WY
+    public Vector2<T> WY
     {
         readonly get => new(W, Y);
         set
@@ -725,7 +728,7 @@ public struct Vector4 : IEquatable<Vector4>
     }
 
     /// <summary>Swizzle the <see cref="W"/> and <see cref="Z"/> components.</summary>
-    public Vector2 WZ
+    public Vector2<T> WZ
     {
         readonly get => new(W, Z);
         set
@@ -735,28 +738,28 @@ public struct Vector4 : IEquatable<Vector4>
         }
     }
 
-    /// <summary>Gets a vector with (X, Y, Z, W) = (0, 0, 0, 0).</summary>
-    public static Vector4 Zero => new(0);
+    /// <summary>A vector with (X, Y, Z, W) = (0, 0, 0, 0).</summary>
+    public static Vector4<T> Zero => new(T.Zero);
 
-    /// <summary>Gets a vector with (X, Y, Z, W) = (1, 1, 1, 1).</summary>
-    public static Vector4 One => new(1);
+    /// <summary>A vector with (X, Y, Z, W) = (1, 1, 1, 1).</summary>
+    public static Vector4<T> One => new(T.One);
 
-    /// <summary>Gets a vector with (X, Y, Z, W) = (1, 0, 0, 0).</summary>
-    public static Vector4 UnitX => new(1, 0, 0, 0);
+    /// <summary>A vector with (X, Y, Z, W) = (1, 0, 0, 0).</summary>
+    public static Vector4<T> UnitX => new(T.One, T.Zero, T.Zero, T.Zero);
 
-    /// <summary>Gets a vector with (X, Y, Z, W) = (0, 1, 0, 0).</summary>
-    public static Vector4 UnitY => new(0, 1, 0, 0);
+    /// <summary>A vector with (X, Y, Z, W) = (0, 1, 0, 0).</summary>
+    public static Vector4<T> UnitY => new(T.Zero, T.One, T.Zero, T.Zero);
 
-    /// <summary>Gets a vector with (X, Y, Z, W) = (0, 0, 1, 0).</summary>
-    public static Vector4 UnitZ => new(0, 0, 1, 0);
+    /// <summary>A vector with (X, Y, Z, W) = (0, 0, 1, 0).</summary>
+    public static Vector4<T> UnitZ => new(T.Zero, T.Zero, T.One, T.Zero);
 
-    /// <summary>Gets a vector with (X, Y, Z, W) = (0, 0, 0, 1).</summary>
-    public static Vector4 UnitW => new(0, 0, 0, 1);
+    /// <summary>A vector with (X, Y, Z, W) = (0, 0, 0, 1).</summary>
+    public static Vector4<T> UnitW => new(T.Zero, T.Zero, T.Zero, T.One);
 
     /// <summary>Gets or sets the value at a specified position.</summary>
     /// <param name="index">The position index.</param>
     /// <returns>The value at the specified position.</returns>
-    public float this[int index]
+    public T this[int index]
     {
         readonly get
         {
@@ -792,7 +795,7 @@ public struct Vector4 : IEquatable<Vector4>
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="value">The X, Y, Z, and W components of the vector.</param>
-    public Vector4(float value)
+    public Vector4(T value)
     {
         X = value;
         Y = value;
@@ -805,7 +808,7 @@ public struct Vector4 : IEquatable<Vector4>
     /// <param name="y">The Y component of the vector.</param>
     /// <param name="z">The Z component of the vector.</param>
     /// <param name="w">The W component of the vector.</param>
-    public Vector4(float x, float y, float z, float w)
+    public Vector4(T x, T y, T z, T w)
     {
         X = x;
         Y = y;
@@ -817,7 +820,7 @@ public struct Vector4 : IEquatable<Vector4>
     /// <param name="xy">The X and Y components of the vector.</param>
     /// <param name="z">The Z component of the vector.</param>
     /// <param name="w">The W component of the vector.</param>
-    public Vector4(in Vector2 xy, float z = 0, float w = 0)
+    public Vector4(in Vector2<T> xy, T z, T w)
     {
         X = xy.X;
         Y = xy.Y;
@@ -828,7 +831,7 @@ public struct Vector4 : IEquatable<Vector4>
     /// <summary>Constructs an instance.</summary>
     /// <param name="xy">The X and Y components of the vector.</param>
     /// <param name="zw">The Z and W components of the vector.</param>
-    public Vector4(in Vector2 xy, in Vector2 zw)
+    public Vector4(in Vector2<T> xy, in Vector2<T> zw)
     {
         X = xy.X;
         Y = xy.Y;
@@ -839,7 +842,7 @@ public struct Vector4 : IEquatable<Vector4>
     /// <summary>Constructs an instance.</summary>
     /// <param name="xyz">The X, Y, and Z components of the vector.</param>
     /// <param name="w">The W component of the vector.</param>
-    public Vector4(in Vector3 xyz, float w = 0)
+    public Vector4(in Vector3<T> xyz, T w)
     {
         X = xyz.X;
         Y = xyz.Y;
@@ -850,96 +853,86 @@ public struct Vector4 : IEquatable<Vector4>
     /// <summary>Scales the vector to unit length.</summary>
     public void Normalise()
     {
-        if (LengthSquared == 0)
+        if (LengthSquared == T.Zero)
             return;
 
-        var scale = 1 / Length;
+        var scale = T.One / Length;
         X *= scale;
         Y *= scale;
         Z *= scale;
         W *= scale;
     }
 
-    /// <summary>Gets the vector as a <see cref="Vector4D"/>.</summary>
-    /// <returns>The vector as a <see cref="Vector4D"/>.</returns>
-    public readonly Vector4D ToVector4D() => new(X, Y, Z, W);
+    /// <summary>Checks two vectors for equality.</summary>
+    /// <param name="other">The vector to check equality with.</param>
+    /// <returns><see langword="true"/> if the vectors are equal; otherwise, <see langword="false"/>.</returns>
+    public readonly bool Equals(Vector4<T> other) => this == other;
 
-    /// <summary>Gets the vector as a <see cref="Vector4I"/> by rounding the components down.</summary>
-    /// <returns>The rounded down vector as a <see cref="Vector3I"/>.</returns>
-    public readonly Vector4I ToFlooredVector4I() => new((int)MathF.Floor(X), (int)MathF.Floor(Y), (int)MathF.Floor(Z), (int)MathF.Floor(W));
+    /// <summary>Checks the vector and an object for equality.</summary>
+    /// <param name="obj">The object to check equality with.</param>
+    /// <returns><see langword="true"/> if the vector and object are equal; otherwise, <see langword="false"/>.</returns>
+    public readonly override bool Equals(object? obj) => obj is Vector4<T> vector && this == vector;
 
-    /// <summary>Gets the vector as a <see cref="Vector4I"/> by rounding the components.</summary>
-    /// <returns>The rounded vector as a <see cref="Vector4I"/>.</returns>
-    public readonly Vector4I ToRoundedVector4I() => new((int)MathF.Round(X), (int)MathF.Round(Y), (int)MathF.Round(Z), (int)MathF.Round(W));
-
-    /// <summary>Gets the vector as a <see cref="Vector4I"/> by rounding the components up.</summary>
-    /// <returns>The rounded up vector as a <see cref="Vector4I"/>.</returns>
-    public readonly Vector4I ToCeilingedVector4I() => new((int)MathF.Ceiling(X), (int)MathF.Ceiling(Y), (int)MathF.Ceiling(Z), (int)MathF.Ceiling(W));
-
-    /// <inheritdoc/>
-    public readonly bool Equals(Vector4 other) => this == other;
-
-    /// <inheritdoc/>
-    public readonly override bool Equals(object? obj) => obj is Vector4 vector && this == vector;
-
-    /// <inheritdoc/>
+    /// <summary>Retrieves the hash code of the vector.</summary>
+    /// <returns>The hash code of the vector.</returns>
     public readonly override int GetHashCode() => (X, Y, Z, W).GetHashCode();
 
-    /// <inheritdoc/>
+    /// <summary>Calculates a string representation of the vector.</summary>
+    /// <returns>A string representation of the vector.</returns>
     public readonly override string ToString() => $"<X: {X}, Y: {Y}, Z: {Z}, W: {W}>";
 
     /// <summary>Clamps a vector to the specified minimum and maximum vectors.</summary>
-    /// <param name="value">The value to clamp.</param>
-    /// <param name="min">The minimum value.</param>
-    /// <param name="max">The maximum value.</param>
-    /// <returns>The clamped value.</returns>
-    public static Vector4 Clamp(in Vector4 value, in Vector4 min, in Vector4 max) => new(Math.Clamp(value.X, min.X, max.X), Math.Clamp(value.Y, min.Y, max.Y), Math.Clamp(value.Z, min.Z, max.Z), Math.Clamp(value.W, min.W, max.W));
-
-    /// <summary>Creates a vector using the smallest of the corresponding components from two vectors.</summary>
-    /// <param name="vector1">The first vector.</param>
-    /// <param name="vector2">The second vector.</param>
-    /// <returns>The component-wise minimum.</returns>
-    public static Vector4 ComponentMin(in Vector4 vector1, in Vector4 vector2) => new(Math.Min(vector1.X, vector2.X), Math.Min(vector1.Y, vector2.Y), Math.Min(vector1.Z, vector2.Z), Math.Min(vector1.W, vector2.W));
+    /// <param name="value">The vector to clamp.</param>
+    /// <param name="min">The minimum vector.</param>
+    /// <param name="max">The maximum vector.</param>
+    /// <returns>The clamped vector.</returns>
+    public static Vector4<T> Clamp(in Vector4<T> value, in Vector4<T> min, in Vector4<T> max) => new(T.Clamp(value.X, min.X, max.X), T.Clamp(value.Y, min.Y, max.Y), T.Clamp(value.Z, min.Z, max.Z), T.Clamp(value.W, min.W, max.W));
 
     /// <summary>Creates a vector using the largest of the corresponding components from two vectors.</summary>
     /// <param name="vector1">The first vector.</param>
     /// <param name="vector2">The second vector.</param>
     /// <returns>The component-wise maximum.</returns>
-    public static Vector4 ComponentMax(in Vector4 vector1, in Vector4 vector2) => new(Math.Max(vector1.X, vector2.X), Math.Max(vector1.Y, vector2.Y), Math.Max(vector1.Z, vector2.Z), Math.Max(vector1.W, vector2.W));
+    public static Vector4<T> ComponentMax(in Vector4<T> vector1, in Vector4<T> vector2) => new(T.Max(vector1.X, vector2.X), T.Max(vector1.Y, vector2.Y), T.Max(vector1.Z, vector2.Z), T.Max(vector1.W, vector2.W));
+
+    /// <summary>Creates a vector using the smallest of the corresponding components from two vectors.</summary>
+    /// <param name="vector1">The first vector.</param>
+    /// <param name="vector2">The second vector.</param>
+    /// <returns>The component-wise minimum.</returns>
+    public static Vector4<T> ComponentMin(in Vector4<T> vector1, in Vector4<T> vector2) => new(T.Min(vector1.X, vector2.X), T.Min(vector1.Y, vector2.Y), T.Min(vector1.Z, vector2.Z), T.Min(vector1.W, vector2.W));
 
     /// <summary>Calculates the distance between two vectors.</summary>
     /// <param name="vector1">The first vector.</param>
     /// <param name="vector2">The second vector.</param>
-    /// <returns>The distance between <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
-    public static float Distance(in Vector4 vector1, in Vector4 vector2) => MathF.Sqrt(Vector4.DistanceSquared(vector1, vector2));
+    /// <returns>The distance between the vectors.</returns>
+    public static T Distance(in Vector4<T> vector1, in Vector4<T> vector2) => T.Sqrt(DistanceSquared(vector1, vector2));
 
     /// <summary>Calculates the sqaured distance between two vectors.</summary>
     /// <param name="vector1">The first vector.</param>
     /// <param name="vector2">The second vector.</param>
-    /// <returns>The squared distance between <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
+    /// <returns>The squared distance between the vectors.</returns>
     /// <remarks>This is preferred for comparison as it avoids the square root operation.</remarks>
-    public static float DistanceSquared(in Vector4 vector1, in Vector4 vector2) => (vector2.X - vector1.X) * (vector2.X - vector1.X) + (vector2.Y - vector1.Y) * (vector2.Y - vector1.Y) + (vector2.Z - vector1.Z) * (vector2.Z - vector1.Z) + (vector2.W - vector1.W) * (vector2.W - vector1.W);
+    public static T DistanceSquared(in Vector4<T> vector1, in Vector4<T> vector2) => (vector2.X - vector1.X) * (vector2.X - vector1.X) + (vector2.Y - vector1.Y) * (vector2.Y - vector1.Y) + (vector2.Z - vector1.Z) * (vector2.Z - vector1.Z) + (vector2.W - vector1.W) * (vector2.W - vector1.W);
 
     /// <summary>Calculates the dot product of two vectors.</summary>
     /// <param name="vector1">The first vector.</param>
     /// <param name="vector2">The second vector.</param>
-    /// <returns>The dot product of <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
-    public static float Dot(in Vector4 vector1, in Vector4 vector2) => vector1.X * vector2.X + vector1.Y * vector2.Y + vector1.Z * vector2.Z + vector1.W * vector2.W;
+    /// <returns>The dot product of the vectors.</returns>
+    public static T Dot(in Vector4<T> vector1, in Vector4<T> vector2) => vector1.X * vector2.X + vector1.Y * vector2.Y + vector1.Z * vector2.Z + vector1.W * vector2.W;
 
-    /// <summary>Linearly interpolates between two values.</summary>
-    /// <param name="value1">The source value.</param>
-    /// <param name="value2">The destination value.</param>
-    /// <param name="amount">The amount to interpolate between <paramref name="value1"/> and <paramref name="value2"/>.</param>
-    /// <returns>The interpolated value.</returns>
-    public static Vector4 Lerp(in Vector4 value1, in Vector4 value2, float amount) => new(MathsHelper.Lerp(value1.X, value2.X, amount), MathsHelper.Lerp(value1.Y, value2.Y, amount), MathsHelper.Lerp(value1.Z, value2.Z, amount), MathsHelper.Lerp(value1.W, value2.W, amount));
+    /// <summary>Linearly interpolates between two vectors.</summary>
+    /// <param name="value1">The source vector.</param>
+    /// <param name="value2">The destination vector.</param>
+    /// <param name="amount">The amount to interpolate between the vectors.</param>
+    /// <returns>The interpolated vector.</returns>
+    public static Vector4<T> Lerp(in Vector4<T> value1, in Vector4<T> value2, T amount) => new(MathsHelper<T>.Lerp(value1.X, value2.X, amount), MathsHelper<T>.Lerp(value1.Y, value2.Y, amount), MathsHelper<T>.Lerp(value1.Z, value2.Z, amount), MathsHelper<T>.Lerp(value1.W, value2.W, amount));
 
-    /// <summary>Linearly interpolates between two values.</summary>
-    /// <param name="value1">The source value.</param>
-    /// <param name="value2">The destination value.</param>
-    /// <param name="amount">The amount to interpolate between <paramref name="value1"/> and <paramref name="value2"/>.</param>
-    /// <returns>The interpolated value.</returns>
+    /// <summary>Linearly interpolates between two vectors.</summary>
+    /// <param name="value1">The source vector.</param>
+    /// <param name="value2">The destination vector.</param>
+    /// <param name="amount">The amount to interpolate between the vectors.</param>
+    /// <returns>The interpolated vector.</returns>
     /// <remarks>This clamps <paramref name="amount"/> before performing the linear interpolation.</remarks>
-    public static Vector4 LerpClamped(in Vector4 value1, in Vector4 value2, float amount) => new(MathsHelper.LerpClamped(value1.X, value2.X, amount), MathsHelper.LerpClamped(value1.Y, value2.Y, amount), MathsHelper.LerpClamped(value1.Z, value2.Z, amount), MathsHelper.LerpClamped(value1.W, value2.W, amount));
+    public static Vector4<T> LerpClamped(in Vector4<T> value1, in Vector4<T> value2, T amount) => new(MathsHelper<T>.LerpClamped(value1.X, value2.X, amount), MathsHelper<T>.LerpClamped(value1.Y, value2.Y, amount), MathsHelper<T>.LerpClamped(value1.Z, value2.Z, amount), MathsHelper<T>.LerpClamped(value1.W, value2.W, amount));
 
 
     /*********
@@ -949,87 +942,78 @@ public struct Vector4 : IEquatable<Vector4>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the addition.</returns>
-    public static Vector4 operator +(Vector4 left, float right) => new(left.X + right, left.Y + right, left.Z + right, left.W + right);
+    public static Vector4<T> operator +(Vector4<T> left, T right) => new(left.X + right, left.Y + right, left.Z + right, left.W + right);
 
     /// <summary>Adds two vectors together.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the addition.</returns>
-    public static Vector4 operator +(Vector4 left, Vector4 right) => new(left.X + right.X, left.Y + right.Y, left.Z + right.Z, left.W + right.W);
+    public static Vector4<T> operator +(Vector4<T> left, Vector4<T> right) => new(left.X + right.X, left.Y + right.Y, left.Z + right.Z, left.W + right.W);
 
     /// <summary>Subtracts a value from a vector.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the subtraction.</returns>
-    public static Vector4 operator -(Vector4 left, float right) => new(left.X - right, left.Y - right, left.Z - right, left.W - right);
+    public static Vector4<T> operator -(Vector4<T> left, T right) => new(left.X - right, left.Y - right, left.Z - right, left.W - right);
 
     /// <summary>Subtracts a vector from another vector.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the subtraction.</returns>
-    public static Vector4 operator -(Vector4 left, Vector4 right) => new(left.X - right.X, left.Y - right.Y, left.Z - right.Z, left.W - right.W);
+    public static Vector4<T> operator -(Vector4<T> left, Vector4<T> right) => new(left.X - right.X, left.Y - right.Y, left.Z - right.Z, left.W - right.W);
 
-    /// <summary>Flips the sign of each component of a vector.</summary>
-    /// <param name="vector">The vector to flip the component signs of.</param>
-    /// <returns><paramref name="vector"/> with the sign of its components flipped.</returns>
-    public static Vector4 operator -(Vector4 vector) => vector * -1;
-
-    /// <summary>Multiplies a vector by a scalar.</summary>
-    /// <param name="left">The left operand.</param>
-    /// <param name="right">The right operand.</param>
-    /// <returns>The result of the multiplication.</returns>
-    public static Vector4 operator *(float left, Vector4 right) => right * left;
+    /// <summary>Negates each component of a vector.</summary>
+    /// <param name="vector">The vector to negate the components of.</param>
+    /// <returns><paramref name="vector"/> with its components negated.</returns>
+    public static Vector4<T> operator -(Vector4<T> vector) => new(-vector.X, -vector.Y, -vector.Z, -vector.W);
 
     /// <summary>Multiplies a vector by a scalar.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the multiplication.</returns>
-    public static Vector4 operator *(Vector4 left, float right) => new(left.X * right, left.Y * right, left.Z * right, left.W * right);
+    public static Vector4<T> operator *(T left, Vector4<T> right) => right * left;
+
+    /// <summary>Multiplies a vector by a scalar.</summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns>The result of the multiplication.</returns>
+    public static Vector4<T> operator *(Vector4<T> left, T right) => new(left.X * right, left.Y * right, left.Z * right, left.W * right);
 
     /// <summary>Multiplies two vectors together.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the multiplication.</returns>
-    public static Vector4 operator *(Vector4 left, Vector4 right) => new(left.X * right.X, left.Y * right.Y, left.Z * right.Z, left.W * right.W);
+    public static Vector4<T> operator *(Vector4<T> left, Vector4<T> right) => new(left.X * right.X, left.Y * right.Y, left.Z * right.Z, left.W * right.W);
 
     /// <summary>Divides a vector by a scalar.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the division.</returns>
-    public static Vector4 operator /(Vector4 left, float right) => new(left.X / right, left.Y / right, left.Z / right, left.W / right);
+    public static Vector4<T> operator /(Vector4<T> left, T right) => new(left.X / right, left.Y / right, left.Z / right, left.W / right);
 
     /// <summary>Divides a vector by another vector.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the division.</returns>
-    public static Vector4 operator /(Vector4 left, Vector4 right) => new(left.X / right.X, left.Y / right.Y, left.Z / right.Z, left.W / right.W);
+    public static Vector4<T> operator /(Vector4<T> left, Vector4<T> right) => new(left.X / right.X, left.Y / right.Y, left.Z / right.Z, left.W / right.W);
 
     /// <summary>Checks two vectors for equality.</summary>
     /// <param name="vector1">The first vector.</param>
     /// <param name="vector2">The second vector.</param>
     /// <returns><see langword="true"/> if the vectors are equal; otherwise, <see langword="false"/>.</returns>
-    public static bool operator ==(Vector4 vector1, Vector4 vector2) => vector1.X == vector2.X && vector1.Y == vector2.Y && vector1.Z == vector2.Z && vector1.W == vector2.W;
+    public static bool operator ==(Vector4<T> vector1, Vector4<T> vector2) => vector1.X == vector2.X && vector1.Y == vector2.Y && vector1.Z == vector2.Z && vector1.W == vector2.W;
 
     /// <summary>Checks two vectors for inequality.</summary>
     /// <param name="vector1">The first vector.</param>
     /// <param name="vector2">The second vector.</param>
     /// <returns><see langword="true"/> if the vectors are not equal; otherwise, <see langword="false"/>.</returns>
-    public static bool operator !=(Vector4 vector1, Vector4 vector2) => !(vector1 == vector2);
+    public static bool operator !=(Vector4<T> vector1, Vector4<T> vector2) => !(vector1 == vector2);
 
     /// <summary>Converts a vector to a tuple.</summary>
     /// <param name="vector">The vector to convert.</param>
-    public static implicit operator (float X, float Y, float Z, float W)(Vector4 vector) => (vector.X, vector.Y, vector.Z, vector.W);
+    public static implicit operator (T X, T Y, T Z, T W)(Vector4<T> vector) => (vector.X, vector.Y, vector.Z, vector.W);
 
     /// <summary>Converts a tuple to a vector.</summary>
     /// <param name="tuple">The tuple to convert.</param>
-    public static implicit operator Vector4((float X, float Y, float Z, float W) tuple) => new(tuple.X, tuple.Y, tuple.Z, tuple.W);
-
-    /// <summary>Converts a <see cref="Vector4"/> to a <see cref="Vector4D"/>.</summary>
-    /// <param name="vector">The vector to convert.</param>
-    public static implicit operator Vector4D(Vector4 vector) => vector.ToVector4D();
-
-    /// <summary>Converts a <see cref="Vector4"/> to a <see cref="Vector4I"/>.</summary>
-    /// <param name="vector">The vector to convert.</param>
-    /// <remarks>This floors the vector components, to be consistant with explicit <see langword="float"/> to <see langword="int"/> conversion.</remarks>
-    public static explicit operator Vector4I(Vector4 vector) => vector.ToFlooredVector4I();
+    public static implicit operator Vector4<T>((T X, T Y, T Z, T W) tuple) => new(tuple.X, tuple.Y, tuple.Z, tuple.W);
 }

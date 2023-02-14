@@ -127,7 +127,7 @@ public class TextRenderer : MeshRenderingComponentBase
 
             // draw glyph quad
             var glyphScale = FontSize / Font.MaxGlyphHeight;
-            var scaledGlyphSize = glyph.Size.ToVector2() * glyphScale;
+            var scaledGlyphSize = glyph.Size.ToVector2<float>() * glyphScale;
 
             vertices.Add(new Vertex(new(xPosition                    , yPosition + FontSize - scaledGlyphSize.Y, 0), new(glyph.AtlasPosition.X                            , glyph.AtlasPosition.Y                             )));
             vertices.Add(new Vertex(new(xPosition + scaledGlyphSize.X, yPosition + FontSize - scaledGlyphSize.Y, 0), new(glyph.AtlasPosition.X + glyph.AtlasPosition.Width, glyph.AtlasPosition.Y                             )));

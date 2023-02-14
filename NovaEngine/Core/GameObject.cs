@@ -48,9 +48,9 @@ public sealed class GameObject : IDisposable
             Parent?.Children.Add(this);
 
             Scene = Parent?.Scene;
-            Transform.ParentPosition = Parent?.Transform.GlobalPosition ?? Vector3.Zero;
-            Transform.ParentRotation = Parent?.Transform.GlobalRotation ?? Quaternion.Identity;
-            Transform.ParentScale = Parent?.Transform.GlobalScale ?? Vector3.One;
+            Transform.ParentPosition = Parent?.Transform.GlobalPosition ?? Vector3<float>.Zero;
+            Transform.ParentRotation = Parent?.Transform.GlobalRotation ?? Quaternion<float>.Identity;
+            Transform.ParentScale = Parent?.Transform.GlobalScale ?? Vector3<float>.One;
         }
     }
 
@@ -122,13 +122,13 @@ public sealed class GameObject : IDisposable
 
     /// <summary>Deep copies the game object, meaning it will clone all value and reference types.</summary>
     /// <param name="position">The position of the cloned object.</param>
-    /// <param name="rotation">The rotation of the cloned object. If <see langword="null"/> is specified, the rotation will be set to <see cref="Quaternion.Identity"/>.</param>
-    /// <param name="scale">The scale of the cloned object. If <see langword="null"/> is specified, the scale will be set to <see cref="Vector3.One"/>.</param>
+    /// <param name="rotation">The rotation of the cloned object. If <see langword="null"/> is specified, the rotation will be set to <see cref="Quaternion{T}.Identity"/>.</param>
+    /// <param name="scale">The scale of the cloned object. If <see langword="null"/> is specified, the scale will be set to <see cref="Vector3{T}.One"/>.</param>
     /// <param name="coordinateSpace">The space the <paramref name="position"/>, <paramref name="rotation"/>, and <paramref name="scale"/> should be set as.</param>
     /// <returns>A clone of the object with the specified transform.</returns>
     /// <remarks>This relies on the serialiser, any members that don't get serialised won't get cloned.<br/>The cloned object will be a sibling of the original object.</remarks>
     /// <exception cref="ArgumentException">Thrown if <paramref name="coordinateSpace"/> is an invalid value.</exception>
-    public GameObject Clone(Vector3 position, Quaternion? rotation = null, Vector3? scale = null, Space coordinateSpace = Space.Global)
+    public GameObject Clone(Vector3<float> position, Quaternion<float>? rotation = null, Vector3<float>? scale = null, Space coordinateSpace = Space.Global)
     {
         var clone = Clone();
 
@@ -136,13 +136,13 @@ public sealed class GameObject : IDisposable
         {
             case Space.Local:
                 clone.Transform.LocalPosition = position;
-                clone.Transform.LocalRotation = rotation ?? Quaternion.Identity;
-                clone.Transform.LocalScale = scale ?? Vector3.One;
+                clone.Transform.LocalRotation = rotation ?? Quaternion<float>.Identity;
+                clone.Transform.LocalScale = scale ?? Vector3<float>.One;
                 break;
             case Space.Global:
                 clone.Transform.GlobalPosition = position;
-                clone.Transform.GlobalRotation = rotation ?? Quaternion.Identity;
-                clone.Transform.GlobalScale = scale ?? Vector3.One;
+                clone.Transform.GlobalRotation = rotation ?? Quaternion<float>.Identity;
+                clone.Transform.GlobalScale = scale ?? Vector3<float>.One;
                 break;
             default:
                 throw new ArgumentException("Not a valid enumeration value.", nameof(coordinateSpace));

@@ -32,7 +32,7 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     public readonly float Trace => M11 + M22;
 
     /// <summary>The diagonal of the matrix.</summary>
-    public Vector2 Diagonal
+    public Vector2<float> Diagonal
     {
         readonly get => new(M11, M22);
         set
@@ -46,7 +46,7 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     public Matrix3x2 Transposed => new(M11, M21, M12, M22, M13, M23);
 
     /// <summary>The first row of the matrix.</summary>
-    public Vector3 Row1
+    public Vector3<float> Row1
     {
         readonly get => new(M11, M12, M13);
         set
@@ -58,7 +58,7 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     }
 
     /// <summary>The second row of the matrix.</summary>
-    public Vector3 Row2
+    public Vector3<float> Row2
     {
         readonly get => new(M21, M22, M23);
         set
@@ -70,7 +70,7 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     }
 
     /// <summary>The first column of the matrix.</summary>
-    public Vector2 Column1
+    public Vector2<float> Column1
     {
         readonly get => new(M11, M21);
         set
@@ -81,7 +81,7 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     }
 
     /// <summary>The second column of the matrix.</summary>
-    public Vector2 Column2
+    public Vector2<float> Column2
     {
         readonly get => new(M12, M22);
         set
@@ -92,7 +92,7 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     }
 
     /// <summary>The third column of the matrix.</summary>
-    public Vector2 Column3
+    public Vector2<float> Column3
     {
         readonly get => new(M13, M23);
         set
@@ -220,7 +220,7 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     /// <summary>Constructs an instance.</summary>
     /// <param name="row1">The first row of the matrix.</param>
     /// <param name="row2">The second row of the matrix.</param>
-    public Matrix2x3(in Vector3 row1, in Vector3 row2)
+    public Matrix2x3(in Vector3<float> row1, in Vector3<float> row2)
     {
         M11 = row1.X;
         M12 = row1.Y;
@@ -279,7 +279,7 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     /// <summary>Creates a scale matrix.</summary>
     /// <param name="scale">The scale factor of the X and Y axis.</param>
     /// <returns>The created matrix.</returns>
-    public static Matrix2x3 CreateScale(Vector2 scale) => new(Matrix2x2.CreateScale(scale));
+    public static Matrix2x3 CreateScale(Vector2<float> scale) => new(Matrix2x2.CreateScale(scale));
 
 
     /*********
@@ -351,10 +351,10 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     public static Matrix2x2 operator *(Matrix2x3 left, Matrix3x2 right)
     {
         return new(
-            m11: Vector3.Dot(left.Row1, right.Column1),
-            m12: Vector3.Dot(left.Row1, right.Column2),
-            m21: Vector3.Dot(left.Row2, right.Column1),
-            m22: Vector3.Dot(left.Row2, right.Column2)
+            m11: Vector3<float>.Dot(left.Row1, right.Column1),
+            m12: Vector3<float>.Dot(left.Row1, right.Column2),
+            m21: Vector3<float>.Dot(left.Row2, right.Column1),
+            m22: Vector3<float>.Dot(left.Row2, right.Column2)
         );
     }
 
@@ -365,12 +365,12 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     public static Matrix2x3 operator *(Matrix2x3 left, Matrix3x3 right)
     {
         return new(
-            m11: Vector3.Dot(left.Row1, right.Column1),
-            m12: Vector3.Dot(left.Row1, right.Column2),
-            m13: Vector3.Dot(left.Row1, right.Column3),
-            m21: Vector3.Dot(left.Row2, right.Column1),
-            m22: Vector3.Dot(left.Row2, right.Column2),
-            m23: Vector3.Dot(left.Row2, right.Column3)
+            m11: Vector3<float>.Dot(left.Row1, right.Column1),
+            m12: Vector3<float>.Dot(left.Row1, right.Column2),
+            m13: Vector3<float>.Dot(left.Row1, right.Column3),
+            m21: Vector3<float>.Dot(left.Row2, right.Column1),
+            m22: Vector3<float>.Dot(left.Row2, right.Column2),
+            m23: Vector3<float>.Dot(left.Row2, right.Column3)
         );
     }
 
@@ -381,14 +381,14 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     public static Matrix2x4 operator *(Matrix2x3 left, Matrix3x4 right)
     {
         return new(
-            m11: Vector3.Dot(left.Row1, right.Column1),
-            m12: Vector3.Dot(left.Row1, right.Column2),
-            m13: Vector3.Dot(left.Row1, right.Column3),
-            m14: Vector3.Dot(left.Row1, right.Column4),
-            m21: Vector3.Dot(left.Row2, right.Column1),
-            m22: Vector3.Dot(left.Row2, right.Column2),
-            m23: Vector3.Dot(left.Row2, right.Column3),
-            m24: Vector3.Dot(left.Row2, right.Column4)
+            m11: Vector3<float>.Dot(left.Row1, right.Column1),
+            m12: Vector3<float>.Dot(left.Row1, right.Column2),
+            m13: Vector3<float>.Dot(left.Row1, right.Column3),
+            m14: Vector3<float>.Dot(left.Row1, right.Column4),
+            m21: Vector3<float>.Dot(left.Row2, right.Column1),
+            m22: Vector3<float>.Dot(left.Row2, right.Column2),
+            m23: Vector3<float>.Dot(left.Row2, right.Column3),
+            m24: Vector3<float>.Dot(left.Row2, right.Column4)
         );
     }
 

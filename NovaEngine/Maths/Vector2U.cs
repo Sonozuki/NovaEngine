@@ -1,4 +1,6 @@
-﻿namespace NovaEngine.Maths;
+﻿using System.Numerics;
+
+namespace NovaEngine.Maths;
 
 /// <summary>Represents a vector with two 32-bit unsigned integer values.</summary>
 public struct Vector2U
@@ -73,35 +75,40 @@ public struct Vector2U
         Y = y;
     }
 
-    /// <summary>Gets the vector as a <see cref="Vector2"/>.</summary>
-    /// <returns>The vector as a <see cref="Vector2"/>.</returns>
-    public readonly Vector2 ToVector2() => new(X, Y);
+    /// <summary>Gets the vector as a <see cref="Vector2{T}"/>.</summary>
+    /// <typeparam name="T">The type of vector to convert to.</typeparam>
+    /// <returns>The converted vector.</returns>
+    /// <remarks>Components will get truncated if they fall outside of the range of <typeparamref name="T"/>.</remarks>
+    public readonly Vector2<T> ToVector2<T>()
+        where T : IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>, IConvertible
+    {
+        return new(T.CreateTruncating(X), T.CreateTruncating(Y));
+    }
 
-    /// <summary>Gets the vector as a <see cref="Vector2D"/>.</summary>
-    /// <returns>The vector as a <see cref="Vector2D"/>.</returns>
-    public readonly Vector2D ToVector2D() => new(X, Y);
-
-    /// <summary>Gets the vector as a <see cref="Vector2I"/>.</summary>
-    /// <returns>The vector as a <see cref="Vector2I"/>.</returns>
-    public readonly Vector2I ToVector2I() => new((int)X, (int)Y);
-
-    /// <inheritdoc/>
+    /// <summary>Checks two vectors for equality.</summary>
+    /// <param name="other">The vector to check equality with.</param>
+    /// <returns><see langword="true"/> if the vectors are equal; otherwise, <see langword="false"/>.</returns>
     public readonly bool Equals(Vector2U other) => this == other;
 
-    /// <inheritdoc/>
+    /// <summary>Checks the vector and an object for equality.</summary>
+    /// <param name="obj">The object to check equality with.</param>
+    /// <returns><see langword="true"/> if the vector and object are equal; otherwise, <see langword="false"/>.</returns>
     public readonly override bool Equals(object? obj) => obj is Vector2U vector && this == vector;
 
-    /// <inheritdoc/>
+    /// <summary>Retrieves the hash code of the vector.</summary>
+    /// <returns>The hash code of the vector.</returns>
     public readonly override int GetHashCode() => (X, Y).GetHashCode();
 
-    /// <inheritdoc/>
+    /// <summary>Calculates a string representation of the vector.</summary>
+    /// <returns>A string representation of the vector.</returns>
     public readonly override string ToString() => $"<X: {X}, Y: {Y}>";
 
-    /// <summary>Creates a vector using the smallest of the corresponding components from two vectors.</summary>
-    /// <param name="vector1">The first vector.</param>
-    /// <param name="vector2">The second vector.</param>
-    /// <returns>The component-wise minimum.</returns>
-    public static Vector2U ComponentMin(in Vector2U vector1, in Vector2U vector2) => new(Math.Min(vector1.X, vector2.X), Math.Min(vector1.Y, vector2.Y));
+    /// <summary>Clamps a vector to the specified minimum and maximum vectors.</summary>
+    /// <param name="value">The vector to clamp.</param>
+    /// <param name="min">The minimum vector.</param>
+    /// <param name="max">The maximum vector.</param>
+    /// <returns>The clamped vector.</returns>
+    public static Vector2U Clamp(in Vector2U value, in Vector2U min, in Vector2U max) => new(Math.Clamp(value.X, min.X, max.X), Math.Clamp(value.Y, min.Y, max.Y));
 
     /// <summary>Creates a vector using the largest of the corresponding components from two vectors.</summary>
     /// <param name="vector1">The first vector.</param>
@@ -109,12 +116,11 @@ public struct Vector2U
     /// <returns>The component-wise maximum.</returns>
     public static Vector2U ComponentMax(in Vector2U vector1, in Vector2U vector2) => new(Math.Max(vector1.X, vector2.X), Math.Max(vector1.Y, vector2.Y));
 
-    /// <summary>Clamps a vector to the specified minimum and maximum vectors.</summary>
-    /// <param name="value">The value to clamp.</param>
-    /// <param name="min">The minimum value.</param>
-    /// <param name="max">The maximum value.</param>
-    /// <returns>The clamped value.</returns>
-    public static Vector2U Clamp(in Vector2U value, in Vector2U min, in Vector2U max) => new(Math.Clamp(value.X, min.X, max.X), Math.Clamp(value.Y, min.Y, max.Y));
+    /// <summary>Creates a vector using the smallest of the corresponding components from two vectors.</summary>
+    /// <param name="vector1">The first vector.</param>
+    /// <param name="vector2">The second vector.</param>
+    /// <returns>The component-wise minimum.</returns>
+    public static Vector2U ComponentMin(in Vector2U vector1, in Vector2U vector2) => new(Math.Min(vector1.X, vector2.X), Math.Min(vector1.Y, vector2.Y));
 
 
     /*********
@@ -181,16 +187,4 @@ public struct Vector2U
     /// <summary>Converts a tuple to a vector.</summary>
     /// <param name="tuple">The tuple to convert.</param>
     public static implicit operator Vector2U((uint X, uint Y) tuple) => new(tuple.X, tuple.Y);
-
-    /// <summary>Converts a <see cref="Vector2U"/> to a <see cref="Vector2"/>.</summary>
-    /// <param name="vector">The vector to convert.</param>
-    public static implicit operator Vector2(Vector2U vector) => vector.ToVector2();
-
-    /// <summary>Converts a <see cref="Vector2U"/> to a <see cref="Vector2D"/>.</summary>
-    /// <param name="vector">The vector to convert.</param>
-    public static implicit operator Vector2D(Vector2U vector) => vector.ToVector2D();
-
-    /// <summary>Converts a <see cref="Vector2U"/> to a <see cref="Vector2I"/>.</summary>
-    /// <param name="vector">The vector to convert.</param>
-    public static explicit operator Vector2I(Vector2U vector) => vector.ToVector2I();
 }

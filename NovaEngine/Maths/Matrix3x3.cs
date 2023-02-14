@@ -48,7 +48,7 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     public readonly float Trace => M11 + M22 + M33;
 
     /// <summary>The diagonal of the matrix.</summary>
-    public Vector3 Diagonal
+    public Vector3<float> Diagonal
     {
         readonly get => new(M11, M22, M33);
         set
@@ -105,14 +105,14 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     }
 
     /// <summary>The rotation of the matrix.</summary>
-    public readonly Quaternion Rotation
+    public readonly Quaternion<float> Rotation
     {
         get
         {
             var copy = this;
             copy.RemoveScale();
 
-            var quaternion = new Quaternion();
+            var quaternion = new Quaternion<float>();
             if (Trace > 0)
             {
                 var sq = .5f / MathF.Sqrt(copy.Trace + 1);
@@ -151,10 +151,10 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     }
 
     /// <summary>The scale of the matrix.</summary>
-    public readonly Vector3 Scale => new(Row1.Length, Row2.Length, Row3.Length);
+    public readonly Vector3<float> Scale => new(Row1.Length, Row2.Length, Row3.Length);
 
     /// <summary>The first row of the matrix.</summary>
-    public Vector3 Row1
+    public Vector3<float> Row1
     {
         readonly get => new(M11, M12, M13);
         set
@@ -166,7 +166,7 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     }
 
     /// <summary>The second row of the matrix.</summary>
-    public Vector3 Row2
+    public Vector3<float> Row2
     {
         readonly get => new(M21, M22, M23);
         set
@@ -178,7 +178,7 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     }
 
     /// <summary>The third row of the matrix.</summary>
-    public Vector3 Row3
+    public Vector3<float> Row3
     {
         readonly get => new(M31, M32, M33);
         set
@@ -190,7 +190,7 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     }
 
     /// <summary>The first column of the matrix.</summary>
-    public Vector3 Column1
+    public Vector3<float> Column1
     {
         readonly get => new(M11, M21, M31);
         set
@@ -202,7 +202,7 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     }
 
     /// <summary>The second column of the matrix.</summary>
-    public Vector3 Column2
+    public Vector3<float> Column2
     {
         readonly get => new(M12, M22, M32);
         set
@@ -214,7 +214,7 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     }
     
     /// <summary>The third column of the matrix.</summary>
-    public Vector3 Column3
+    public Vector3<float> Column3
     {
         readonly get => new(M13, M23, M33);
         set
@@ -368,7 +368,7 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     /// <param name="row1">The first row of the matrix.</param>
     /// <param name="row2">The second row of the matrix.</param>
     /// <param name="row3">The third row of the matrix.</param>
-    public Matrix3x3(in Vector3 row1, in Vector3 row2, in Vector3 row3)
+    public Matrix3x3(in Vector3<float> row1, in Vector3<float>  row2, in Vector3<float>  row3)
     {
         M11 = row1.X;
         M12 = row1.Y;
@@ -518,14 +518,14 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     /// <param name="axis">The axis to rotate around.</param>
     /// <param name="angle">The angle, in degrees, to rotate around the axis.</param>
     /// <returns>The created matrix.</returns>
-    public static Matrix3x3 CreateFromAxisAngle(Vector3 axis, float angle)
+    public static Matrix3x3 CreateFromAxisAngle(Vector3<float> axis, float angle)
     {
         // validate axis
         if (axis.LengthSquared == 0)
             return Matrix3x3.Identity;
         axis.Normalise();
 
-        angle = MathsHelper.DegreesToRadians(angle);
+        angle = MathsHelper<float>.DegreesToRadians(angle);
         var sinAngle = MathF.Sin(angle);
         var cosAngle = MathF.Cos(angle);
 
@@ -547,7 +547,7 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     /// <summary>Creates a rotation matrix from a quaternion.</summary>
     /// <param name="quaternion">The quaternion to create a rotation matrix from.</param>
     /// <returns>The created matrix.</returns>
-    public static Matrix3x3 CreateFromQuaternion(Quaternion quaternion)
+    public static Matrix3x3 CreateFromQuaternion(Quaternion<float> quaternion)
     {
         var xx = quaternion.X * quaternion.X;
         var yy = quaternion.Y * quaternion.Y;
@@ -568,9 +568,9 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     /// <summary>Creates a rotation matrix from euler angles.</summary>
     /// <param name="eulerAngles">The euler angles, in degrees.</param>
     /// <returns>The created matrix.</returns>
-    public static Matrix3x3 CreateFromEulerAngles(Vector3 eulerAngles)
+    public static Matrix3x3 CreateFromEulerAngles(Vector3<float> eulerAngles)
     {
-        var quaternion = Quaternion.CreateFromEulerAngles(eulerAngles);
+        var quaternion = Quaternion<float>.CreateFromEulerAngles(eulerAngles);
         return Matrix3x3.CreateFromQuaternion(quaternion);
     }
 
@@ -581,7 +581,7 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     /// <returns>The created matrix.</returns>
     public static Matrix3x3 CreateFromEulerAngles(float x, float y, float z)
     {
-        var quaternion = Quaternion.CreateFromEulerAngles(x, y, z);
+        var quaternion = Quaternion<float>.CreateFromEulerAngles(x, y, z);
         return Matrix3x3.CreateFromQuaternion(quaternion);
     }
 
@@ -590,7 +590,7 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     /// <returns>The created matrix.</returns>
     public static Matrix3x3 CreateRotationX(float angle)
     {
-        angle = MathsHelper.DegreesToRadians(angle);
+        angle = MathsHelper<float>.DegreesToRadians(angle);
         var sinAngle = MathF.Sin(angle);
         var cosAngle = MathF.Cos(angle);
 
@@ -607,7 +607,7 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     /// <returns>The created matrix.</returns>
     public static Matrix3x3 CreateRotationY(float angle)
     {
-        angle = MathsHelper.DegreesToRadians(angle);
+        angle = MathsHelper<float>.DegreesToRadians(angle);
         var sinAngle = MathF.Sin(angle);
         var cosAngle = MathF.Cos(angle);
 
@@ -624,7 +624,7 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     /// <returns>The created matrix.</returns>
     public static Matrix3x3 CreateRotationZ(float angle)
     {
-        angle = MathsHelper.DegreesToRadians(angle);
+        angle = MathsHelper<float>.DegreesToRadians(angle);
         var sinAngle = MathF.Sin(angle);
         var cosAngle = MathF.Cos(angle);
 
@@ -651,7 +651,7 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     /// <summary>Creates a scale matrix.</summary>
     /// <param name="scale">The scale factor of the X, Y, and Z axis.</param>
     /// <returns>The created matrix.</returns>
-    public static Matrix3x3 CreateScale(Vector3 scale) => new(scale.X, 0, 0, 0, scale.Y, 0, 0, 0, scale.Z);
+    public static Matrix3x3 CreateScale(Vector3<float> scale) => new(scale.X, 0, 0, 0, scale.Y, 0, 0, 0, scale.Z);
 
 
     /*********
@@ -729,12 +729,12 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the multiplication.</returns>
-    public static Vector3 operator *(Matrix3x3 left, Vector3 right)
+    public static Vector3<float> operator *(Matrix3x3 left, Vector3<float> right)
     {
         return new(
-            Vector3.Dot(left.Row1, right),
-            Vector3.Dot(left.Row2, right),
-            Vector3.Dot(left.Row3, right)
+            Vector3<float> .Dot(left.Row1, right),
+            Vector3<float> .Dot(left.Row2, right),
+            Vector3<float>.Dot(left.Row3, right)
         );
     }
 
@@ -745,12 +745,12 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     public static Matrix3x2 operator *(Matrix3x3 left, Matrix3x2 right)
     {
         return new(
-            m11: Vector3.Dot(left.Row1, right.Column1),
-            m12: Vector3.Dot(left.Row1, right.Column2),
-            m21: Vector3.Dot(left.Row2, right.Column1),
-            m22: Vector3.Dot(left.Row2, right.Column2),
-            m31: Vector3.Dot(left.Row3, right.Column1),
-            m32: Vector3.Dot(left.Row3, right.Column2)
+            m11: Vector3<float> .Dot(left.Row1, right.Column1),
+            m12: Vector3<float> .Dot(left.Row1, right.Column2),
+            m21: Vector3<float> .Dot(left.Row2, right.Column1),
+            m22: Vector3<float> .Dot(left.Row2, right.Column2),
+            m31: Vector3<float> .Dot(left.Row3, right.Column1),
+            m32: Vector3<float>.Dot(left.Row3, right.Column2)
         );
     }
 
@@ -761,15 +761,15 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     public static Matrix3x3 operator *(Matrix3x3 left, Matrix3x3 right)
     {
         return new(
-            m11: Vector3.Dot(left.Row1, right.Column1),
-            m12: Vector3.Dot(left.Row1, right.Column2),
-            m13: Vector3.Dot(left.Row1, right.Column3),
-            m21: Vector3.Dot(left.Row2, right.Column1),
-            m22: Vector3.Dot(left.Row2, right.Column2),
-            m23: Vector3.Dot(left.Row2, right.Column3),
-            m31: Vector3.Dot(left.Row3, right.Column1),
-            m32: Vector3.Dot(left.Row3, right.Column2),
-            m33: Vector3.Dot(left.Row3, right.Column3)
+            m11: Vector3<float> .Dot(left.Row1, right.Column1),
+            m12: Vector3<float> .Dot(left.Row1, right.Column2),
+            m13: Vector3<float> .Dot(left.Row1, right.Column3),
+            m21: Vector3<float> .Dot(left.Row2, right.Column1),
+            m22: Vector3<float> .Dot(left.Row2, right.Column2),
+            m23: Vector3<float> .Dot(left.Row2, right.Column3),
+            m31: Vector3<float> .Dot(left.Row3, right.Column1),
+            m32: Vector3<float> .Dot(left.Row3, right.Column2),
+            m33: Vector3<float>.Dot(left.Row3, right.Column3)
         );
     }
 
@@ -780,18 +780,18 @@ public struct Matrix3x3 : IEquatable<Matrix3x3>
     public static Matrix3x4 operator *(Matrix3x3 left, Matrix3x4 right)
     {
         return new(
-            m11: Vector3.Dot(left.Row1, right.Column1),
-            m12: Vector3.Dot(left.Row1, right.Column2),
-            m13: Vector3.Dot(left.Row1, right.Column3),
-            m14: Vector3.Dot(left.Row1, right.Column4),
-            m21: Vector3.Dot(left.Row2, right.Column1),
-            m22: Vector3.Dot(left.Row2, right.Column2),
-            m23: Vector3.Dot(left.Row2, right.Column3),
-            m24: Vector3.Dot(left.Row2, right.Column4),
-            m31: Vector3.Dot(left.Row3, right.Column1),
-            m32: Vector3.Dot(left.Row3, right.Column2),
-            m33: Vector3.Dot(left.Row3, right.Column3),
-            m34: Vector3.Dot(left.Row3, right.Column4)
+            m11: Vector3<float> .Dot(left.Row1, right.Column1),
+            m12: Vector3<float> .Dot(left.Row1, right.Column2),
+            m13: Vector3<float> .Dot(left.Row1, right.Column3),
+            m14: Vector3<float> .Dot(left.Row1, right.Column4),
+            m21: Vector3<float> .Dot(left.Row2, right.Column1),
+            m22: Vector3<float> .Dot(left.Row2, right.Column2),
+            m23: Vector3<float> .Dot(left.Row2, right.Column3),
+            m24: Vector3<float> .Dot(left.Row2, right.Column4),
+            m31: Vector3<float> .Dot(left.Row3, right.Column1),
+            m32: Vector3<float> .Dot(left.Row3, right.Column2),
+            m33: Vector3<float> .Dot(left.Row3, right.Column3),
+            m34: Vector3<float>.Dot(left.Row3, right.Column4)
         );
     }
 

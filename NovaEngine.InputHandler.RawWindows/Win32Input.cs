@@ -95,7 +95,14 @@ public class Win32RawInput : IInputHandler
     }
 
     /// <summary>The top left position of the clip rectangle, in client-area coordinates.</summary>
-    private Vector2I CursorClipTopLeft => (Vector2I)((Vector2)Program.MainWindow.Size / 2f);
+    private Vector2I CursorClipTopLeft
+    {
+        get
+        {
+            var position = Program.MainWindow.Size.ToVector2<float>() / 2f;
+            return new((int)position.X, (int)position.Y);
+        }
+    }
 
 
     /*********
@@ -199,9 +206,9 @@ public class Win32RawInput : IInputHandler
             _MouseState[MouseButton.ForwardButton] = false;
 
         if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.Wheel))
-            _MouseState.Scroll += new Vector2(0, rawMouse.ButtonData / 120f);
+            _MouseState.Scroll += new Vector2<float>(0, rawMouse.ButtonData / 120f);
         if (rawMouse.ButtonFlags.HasFlag(RawInputMouseState.HWheel))
-            _MouseState.Scroll += new Vector2(rawMouse.ButtonData / 120f, 0);
+            _MouseState.Scroll += new Vector2<float>(rawMouse.ButtonData / 120f, 0);
 
         _MouseState.PositionDelta = new Vector2I(rawMouse.LastX, rawMouse.LastY);
         User32.GetCursorPos(ref _MouseState.Position); // delta follows the raw input meaning it can go out of sync with the cursor position, so get the position from Windows instead

@@ -10,7 +10,7 @@ internal class Sphere : ICollidable
     private float _Radius;
 
     /// <summary>The offset of the sphere.</summary>
-    private Vector3 _Offset;
+    private Vector3<float> _Offset;
 
     /// <summary>The bounding box of the sphere.</summary>
     private BoundingBox _BoundingBox;
@@ -34,7 +34,7 @@ internal class Sphere : ICollidable
     }
 
     /// <inheritdoc/>
-    public Vector3 Offset
+    public Vector3<float> Offset
     {
         get => _Offset;
         set => _Offset = _BoundingBox.Centre = value;
@@ -49,17 +49,17 @@ internal class Sphere : ICollidable
     *********/
     /// <summary>Constructs an instance.</summary>
     public Sphere()
-        : this(.5f, Vector3.Zero) { }
+        : this(.5f, Vector3<float>.Zero) { }
 
     /// <summary>Constructs an instance.</summary>
     /// <param name="radius">The radius of the sphere.</param>
     /// <param name="offset">The offset of the sphere.</param>
-    public Sphere(float radius, Vector3 offset)
+    public Sphere(float radius, Vector3<float> offset)
     {
         Radius = radius;
         Offset = offset;
     }
 
     /// <inheritdoc/>
-    public Vector3 CalculateInertia(float inverseMass) => new(2.5f * inverseMass / (Radius * Radius));
+    public Vector3<float> CalculateInertia(float inverseMass) => new(2.5f * inverseMass / (Radius * Radius));
 }

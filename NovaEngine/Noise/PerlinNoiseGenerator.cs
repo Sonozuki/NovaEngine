@@ -65,16 +65,16 @@ public class PerlinNoiseGenerator
         var bb = Permutation[xi + 1 + pyib];
 
         // interpolate between the 4 points being evaluated
-        var x1 = MathsHelper.Lerp(
+        var x1 = MathsHelper<float>.Lerp(
             Gradient(aa, xf, yf),
             Gradient(ba, xf - 1, yf),
             u);
-        var x2 = MathsHelper.Lerp(
+        var x2 = MathsHelper<float>.Lerp(
             Gradient(ab, xf, yf - 1),
             Gradient(bb, xf - 1, yf - 1),
             u);
 
-        return (MathsHelper.Lerp(x1, x2, v) + 1) / 2;
+        return (MathsHelper<float>.Lerp(x1, x2, v) + 1) / 2;
     }
 
     /// <summary>Evaluates a point in space.</summary>
@@ -107,27 +107,27 @@ public class PerlinNoiseGenerator
         var bb = Permutation[b + 1] + zi;
 
         // interpolate between the 8 points being evaluated
-        var x1 = MathsHelper.Lerp(
+        var x1 = MathsHelper<float>.Lerp(
             Gradient(Permutation[aa], xf, yf, zf),
             Gradient(Permutation[ba], xf - 1, yf, zf),
             u);
-        var x2 = MathsHelper.Lerp(
+        var x2 = MathsHelper<float>.Lerp(
             Gradient(Permutation[ab], xf, yf - 1, zf),
             Gradient(Permutation[bb], xf - 1, yf - 1, zf),
             u);
-        var y1 = MathsHelper.Lerp(x1, x2, v);
+        var y1 = MathsHelper<float>.Lerp(x1, x2, v);
 
-        x1 = MathsHelper.Lerp(
+        x1 = MathsHelper<float>.Lerp(
             Gradient(Permutation[aa + 1], xf, yf, zf - 1),
             Gradient(Permutation[ba + 1], xf - 1, yf, zf - 1),
             u);
-        x2 = MathsHelper.Lerp(
+        x2 = MathsHelper<float>.Lerp(
             Gradient(Permutation[ab + 1], xf, yf - 1, zf - 1),
             Gradient(Permutation[bb + 1], xf - 1, yf - 1, zf - 1),
             u);
-        var y2 = MathsHelper.Lerp(x1, x2, v);
+        var y2 = MathsHelper<float>.Lerp(x1, x2, v);
 
-        return (MathsHelper.Lerp(y1, y2, w) + 1) / 2;
+        return (MathsHelper<float>.Lerp(y1, y2, w) + 1) / 2;
     }
 
 

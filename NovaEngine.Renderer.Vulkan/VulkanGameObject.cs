@@ -73,9 +73,9 @@ public class VulkanGameObject : RendererGameObjectBase
             // TODO: calculate position based on anchors
             var uiTransform = (BaseGameObject.Transform as UITransform)!;
 
-            var position = new Vector3(uiTransform.Left, uiTransform.Top, 0);
-            var rotation = Quaternion.Identity;
-            var modelMatrix = Matrix4x4.CreateScale(Vector3.One)
+            var position = new Vector3<float>(uiTransform.Left, uiTransform.Top, 0);
+            var rotation = Quaternion<float>.Identity;
+            var modelMatrix = Matrix4x4.CreateScale(Vector3<float>.One)
                             * Matrix4x4.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W))
                             * Matrix4x4.CreateTranslation(new(position.X, position.Y, -position.Z));
 

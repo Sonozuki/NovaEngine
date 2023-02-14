@@ -38,7 +38,7 @@ internal class Point
         IsOnCurve = isOnCurve;
     }
 
-    /// <summary>Gets the point as a <see cref="Vector2"/>.</summary>
-    /// <returns>The point as a <see cref="Vector2"/>.</returns>
-    public Vector2 ToVector2() => new(X, Y);
+    /// <summary>Gets the point as a <see cref="Vector2{T}"/>.</summary>
+    /// <returns>The point as a <see cref="Vector2{T}"/>.</returns>
+    public Vector2<float> ToVector2() => new(X, Y);
 }

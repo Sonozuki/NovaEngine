@@ -14,7 +14,7 @@ public struct MouseState
     public Vector2I PositionDelta;
 
     /// <summary>The horizontal and vertical scroll values of the mouse.</summary>
-    public Vector2 Scroll;
+    public Vector2<float> Scroll;
 
     /// <summary>The states of the mouse buttons.</summary>
     /// <remarks>Only the 5 low-order bits are used.</remarks>

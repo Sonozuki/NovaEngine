@@ -1,4 +1,6 @@
-﻿namespace NovaEngine.Maths;
+﻿using System.Numerics;
+
+namespace NovaEngine.Maths;
 
 /// <summary>Represents a vector with three 32-bit integer values.</summary>
 public struct Vector3I : IEquatable<Vector3I>
@@ -152,19 +154,19 @@ public struct Vector3I : IEquatable<Vector3I>
         }
     }
 
-    /// <summary>Gets a vector with (X, Y, Z) = (0, 0, 0).</summary>
+    /// <summary>A vector with (X, Y, Z) = (0, 0, 0).</summary>
     public static Vector3I Zero => new(0);
 
-    /// <summary>Gets a vector with (X, Y, Z) = (1, 1, 1).</summary>
+    /// <summary>A vector with (X, Y, Z) = (1, 1, 1).</summary>
     public static Vector3I One => new(1);
 
-    /// <summary>Gets a vector with (X, Y, Z) = (1, 0, 0).</summary>
+    /// <summary>A vector with (X, Y, Z) = (1, 0, 0).</summary>
     public static Vector3I UnitX => new(1, 0, 0);
 
-    /// <summary>Gets a vector with (X, Y, Z) = (0, 1, 0).</summary>
+    /// <summary>A vector with (X, Y, Z) = (0, 1, 0).</summary>
     public static Vector3I UnitY => new(0, 1, 0);
 
-    /// <summary>Gets a vector with (X, Y, Z) = (0, 0, 1).</summary>
+    /// <summary>A vector with (X, Y, Z) = (0, 0, 1).</summary>
     public static Vector3I UnitZ => new(0, 0, 1);
 
     /// <summary>Gets or sets the value at a specified position.</summary>
@@ -230,44 +232,40 @@ public struct Vector3I : IEquatable<Vector3I>
         Z = z;
     }
 
-    /// <summary>Gets the vector as a <see cref="Vector3"/>.</summary>
-    /// <returns>The vector as a <see cref="Vector3"/>.</returns>
-    public readonly Vector3 ToVector3() => new(X, Y, Z);
+    /// <summary>Gets the vector as a <see cref="Vector3{T}"/>.</summary>
+    /// <typeparam name="T">The type of vector to convert to.</typeparam>
+    /// <returns>The converted vector.</returns>
+    /// <remarks>Components will get truncated if they fall outside of the range of <typeparamref name="T"/>.</remarks>
+    public readonly Vector3<T> ToVector3<T>()
+        where T : IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>, IConvertible
+    {
+        return new(T.CreateTruncating(X), T.CreateTruncating(Y), T.CreateTruncating(Z));
+    }
 
-    /// <summary>Gets the vector as a <see cref="Vector3D"/>.</summary>
-    /// <returns>The vector as a <see cref="Vector3D"/>.</returns>
-    public readonly Vector3D ToVector3D() => new(X, Y, Z);
-
-    /// <inheritdoc/>
+    /// <summary>Checks two vectors for equality.</summary>
+    /// <param name="other">The vector to check equality with.</param>
+    /// <returns><see langword="true"/> if the vectors are equal; otherwise, <see langword="false"/>.</returns>
     public readonly bool Equals(Vector3I other) => this == other;
 
-    /// <inheritdoc/>
+    /// <summary>Checks the vector and an object for equality.</summary>
+    /// <param name="obj">The object to check equality with.</param>
+    /// <returns><see langword="true"/> if the vector and object are equal; otherwise, <see langword="false"/>.</returns>
     public readonly override bool Equals(object? obj) => obj is Vector3I vector && this == vector;
 
-    /// <inheritdoc/>
+    /// <summary>Retrieves the hash code of the vector.</summary>
+    /// <returns>The hash code of the vector.</returns>
     public readonly override int GetHashCode() => (X, Y, Z).GetHashCode();
 
-    /// <inheritdoc/>
+    /// <summary>Calculates a string representation of the vector.</summary>
+    /// <returns>A string representation of the vector.</returns>
     public readonly override string ToString() => $"<X: {X}, Y: {Y}, Z: {Z}>";
 
-    /// <summary>Calculates the distance between two vectors.</summary>
-    /// <param name="vector1">The first vector.</param>
-    /// <param name="vector2">The second vector.</param>
-    /// <returns>The distance between <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
-    public static float Distance(in Vector3I vector1, in Vector3I vector2) => MathF.Sqrt(Vector3I.DistanceSquared(vector1, vector2));
-
-    /// <summary>Calculates the sqaured distance between two vectors.</summary>
-    /// <param name="vector1">The first vector.</param>
-    /// <param name="vector2">The second vector.</param>
-    /// <returns>The squared distance between <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
-    /// <remarks>This is preferred for comparison as it avoids the square root operation.</remarks>
-    public static float DistanceSquared(in Vector3I vector1, in Vector3I vector2) => (vector2.X - vector1.X) * (vector2.X - vector1.X) + (vector2.Y - vector1.Y) * (vector2.Y - vector1.Y) + (vector2.Z - vector1.Z) * (vector2.Z - vector1.Z);
-
-    /// <summary>Creates a vector using the smallest of the corresponding components from two vectors.</summary>
-    /// <param name="vector1">The first vector.</param>
-    /// <param name="vector2">The second vector.</param>
-    /// <returns>The component-wise minimum.</returns>
-    public static Vector3I ComponentMin(in Vector3I vector1, in Vector3I vector2) => new(Math.Min(vector1.X, vector2.X), Math.Min(vector1.Y, vector2.Y), Math.Min(vector1.Z, vector2.Z));
+    /// <summary>Clamps a vector to the specified minimum and maximum vectors.</summary>
+    /// <param name="value">The vector to clamp.</param>
+    /// <param name="min">The minimum vector.</param>
+    /// <param name="max">The maximum vector.</param>
+    /// <returns>The clamped vector.</returns>
+    public static Vector3I Clamp(in Vector3I value, in Vector3I min, in Vector3I max) => new(Math.Clamp(value.X, min.X, max.X), Math.Clamp(value.Y, min.Y, max.Y), Math.Clamp(value.Z, min.Z, max.Z));
 
     /// <summary>Creates a vector using the largest of the corresponding components from two vectors.</summary>
     /// <param name="vector1">The first vector.</param>
@@ -275,12 +273,24 @@ public struct Vector3I : IEquatable<Vector3I>
     /// <returns>The component-wise maximum.</returns>
     public static Vector3I ComponentMax(in Vector3I vector1, in Vector3I vector2) => new(Math.Max(vector1.X, vector2.X), Math.Max(vector1.Y, vector2.Y), Math.Max(vector1.Z, vector2.Z));
 
-    /// <summary>Clamps a vector to the specified minimum and maximum vectors.</summary>
-    /// <param name="value">The value to clamp.</param>
-    /// <param name="min">The minimum value.</param>
-    /// <param name="max">The maximum value.</param>
-    /// <returns>The clamped value.</returns>
-    public static Vector3I Clamp(in Vector3I value, in Vector3I min, in Vector3I max) => new(Math.Clamp(value.X, min.X, max.X), Math.Clamp(value.Y, min.Y, max.Y), Math.Clamp(value.Z, min.Z, max.Z));
+    /// <summary>Creates a vector using the smallest of the corresponding components from two vectors.</summary>
+    /// <param name="vector1">The first vector.</param>
+    /// <param name="vector2">The second vector.</param>
+    /// <returns>The component-wise minimum.</returns>
+    public static Vector3I ComponentMin(in Vector3I vector1, in Vector3I vector2) => new(Math.Min(vector1.X, vector2.X), Math.Min(vector1.Y, vector2.Y), Math.Min(vector1.Z, vector2.Z));
+
+    /// <summary>Calculates the distance between two vectors.</summary>
+    /// <param name="vector1">The first vector.</param>
+    /// <param name="vector2">The second vector.</param>
+    /// <returns>The distance between the vectors.</returns>
+    public static float Distance(in Vector3I vector1, in Vector3I vector2) => MathF.Sqrt(DistanceSquared(vector1, vector2));
+
+    /// <summary>Calculates the squared distance between two vectors.</summary>
+    /// <param name="vector1">The first vector.</param>
+    /// <param name="vector2">The second vector.</param>
+    /// <returns>The squared distance between the vectors.</returns>
+    /// <remarks>This is preferred for comparison as it avoids the square root operation.</remarks>
+    public static float DistanceSquared(in Vector3I vector1, in Vector3I vector2) => (vector2.X - vector1.X) * (vector2.X - vector1.X) + (vector2.Y - vector1.Y) * (vector2.Y - vector1.Y) + (vector2.Z - vector1.Z) * (vector2.Z - vector1.Z);
 
 
     /*********
@@ -310,9 +320,9 @@ public struct Vector3I : IEquatable<Vector3I>
     /// <returns>The result of the subtraction.</returns>
     public static Vector3I operator -(Vector3I left, Vector3I right) => new(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
 
-    /// <summary>Flips the sign of each component of a vector.</summary>
-    /// <param name="vector">The vector to flip the component signs of.</param>
-    /// <returns><paramref name="vector"/> with the sign of its components flipped.</returns>
+    /// <summary>Negates each component of a vector.</summary>
+    /// <param name="vector">The vector to negate the components of.</param>
+    /// <returns><paramref name="vector"/> with the sign of its components negated.</returns>
     public static Vector3I operator -(Vector3I vector) => vector * -1;
 
     /// <summary>Multiplies a vector by a scalar.</summary>
@@ -346,12 +356,4 @@ public struct Vector3I : IEquatable<Vector3I>
     /// <summary>Converts a tuple to a vector.</summary>
     /// <param name="tuple">The tuple to convert.</param>
     public static implicit operator Vector3I((int X, int Y, int Z) tuple) => new(tuple.X, tuple.Y, tuple.Z);
-
-    /// <summary>Converts a <see cref="Vector3I"/> to a <see cref="Vector3"/>.</summary>
-    /// <param name="vector">The vector to convert.</param>
-    public static implicit operator Vector3(Vector3I vector) => vector.ToVector3();
-
-    /// <summary>Converts a <see cref="Vector3I"/> to a <see cref="Vector3"/>.</summary>
-    /// <param name="vector">The vector to convert.</param>
-    public static implicit operator Vector3D(Vector3I vector) => vector.ToVector3D();
 }

@@ -25,7 +25,7 @@ internal struct MTSDFParameters
     public float BloomBrightness;
 
     /// <summary>Unused.</summary>
-    private Vector2 _Padding = default;
+    private Vector2<float> _Padding = default;
 
     /// <summary>The colour of the fill (inside) (if <see cref="FillType"/> is <see cref="MTSDFFillType.Colour"/>).</summary>
     public Colour32 FillColour;

@@ -13,7 +13,7 @@ internal class Simulation
     private float DeltaTimeAccumulation;
 
     /// <summary>The gravity to apply in the simulation.</summary>
-    private Vector3 Gravity = new(0, -9.8f, 0);
+    private Vector3<float> Gravity = new(0, -9.8f, 0);
 
     /// <summary>The potential collisions the broad phase has calculated.</summary>
     private readonly List<CollisionInfo> BroadPhaseCollisions = new();
@@ -76,7 +76,7 @@ internal class Simulation
         // TODO: temp, collidables should calculate and cache inertia tensor
         void CalculateInverseInertiaTensor(RigidBody body)
         {
-            var inverseInertia = new Vector3(2.5f * body.InverseMass / .25f);
+            var inverseInertia = new Vector3<float>(2.5f * body.InverseMass / .25f);
 
             var inverseRotation = Matrix3x3.CreateFromQuaternion(body.GlobalRotation.Inverse);
             var rotation = Matrix3x3.CreateFromQuaternion(body.GlobalRotation);
@@ -97,7 +97,7 @@ internal class Simulation
             body.LinearVelocity *= frameDamping;
 
             var rotation = body.GlobalRotation;
-            rotation += new Quaternion(body.AngularVelocity * deltaTime * .5f, 0) * rotation;
+            rotation += new Quaternion<float>(body.AngularVelocity * deltaTime * .5f, 0) * rotation;
             rotation.Normalise();
             body.GlobalRotation = rotation;
 
@@ -127,8 +127,8 @@ internal class Simulation
     /// <summary>Determines collision pairs and solves them.</summary>
     private void NarrowPhase()
     {
-        var sphereA = new Sphere(.5f, Vector3.Zero);
-        var sphereB = new Sphere(.5f, Vector3.Zero);
+        var sphereA = new Sphere(.5f, Vector3<float>.Zero);
+        var sphereB = new Sphere(.5f, Vector3<float>.Zero);
 
         for (int i = 0; i < BroadPhaseCollisions.Count; i++)
         {
@@ -138,7 +138,7 @@ internal class Simulation
         }
 
         // TODO: should be moved out into a separate system
-        static bool AreSpheresIntersecting(Sphere a, Vector3 aPosition, Sphere b, Vector3 bPosition, ref CollisionInfo collisionInfo)
+        static bool AreSpheresIntersecting(Sphere a, Vector3<float> aPosition, Sphere b, Vector3<float> bPosition, ref CollisionInfo collisionInfo)
         {
             var radii = a.Radius + b.Radius;
             var positionDelta = aPosition - bPosition;
@@ -172,8 +172,8 @@ internal class Simulation
         var relativeA = contactPoint.Position - a.GlobalPosition;
         var relativeB = contactPoint.Position - b.GlobalPosition;
 
-        var angularVelocityA = Vector3.Cross(a.AngularVelocity, relativeA);
-        var angularVelocityB = Vector3.Cross(b.AngularVelocity, relativeB);
+        var angularVelocityA = Vector3<float>.Cross(a.AngularVelocity, relativeA);
+        var angularVelocityB = Vector3<float>.Cross(b.AngularVelocity, relativeB);
 
         var fullVelocityA = a.LinearVelocity + angularVelocityA;
         var fullVelocityB = b.LinearVelocity + angularVelocityB;
@@ -181,12 +181,12 @@ internal class Simulation
         var contactVelocity = fullVelocityA - fullVelocityB;
 
         // calculate impulse force
-        var impulseForce = Vector3.Dot(contactVelocity, contactPoint.Normal);
+        var impulseForce = Vector3<float>.Dot(contactVelocity, contactPoint.Normal);
 
-        var inertiaA = Vector3.Cross(a.InverseInertiaTensor * Vector3.Cross(relativeA, contactPoint.Normal), relativeA);
-        var inertiaB = Vector3.Cross(b.InverseInertiaTensor * Vector3.Cross(relativeB, contactPoint.Normal), relativeB);
+        var inertiaA = Vector3<float>.Cross(a.InverseInertiaTensor * Vector3<float>.Cross(relativeA, contactPoint.Normal), relativeA);
+        var inertiaB = Vector3<float>.Cross(b.InverseInertiaTensor * Vector3<float>.Cross(relativeB, contactPoint.Normal), relativeB);
 
-        var angularEffect = Vector3.Dot(inertiaA + inertiaB, contactPoint.Normal);
+        var angularEffect = Vector3<float>.Dot(inertiaA + inertiaB, contactPoint.Normal);
         var restitution = .66f; // TODO: unhard-code coefficient of restitution
         var j = -(1 + restitution) * impulseForce / (totalInverseMass + angularEffect);
 
@@ -196,7 +196,7 @@ internal class Simulation
         a.ApplyLinearImpulse(fullImpulse);
         b.ApplyLinearImpulse(-fullImpulse);
 
-        a.ApplyAngularImpulse(Vector3.Cross(relativeA, fullImpulse));
-        b.ApplyAngularImpulse(Vector3.Cross(relativeB, -fullImpulse));
+        a.ApplyAngularImpulse(Vector3<float>.Cross(relativeA, fullImpulse));
+        b.ApplyAngularImpulse(Vector3<float>.Cross(relativeB, -fullImpulse));
     }
 }

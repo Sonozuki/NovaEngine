@@ -14,14 +14,14 @@ public static class Utilities
     /// <param name="nearPlane">The distance from the tip to the near plane of the frustum.</param>
     /// <param name="farPlane">The distance from the tip to the far plane of the frustum.</param>
     /// <returns>The eight points that make up the frustum.<br/><br/>The order of the points is:<br/>[0] far top left<br/>[1] far top right<br/>[2] far bottom left<br/>[3] far bottom right<br/>[4] near top left<br/>[5] near top right<br/>[6] near bottom left<br/>[7] near bottom right.</returns>
-    public static Vector3[] CalculatePerspectiveFrustumCorners(Vector3 position, Quaternion rotation, float fov, float aspectRatio, float nearPlane, float farPlane)
+    public static Vector3<float>[] CalculatePerspectiveFrustumCorners(Vector3<float> position, Quaternion<float> rotation, float fov, float aspectRatio, float nearPlane, float farPlane)
     {
         var yFactor = MathF.Tan(fov * MathF.PI / 360); // TODO: constant
         var xFactor = yFactor * aspectRatio;
 
-        var forward = Vector3.UnitZ * rotation;
-        var right = Vector3.UnitX * rotation;
-        var up = Vector3.UnitY * rotation;
+        var forward = Vector3<float>.UnitZ * rotation;
+        var right = Vector3<float>.UnitX * rotation;
+        var up = Vector3<float>.UnitY * rotation;
 
         var forwardFarPlane = forward * farPlane;
         var rightFarPlane = right * xFactor * farPlane;
@@ -51,11 +51,11 @@ public static class Utilities
     /// <param name="nearPlane">The distance from the tip to the near plane of the frustum.</param>
     /// <param name="farPlane">The distance from the tip to the far plane of the frustum.</param>
     /// <returns>The eight points that make up the frustum.<br/><br/>The order of the points is:<br/>[0] far top left<br/>[1] far top right<br/>[2] far bottom left<br/>[3] far bottom right<br/>[4] near top left<br/>[5] near top right<br/>[6] near bottom left<br/>[7] near bottom right.</returns>
-    public static Vector3[] CalculateOrthographicFrustumCorners(Vector3 position, Quaternion rotation, float width, float height, float nearPlane, float farPlane)
+    public static Vector3<float>[] CalculateOrthographicFrustumCorners(Vector3<float> position, Quaternion<float> rotation, float width, float height, float nearPlane, float farPlane)
     {
-        var forward = Vector3.UnitZ * rotation;
-        var right = Vector3.UnitX * rotation;
-        var up = Vector3.UnitY * rotation;
+        var forward = Vector3<float>.UnitZ * rotation;
+        var right = Vector3<float>.UnitX * rotation;
+        var up = Vector3<float>.UnitY * rotation;
 
         var halfWidth = width / 2;
         var halfHeight = height / 2;

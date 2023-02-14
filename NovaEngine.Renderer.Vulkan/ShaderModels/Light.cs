@@ -7,19 +7,19 @@ internal struct Light
     ** Fields
     *********/
     /// <summary>The position of the light in world space (for point and spot lights).</summary>
-    public Vector4 PositionWorldSpace;
+    public Vector4<float> PositionWorldSpace;
 
     /// <summary>The direction of the light in world space (for spot and directional lights).</summary>
-    public Vector4 DirectionWorldSpace;
+    public Vector4<float> DirectionWorldSpace;
 
     /// <summary>The position of the light in view space (for point and spot lights).</summary>
-    public Vector4 PositionViewSpace;
+    public Vector4<float> PositionViewSpace;
 
     /// <summary>The direction of the light in view space (for spot and directional lights).</summary>
-    public Vector4 DirectionViewSpace;
+    public Vector4<float> DirectionViewSpace;
 
     /// <summary>The colour of the light.</summary>
-    public Vector4 Colour;
+    public Vector4<float> Colour;
 
     /// <summary>The half angle of the spotlight cone.</summary>
     public float SpotlightAngle;
@@ -37,5 +37,5 @@ internal struct Light
     public bool IsEnabled;
 
     /// <summary>Unused.</summary>
-    private Vector3 Padding;
+    private Vector3<float> Padding;
 }

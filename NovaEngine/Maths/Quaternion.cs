@@ -1,22 +1,25 @@
-﻿namespace NovaEngine.Maths;
+﻿using System.Numerics;
+
+namespace NovaEngine.Maths;
 
 /// <summary>Represents a quaternion using single-precision floating-point numbers.</summary>
-public struct Quaternion : IEquatable<Quaternion>
+public struct Quaternion<T> : IEquatable<Quaternion<T>>
+    where T : IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>, IConvertible
 {
     /*********
     ** Fields
     *********/
     /// <summary>The X component of the vector part of the quaternion.</summary>
-    public float X;
+    public T X;
 
     /// <summary>The Y component of the vector part of the quaternion.</summary>
-    public float Y;
+    public T Y;
 
     /// <summary>The Z component of the vector part of the quaternion.</summary>
-    public float Z;
+    public T Z;
 
     /// <summary>The W component of the quaternion.</summary>
-    public float W;
+    public T W;
 
 
     /*********
@@ -26,14 +29,14 @@ public struct Quaternion : IEquatable<Quaternion>
     public readonly bool IsIdentity => this == Identity;
 
     /// <summary>The length of the quaternion.</summary>
-    public readonly float Length => MathF.Sqrt(LengthSquared);
+    public readonly T Length => T.Sqrt(LengthSquared);
 
-    /// <summary>The sqaured length of the quaternion.</summary>
+    /// <summary>The squared length of the quaternion.</summary>
     /// <remarks>This is preferred for comparison as it avoids the square root operation.</remarks>
-    public readonly float LengthSquared => X * X + Y * Y + Z * Z + W * W;
+    public readonly T LengthSquared => X * X + Y * Y + Z * Z + W * W;
 
     /// <summary>The quaternion with unit length.</summary>
-    public readonly Quaternion Normalised
+    public readonly Quaternion<T> Normalised
     {
         get
         {
@@ -44,7 +47,7 @@ public struct Quaternion : IEquatable<Quaternion>
     }
 
     /// <summary>The inverse of the quaternion.</summary>
-    public readonly Quaternion Inverse
+    public readonly Quaternion<T> Inverse
     {
         get
         {
@@ -55,18 +58,18 @@ public struct Quaternion : IEquatable<Quaternion>
     }
 
     /// <summary>The conjugate of the quaternion.</summary>
-    public readonly Quaternion Conjugate => new(-X, -Y, -Z, W);
+    public readonly Quaternion<T> Conjugate => new(-X, -Y, -Z, W);
 
     /// <summary>The <see cref="X"/>, <see cref="Y"/>, and <see cref="Z"/> components.</summary>
-    public readonly Vector3 XYZ => new(X, Y, Z);
+    public readonly Vector3<T> XYZ => new(X, Y, Z);
 
-    /// <summary>Gets a quaternion with (X, Y, Z, W) = (0, 0, 0, 1), which represents no rotation.</summary>
-    public static Quaternion Identity => new(0, 0, 0, 1);
+    /// <summary>A quaternion with (X, Y, Z, W) = (0, 0, 0, 1), which represents no rotation.</summary>
+    public static Quaternion<T> Identity => new(T.Zero, T.Zero, T.Zero, T.One);
 
     /// <summary>Gets or sets the value at a specified position.</summary>
     /// <param name="index">The position index.</param>
     /// <returns>The value at the specified position.</returns>
-    public float this[int index]
+    public T this[int index]
     {
         readonly get
         {
@@ -105,7 +108,7 @@ public struct Quaternion : IEquatable<Quaternion>
     /// <param name="y">The Y component of the vector part of the quaternion.</param>
     /// <param name="z">The Z component of the vector part of the quaternion.</param>
     /// <param name="w">The W component of the quaternion.</param>
-    public Quaternion(float x, float y, float z, float w)
+    public Quaternion(T x, T y, T z, T w)
     {
         X = x;
         Y = y;
@@ -116,7 +119,7 @@ public struct Quaternion : IEquatable<Quaternion>
     /// <summary>Constructs an instance.</summary>
     /// <param name="vector">The vector part of the quaternion.</param>
     /// <param name="w">The W component of the quaternion.</param>
-    public Quaternion(in Vector3 vector, float w = 1)
+    public Quaternion(in Vector3<T> vector, T w)
     {
         X = vector.X;
         Y = vector.Y;
@@ -126,7 +129,7 @@ public struct Quaternion : IEquatable<Quaternion>
 
     /// <summary>Constructs an instance.</summary>
     /// <param name="vector">The quaternion components.</param>
-    public Quaternion(in Vector4 vector)
+    public Quaternion(in Vector4<T> vector)
     {
         X = vector.X;
         Y = vector.Y;
@@ -137,10 +140,10 @@ public struct Quaternion : IEquatable<Quaternion>
     /// <summary>Scales the quaternion to unit length.</summary>
     public void Normalise()
     {
-        if (LengthSquared == 0)
+        if (LengthSquared == T.Zero)
             return;
 
-        var scale = 1 / Length;
+        var scale = T.One / Length;
         X *= scale;
         Y *= scale;
         Z *= scale;
@@ -150,10 +153,10 @@ public struct Quaternion : IEquatable<Quaternion>
     /// <summary>Inverts the quaternion.</summary>
     public void Invert()
     {
-        if (LengthSquared == 0)
+        if (LengthSquared == T.Zero)
             return;
 
-        var invertedLengthSquared = 1 / LengthSquared;
+        var invertedLengthSquared = T.One / LengthSquared;
         X *= -invertedLengthSquared;
         Y *= -invertedLengthSquared;
         Z *= -invertedLengthSquared;
@@ -163,87 +166,89 @@ public struct Quaternion : IEquatable<Quaternion>
     /// <summary>Gets the axis and angle that the quaternion represents.</summary>
     /// <param name="axis">The axis.</param>
     /// <param name="angle">The clockwise angle, in degrees.</param>
-    public void GetAxisAngle(out Vector3 axis, out float angle)
+    public void GetAxisAngle(out Vector3<T> axis, out T angle)
     {
         var quaternion = this;
-        if (Math.Abs(quaternion.W) > 1)
+        if (T.Abs(quaternion.W) > T.One)
             quaternion.Normalise();
 
-        angle = MathsHelper.RadiansToDegrees(2 * MathF.Acos(quaternion.W));
-        var denominator = MathF.Sqrt(1 - quaternion.W * quaternion.W);
-        if (denominator == 0)
-            axis = Vector3.UnitX;
+        angle = MathsHelper<T>.RadiansToDegrees(T.CreateChecked(2) * T.Acos(quaternion.W));
+        var denominator = T.Sqrt(T.One - quaternion.W * quaternion.W);
+        if (denominator == T.Zero)
+            axis = Vector3<T>.UnitX;
         else
             axis = quaternion.XYZ / denominator;
     }
 
-    /// <summary>Gets the quaternion as a <see cref="QuaternionD"/>.</summary>
-    /// <returns>The quaternion as a <see cref="QuaternionD"/>.</returns>
-    public readonly QuaternionD ToQuaternionD() => new(X, Y, Z, W);
+    /// <summary>Checks two quaternions for equality.</summary>
+    /// <param name="other">The quaternion to check equality with.</param>
+    /// <returns><see langword="true"/> if the quaternions are equal; otherwise, <see langword="false"/>.</returns>
+    public readonly bool Equals(Quaternion<T> other) => this == other;
 
-    /// <inheritdoc/>
-    public readonly bool Equals(Quaternion other) => this == other;
+    /// <summary>Checks the quaternion and an object for equality.</summary>
+    /// <param name="obj">The object to check equality with.</param>
+    /// <returns><see langword="true"/> if the quaternion and object are equal; otherwise, <see langword="false"/>.</returns>
+    public readonly override bool Equals(object? obj) => obj is Quaternion<T> quaternion && this == quaternion;
 
-    /// <inheritdoc/>
-    public readonly override bool Equals(object? obj) => obj is Quaternion quaternion && this == quaternion;
-
-    /// <inheritdoc/>
+    /// <summary>Retrieves the hash code of the quaternion.</summary>
+    /// <returns>The hash code of the quaternion.</returns>
     public readonly override int GetHashCode() => (X, Y, Z, W).GetHashCode();
 
-    /// <inheritdoc/>
+    /// <summary>Calculates a string representation of the quaternion.</summary>
+    /// <returns>A string representation of the quaternion.</returns>
     public readonly override string ToString() => $"<X: {X}, Y: {Y}, Z: {Z}, W: {W}>";
 
     /// <summary>Calculates the dot product of two quaternions.</summary>
     /// <param name="quaternion1">The first quaternion.</param>
     /// <param name="quaternion2">The second quaternion.</param>
-    /// <returns>The dot product of <paramref name="quaternion1"/> and <paramref name="quaternion2"/>.</returns>
-    public static float Dot(in Quaternion quaternion1, in Quaternion quaternion2) => quaternion1.X * quaternion2.X + quaternion1.Y * quaternion2.Y + quaternion1.Z * quaternion2.Z + quaternion1.W * quaternion2.W;
+    /// <returns>The dot product of the quaternions.</returns>
+    public static T Dot(in Quaternion<T> quaternion1, in Quaternion<T> quaternion2) => quaternion1.X * quaternion2.X + quaternion1.Y * quaternion2.Y + quaternion1.Z * quaternion2.Z + quaternion1.W * quaternion2.W;
 
-    /// <summary>Interpolates between two values, using spherical linear interpolation.</summary>
-    /// <param name="quaternion1">The source value.</param>
-    /// <param name="quaternion2">The destination value.</param>
-    /// <param name="amount">The amount to interpolate between <paramref name="quaternion1"/> and <paramref name="quaternion2"/>.</param>
-    /// <returns>The interpolated value.</returns>
-    public static Quaternion Slerp(in Quaternion quaternion1, in Quaternion quaternion2, float amount)
+    /// <summary>Interpolates between two quaternions, using spherical linear interpolation.</summary>
+    /// <param name="quaternion1">The source quaternion.</param>
+    /// <param name="quaternion2">The destination quaternion.</param>
+    /// <param name="amount">The amount to interpolate between the quaternions.</param>
+    /// <returns>The interpolated quaternion.</returns>
+    public static Quaternion<T> Slerp(in Quaternion<T> quaternion1, in Quaternion<T> quaternion2, T amount)
     {
         // if either quaternion is zero, return the other
-        if (quaternion1.LengthSquared == 0)
+        if (quaternion1.LengthSquared == T.Zero)
         {
-            if (quaternion2.LengthSquared == 0)
-                return Quaternion.Identity;
+            if (quaternion2.LengthSquared == T.Zero)
+                return Quaternion<T>.Identity;
 
             return quaternion2;
         }
-        else if (quaternion2.LengthSquared == 0)
+        else if (quaternion2.LengthSquared == T.Zero)
             return quaternion1;
 
         // slerp quaternion
-        var cosOmega = Quaternion.Dot(quaternion1, quaternion2);
+        var cosOmega = Quaternion<T>.Dot(quaternion1, quaternion2);
         var flip = false;
-        if (cosOmega < 0)
+        if (cosOmega < T.Zero)
         {
             flip = true;
             cosOmega = -cosOmega;
         }
 
-        float amountA;
-        float amountB;
-        if (cosOmega > .999f)
+        T amountA;
+        T amountB;
+        if (cosOmega > T.CreateChecked(.999f))
         {
             // too close, do regular linear interpolation
-            amountA = 1 - amount;
-            amountB = (flip) ? -amount : amount;
+            amountA = T.One - amount;
+            amountB = flip ? -amount : amount;
         }
         else
         {
             // do proper slerp
-            var omega = MathF.Acos(cosOmega);
-            var inverseSinOmega = 1 / MathF.Sin(omega);
+            var omega = T.Acos(cosOmega);
+            var inverseSinOmega = T.One / T.Sin(omega);
 
-            amountA = MathF.Sin((1 - amount) * omega) * inverseSinOmega;
-            amountB = (flip)
-                ? -MathF.Sin(amount * omega) * inverseSinOmega
-                : MathF.Sin(amount * omega) * inverseSinOmega;
+            amountA = T.Sin((T.One - amount) * omega) * inverseSinOmega;
+            amountB = flip
+                ? -T.Sin(amount * omega) * inverseSinOmega
+                : T.Sin(amount * omega) * inverseSinOmega;
         }
 
         return new(
@@ -258,43 +263,41 @@ public struct Quaternion : IEquatable<Quaternion>
     /// <param name="axis">The axis to rotate around.</param>
     /// <param name="angle">The clockwise angle, in degrees, to rotate around the axis.</param>
     /// <returns>The created quaternion.</returns>
-    public static Quaternion CreateFromAxisAngle(Vector3 axis, float angle)
+    public static Quaternion<T> CreateFromAxisAngle(Vector3<T> axis, T angle)
     {
-        // validate axis
-        if (axis.LengthSquared == 0)
-            return Quaternion.Identity;
+        if (axis.LengthSquared == T.Zero)
+            return Quaternion<T>.Identity;
         axis.Normalise();
 
-        // create quaternion
-        var halfAngle = MathsHelper.DegreesToRadians(angle) / 2;
-        var sinHalfAngle = MathF.Sin(halfAngle);
-        var cosHalfAngle = MathF.Cos(halfAngle);
+        var halfAngle = MathsHelper<T>.DegreesToRadians(angle) / T.CreateChecked(2);
+        var sinHalfAngle = T.Sin(halfAngle);
+        var cosHalfAngle = T.Cos(halfAngle);
 
-        return new Quaternion(axis * sinHalfAngle, cosHalfAngle).Normalised;
+        return new Quaternion<T>(axis * sinHalfAngle, cosHalfAngle).Normalised;
     }
 
     /// <summary>Creates a quaternion from euler angles.</summary>
     /// <param name="eulerAngles">The clockwise euler angles, in degrees.</param>
     /// <returns>The created quaternion.</returns>
-    public static Quaternion CreateFromEulerAngles(in Vector3 eulerAngles) => Quaternion.CreateFromEulerAngles(eulerAngles.X, eulerAngles.Y, eulerAngles.Z);
+    public static Quaternion<T> CreateFromEulerAngles(in Vector3<T> eulerAngles) => Quaternion<T>.CreateFromEulerAngles(eulerAngles.X, eulerAngles.Y, eulerAngles.Z);
 
     /// <summary>Creates a quaternion from euler angles.</summary>
     /// <param name="x">The clockwise angle, in degrees, around the X axis.</param>
     /// <param name="y">The clockwise angle, in degrees, around the Y axis.</param>
     /// <param name="z">The clockwise angle, in degrees, around the Z axis.</param>
     /// <returns>The created quaterion.</returns>
-    public static Quaternion CreateFromEulerAngles(float x, float y, float z)
+    public static Quaternion<T> CreateFromEulerAngles(T x, T y, T z)
     {
-        var halfX = MathsHelper.DegreesToRadians(x) / 2;
-        var halfY = MathsHelper.DegreesToRadians(y) / 2;
-        var halfZ = MathsHelper.DegreesToRadians(z) / 2;
+        var halfX = MathsHelper<T>.DegreesToRadians(x) / T.CreateChecked(2);
+        var halfY = MathsHelper<T>.DegreesToRadians(y) / T.CreateChecked(2);
+        var halfZ = MathsHelper<T>.DegreesToRadians(z) / T.CreateChecked(2);
 
-        var sinHalfX = MathF.Sin(halfX);
-        var sinHalfY = MathF.Sin(halfY);
-        var sinHalfZ = MathF.Sin(halfZ);
-        var cosHalfX = MathF.Cos(halfX);
-        var cosHalfY = MathF.Cos(halfY);
-        var cosHalfZ = MathF.Cos(halfZ);
+        var sinHalfX = T.Sin(halfX);
+        var sinHalfY = T.Sin(halfY);
+        var sinHalfZ = T.Sin(halfZ);
+        var cosHalfX = T.Cos(halfX);
+        var cosHalfY = T.Cos(halfY);
+        var cosHalfZ = T.Cos(halfZ);
 
         return new(
             x: sinHalfX * cosHalfY * cosHalfZ + cosHalfX * sinHalfY * sinHalfZ,
@@ -312,22 +315,22 @@ public struct Quaternion : IEquatable<Quaternion>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the addition.</returns>
-    public static Quaternion operator +(Quaternion left, Quaternion right) => new(left.X + right.X, left.Y + right.Y, left.Z + right.Z, left.W + right.W);
+    public static Quaternion<T> operator +(Quaternion<T> left, Quaternion<T> right) => new(left.X + right.X, left.Y + right.Y, left.Z + right.Z, left.W + right.W);
 
     /// <summary>Subtracts a quaternions from another quaternion.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the subtraction.</returns>
-    public static Quaternion operator -(Quaternion left, Quaternion right) => new(left.X - right.X, left.Y - right.Y, left.Z - right.Z, left.W - right.W);
+    public static Quaternion<T> operator -(Quaternion<T> left, Quaternion<T> right) => new(left.X - right.X, left.Y - right.Y, left.Z - right.Z, left.W - right.W);
 
     /// <summary>Multiplies two quaternions together.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the multiplication.</returns>
-    public static Quaternion operator *(Quaternion left, Quaternion right)
+    public static Quaternion<T> operator *(Quaternion<T> left, Quaternion<T> right)
     {
-        var cross = Vector3.Cross(left.XYZ, right.XYZ);
-        var dot = Vector3.Dot(left.XYZ, right.XYZ);
+        var cross = Vector3<T>.Cross(left.XYZ, right.XYZ);
+        var dot = Vector3<T>.Dot(left.XYZ, right.XYZ);
 
         return new(
             x: left.X * right.W + right.X * left.W + cross.X,
@@ -341,23 +344,19 @@ public struct Quaternion : IEquatable<Quaternion>
     /// <param name="quaternion1">The first quaternion.</param>
     /// <param name="quaternion2">The second quaternion.</param>
     /// <returns><see langword="true"/> if the quaternions are equal; otherwise, <see langword="false"/>.</returns>
-    public static bool operator ==(Quaternion quaternion1, Quaternion quaternion2) => quaternion1.X == quaternion2.X && quaternion1.Y == quaternion2.Y && quaternion1.Z == quaternion2.Z && quaternion1.W == quaternion2.W;
+    public static bool operator ==(Quaternion<T> quaternion1, Quaternion<T> quaternion2) => quaternion1.X == quaternion2.X && quaternion1.Y == quaternion2.Y && quaternion1.Z == quaternion2.Z && quaternion1.W == quaternion2.W;
 
     /// <summary>Checks two quaternions for inequality.</summary>
     /// <param name="quaternion1">The first quaternion.</param>
     /// <param name="quaternion2">The second quaternion.</param>
     /// <returns><see langword="true"/> if the quaternions are not equal; otherwise, <see langword="false"/>.</returns>
-    public static bool operator !=(Quaternion quaternion1, Quaternion quaternion2) => !(quaternion1 == quaternion2);
+    public static bool operator !=(Quaternion<T> quaternion1, Quaternion<T> quaternion2) => !(quaternion1 == quaternion2);
 
     /// <summary>Converts a quaternion to a tuple.</summary>
     /// <param name="quaternion">The quaternion to convert.</param>
-    public static implicit operator (float X, float Y, float Z, float W)(Quaternion quaternion) => (quaternion.X, quaternion.Y, quaternion.Z, quaternion.W);
+    public static implicit operator (T X, T Y, T Z, T W)(Quaternion<T> quaternion) => (quaternion.X, quaternion.Y, quaternion.Z, quaternion.W);
 
     /// <summary>Converts a tuple to a quaternion.</summary>
     /// <param name="tuple">The tuple to convert.</param>
-    public static implicit operator Quaternion((float X, float Y, float Z, float W) tuple) => new(tuple.X, tuple.Y, tuple.Z, tuple.W);
-
-    /// <summary>Converts a <see cref="Quaternion"/> to a <see cref="QuaternionD"/>.</summary>
-    /// <param name="quaternion">The quaternion to convert.</param>
-    public static implicit operator QuaternionD(Quaternion quaternion) => quaternion.ToQuaternionD();
+    public static implicit operator Quaternion<T>((T X, T Y, T Z, T W) tuple) => new(tuple.X, tuple.Y, tuple.Z, tuple.W);
 }

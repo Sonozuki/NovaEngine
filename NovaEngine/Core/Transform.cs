@@ -7,29 +7,29 @@ public class Transform : ComponentBase
     ** Fields
     *********/
     /// <summary>The position of the object relative to the object's parent.</summary>
-    private Vector3 _LocalPosition;
+    private Vector3<float> _LocalPosition;
 
     /// <summary>The rotation of the object relative to the object's parent.</summary>
-    private Quaternion _LocalRotation = Quaternion.Identity;
+    private Quaternion<float> _LocalRotation = Quaternion<float>.Identity;
 
     /// <summary>The scale of the object relative to the object's parent.</summary>
-    private Vector3 _LocalScale = Vector3.One;
+    private Vector3<float> _LocalScale = Vector3<float>.One;
 
     /// <summary>The global position of the parent object.</summary>
-    private Vector3 _ParentPosition;
+    private Vector3<float> _ParentPosition;
 
     /// <summary>The global rotation of the parent object.</summary>
-    private Quaternion _ParentRotation = Quaternion.Identity;
+    private Quaternion<float> _ParentRotation = Quaternion<float>.Identity;
 
     /// <summary>The global scale of the parent object.</summary>
-    private Vector3 _ParentScale = Vector3.One;
+    private Vector3<float> _ParentScale = Vector3<float>.One;
 
 
     /*********
     ** Accessors
     *********/
     /// <summary>The position of the object relative to the object's parent.</summary>
-    public Vector3 LocalPosition
+    public Vector3<float> LocalPosition
     {
         get => _LocalPosition;
         set
@@ -41,7 +41,7 @@ public class Transform : ComponentBase
     }
 
     /// <summary>The rotation of the object relative to the object's parent.</summary>
-    public Quaternion LocalRotation
+    public Quaternion<float> LocalRotation
     {
         get => _LocalRotation;
         set
@@ -53,7 +53,7 @@ public class Transform : ComponentBase
     }
 
     /// <summary>The scale of the object relative to the object's parent.</summary>
-    public Vector3 LocalScale
+    public Vector3<float> LocalScale
     {
         get => _LocalScale;
         set
@@ -65,64 +65,64 @@ public class Transform : ComponentBase
     }
 
     /// <summary>The world position of the object.</summary>
-    public Vector3 GlobalPosition
+    public Vector3<float> GlobalPosition
     {
         get => ParentPosition + LocalPosition;
         set => LocalPosition = value - ParentPosition;
     }
 
     /// <summary>The world rotation of the object.</summary>
-    public Quaternion GlobalRotation
+    public Quaternion<float> GlobalRotation
     {
         get => ParentRotation * LocalRotation;
         set => LocalRotation = value * ParentRotation.Inverse;
     }
 
     /// <summary>The world scale of the object.</summary>
-    public Vector3 GlobalScale
+    public Vector3<float> GlobalScale
     {
         get => ParentScale * LocalScale;
         set => LocalScale = value / ParentScale;
     }
 
     /// <summary>The forward direction of the tranform in local space.</summary>
-    public Vector3 LocalForward => Vector3.UnitZ * LocalRotation;
+    public Vector3<float> LocalForward => Vector3<float>.UnitZ * LocalRotation;
 
     /// <summary>The backward direction of the tranform in local space.</summary>
-    public Vector3 LocalBackward => (-Vector3.UnitZ) * LocalRotation;
+    public Vector3<float> LocalBackward => (-Vector3<float>.UnitZ) * LocalRotation;
 
     /// <summary>The up direction of the tranform in local space.</summary>
-    public Vector3 LocalUp => Vector3.UnitY * LocalRotation;
+    public Vector3<float> LocalUp => Vector3<float>.UnitY * LocalRotation;
 
     /// <summary>The down direction of the tranform in local space.</summary>
-    public Vector3 LocalDown => (-Vector3.UnitY) * LocalRotation;
+    public Vector3<float> LocalDown => (-Vector3<float>.UnitY) * LocalRotation;
 
     /// <summary>The left direction of the tranform in local space.</summary>
-    public Vector3 LocalLeft => (-Vector3.UnitX) * LocalRotation;
+    public Vector3<float> LocalLeft => (-Vector3<float>.UnitX) * LocalRotation;
 
     /// <summary>The right direction of the tranform in local space.</summary>
-    public Vector3 LocalRight => Vector3.UnitX * LocalRotation;
+    public Vector3<float> LocalRight => Vector3<float>.UnitX * LocalRotation;
 
     /// <summary>The forward direction of the tranform in world space.</summary>
-    public Vector3 GlobalForward => Vector3.UnitZ * GlobalRotation;
+    public Vector3<float> GlobalForward => Vector3<float>.UnitZ * GlobalRotation;
 
     /// <summary>The backward direction of the tranform in world space.</summary>
-    public Vector3 GlobalBackward => (-Vector3.UnitZ) * GlobalRotation;
+    public Vector3<float> GlobalBackward => (-Vector3<float>.UnitZ) * GlobalRotation;
 
     /// <summary>The up direction of the tranform in world space.</summary>
-    public Vector3 GlobalUp => Vector3.UnitY * GlobalRotation;
+    public Vector3<float> GlobalUp => Vector3<float>.UnitY * GlobalRotation;
 
     /// <summary>The down direction of the tranform in world space.</summary>
-    public Vector3 GlobalDown => (-Vector3.UnitY) * GlobalRotation;
+    public Vector3<float> GlobalDown => (-Vector3<float>.UnitY) * GlobalRotation;
 
     /// <summary>The left direction of the tranform in world space.</summary>
-    public Vector3 GlobalLeft => (-Vector3.UnitX) * GlobalRotation;
+    public Vector3<float> GlobalLeft => (-Vector3<float>.UnitX) * GlobalRotation;
 
     /// <summary>The right direction of the tranform in world space.</summary>
-    public Vector3 GlobalRight => Vector3.UnitX * GlobalRotation;
+    public Vector3<float> GlobalRight => Vector3<float>.UnitX * GlobalRotation;
 
     /// <summary>The global position of the parent object.</summary>
-    internal Vector3 ParentPosition
+    internal Vector3<float> ParentPosition
     {
         get => _ParentPosition;
         set
@@ -134,7 +134,7 @@ public class Transform : ComponentBase
     }
 
     /// <summary>The global rotation of the parent object.</summary>
-    internal Quaternion ParentRotation
+    internal Quaternion<float> ParentRotation
     {
         get => _ParentRotation;
         set
@@ -146,7 +146,7 @@ public class Transform : ComponentBase
     }
 
     /// <summary>The global scale of the parent object.</summary>
-    internal Vector3 ParentScale
+    internal Vector3<float> ParentScale
     {
         get => _ParentScale;
         set

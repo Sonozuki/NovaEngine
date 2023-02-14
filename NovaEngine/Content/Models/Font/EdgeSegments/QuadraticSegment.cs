@@ -14,7 +14,7 @@ internal class QuadraticSegment : EdgeSegmentBase
     ** Accessors
     *********/
     /// <inheritdoc/>
-    public override Vector2[] Points { get; } = new Vector2[3];
+    public override Vector2<float>[] Points { get; } = new Vector2<float>[3];
 
 
     /*********
@@ -24,7 +24,7 @@ internal class QuadraticSegment : EdgeSegmentBase
     /// <param name="point0">The first point making up the segment.</param>
     /// <param name="point1">The second point making up the segment.</param>
     /// <param name="point2">The third point making up the segment.</param>
-    public QuadraticSegment(Vector2 point0, Vector2 point1, Vector2 point2)
+    public QuadraticSegment(Vector2<float> point0, Vector2<float> point1, Vector2<float> point2)
     {
         Points[0] = point0;
         Points[1] = point1;
@@ -32,29 +32,29 @@ internal class QuadraticSegment : EdgeSegmentBase
     }
 
     /// <inheritdoc/>
-    public override Vector2 Direction(float amount) => Vector2.Lerp(Points[1] - Points[0], Points[2] - Points[1], amount);
+    public override Vector2<float> Direction(float amount) => Vector2<float>.Lerp(Points[1] - Points[0], Points[2] - Points[1], amount);
 
     /// <inheritdoc/>
-    public override Vector2 Lerp(float amount) =>
-        Vector2.Lerp(Vector2.Lerp(Points[0], Points[1], amount), Vector2.Lerp(Points[1], Points[2], amount), amount);
+    public override Vector2<float> Lerp(float amount) =>
+        Vector2<float>.Lerp(Vector2<float>.Lerp(Points[0], Points[1], amount), Vector2<float>.Lerp(Points[1], Points[2], amount), amount);
 
     /// <inheritdoc/>
-    public override SignedDistance SignedDistance(Vector2 point, out float param)
+    public override SignedDistance SignedDistance(Vector2<float> point, out float param)
     {
         var paDirection = Points[0] - point;
         var abDirection = Points[1] - Points[0];
         var br = Points[2] - Points[1] - abDirection;
 
-        var a = Vector2.Dot(br, br);
-        var b = 3 * Vector2.Dot(abDirection, br);
-        var c = 2 * Vector2.Dot(abDirection, abDirection) + Vector2.Dot(paDirection, br);
-        var d = Vector2.Dot(paDirection, abDirection);
+        var a = Vector2<float>.Dot(br, br);
+        var b = 3 * Vector2<float>.Dot(abDirection, br);
+        var c = 2 * Vector2<float>.Dot(abDirection, abDirection) + Vector2<float>.Dot(paDirection, br);
+        var d = Vector2<float>.Dot(paDirection, abDirection);
 
         var t = new float[3];
         var numberOfSolutions = SolveCubic(t, a, b, c, d);
 
         var epDirection = Direction(0);
-        param = -Vector2.Dot(paDirection, epDirection) / Vector2.Dot(epDirection, epDirection);
+        param = -Vector2<float>.Dot(paDirection, epDirection) / Vector2<float>.Dot(epDirection, epDirection);
 
         // distance from a
         var minDistance = (epDirection.X * paDirection.Y - epDirection.Y * paDirection.X < 0 ? -1 : 1) * paDirection.Length;
@@ -65,7 +65,7 @@ internal class QuadraticSegment : EdgeSegmentBase
             if (distance < MathF.Abs(minDistance))
             {
                 minDistance = (epDirection.X * (Points[2] - point).Y - epDirection.Y * (Points[2] - point).X < 0 ? -1 : 1) * distance;
-                param = Vector2.Dot(point - Points[1], epDirection) / Vector2.Dot(epDirection, epDirection);
+                param = Vector2<float>.Dot(point - Points[1], epDirection) / Vector2<float>.Dot(epDirection, epDirection);
             }
         }
 
@@ -84,20 +84,20 @@ internal class QuadraticSegment : EdgeSegmentBase
         if (param >= 0 && param <= 1)
             return new(minDistance, 0);
         if (param < .5f)
-            return new(minDistance, MathF.Abs(Vector2.Dot(Direction(0).Normalised, paDirection.Normalised)));
+            return new(minDistance, MathF.Abs(Vector2<float>.Dot(Direction(0).Normalised, paDirection.Normalised)));
         else
-            return new(minDistance, MathF.Abs(Vector2.Dot(Direction(1).Normalised, (Points[2] - point).Normalised)));
+            return new(minDistance, MathF.Abs(Vector2<float>.Dot(Direction(1).Normalised, (Points[2] - point).Normalised)));
     }
 
     /// <inheritdoc/>
     public override void SplitIntoThree(out EdgeSegmentBase part1, out EdgeSegmentBase part2, out EdgeSegmentBase part3)
     {
-        var oneThird = Vector2.Lerp(Vector2.Lerp(Points[0], Points[1], 1 / 3f), Vector2.Lerp(Points[1], Points[2], 1 / 3f), 1 / 3f);
-        var twoThirds = Vector2.Lerp(Vector2.Lerp(Points[0], Points[1], 2 / 3f), Vector2.Lerp(Points[1], Points[2], 2 / 3f), 2 / 3f);
+        var oneThird = Vector2<float>.Lerp(Vector2<float>.Lerp(Points[0], Points[1], 1 / 3f), Vector2<float>.Lerp(Points[1], Points[2], 1 / 3f), 1 / 3f);
+        var twoThirds = Vector2<float>.Lerp(Vector2<float>.Lerp(Points[0], Points[1], 2 / 3f), Vector2<float>.Lerp(Points[1], Points[2], 2 / 3f), 2 / 3f);
 
-        part1 = new QuadraticSegment(Points[0], Vector2.Lerp(Points[0], Points[1], 1 / 3f), oneThird);
-        part2 = new QuadraticSegment(oneThird, Vector2.Lerp(Vector2.Lerp(Points[0], Points[1], 5 / 9f), Vector2.Lerp(Points[1], Points[2], 4 / 9f), .5f), twoThirds);
-        part3 = new QuadraticSegment(twoThirds, Vector2.Lerp(Points[1], Points[2], 2 / 3f), Points[2]);
+        part1 = new QuadraticSegment(Points[0], Vector2<float>.Lerp(Points[0], Points[1], 1 / 3f), oneThird);
+        part2 = new QuadraticSegment(oneThird, Vector2<float>.Lerp(Vector2<float>.Lerp(Points[0], Points[1], 5 / 9f), Vector2<float>.Lerp(Points[1], Points[2], 4 / 9f), .5f), twoThirds);
+        part3 = new QuadraticSegment(twoThirds, Vector2<float>.Lerp(Points[1], Points[2], 2 / 3f), Points[2]);
     }
 
 

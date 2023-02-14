@@ -1,4 +1,6 @@
-﻿namespace NovaEngine.Maths;
+﻿using System.Numerics;
+
+namespace NovaEngine.Maths;
 
 /// <summary>Represents a vector with two 32-bit integer values.</summary>
 public struct Vector2I : IEquatable<Vector2I>, IComparable<Vector2I>
@@ -40,16 +42,16 @@ public struct Vector2I : IEquatable<Vector2I>, IComparable<Vector2I>
         }
     }
 
-    /// <summary>Gets a vector with (X, Y) = (0, 0).</summary>
+    /// <summary>A vector with (X, Y) = (0, 0).</summary>
     public static Vector2I Zero => new(0);
 
-    /// <summary>Gets a vector with (X, Y) = (1, 1).</summary>
+    /// <summary>A vector with (X, Y) = (1, 1).</summary>
     public static Vector2I One => new(1);
 
-    /// <summary>Gets a vector with (X, Y) = (1, 0).</summary>
+    /// <summary>A vector with (X, Y) = (1, 0).</summary>
     public static Vector2I UnitX => new(1, 0);
 
-    /// <summary>Gets a vector with (X, Y) = (0, 1).</summary>
+    /// <summary>A vector with (X, Y) = (0, 1).</summary>
     public static Vector2I UnitY => new(0, 1);
 
     /// <summary>Gets or sets the value at a specified position.</summary>
@@ -98,51 +100,49 @@ public struct Vector2I : IEquatable<Vector2I>, IComparable<Vector2I>
         Y = y;
     }
 
-    /// <summary>Gets the vector as a <see cref="Vector2"/>.</summary>
-    /// <returns>The vector as a <see cref="Vector2"/>.</returns>
-    public readonly Vector2 ToVector2() => new(X, Y);
+    /// <summary>Gets the vector as a <see cref="Vector2{T}"/>.</summary>
+    /// <typeparam name="T">The type of vector to convert to.</typeparam>
+    /// <returns>The converted vector.</returns>
+    /// <remarks>Components will get truncated if they fall outside of the range of <typeparamref name="T"/>.</remarks>
+    public readonly Vector2<T> ToVector2<T>()
+        where T : IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>, IConvertible
+    {
+        return new(T.CreateTruncating(X), T.CreateTruncating(Y));
+    }
 
-    /// <summary>Gets the vector as a <see cref="Vector2D"/>.</summary>
-    /// <returns>The vector as a <see cref="Vector2D"/>.</returns>
-    public readonly Vector2D ToVector2D() => new(X, Y);
-
-    /// <summary>Gets the vector as a <see cref="Vector2U"/>.</summary>
-    /// <returns>The vector as a <see cref="Vector2U"/>.</returns>
-    public readonly Vector2U ToVector2U() => new((uint)X, (uint)Y);
-
-    /// <inheritdoc/>
+    /// <summary>Checks two vectors for equality.</summary>
+    /// <param name="other">The vector to check equality with.</param>
+    /// <returns><see langword="true"/> if the vectors are equal; otherwise, <see langword="false"/>.</returns>
     public readonly bool Equals(Vector2I other) => this == other;
 
-    /// <inheritdoc/>
+    /// <summary>Compares two vectors to determine whether the current instance preceeds, follows, or appears at the same position in the sort order as the other vector.</summary>
+    /// <param name="other">The vector to compare against.</param>
+    /// <returns>
+    /// <b>Less than zero</b>, if this instance preceeds <paramref name="other"/> in the sort order.<br/>
+    /// <b>Zero</b>, if this instance appears in the same position as <paramref name="other"/> in the sort order.<br/>
+    /// <b>Greater than zero</b>, if this instance follows <paramref name="other"/> in the sort order.
+    /// </returns>
     public readonly int CompareTo(Vector2I other) => LengthSquared - other.LengthSquared;
 
-    /// <inheritdoc/>
+    /// <summary>Checks the vector and an object for equality.</summary>
+    /// <param name="obj">The object to check equality with.</param>
+    /// <returns><see langword="true"/> if the vector and object are equal; otherwise, <see langword="false"/>.</returns>
     public readonly override bool Equals(object? obj) => obj is Vector2I vector && this == vector;
 
-    /// <inheritdoc/>
+    /// <summary>Retrieves the hash code of the vector.</summary>
+    /// <returns>The hash code of the vector.</returns>
     public readonly override int GetHashCode() => (X, Y).GetHashCode();
 
-    /// <inheritdoc/>
+    /// <summary>Calculates a string representation of the vector.</summary>
+    /// <returns>A string representation of the vector.</returns>
     public readonly override string ToString() => $"<X: {X}, Y: {Y}>";
 
-    /// <summary>Calculates the distance between two vectors.</summary>
-    /// <param name="vector1">The first vector.</param>
-    /// <param name="vector2">The second vector.</param>
-    /// <returns>The distance between <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
-    public static float Distance(in Vector2I vector1, in Vector2I vector2) => MathF.Sqrt(Vector2I.DistanceSquared(vector1, vector2));
-
-    /// <summary>Calculates the squared distance between two vectors.</summary>
-    /// <param name="vector1">The first vector.</param>
-    /// <param name="vector2">The second vector.</param>
-    /// <returns>The squared distance between <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
-    /// <remarks>This is preferred for comparison as it avoids the square root operation.</remarks>
-    public static int DistanceSquared(in Vector2I vector1, in Vector2I vector2) => (vector2.X - vector1.X) * (vector2.X - vector1.X) + (vector2.Y - vector1.Y) * (vector2.Y - vector1.Y);
-
-    /// <summary>Creates a vector using the smallest of the corresponding components from two vectors.</summary>
-    /// <param name="vector1">The first vector.</param>
-    /// <param name="vector2">The second vector.</param>
-    /// <returns>The component-wise minimum.</returns>
-    public static Vector2I ComponentMin(in Vector2I vector1, in Vector2I vector2) => new(Math.Min(vector1.X, vector2.X), Math.Min(vector1.Y, vector2.Y));
+    /// <summary>Clamps a vector to the specified minimum and maximum vectors.</summary>
+    /// <param name="value">The vector to clamp.</param>
+    /// <param name="min">The minimum vector.</param>
+    /// <param name="max">The maximum vector.</param>
+    /// <returns>The clamped vector.</returns>
+    public static Vector2I Clamp(in Vector2I value, in Vector2I min, in Vector2I max) => new(Math.Clamp(value.X, min.X, max.X), Math.Clamp(value.Y, min.Y, max.Y));
 
     /// <summary>Creates a vector using the largest of the corresponding components from two vectors.</summary>
     /// <param name="vector1">The first vector.</param>
@@ -150,12 +150,24 @@ public struct Vector2I : IEquatable<Vector2I>, IComparable<Vector2I>
     /// <returns>The component-wise maximum.</returns>
     public static Vector2I ComponentMax(in Vector2I vector1, in Vector2I vector2) => new(Math.Max(vector1.X, vector2.X), Math.Max(vector1.Y, vector2.Y));
 
-    /// <summary>Clamps a vector to the specified minimum and maximum vectors.</summary>
-    /// <param name="value">The value to clamp.</param>
-    /// <param name="min">The minimum value.</param>
-    /// <param name="max">The maximum value.</param>
-    /// <returns>The clamped value.</returns>
-    public static Vector2I Clamp(in Vector2I value, in Vector2I min, in Vector2I max) => new(Math.Clamp(value.X, min.X, max.X), Math.Clamp(value.Y, min.Y, max.Y));
+    /// <summary>Creates a vector using the smallest of the corresponding components from two vectors.</summary>
+    /// <param name="vector1">The first vector.</param>
+    /// <param name="vector2">The second vector.</param>
+    /// <returns>The component-wise minimum.</returns>
+    public static Vector2I ComponentMin(in Vector2I vector1, in Vector2I vector2) => new(Math.Min(vector1.X, vector2.X), Math.Min(vector1.Y, vector2.Y));
+
+    /// <summary>Calculates the distance between two vectors.</summary>
+    /// <param name="vector1">The first vector.</param>
+    /// <param name="vector2">The second vector.</param>
+    /// <returns>The distance between the vectors.</returns>
+    public static float Distance(in Vector2I vector1, in Vector2I vector2) => MathF.Sqrt(DistanceSquared(vector1, vector2));
+
+    /// <summary>Calculates the squared distance between two vectors.</summary>
+    /// <param name="vector1">The first vector.</param>
+    /// <param name="vector2">The second vector.</param>
+    /// <returns>The squared distance between the vectors.</returns>
+    /// <remarks>This is preferred for comparison as it avoids the square root operation.</remarks>
+    public static int DistanceSquared(in Vector2I vector1, in Vector2I vector2) => (vector2.X - vector1.X) * (vector2.X - vector1.X) + (vector2.Y - vector1.Y) * (vector2.Y - vector1.Y);
 
 
     /*********
@@ -185,9 +197,9 @@ public struct Vector2I : IEquatable<Vector2I>, IComparable<Vector2I>
     /// <returns>The result of the subtraction.</returns>
     public static Vector2I operator -(Vector2I left, Vector2I right) => new(left.X - right.X, left.Y - right.Y);
 
-    /// <summary>Flips the sign of each component of a vector.</summary>
-    /// <param name="vector">The vector to flip the component signs of.</param>
-    /// <returns><paramref name="vector"/> with the sign of its components flipped.</returns>
+    /// <summary>Negates each component of a vector.</summary>
+    /// <param name="vector">The vector to the negate the components of.</param>
+    /// <returns><paramref name="vector"/> with its components negated.</returns>
     public static Vector2I operator -(Vector2I vector) => vector * -1;
 
     /// <summary>Multiplies a vector by a scalar.</summary>
@@ -221,16 +233,4 @@ public struct Vector2I : IEquatable<Vector2I>, IComparable<Vector2I>
     /// <summary>Converts a tuple to a vector.</summary>
     /// <param name="tuple">The tuple to convert.</param>
     public static implicit operator Vector2I((int X, int Y) tuple) => new(tuple.X, tuple.Y);
-
-    /// <summary>Converts a <see cref="Vector2I"/> to a <see cref="Vector2"/>.</summary>
-    /// <param name="vector">The vector to convert.</param>
-    public static implicit operator Vector2(Vector2I vector) => vector.ToVector2();
-
-    /// <summary>Converts a <see cref="Vector2I"/> to a <see cref="Vector2D"/>.</summary>
-    /// <param name="vector">The vector to convert.</param>
-    public static implicit operator Vector2D(Vector2I vector) => vector.ToVector2D();
-
-    /// <summary>Converts a <see cref="Vector2I"/> to a <see cref="Vector2U"/>.</summary>
-    /// <param name="vector">The vector to convert.</param>
-    public static explicit operator Vector2U(Vector2I vector) => vector.ToVector2U();
 }

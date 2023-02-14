@@ -107,15 +107,15 @@ internal static class MTSDF
     /// <param name="pixelRange">The range, in pixels, of the signed distance around the glyphs.</param>
     public static void GenerateMTSDF(Glyph glyph, Colour32[,] atlas, int pixelRange)
     {
-        var frame = new Vector2(glyph.ScaledBounds.Width - pixelRange, glyph.ScaledBounds.Height - pixelRange);
+        var frame = new Vector2<float>(glyph.ScaledBounds.Width - pixelRange, glyph.ScaledBounds.Height - pixelRange);
         var scale = frame.Y / glyph.UnscaledBounds.Height;
-        var offset = new Vector2(MathF.Floor(glyph.UnscaledBounds.X * scale), MathF.Ceiling(glyph.UnscaledBounds.Y * scale));
+        var offset = new Vector2<float>(MathF.Floor(glyph.UnscaledBounds.X * scale), MathF.Ceiling(glyph.UnscaledBounds.Y * scale));
         var scaledPixelRange = pixelRange / scale;
 
         for (int y = -pixelRange; y < glyph.ScaledBounds.Height + pixelRange; y++)
             for (int x = -pixelRange; x < glyph.ScaledBounds.Width + pixelRange; x++)
             {
-                var point = (new Vector2(x + .5f, y - .5f) + offset) / scale;
+                var point = (new Vector2<float>(x + .5f, y - .5f) + offset) / scale;
 
                 var minDistance = new SignedDistance();
                 var r = new Channel();
@@ -171,7 +171,7 @@ internal static class MTSDF
     /// <param name="b">The second vector.</param>
     /// <param name="sinThreshold">The angle threshold to determine how a corner is defined.</param>
     /// <returns><see langword="true"/>, if the vectors are considered a corner; otherwise, <see langword="false"/>.</returns>
-    private static bool IsCorner(Vector2 a, Vector2 b, float sinThreshold) => Vector2.Dot(a, b) <= 0 || Math.Abs(a.X * b.Y - a.Y * b.X) > sinThreshold;
+    private static bool IsCorner(Vector2<float> a, Vector2<float> b, float sinThreshold) => Vector2<float>.Dot(a, b) <= 0 || Math.Abs(a.X * b.Y - a.Y * b.X) > sinThreshold;
 
     /// <summary>Calculates the colour of the next edge.</summary>
     /// <param name="colour">The colour of the current edge.</param>

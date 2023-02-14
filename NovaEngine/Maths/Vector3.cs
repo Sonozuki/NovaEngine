@@ -1,33 +1,36 @@
-﻿namespace NovaEngine.Maths;
+﻿using System.Numerics;
 
-/// <summary>Represents a vector with three single-precision floating-point values.</summary>
-public struct Vector3 : IEquatable<Vector3>
+namespace NovaEngine.Maths;
+
+/// <summary>Represents a vector with three floating-point values.</summary>
+public struct Vector3<T> : IEquatable<Vector3<T>>
+    where T : IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>, IConvertible
 {
     /*********
     ** Fields
     *********/
     /// <summary>The X component of the vector.</summary>
-    public float X;
+    public T X;
 
     /// <summary>The Y component of the vector.</summary>
-    public float Y;
+    public T Y;
 
     /// <summary>The Z component of the vector.</summary>
-    public float Z;
+    public T Z;
 
 
     /*********
     ** Accessors
     *********/
     /// <summary>The length of the vector.</summary>
-    public readonly float Length => MathF.Sqrt(LengthSquared);
+    public readonly T Length => T.Sqrt(LengthSquared);
 
-    /// <summary>The sqaured length of the vector.</summary>
+    /// <summary>The squared length of the vector.</summary>
     /// <remarks>This is preferred for comparison as it avoids the square root operation.</remarks>
-    public readonly float LengthSquared => X * X + Y * Y + Z * Z;
+    public readonly T LengthSquared => X * X + Y * Y + Z * Z;
 
     /// <summary>The vector with unit length.</summary>
-    public readonly Vector3 Normalised
+    public readonly Vector3<T> Normalised
     {
         get
         {
@@ -38,7 +41,7 @@ public struct Vector3 : IEquatable<Vector3>
     }
 
     /// <summary>Swizzle the <see cref="X"/>, <see cref="Z"/>, and <see cref="Y"/> components.</summary>
-    public Vector3 XZY
+    public Vector3<T> XZY
     {
         readonly get => new(X, Z, Y);
         set
@@ -50,7 +53,7 @@ public struct Vector3 : IEquatable<Vector3>
     }
 
     /// <summary>Swizzle the <see cref="Y"/>, <see cref="X"/>, and <see cref="Z"/> components.</summary>
-    public Vector3 YXZ
+    public Vector3<T> YXZ
     {
         readonly get => new(Y, X, Z);
         set
@@ -62,7 +65,7 @@ public struct Vector3 : IEquatable<Vector3>
     }
 
     /// <summary>Swizzle the <see cref="Y"/>, <see cref="Z"/>, and <see cref="X"/> components.</summary>
-    public Vector3 YZX
+    public Vector3<T> YZX
     {
         readonly get => new(Y, Z, X);
         set
@@ -74,7 +77,7 @@ public struct Vector3 : IEquatable<Vector3>
     }
 
     /// <summary>Swizzle the <see cref="Z"/>, <see cref="X"/>, and <see cref="Y"/> components.</summary>
-    public Vector3 ZXY
+    public Vector3<T> ZXY
     {
         readonly get => new(Z, X, Y);
         set
@@ -86,7 +89,7 @@ public struct Vector3 : IEquatable<Vector3>
     }
 
     /// <summary>Swizzle the <see cref="Z"/>, <see cref="Y"/>, and <see cref="X"/> components.</summary>
-    public Vector3 ZYX
+    public Vector3<T> ZYX
     {
         readonly get => new(Z, Y, X);
         set
@@ -98,7 +101,7 @@ public struct Vector3 : IEquatable<Vector3>
     }
 
     /// <summary>Swizzle the <see cref="X"/> and <see cref="Y"/> components.</summary>
-    public Vector2 XY
+    public Vector2<T> XY
     {
         readonly get => new(X, Y);
         set
@@ -109,7 +112,7 @@ public struct Vector3 : IEquatable<Vector3>
     }
 
     /// <summary>Swizzle the <see cref="Y"/> and <see cref="X"/> components.</summary>
-    public Vector2 YX
+    public Vector2<T> YX
     {
         readonly get => new(Y, X);
         set
@@ -120,7 +123,7 @@ public struct Vector3 : IEquatable<Vector3>
     }
 
     /// <summary>Swizzle the <see cref="X"/> and <see cref="Z"/> components.</summary>
-    public Vector2 XZ
+    public Vector2<T> XZ
     {
         readonly get => new(X, Z);
         set
@@ -131,7 +134,7 @@ public struct Vector3 : IEquatable<Vector3>
     }
 
     /// <summary>Swizzle the <see cref="Z"/> and <see cref="X"/> components.</summary>
-    public Vector2 ZX
+    public Vector2<T> ZX
     {
         readonly get => new(Z, X);
         set
@@ -142,7 +145,7 @@ public struct Vector3 : IEquatable<Vector3>
     }
 
     /// <summary>Swizzle the <see cref="Y"/> and <see cref="Z"/> components.</summary>
-    public Vector2 YZ
+    public Vector2<T> YZ
     {
         readonly get => new(Y, Z);
         set
@@ -153,7 +156,7 @@ public struct Vector3 : IEquatable<Vector3>
     }
 
     /// <summary>Swizzle the <see cref="Z"/> and <see cref="Y"/> components.</summary>
-    public Vector2 ZY
+    public Vector2<T> ZY
     {
         readonly get => new(Z, Y);
         set
@@ -163,25 +166,25 @@ public struct Vector3 : IEquatable<Vector3>
         }
     }
 
-    /// <summary>Gets a vector with (X, Y, Z) = (0, 0, 0).</summary>
-    public static Vector3 Zero => new(0);
+    /// <summary>A vector with (X, Y, Z) = (0, 0, 0).</summary>
+    public static Vector3<T> Zero => new(T.Zero);
 
-    /// <summary>Gets a vector with (X, Y, Z) = (1, 1, 1).</summary>
-    public static Vector3 One => new(1);
+    /// <summary>A vector with (X, Y, Z) = (1, 1, 1).</summary>
+    public static Vector3<T> One => new(T.One);
 
-    /// <summary>Gets a vector with (X, Y, Z) = (1, 0, 0).</summary>
-    public static Vector3 UnitX => new(1, 0, 0);
+    /// <summary>A vector with (X, Y, Z) = (1, 0, 0).</summary>
+    public static Vector3<T> UnitX => new(T.One, T.Zero, T.Zero);
 
-    /// <summary>Gets a vector with (X, Y, Z) = (0, 1, 0).</summary>
-    public static Vector3 UnitY => new(0, 1, 0);
+    /// <summary>A vector with (X, Y, Z) = (0, 1, 0).</summary>
+    public static Vector3<T> UnitY => new(T.Zero, T.One, T.Zero);
 
-    /// <summary>Gets a vector with (X, Y, Z) = (0, 0, 1).</summary>
-    public static Vector3 UnitZ => new(0, 0, 1);
+    /// <summary>A vector with (X, Y, Z) = (0, 0, 1).</summary>
+    public static Vector3<T> UnitZ => new(T.Zero, T.Zero, T.One);
 
     /// <summary>Gets or sets the value at a specified position.</summary>
     /// <param name="index">The position index.</param>
     /// <returns>The value at the specified position.</returns>
-    public float this[int index]
+    public T this[int index]
     {
         readonly get
         {
@@ -213,7 +216,7 @@ public struct Vector3 : IEquatable<Vector3>
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="value">The X, Y, and Z components of the vector.</param>
-    public Vector3(float value)
+    public Vector3(T value)
     {
         X = value;
         Y = value;
@@ -224,7 +227,7 @@ public struct Vector3 : IEquatable<Vector3>
     /// <param name="x">The X component of the vector.</param>
     /// <param name="y">The Y component of the vector.</param>
     /// <param name="z">The Z component of the vector.</param>
-    public Vector3(float x, float y, float z)
+    public Vector3(T x, T y, T z)
     {
         X = x;
         Y = y;
@@ -234,7 +237,7 @@ public struct Vector3 : IEquatable<Vector3>
     /// <summary>Constructs an instance.</summary>
     /// <param name="xy">The X and Y components of the vector.</param>
     /// <param name="z">The Z component of the vector.</param>
-    public Vector3(in Vector2 xy, float z = 0)
+    public Vector3(in Vector2<T> xy, T z)
     {
         X = xy.X;
         Y = xy.Y;
@@ -244,110 +247,100 @@ public struct Vector3 : IEquatable<Vector3>
     /// <summary>Scales the vector to unit length.</summary>
     public void Normalise()
     {
-        if (LengthSquared == 0)
+        if (LengthSquared == T.Zero)
             return;
 
-        var scale = 1 / Length;
+        var scale = T.One / Length;
         X *= scale;
         Y *= scale;
         Z *= scale;
     }
 
-    /// <summary>Gets the vector as a <see cref="Vector3D"/>.</summary>
-    /// <returns>The vector as a <see cref="Vector3D"/>.</returns>
-    public readonly Vector3D ToVector3D() => new(X, Y, Z);
+    /// <summary>Checks two vectors for equality.</summary>
+    /// <param name="other">The vector to check equality with.</param>
+    /// <returns><see langword="true"/> if the vectors are equal; otherwise, <see langword="false"/>.</returns>
+    public readonly bool Equals(Vector3<T> other) => this == other;
 
-    /// <summary>Gets the vector as a <see cref="Vector3I"/> by rounding the components down.</summary>
-    /// <returns>The rounded down vector as a <see cref="Vector3I"/>.</returns>
-    public readonly Vector3I ToFlooredVector3I() => new((int)MathF.Floor(X), (int)MathF.Floor(Y), (int)MathF.Floor(Z));
+    /// <summary>Checks the vector and an object for equality.</summary>
+    /// <param name="obj">The object to check equality with.</param>
+    /// <returns><see langword="true"/> if the vector and object are equal; otherwise, <see langword="false"/>.</returns>
+    public readonly override bool Equals(object? obj) => obj is Vector3<T> vector && this == vector;
 
-    /// <summary>Gets the vector as a <see cref="Vector3I"/> by rounding the components.</summary>
-    /// <returns>The rounded vector as a <see cref="Vector3I"/>.</returns>
-    public readonly Vector3I ToRoundedVector3I() => new((int)MathF.Round(X), (int)MathF.Round(Y), (int)MathF.Round(Z));
-
-    /// <summary>Gets the vector as a <see cref="Vector3I"/> by rounding the components up.</summary>
-    /// <returns>The rounded up vector as a <see cref="Vector3I"/>.</returns>
-    public readonly Vector3I ToCeilingedVector3I() => new((int)MathF.Ceiling(X), (int)MathF.Ceiling(Y), (int)MathF.Ceiling(Z));
-
-    /// <inheritdoc/>
-    public readonly bool Equals(Vector3 other) => this == other;
-
-    /// <inheritdoc/>
-    public readonly override bool Equals(object? obj) => obj is Vector3 vector && this == vector;
-
-    /// <inheritdoc/>
+    /// <summary>Retrieves the hash code of the vector.</summary>
+    /// <returns>The hash code of the vector.</returns>
     public readonly override int GetHashCode() => (X, Y, Z).GetHashCode();
 
-    /// <inheritdoc/>
+    /// <summary>Calculates a string representation of the vector.</summary>
+    /// <returns>A string representation of the vector.</returns>
     public readonly override string ToString() => $"<X: {X}, Y: {Y}, Z: {Z}>";
 
     /// <summary>Clamps a vector to the specified minimum and maximum vectors.</summary>
-    /// <param name="value">The value to clamp.</param>
-    /// <param name="min">The minimum value.</param>
-    /// <param name="max">The maximum value.</param>
-    /// <returns>The clamped value.</returns>
-    public static Vector3 Clamp(in Vector3 value, in Vector3 min, in Vector3 max) => new(Math.Clamp(value.X, min.X, max.X), Math.Clamp(value.Y, min.Y, max.Y), Math.Clamp(value.Z, min.Z, max.Z));
-
-    /// <summary>Creates a vector using the smallest of the corresponding components from two vectors.</summary>
-    /// <param name="vector1">The first vector.</param>
-    /// <param name="vector2">The second vector.</param>
-    /// <returns>The component-wise minimum.</returns>
-    public static Vector3 ComponentMin(in Vector3 vector1, in Vector3 vector2) => new(Math.Min(vector1.X, vector2.X), Math.Min(vector1.Y, vector2.Y), Math.Min(vector1.Z, vector2.Z));
+    /// <param name="value">The vector to clamp.</param>
+    /// <param name="min">The minimum vector.</param>
+    /// <param name="max">The maximum vector.</param>
+    /// <returns>The clamped vector.</returns>
+    public static Vector3<T> Clamp(in Vector3<T> value, in Vector3<T> min, in Vector3<T> max) => new(T.Clamp(value.X, min.X, max.X), T.Clamp(value.Y, min.Y, max.Y), T.Clamp(value.Z, min.Z, max.Z));
 
     /// <summary>Creates a vector using the largest of the corresponding components from two vectors.</summary>
     /// <param name="vector1">The first vector.</param>
     /// <param name="vector2">The second vector.</param>
     /// <returns>The component-wise maximum.</returns>
-    public static Vector3 ComponentMax(in Vector3 vector1, in Vector3 vector2) => new(Math.Max(vector1.X, vector2.X), Math.Max(vector1.Y, vector2.Y), Math.Max(vector1.Z, vector2.Z));
+    public static Vector3<T> ComponentMax(in Vector3<T> vector1, in Vector3<T> vector2) => new(T.Max(vector1.X, vector2.X), T.Max(vector1.Y, vector2.Y), T.Max(vector1.Z, vector2.Z));
+
+    /// <summary>Creates a vector using the smallest of the corresponding components from two vectors.</summary>
+    /// <param name="vector1">The first vector.</param>
+    /// <param name="vector2">The second vector.</param>
+    /// <returns>The component-wise minimum.</returns>
+    public static Vector3<T> ComponentMin(in Vector3<T> vector1, in Vector3<T> vector2) => new(T.Min(vector1.X, vector2.X), T.Min(vector1.Y, vector2.Y), T.Min(vector1.Z, vector2.Z));
 
     /// <summary>Calculates the cross product of two vectors.</summary>
     /// <param name="vector1">The first vector.</param>
     /// <param name="vector2">The second vector.</param>
-    /// <returns>The cross product of <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
-    public static Vector3 Cross(in Vector3 vector1, in Vector3 vector2) => new(vector1.Y * vector2.Z - vector1.Z * vector2.Y, vector1.Z * vector2.X - vector1.X * vector2.Z, vector1.X * vector2.Y - vector1.Y * vector2.X);
+    /// <returns>The cross product the vectors.</returns>
+    public static Vector3<T> Cross(in Vector3<T> vector1, in Vector3<T> vector2) => new(vector1.Y * vector2.Z - vector1.Z * vector2.Y, vector1.Z * vector2.X - vector1.X * vector2.Z, vector1.X * vector2.Y - vector1.Y * vector2.X);
 
     /// <summary>Calculates the distance between two vectors.</summary>
     /// <param name="vector1">The first vector.</param>
     /// <param name="vector2">The second vector.</param>
-    /// <returns>The distance between <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
-    public static float Distance(in Vector3 vector1, in Vector3 vector2) => MathF.Sqrt(Vector3.DistanceSquared(vector1, vector2));
+    /// <returns>The distance between the vectors.</returns>
+    public static T Distance(in Vector3<T> vector1, in Vector3<T> vector2) => T.Sqrt(DistanceSquared(vector1, vector2));
 
     /// <summary>Calculates the sqaured distance between two vectors.</summary>
     /// <param name="vector1">The first vector.</param>
     /// <param name="vector2">The second vector.</param>
-    /// <returns>The squared distance between <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
+    /// <returns>The squared distance between the vectors.</returns>
     /// <remarks>This is preferred for comparison as it avoids the square root operation.</remarks>
-    public static float DistanceSquared(in Vector3 vector1, in Vector3 vector2) => (vector2.X - vector1.X) * (vector2.X - vector1.X) + (vector2.Y - vector1.Y) * (vector2.Y - vector1.Y) + (vector2.Z - vector1.Z) * (vector2.Z - vector1.Z);
+    public static T DistanceSquared(in Vector3<T> vector1, in Vector3<T> vector2) => (vector2.X - vector1.X) * (vector2.X - vector1.X) + (vector2.Y - vector1.Y) * (vector2.Y - vector1.Y) + (vector2.Z - vector1.Z) * (vector2.Z - vector1.Z);
 
     /// <summary>Calculates the dot product of two vectors.</summary>
     /// <param name="vector1">The first vector.</param>
     /// <param name="vector2">The second vector.</param>
-    /// <returns>The dot product of <paramref name="vector1"/> and <paramref name="vector2"/>.</returns>
-    public static float Dot(in Vector3 vector1, in Vector3 vector2) => vector1.X * vector2.X + vector1.Y * vector2.Y + vector1.Z * vector2.Z;
+    /// <returns>The dot product of the vectors.</returns>
+    public static T Dot(in Vector3<T> vector1, in Vector3<T> vector2) => vector1.X * vector2.X + vector1.Y * vector2.Y + vector1.Z * vector2.Z;
 
-    /// <summary>Linearly interpolates between two values.</summary>
-    /// <param name="value1">The source value.</param>
-    /// <param name="value2">The destination value.</param>
-    /// <param name="amount">The amount to interpolate between <paramref name="value1"/> and <paramref name="value2"/>.</param>
-    /// <returns>The interpolated value.</returns>
-    public static Vector3 Lerp(in Vector3 value1, in Vector3 value2, float amount) => new(MathsHelper.Lerp(value1.X, value2.X, amount), MathsHelper.Lerp(value1.Y, value2.Y, amount), MathsHelper.Lerp(value1.Z, value2.Z, amount));
+    /// <summary>Linearly interpolates between two vectors.</summary>
+    /// <param name="value1">The source vector.</param>
+    /// <param name="value2">The destination vector.</param>
+    /// <param name="amount">The amount to interpolate between the vectors.</param>
+    /// <returns>The interpolated vector.</returns>
+    public static Vector3<T> Lerp(in Vector3<T> value1, in Vector3<T> value2, T amount) => new(MathsHelper<T>.Lerp(value1.X, value2.X, amount), MathsHelper<T>.Lerp(value1.Y, value2.Y, amount), MathsHelper<T>.Lerp(value1.Z, value2.Z, amount));
 
-    /// <summary>Linearly interpolates between two values.</summary>
-    /// <param name="value1">The source value.</param>
-    /// <param name="value2">The destination value.</param>
-    /// <param name="amount">The amount to interpolate between <paramref name="value1"/> and <paramref name="value2"/>.</param>
-    /// <returns>The interpolated value.</returns>
+    /// <summary>Linearly interpolates between two vectors.</summary>
+    /// <param name="value1">The source vector.</param>
+    /// <param name="value2">The destination vector.</param>
+    /// <param name="amount">The amount to interpolate between the vectors.</param>
+    /// <returns>The interpolated vector.</returns>
     /// <remarks>This clamps <paramref name="amount"/> before performing the linear interpolation.</remarks>
-    public static Vector3 LerpClamped(in Vector3 value1, in Vector3 value2, float amount) => new(MathsHelper.LerpClamped(value1.X, value2.X, amount), MathsHelper.LerpClamped(value1.Y, value2.Y, amount), MathsHelper.LerpClamped(value1.Z, value2.Z, amount));
+    public static Vector3<T> LerpClamped(in Vector3<T> value1, in Vector3<T> value2, T amount) => new(MathsHelper<T>.LerpClamped(value1.X, value2.X, amount), MathsHelper<T>.LerpClamped(value1.Y, value2.Y, amount), MathsHelper<T>.LerpClamped(value1.Z, value2.Z, amount));
 
     /// <summary>Reflects a vector off a normal.</summary>
     /// <param name="direction">The vector to reflect.</param>
     /// <param name="normal">The surface normal.</param>
     /// <returns>The reflected vector.</returns>
-    public static Vector3 Reflect(in Vector3 direction, Vector3 normal)
+    public static Vector3<T> Reflect(in Vector3<T> direction, Vector3<T> normal)
     {
         normal.Normalise();
-        return direction - 2 * Vector3.Dot(direction, normal) * normal;
+        return direction - T.CreateChecked(2) * Dot(direction, normal) * normal;
     }
 
 
@@ -358,101 +351,92 @@ public struct Vector3 : IEquatable<Vector3>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the addition.</returns>
-    public static Vector3 operator +(Vector3 left, float right) => new(left.X + right, left.Y + right, left.Z + right);
+    public static Vector3<T> operator +(Vector3<T> left, T right) => new(left.X + right, left.Y + right, left.Z + right);
 
     /// <summary>Adds two vectors together.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the addition.</returns>
-    public static Vector3 operator +(Vector3 left, Vector3 right) => new(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
+    public static Vector3<T> operator +(Vector3<T> left, Vector3<T> right) => new(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
 
     /// <summary>Subtracts a value from a vector.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the subtraction.</returns>
-    public static Vector3 operator -(Vector3 left, float right) => new(left.X - right, left.Y - right, left.Z - right);
+    public static Vector3<T> operator -(Vector3<T> left, T right) => new(left.X - right, left.Y - right, left.Z - right);
 
     /// <summary>Subtracts a vector from another vector.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the subtraction.</returns>
-    public static Vector3 operator -(Vector3 left, Vector3 right) => new(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
+    public static Vector3<T> operator -(Vector3<T> left, Vector3<T> right) => new(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
 
-    /// <summary>Flips the sign of each component of a vector.</summary>
-    /// <param name="vector">The vector to flip the component signs of.</param>
-    /// <returns><paramref name="vector"/> with the sign of its components flipped.</returns>
-    public static Vector3 operator -(Vector3 vector) => vector * -1;
-
-    /// <summary>Multiplies a vector by a scalar.</summary>
-    /// <param name="left">The left operand.</param>
-    /// <param name="right">The right operand.</param>
-    /// <returns>The result of the multiplication.</returns>
-    public static Vector3 operator *(float left, Vector3 right) => right * left;
+    /// <summary>Negates each component of a vector.</summary>
+    /// <param name="vector">The vector to negate the components of.</param>
+    /// <returns><paramref name="vector"/> with its components negated.</returns>
+    public static Vector3<T> operator -(Vector3<T> vector) => new(-vector.X, -vector.Y, -vector.Z);
 
     /// <summary>Multiplies a vector by a scalar.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the multiplication.</returns>
-    public static Vector3 operator *(Vector3 left, float right) => new(left.X * right, left.Y * right, left.Z * right);
+    public static Vector3<T> operator *(T left, Vector3<T> right) => right * left;
+
+    /// <summary>Multiplies a vector by a scalar.</summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns>The result of the multiplication.</returns>
+    public static Vector3<T> operator *(Vector3<T> left, T right) => new(left.X * right, left.Y * right, left.Z * right);
 
     /// <summary>Multiplies two vectors together.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the multiplication.</returns>
-    public static Vector3 operator *(Vector3 left, Vector3 right) => new(left.X * right.X, left.Y * right.Y, left.Z * right.Z);
+    public static Vector3<T> operator *(Vector3<T> left, Vector3<T> right) => new(left.X * right.X, left.Y * right.Y, left.Z * right.Z);
 
     /// <summary>Multiplies a vector by a quaternion.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the multiplication.</returns>
-    public static Vector3 operator *(Vector3 left, Quaternion right)
+    public static Vector3<T> operator *(Vector3<T> left, Quaternion<T> right)
     {
         var vector = right.XYZ;
 
-        var vectorLeft = Vector3.Cross(vector, left);
-        var vectorVectorLeft = Vector3.Cross(vector, vectorLeft);
+        var vectorLeft = Vector3<T>.Cross(vector, left);
+        var vectorVectorLeft = Vector3<T>.Cross(vector, vectorLeft);
 
-        return left + ((vectorLeft * right.W) + vectorVectorLeft) * 2;
+        return left + ((vectorLeft * right.W) + vectorVectorLeft) * T.CreateChecked(2);
     }
 
     /// <summary>Divides a vector by a scalar.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the division.</returns>
-    public static Vector3 operator /(Vector3 left, float right) => new(left.X / right, left.Y / right, left.Z / right);
+    public static Vector3<T> operator /(Vector3<T> left, T right) => new(left.X / right, left.Y / right, left.Z / right);
 
     /// <summary>Divides a vector by another vector.</summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the division.</returns>
-    public static Vector3 operator /(Vector3 left, Vector3 right) => new(left.X / right.X, left.Y / right.Y, left.Z / right.Z);
+    public static Vector3<T> operator /(Vector3<T> left, Vector3<T> right) => new(left.X / right.X, left.Y / right.Y, left.Z / right.Z);
 
     /// <summary>Checks two vectors for equality.</summary>
     /// <param name="vector1">The first vector.</param>
     /// <param name="vector2">The second vector.</param>
     /// <returns><see langword="true"/> if the vectors are equal; otherwise, <see langword="false"/>.</returns>
-    public static bool operator ==(Vector3 vector1, Vector3 vector2) => vector1.X == vector2.X && vector1.Y == vector2.Y && vector1.Z == vector2.Z;
+    public static bool operator ==(Vector3<T> vector1, Vector3<T> vector2) => vector1.X == vector2.X && vector1.Y == vector2.Y && vector1.Z == vector2.Z;
 
     /// <summary>Checks two vectors for inequality.</summary>
     /// <param name="vector1">The first vector.</param>
     /// <param name="vector2">The second vector.</param>
     /// <returns><see langword="true"/> if the vectors are not equal; otherwise, <see langword="false"/>.</returns>
-    public static bool operator !=(Vector3 vector1, Vector3 vector2) => !(vector1 == vector2);
+    public static bool operator !=(Vector3<T> vector1, Vector3<T> vector2) => !(vector1 == vector2);
 
     /// <summary>Converts a vector to a tuple.</summary>
     /// <param name="vector">The vector to convert.</param>
-    public static implicit operator (float X, float Y, float Z)(Vector3 vector) => (vector.X, vector.Y, vector.Z);
+    public static implicit operator (T X, T Y, T Z)(Vector3<T> vector) => (vector.X, vector.Y, vector.Z);
 
     /// <summary>Converts a tuple to a vector.</summary>
     /// <param name="tuple">The tuple to convert.</param>
-    public static implicit operator Vector3((float X, float Y, float Z) tuple) => new(tuple.X, tuple.Y, tuple.Z);
-
-    /// <summary>Converts a <see cref="Vector3"/> to a <see cref="Vector3D"/>.</summary>
-    /// <param name="vector">The vector to convert.</param>
-    public static implicit operator Vector3D(Vector3 vector) => vector.ToVector3D();
-
-    /// <summary>Converts a <see cref="Vector3"/> to a <see cref="Vector3I"/>.</summary>
-    /// <param name="vector">The vector to convert.</param>
-    /// <remarks>This floors the vector components, to be consistant with explicit <see langword="float"/> to <see langword="int"/> conversion.</remarks>
-    public static explicit operator Vector3I(Vector3 vector) => vector.ToFlooredVector3I();
+    public static implicit operator Vector3<T>((T X, T Y, T Z) tuple) => new(tuple.X, tuple.Y, tuple.Z);
 }

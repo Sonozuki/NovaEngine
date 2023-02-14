@@ -30,9 +30,9 @@ public class ModelPacker : IContentPacker
         var modelContent = new ModelContent();
         var meshContent = new MeshContent();
 
-        var vertexPositions = new List<Vector3>();
-        var vertexTextureCoordinates = new List<Vector2>();
-        var vertexNormals = new List<Vector3>();
+        var vertexPositions = new List<Vector3<float>>();
+        var vertexTextureCoordinates = new List<Vector2<float>>();
+        var vertexNormals = new List<Vector3<float>>();
 
         using var reader = new StreamReader(file);
         while (!reader.EndOfStream)
@@ -52,7 +52,7 @@ public class ModelPacker : IContentPacker
     /// <param name="vertexTextureCoordinates">All the vertex texture coordinates parsed from the file.</param>
     /// <param name="vertexNormals">All the vertex normals parsed from the file.</param>
     /// <exception cref="ContentException">Thrown if the lines failed to parse.</exception>
-    private static void ParseLine(string line, ModelContent modelContent, ref MeshContent meshContent, List<Vector3> vertexPositions, List<Vector2> vertexTextureCoordinates, List<Vector3> vertexNormals)
+    private static void ParseLine(string line, ModelContent modelContent, ref MeshContent meshContent, List<Vector3<float>> vertexPositions, List<Vector2<float>> vertexTextureCoordinates, List<Vector3<float>> vertexNormals)
     {
         var tokens = line.Split(' ');
         if (tokens.Length == 0 || tokens[0].StartsWith("#"))

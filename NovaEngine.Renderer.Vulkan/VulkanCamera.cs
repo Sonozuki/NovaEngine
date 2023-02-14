@@ -190,13 +190,13 @@ public unsafe class VulkanCamera : RendererCameraBase
                        * Matrix4x4.CreateFromQuaternion(new(-rotation.X, -rotation.Y, rotation.Z, rotation.W));
         viewMatrix.Transpose();
 
-        var worldSpace = new Vector4(0, 0, 4.5f, 1);
+        var worldSpace = new Vector4<float>(0, 0, 4.5f, 1);
         var light = new Light()
         {
             Type = 0, // point
             Intensity = 5,
             Range = 1f,
-            Colour = new Vector4(1, 0, 0, 1),
+            Colour = new Vector4<float>(1, 0, 0, 1),
             PositionWorldSpace = worldSpace,
             PositionViewSpace = viewMatrix * worldSpace,
             IsEnabled = true

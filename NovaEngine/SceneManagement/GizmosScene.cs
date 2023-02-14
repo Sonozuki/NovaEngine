@@ -46,7 +46,7 @@ internal class GizmosScene : Scene
     /// <param name="rotation">The rotation of the cube.</param>
     /// <param name="scale">The scale of the cube.</param>
     /// <param name="colour">The colour of the cube.</param>
-    public void AddCube(Vector3 position, Quaternion rotation, Vector3 scale, Colour colour)
+    public void AddCube(Vector3<float> position, Quaternion<float> rotation, Vector3<float> scale, Colour colour)
     {
         var gameObject = CubeGameObjects.GetObject();
         gameObject.IsEnabled = true;
@@ -63,7 +63,7 @@ internal class GizmosScene : Scene
     /// <param name="position">The position of the sphere.</param>
     /// <param name="radius">The radius of the sphere.</param>
     /// <param name="colour">The colour of the sphere.</param>
-    public void AddSphere(Vector3 position, float radius, Colour colour)
+    public void AddSphere(Vector3<float> position, float radius, Colour colour)
     {
         var gameObject = SphereGameObjects.GetObject();
         gameObject.IsEnabled = true;
@@ -79,7 +79,7 @@ internal class GizmosScene : Scene
     /// <param name="point1">The first point of the line.</param>
     /// <param name="point2">The second point of the line.</param>
     /// <param name="colour">The colour of the line.</param>
-    public void AddLine(Vector3 point1, Vector3 point2, Colour colour)
+    public void AddLine(Vector3<float> point1, Vector3<float> point2, Colour colour)
     {
         var gameObject = LineGameObjects.GetObject();
         gameObject.IsEnabled = true;
