@@ -36,24 +36,28 @@ public class CircularBuffer<T> : IEnumerable<T?>
     /// <summary>Gets or sets the value at a specified position.</summary>
     /// <param name="index">The position index.</param>
     /// <returns>The value at the specified position.</returns>
-    /// <exception cref="IndexOutOfRangeException">Thrown if <paramref name="index"/> is outside of <see cref="Size"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is less that zero or is outside of <see cref="Size"/>.</exception>
     public T? this[int index]
     {
         get
         {
+            if (index < 0)
+                throw new ArgumentOutOfRangeException(nameof(index), "Must be more than zero.");
             if (IsEmpty)
-                throw new IndexOutOfRangeException($"Unable to access index {index}, buffer is empty.");
+                throw new ArgumentOutOfRangeException(nameof(index), $"Unable to access index, buffer is empty.");
             if (index >= Size)
-                throw new IndexOutOfRangeException($"Unable to access index {index}, buffer only contains {Size} element(s).");
+                throw new ArgumentOutOfRangeException(nameof(index), $"Unable to access index, buffer only contains {Size} element(s).");
 
             return Buffer[ConvertToInternalIndex(index)];
         }
         set
         {
+            if (index < 0)
+                throw new ArgumentOutOfRangeException(nameof(index), "Must be more than zero.");
             if (IsEmpty)
-                throw new IndexOutOfRangeException($"Unable to access index {index}, buffer is empty.");
+                throw new ArgumentOutOfRangeException(nameof(index), $"Unable to access index, buffer is empty.");
             if (index >= Size)
-                throw new IndexOutOfRangeException($"Unable to access index {index}, buffer only contains {Size} element(s).");
+                throw new ArgumentOutOfRangeException(nameof(index), $"Unable to access index, buffer only contains {Size} element(s).");
 
             Buffer[ConvertToInternalIndex(index)] = value;
         }
