@@ -128,7 +128,7 @@ public struct Vector2<T> : IEquatable<Vector2<T>>, IComparable<Vector2<T>>
     /// <returns><see langword="true"/> if the vectors are equal; otherwise, <see langword="false"/>.</returns>
     public readonly bool Equals(Vector2<T> other) => this == other;
 
-    /// <summary>Compares two vectors to determine whether the current instance preceeds, follows, or appears at the same position in the sort order as the other vector.</summary>
+    /// <summary>Compares two vectors to determine whether the current instance preceeds, follows, or appears at the same position in the sort order as another vector.</summary>
     /// <param name="other">The vector to compare against.</param>
     /// <returns>
     /// <b>Less than zero</b>, if this instance preceeds <paramref name="other"/> in the sort order.<br/>

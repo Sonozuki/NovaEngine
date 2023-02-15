@@ -127,7 +127,7 @@ internal class Vector2Tests
     }
 
     [Test]
-    public void IndexerGet_IndexLessThanZero_ThrowsIndexOutOfRangeException() =>
+    public void IndexerGet_IndexLessThanZero_ThrowsArgumentOutOfRangeException() =>
         Assert.Multiple(() =>
         {
             Assert.That(() => Vector2<float>.One[-1], Throws.InstanceOf<ArgumentOutOfRangeException>());
@@ -135,7 +135,7 @@ internal class Vector2Tests
         });
 
     [Test]
-    public void IndexerGet_IndexerMoreThanOne_ThrowsIndexOutOfRangeException() =>
+    public void IndexerGet_IndexerMoreThanOne_ThrowsArgumentOutOfRangeException() =>
         Assert.Multiple(() =>
         {
             Assert.That(() => Vector2<float>.One[2], Throws.InstanceOf<ArgumentOutOfRangeException>());
@@ -162,7 +162,7 @@ internal class Vector2Tests
     }
 
     [Test]
-    public void IndexerSet_IndexLessThanZero_ThrowsIndexOutOfRangeException()
+    public void IndexerSet_IndexLessThanZero_ThrowsArgumentOutOfRangeException()
     {
         var vectorFloat = new Vector2<float>();
         var vectorDouble = new Vector2<double>();
@@ -175,7 +175,7 @@ internal class Vector2Tests
     }
 
     [Test]
-    public void IndexerSet_IndexerMoreThanOne_ThrowsIndexOutOfRangeException()
+    public void IndexerSet_IndexerMoreThanOne_ThrowsArgumentOutOfRangeException()
     {
         var vectorFloat = new Vector2<float>();
         var vectorDouble = new Vector2<double>();
