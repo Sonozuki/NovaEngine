@@ -130,16 +130,16 @@ internal class Vector2Tests
     public void IndexerGet_IndexLessThanZero_ThrowsIndexOutOfRangeException() =>
         Assert.Multiple(() =>
         {
-            Assert.That(() => Vector2<float>.One[-1], Throws.InstanceOf<IndexOutOfRangeException>());
-            Assert.That(() => Vector2<double>.One[-1], Throws.InstanceOf<IndexOutOfRangeException>());
+            Assert.That(() => Vector2<float>.One[-1], Throws.InstanceOf<ArgumentOutOfRangeException>());
+            Assert.That(() => Vector2<double>.One[-1], Throws.InstanceOf<ArgumentOutOfRangeException>());
         });
 
     [Test]
     public void IndexerGet_IndexerMoreThanOne_ThrowsIndexOutOfRangeException() =>
         Assert.Multiple(() =>
         {
-            Assert.That(() => Vector2<float>.One[2], Throws.InstanceOf<IndexOutOfRangeException>());
-            Assert.That(() => Vector2<double>.One[2], Throws.InstanceOf<IndexOutOfRangeException>());
+            Assert.That(() => Vector2<float>.One[2], Throws.InstanceOf<ArgumentOutOfRangeException>());
+            Assert.That(() => Vector2<double>.One[2], Throws.InstanceOf<ArgumentOutOfRangeException>());
         });
 
     [Test]
@@ -169,8 +169,8 @@ internal class Vector2Tests
 
         Assert.Multiple(() =>
         {
-            Assert.That(() => vectorFloat[-1] = 0, Throws.InstanceOf<IndexOutOfRangeException>());
-            Assert.That(() => vectorDouble[-1] = 0, Throws.InstanceOf<IndexOutOfRangeException>());
+            Assert.That(() => vectorFloat[-1] = 0, Throws.InstanceOf<ArgumentOutOfRangeException>());
+            Assert.That(() => vectorDouble[-1] = 0, Throws.InstanceOf<ArgumentOutOfRangeException>());
         });
     }
 
@@ -182,8 +182,8 @@ internal class Vector2Tests
 
         Assert.Multiple(() =>
         {
-            Assert.That(() => vectorFloat[2] = 0, Throws.InstanceOf<IndexOutOfRangeException>());
-            Assert.That(() => vectorDouble[2] = 0, Throws.InstanceOf<IndexOutOfRangeException>());
+            Assert.That(() => vectorFloat[2] = 0, Throws.InstanceOf<ArgumentOutOfRangeException>());
+            Assert.That(() => vectorDouble[2] = 0, Throws.InstanceOf<ArgumentOutOfRangeException>());
         });
     }
 
