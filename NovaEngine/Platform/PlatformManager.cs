@@ -6,14 +6,14 @@ namespace NovaEngine.Platform;
 internal static class PlatformManager
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The platform that is currently being run on.</summary>
     public static IPlatform CurrentPlatform { get; }
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 

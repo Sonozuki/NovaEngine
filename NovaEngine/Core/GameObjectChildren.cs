@@ -16,7 +16,7 @@ public class GameObjectChildren : IList<GameObject>
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <inheritdoc/>
     public int Count => Children.Count;
@@ -37,6 +37,22 @@ public class GameObjectChildren : IList<GameObject>
             value.Parent = Parent;
             Children[index] = value;
         }
+    }
+
+
+    /*********
+    ** Constructors
+    *********/
+    /// <summary>Constructs an instance.</summary>
+    /// <param name="parent">The game object whose children this collection is.</param>
+    /// <param name="children">The initial children to add.</param>
+    internal GameObjectChildren(GameObject parent, IEnumerable<GameObject>? children)
+    {
+        Parent = parent;
+
+        if (children != null)
+            foreach (var child in children)
+                Add(child);
     }
 
 
@@ -105,20 +121,4 @@ public class GameObjectChildren : IList<GameObject>
 
     /// <inheritdoc/>
     IEnumerator IEnumerable.GetEnumerator() => Children.GetEnumerator();
-
-
-    /*********
-    ** Internal Methods
-    *********/
-    /// <summary>Constructs an instance.</summary>
-    /// <param name="parent">The game object whose children this collection is.</param>
-    /// <param name="children">The initial children to add.</param>
-    internal GameObjectChildren(GameObject parent, IEnumerable<GameObject>? children)
-    {
-        Parent = parent;
-
-        if (children != null)
-            foreach (var child in children)
-                Add(child);
-    }
 }

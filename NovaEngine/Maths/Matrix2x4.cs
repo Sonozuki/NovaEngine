@@ -35,7 +35,7 @@ public struct Matrix2x4<T> : IEquatable<Matrix2x4<T>>
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The trace of the matrix (the sum of the values along the diagonal).</summary>
     public readonly T Trace => M11 + M22;
@@ -216,7 +216,7 @@ public struct Matrix2x4<T> : IEquatable<Matrix2x4<T>>
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="value">The value of all the matrix components.</param>
@@ -302,6 +302,10 @@ public struct Matrix2x4<T> : IEquatable<Matrix2x4<T>>
         M24 = m24;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Checks two matrices for equality.</summary>
     /// <param name="other">The matrix to check equality with.</param>
     /// <returns><see langword="true"/> if the matrices are equal; otherwise, <see langword="false"/>.</returns>

@@ -4,14 +4,14 @@
 internal class LinearSegment : EdgeSegmentBase
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <inheritdoc/>
     public override Vector2<float>[] Points { get; } = new Vector2<float>[2];
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="point0">The first point making up the segment.</param>
@@ -22,6 +22,10 @@ internal class LinearSegment : EdgeSegmentBase
         Points[1] = point1;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <inheritdoc/>
     public override Vector2<float> Direction(float amount) => Points[1] - Points[0];
 

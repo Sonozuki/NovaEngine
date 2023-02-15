@@ -4,7 +4,7 @@
 public static class SceneManager
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The currently loaded scenes.</summary>
     public static List<Scene> LoadedScenes { get; } = new();
@@ -14,7 +14,7 @@ public static class SceneManager
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Initialises the class.</summary>
     static SceneManager()
@@ -22,6 +22,10 @@ public static class SceneManager
         GizmosScene.Start();
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Loads a scene.</summary>
     /// <param name="name">The name of the scene to load.</param>
     public static void LoadScene(string name)

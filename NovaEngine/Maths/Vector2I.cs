@@ -16,7 +16,7 @@ public struct Vector2I : IEquatable<Vector2I>, IComparable<Vector2I>
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The length of the vector.</summary>
     public readonly float Length => MathF.Sqrt(LengthSquared);
@@ -81,7 +81,7 @@ public struct Vector2I : IEquatable<Vector2I>, IComparable<Vector2I>
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="value">The X and Y components of the vector.</param>
@@ -100,6 +100,10 @@ public struct Vector2I : IEquatable<Vector2I>, IComparable<Vector2I>
         Y = y;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Gets the vector as a <see cref="Vector2{T}"/>.</summary>
     /// <typeparam name="T">The type of vector to convert to.</typeparam>
     /// <returns>The converted vector.</returns>

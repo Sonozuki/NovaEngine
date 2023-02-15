@@ -4,7 +4,7 @@
 internal class LogCreator
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The name of the creator.</summary>
     public string Name { get; }
@@ -14,7 +14,7 @@ internal class LogCreator
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="name">The name of the creator.</param>

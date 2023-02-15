@@ -13,7 +13,7 @@ public abstract class SettingsBase<TSelf>
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The path of the settings file.</summary>
     protected abstract string Path { get; }

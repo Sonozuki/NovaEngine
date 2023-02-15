@@ -5,7 +5,7 @@
 internal class SerialiserCallbacks
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The methods that will automatically be called by the serialiser just before the object gets serialised.</summary>
     public MethodInfo[] OnSerialisingMethods { get; }
@@ -21,7 +21,7 @@ internal class SerialiserCallbacks
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="onSerialisingMethods">The methods that will automatically be called by the serialiser just before the object gets serialised.</param>

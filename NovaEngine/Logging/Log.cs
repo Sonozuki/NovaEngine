@@ -4,7 +4,7 @@
 internal class Log
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>When the log was created, in UTC.</summary>
     public DateTime DateTime { get; }
@@ -20,7 +20,7 @@ internal class Log
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="creator">The creator of the log.</param>
@@ -35,6 +35,10 @@ internal class Log
         Message = message;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Writes the log to the console.</summary>
     public void WriteToConsole()
     {

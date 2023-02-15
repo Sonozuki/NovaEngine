@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Contains the indices for the required queue families.</summary>
-internal struct QueueFamilyIndices
+internal readonly struct QueueFamilyIndices
 {
     /*********
     ** Fields
@@ -17,7 +17,7 @@ internal struct QueueFamilyIndices
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The index of the graphics queue family.</summary>
     public uint GraphicsFamily => _GraphicsFamily ?? default;
@@ -33,7 +33,7 @@ internal struct QueueFamilyIndices
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="physicalDevice">The physical device to get the queue family indices from.</param>

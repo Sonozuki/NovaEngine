@@ -3,6 +3,9 @@
 /// <summary>Contains useful miscellaneous methods for the Win32 platform.</summary>
 public static class Win32Utilities
 {
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Converts a <see cref="VirtualKey"/> to a <see cref="Key"/>.</summary>
     /// <param name="virtualKey">The virtual key to convert.</param>
     /// <param name="isE0BitSet">Whether the <see cref="RawInputKeyboardDataFlags.E0"/> bit is set on the keyboard event flags.</param>

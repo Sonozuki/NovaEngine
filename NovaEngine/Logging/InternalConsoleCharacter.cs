@@ -4,7 +4,7 @@
 internal class InternalConsoleCharacter
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The underying character.</summary>
     public char Character { get; }
@@ -14,7 +14,7 @@ internal class InternalConsoleCharacter
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="character">The underlying character.</param>

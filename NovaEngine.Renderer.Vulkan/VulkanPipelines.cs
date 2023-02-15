@@ -11,7 +11,7 @@ internal unsafe class VulkanPipelines : IDisposable
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The layout of <see cref="GenerateFrustumsPipeline"/>.</summary>
     public VkPipelineLayout GenerateFrustumsPipelineLayout { get; private set; }
@@ -63,7 +63,7 @@ internal unsafe class VulkanPipelines : IDisposable
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="camera">The camera which the pipelines belong to.</param>
@@ -76,6 +76,10 @@ internal unsafe class VulkanPipelines : IDisposable
         CreateGraphicsPipelines();
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <inheritdoc/>
     public void Dispose()
     {

@@ -11,7 +11,7 @@ public class ConsoleSettings : SettingsBase<ConsoleSettings>
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The maximum number of lines that are saved in the console.</summary>
     public int MaxNumberOfLines

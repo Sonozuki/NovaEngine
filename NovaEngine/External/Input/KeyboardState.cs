@@ -14,7 +14,7 @@ public struct KeyboardState
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>Gets or sets the pressed state of a specified button.</summary>
     /// <param name="key">The key whose state to get or set.</param>

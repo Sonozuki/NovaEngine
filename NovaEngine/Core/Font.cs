@@ -6,7 +6,7 @@ namespace NovaEngine.Core;
 public class Font : IDisposable
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The name of the font.</summary>
     public string Name { get; }
@@ -26,7 +26,7 @@ public class Font : IDisposable
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="name">The name of the font.</param>
@@ -43,6 +43,10 @@ public class Font : IDisposable
         Glyphs = glyphs.ToList();
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <inheritdoc/>
     public void Dispose() => Atlas.Dispose();
 }

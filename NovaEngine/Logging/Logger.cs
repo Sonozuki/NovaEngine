@@ -17,14 +17,14 @@ public static class Logger
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The stream to the current log file.</summary>
     internal static Stream LogFileStream { get; }
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Initialises the class.</summary>
     static Logger()
@@ -38,6 +38,10 @@ public static class Logger
         LogHeader();
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Logs a message.</summary>
     /// <param name="message">The message to log.</param>
     /// <param name="severity">The severity of the log.</param>

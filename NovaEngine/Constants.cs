@@ -4,7 +4,7 @@
 public static class Constants
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The name of the engine.</summary>
     public static string EngineName => "NovaEngine";

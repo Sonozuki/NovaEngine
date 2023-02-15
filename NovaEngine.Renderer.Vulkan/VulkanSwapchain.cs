@@ -11,7 +11,7 @@ internal unsafe class VulkanSwapchain : IDisposable
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The images in the swapchain.</summary>
     public VkImage[] NativeImages { get; }
@@ -36,7 +36,7 @@ internal unsafe class VulkanSwapchain : IDisposable
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="vsync">Whether vsync should be used when presenting.</param>
@@ -135,6 +135,10 @@ internal unsafe class VulkanSwapchain : IDisposable
         DepthTexture = new(Extent.Width, Extent.Height, RenderingSettings.Instance.SampleCount);
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Creates the framebuffers.</summary>
     /// <param name="renderPass">The render pass to use when creating the framebuffers.</param>
     /// <exception cref="ApplicationException">Thrown if the framebuffers couldn't be created.</exception>

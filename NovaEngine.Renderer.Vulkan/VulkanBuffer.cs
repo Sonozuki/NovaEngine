@@ -17,7 +17,7 @@ internal unsafe class VulkanBuffer : IDisposable
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The size of <see cref="NativeBuffer"/>.</summary>
     public VkDeviceSize Size { get; }
@@ -27,7 +27,7 @@ internal unsafe class VulkanBuffer : IDisposable
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="size">The size of the buffer.</param>
@@ -76,6 +76,10 @@ internal unsafe class VulkanBuffer : IDisposable
         TransferCommandPool = new(CommandPoolUsage.Transfer, VkCommandPoolCreateFlags.Transient);
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Copies data to the buffer.</summary>
     /// <typeparam name="T">The type of the data to copy to the buffer.</typeparam>
     /// <param name="data">The data to copy to the buffer.</param>

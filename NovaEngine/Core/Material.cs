@@ -4,7 +4,7 @@
 public class Material
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The tint of the material.</summary>
     public Colour Tint { get; set; }
@@ -21,7 +21,7 @@ public class Material
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     public Material() { }
@@ -33,5 +33,7 @@ public class Material
     public Material(Colour tint, float roughness, float metallicness)
     {
         Tint = tint;
+        Roughness = roughness;
+        Metallicness = metallicness;
     }
 }

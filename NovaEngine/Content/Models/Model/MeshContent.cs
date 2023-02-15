@@ -4,7 +4,7 @@
 public class MeshContent
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The name of the mesh.</summary>
     public string Name { get; set; }
@@ -17,7 +17,7 @@ public class MeshContent
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     public MeshContent()

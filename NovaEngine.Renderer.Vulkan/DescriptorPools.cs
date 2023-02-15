@@ -4,7 +4,7 @@
 internal static class DescriptorPools
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The descriptor pool for the generate frustums shader.</summary>
     public static VulkanDescriptorPool GenerateFrustumsDescriptorPool { get; }
@@ -26,7 +26,7 @@ internal static class DescriptorPools
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Initialises the class.</summary>
     static DescriptorPools()
@@ -39,6 +39,10 @@ internal static class DescriptorPools
         MTSDFTextDescriptorPool = new(DescriptorSetLayouts.MTSDFTextDescriptorSetLayout);
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Disposes unmanaged descriptor pool resources.</summary>
     public static void Dispose()
     {

@@ -14,7 +14,7 @@ public class PerlinNoiseGenerator
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     public PerlinNoiseGenerator()
@@ -39,6 +39,10 @@ public class PerlinNoiseGenerator
         static void Swap(ref int a, ref int b) => (a, b) = (b, a);
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Evaluates a point in space.</summary>
     /// <param name="x">The X position to evaluate.</param>
     /// <param name="y">The Y position to evaluate.</param>

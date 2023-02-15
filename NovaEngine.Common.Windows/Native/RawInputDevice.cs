@@ -20,7 +20,7 @@ public struct RawInputDevice
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="usage">The usage id for the raw input device.</param>

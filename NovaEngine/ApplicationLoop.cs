@@ -4,7 +4,7 @@
 public static class ApplicationLoop
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>Whether updating components has been paused.</summary>
     public static bool IsComponentUpdatingPaused { get; set; }

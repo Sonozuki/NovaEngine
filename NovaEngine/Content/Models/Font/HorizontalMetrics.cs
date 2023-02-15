@@ -14,7 +14,7 @@ public class HorizontalMetrics
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="advanceWidth">The advance width of the glyph.</param>

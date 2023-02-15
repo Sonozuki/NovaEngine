@@ -4,7 +4,7 @@
 public static class Gizmos
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The colour that is used to render the gizmos when a 'colour' parameter isn't specified.</summary>
     public static Colour DefaultColour { get; set; } = Colour.DarkGrey;

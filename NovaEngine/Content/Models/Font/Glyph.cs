@@ -15,7 +15,7 @@ internal class Glyph
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The character the glyph represents.</summary>
     public char Character { get; set; }
@@ -37,7 +37,7 @@ internal class Glyph
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
@@ -50,6 +50,10 @@ internal class Glyph
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Flushes the contour ends, points, and contours of the glyph.</summary>
     public void Flush()
     {

@@ -5,7 +5,7 @@
 public class ContentPackerAttribute : Attribute
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The type of content the packer is for.</summary>
     /// <remarks>For example 'texture', this is used so an asset file can't be used with the wrong reader.</remarks>
@@ -16,7 +16,7 @@ public class ContentPackerAttribute : Attribute
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="type">The type of content the packer is for.</param>

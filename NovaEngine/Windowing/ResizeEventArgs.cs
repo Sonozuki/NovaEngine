@@ -4,7 +4,7 @@
 public class ResizeEventArgs : EventArgs
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The old size of the window.</summary>
     public Vector2I OldSize { get; }
@@ -14,7 +14,7 @@ public class ResizeEventArgs : EventArgs
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="oldSize">The old size of the window.</param>

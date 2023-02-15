@@ -38,7 +38,7 @@ public struct Matrix3x3<T> : IEquatable<Matrix3x3<T>>
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>Whether the matrix is an identity matrix.</summary>
     public readonly bool IsIdentity => this == Identity;
@@ -327,7 +327,7 @@ public struct Matrix3x3<T> : IEquatable<Matrix3x3<T>>
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="value">The value of all the matrix components.</param>
@@ -440,6 +440,10 @@ public struct Matrix3x3<T> : IEquatable<Matrix3x3<T>>
         M33 = m33;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Transposes the matrix.</summary>
     public void Transpose() => (M12, M13, M21, M23, M31, M32) = (M21, M31, M12, M32, M13, M23);
 

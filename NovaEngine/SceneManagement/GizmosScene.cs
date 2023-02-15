@@ -15,22 +15,18 @@ internal class GizmosScene : Scene
     /// <summary>The pool of line game objects.</summary>
     private readonly ObjectPool<GameObject> LineGameObjects = new(() => GameObject.Line, gameObject => gameObject.IsEnabled = false);
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-
     /// <summary>The game object that contains all the cubes as children.</summary>
-    private GameObject CubesParent;
+    private readonly GameObject CubesParent;
 
     /// <summary>The game object that contains all the spheres as children.</summary>
-    private GameObject SpheresParent;
+    private readonly GameObject SpheresParent;
 
     /// <summary>The game object that contains all the lines as children.</summary>
-    private GameObject LinesParent;
-
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private readonly GameObject LinesParent;
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     public GizmosScene()
@@ -41,6 +37,10 @@ internal class GizmosScene : Scene
         LinesParent = new GameObject("Lines");
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Adds a cube gizmo to the scene.</summary>
     /// <param name="position">The position of the cube.</param>
     /// <param name="rotation">The rotation of the cube.</param>

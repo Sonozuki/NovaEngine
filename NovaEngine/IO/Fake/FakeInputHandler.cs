@@ -4,7 +4,7 @@
 internal class FakeInputHandler : IInputHandler
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <inheritdoc/>
     public bool CanUseOnPlatform => true;

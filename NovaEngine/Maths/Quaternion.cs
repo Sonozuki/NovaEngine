@@ -23,7 +23,7 @@ public struct Quaternion<T> : IEquatable<Quaternion<T>>
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>Whether the quaternion is an identity quaternion.</summary>
     public readonly bool IsIdentity => this == Identity;
@@ -101,7 +101,7 @@ public struct Quaternion<T> : IEquatable<Quaternion<T>>
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="x">The X component of the vector part of the quaternion.</param>
@@ -137,6 +137,10 @@ public struct Quaternion<T> : IEquatable<Quaternion<T>>
         W = vector.W;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Scales the quaternion to unit length.</summary>
     public void Normalise()
     {

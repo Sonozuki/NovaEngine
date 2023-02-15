@@ -11,7 +11,7 @@ public static class CommandManager
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Initialises the class.</summary>
     static CommandManager()
@@ -23,6 +23,10 @@ public static class CommandManager
         Add("qqq", "Closes the application.\n\nUsage: qqq\nCloses the application.", (_) => Environment.Exit(0));
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Adds a command.</summary>
     /// <param name="name">The name of the command.</param>
     /// <param name="documentation">The documentation of the command.</param>

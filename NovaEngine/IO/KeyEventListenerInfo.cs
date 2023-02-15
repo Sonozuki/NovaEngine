@@ -4,7 +4,7 @@
 internal class KeyEventListenerInfo
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The key to listen for.</summary>
     public Key Key { get; }
@@ -17,7 +17,7 @@ internal class KeyEventListenerInfo
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="key">The key to listen for.</param>

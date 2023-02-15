@@ -23,7 +23,7 @@ public class Win32RawInput : IInputHandler
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <inheritdoc/>
     public bool CanUseOnPlatform => OperatingSystem.IsWindows();
@@ -48,8 +48,11 @@ public class Win32RawInput : IInputHandler
     {
         get
         {
-            var cursorInfo = new CursorInfo();
-            cursorInfo.Size = (uint)Marshal.SizeOf<CursorInfo>();
+            var cursorInfo = new CursorInfo
+            {
+                Size = (uint)Marshal.SizeOf<CursorInfo>()
+            };
+
             User32.GetCursorInfo(ref cursorInfo);
             return cursorInfo.Flags == CursorState.Showing;
         }
@@ -95,7 +98,7 @@ public class Win32RawInput : IInputHandler
     }
 
     /// <summary>The top left position of the clip rectangle, in client-area coordinates.</summary>
-    private Vector2I CursorClipTopLeft
+    private static Vector2I CursorClipTopLeft
     {
         get
         {

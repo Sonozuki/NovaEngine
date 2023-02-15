@@ -4,7 +4,7 @@
 public sealed class SerialisationException : Exception
 {
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="message">The message that describes the error.</param>

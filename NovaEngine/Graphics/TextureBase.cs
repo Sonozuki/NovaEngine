@@ -30,7 +30,7 @@ public abstract class TextureBase : IDisposable
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The width of the texture.</summary>
     public uint Width { get; }
@@ -75,7 +75,7 @@ public abstract class TextureBase : IDisposable
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
@@ -116,6 +116,10 @@ public abstract class TextureBase : IDisposable
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Disposes unmanaged texture resources.</summary>
     public void Dispose() => RendererTexture.Dispose();
 

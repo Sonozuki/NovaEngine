@@ -5,14 +5,14 @@
 internal class DebugValue<T> : DebugValueBase
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The callback of the debug value.</summary>
     public Action<T?> Callback { get; }
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="name">The name of the debug value.</param>
@@ -26,6 +26,10 @@ internal class DebugValue<T> : DebugValueBase
         Callback = callback ?? throw new ArgumentNullException(nameof(callback));
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <inheritdoc/>
     public override void InvokeCallback(string value)
     {

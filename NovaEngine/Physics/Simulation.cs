@@ -7,7 +7,7 @@ internal class Simulation
     ** Fields
     *********/
     /// <summary>The target delta time of each update.</summary>
-    private float TargetUpdateDeltaTime = 1 / 120f;
+    private readonly float TargetUpdateDeltaTime = 1 / 120f;
 
     /// <summary>The delta time accumulation.</summary>
     private float DeltaTimeAccumulation;
@@ -20,7 +20,7 @@ internal class Simulation
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The bodies in the simulation.</summary>
     public List<RigidBody> Bodies { get; } = new();
@@ -74,7 +74,7 @@ internal class Simulation
         }
 
         // TODO: temp, collidables should calculate and cache inertia tensor
-        void CalculateInverseInertiaTensor(RigidBody body)
+        static void CalculateInverseInertiaTensor(RigidBody body)
         {
             var inverseInertia = new Vector3<float>(2.5f * body.InverseMass / .25f);
 
@@ -160,7 +160,7 @@ internal class Simulation
     /// <param name="a">The first rigid body of the collision.</param>
     /// <param name="b">The second rigid body of the collision.</param>
     /// <param name="contactPoint">The contact point of the collision.</param>
-    private void ImpulseResolveCollision(RigidBody a, RigidBody b, ContactPoint contactPoint)
+    private static void ImpulseResolveCollision(RigidBody a, RigidBody b, ContactPoint contactPoint)
     {
         // separate objects
         var totalInverseMass = a.InverseMass + b.InverseMass;

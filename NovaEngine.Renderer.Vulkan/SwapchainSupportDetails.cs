@@ -1,10 +1,10 @@
 ﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Contains details about the swapchain support.</summary>
-internal struct SwapchainSupportDetails
+internal readonly struct SwapchainSupportDetails
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The surface capabilities.</summary>
     public VkSurfaceCapabilitiesKHR Capabilities { get; }
@@ -20,7 +20,7 @@ internal struct SwapchainSupportDetails
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="physicalDevice">The physical device to get the swapchain support details of.</param>

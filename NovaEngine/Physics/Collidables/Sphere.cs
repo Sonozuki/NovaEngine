@@ -17,7 +17,7 @@ internal class Sphere : ICollidable
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <inheritdoc/>
     public CollidableId Id => CollidableId.Sphere;
@@ -45,7 +45,7 @@ internal class Sphere : ICollidable
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     public Sphere()
@@ -60,6 +60,10 @@ internal class Sphere : ICollidable
         Offset = offset;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <inheritdoc/>
     public Vector3<float> CalculateInertia(float inverseMass) => new(2.5f * inverseMass / (Radius * Radius));
 }

@@ -4,14 +4,14 @@
 public class DepthTexture : Texture2D
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <inheritdoc/>
     internal override TextureUsage Usage => TextureUsage.Depth;
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance/</summary>
     /// <param name="width">The width of the texture.</param>

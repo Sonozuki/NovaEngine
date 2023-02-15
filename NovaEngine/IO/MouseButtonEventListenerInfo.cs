@@ -4,7 +4,7 @@
 internal class MouseButtonEventListenerInfo
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The button to listen to.</summary>
     public MouseButton Button { get; }
@@ -14,7 +14,7 @@ internal class MouseButtonEventListenerInfo
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="button">The button to listen to.</param>

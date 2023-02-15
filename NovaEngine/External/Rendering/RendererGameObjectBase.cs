@@ -4,14 +4,14 @@
 public abstract class RendererGameObjectBase : IDisposable
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The underlying game object.</summary>
     public GameObject BaseGameObject { get; }
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="baseGameObject">The underlying game object.</param>
@@ -20,6 +20,10 @@ public abstract class RendererGameObjectBase : IDisposable
         BaseGameObject = baseGameObject;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Invoked whenever the mesh of a game object gets updated.</summary>
     /// <param name="mesh">The updated mesh.</param>
     public abstract void UpdateMesh(Mesh mesh);

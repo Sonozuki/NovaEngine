@@ -4,7 +4,7 @@
 public class GlyphData
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The character the glyph represents.</summary>
     public char Character { get; }

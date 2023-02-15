@@ -13,14 +13,14 @@ public sealed class SerialiserLoadable<T>
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The path to load the initial value from when deserialising.</summary>
     public string Path { get; }
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 

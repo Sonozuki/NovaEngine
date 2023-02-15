@@ -6,14 +6,14 @@ namespace NovaEngine.Rendering;
 internal static class RendererManager
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The renderer that is currently being used.</summary>
     public static IRenderer CurrentRenderer { get; }
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 

@@ -4,7 +4,7 @@
 public interface IInputHandler
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>Whether the input handler can be used on the current environment platform.</summary>
     public bool CanUseOnPlatform { get; }

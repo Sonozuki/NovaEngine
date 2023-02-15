@@ -15,7 +15,7 @@ internal class ObjectInfo
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The unique id representing the object.</summary>
     public uint Id { get; }
@@ -55,7 +55,7 @@ internal class ObjectInfo
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="id">The unique id representing the object.</param>
@@ -68,6 +68,10 @@ internal class ObjectInfo
         TypeInfo = typeInfo;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Links the references of non inlinable objects, recursively.</summary>
     /// <param name="allObjectInfos">All the deserialised object infos.</param>
     public void LinkReferences(List<ObjectInfo> allObjectInfos)

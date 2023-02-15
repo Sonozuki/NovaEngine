@@ -4,7 +4,7 @@
 public static class Time
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The number of seconds that the previous frame took to process.</summary>
     public static float DeltaTime { get; internal set; }

@@ -11,14 +11,14 @@ internal unsafe class VulkanDescriptorSet
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The underlying descriptor set.</summary>
     public VkDescriptorSet NativeDescriptorSet { get; }
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="nativeDescriptorSet">The underlying descriptor set.</param>
@@ -27,6 +27,10 @@ internal unsafe class VulkanDescriptorSet
         NativeDescriptorSet = nativeDescriptorSet;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Binds a buffer info.</summary>
     /// <param name="destinationBinding">Where to bind <paramref name="bufferInfo"/>.</param>
     /// <param name="bufferInfo">The buffer info to bind to <paramref name="destinationBinding"/>.</param>

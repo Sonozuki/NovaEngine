@@ -12,7 +12,7 @@ internal class FakeTexture : RendererTextureBase
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <inheritdoc/>
     public FakeTexture(TextureBase baseTexture)
@@ -21,6 +21,10 @@ internal class FakeTexture : RendererTextureBase
         Pixels = new Colour32[this.Width * this.Height * this.Depth];
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <inheritdoc/>
     public override void Dispose() { }
 

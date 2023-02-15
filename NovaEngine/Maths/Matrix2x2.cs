@@ -23,7 +23,7 @@ public struct Matrix2x2<T> : IEquatable<Matrix2x2<T>>
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>Whether the matrix is an identity matrix.</summary>
     public readonly bool IsIdentity => this == Identity;
@@ -190,7 +190,7 @@ public struct Matrix2x2<T> : IEquatable<Matrix2x2<T>>
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="value">The value of all the matrix components.</param>
@@ -226,6 +226,10 @@ public struct Matrix2x2<T> : IEquatable<Matrix2x2<T>>
         M22 = row2.Y;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Transposes the matrix.</summary>
     public void Transpose() => (M12, M21) = (M21, M12);
 

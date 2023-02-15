@@ -4,7 +4,7 @@
 internal class Point
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The X coordinate of the point.</summary>
     public int X { get; set; }
@@ -18,7 +18,7 @@ internal class Point
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="isOnCurve">Whether the point is on the curve.</param>
@@ -38,6 +38,10 @@ internal class Point
         IsOnCurve = isOnCurve;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Gets the point as a <see cref="Vector2{T}"/>.</summary>
     /// <returns>The point as a <see cref="Vector2{T}"/>.</returns>
     public Vector2<float> ToVector2() => new(X, Y);

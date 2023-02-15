@@ -11,7 +11,7 @@ public sealed class RenderingSettings : SettingsBase<RenderingSettings>
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The maximum number of samples per pixel that can be used in multisample anti aliasing (MSAA).</summary>
     [JsonIgnore]

@@ -6,7 +6,7 @@ namespace NovaEngine.Content.Models.Font;
 internal class Channel
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The minimum distance from the pixel to an edge segment whose edge colour has a colour channel this channel is representing.</summary>
     public SignedDistance MinDistance { get; set; } = new();

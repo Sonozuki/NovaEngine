@@ -17,7 +17,7 @@ public struct MVPBuffer
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="model">The model matrix.</param>

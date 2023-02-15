@@ -4,19 +4,23 @@
 internal class FakeCamera : RendererCameraBase
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <inheritdoc/>
     public override Texture2D RenderTarget => Texture2D.Undefined;
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <inheritdoc/>
     public FakeCamera(Camera baseCamera)
         : base(baseCamera) { }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <inheritdoc/>
     public override void OnResolutionChange() { }
 

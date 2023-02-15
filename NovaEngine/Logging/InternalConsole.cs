@@ -6,12 +6,12 @@ internal static class InternalConsole
     /*********
     ** Fields
     *********/
-    //// <summary>The buffered lines to render in the console.</summary>
+    /// <summary>The buffered lines to render in the console.</summary>
     private static readonly CircularBuffer<InternalConsoleString> BufferedLines;
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The default colour of any written text when it's 'colour' parameter is <see langword="null"/>.</summary>
     public static Colour DefaultColour { get; set; } = Colour.White; // TODO: get this value from ConsoleSettings
@@ -21,7 +21,7 @@ internal static class InternalConsole
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Initialises the class.</summary>
     static InternalConsole()
@@ -31,9 +31,13 @@ internal static class InternalConsole
         var bufferSize = ConsoleSettings.Instance.MaxNumberOfLines;
         BufferedLines = new(bufferSize, BufferedLines.TakeLast(bufferSize)); // take last to prevent exception being thrown if bufferSize is less than the current size
 
-        Input.AddKeyHandler(Key.OEM_8, PressType.Press, () => IsVisible = !IsVisible);
+        Input.AddKeyHandler(Key.OEM_8, PressType.Press, () => IsVisible = !IsVisible); // TODO: load key bind from settings
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Writes a string to the engine console.</summary>
     /// <param name="message">The string to write to the console.</param>
     /// <param name="colour">The colour of the string. If <see langword="null"/>, then <see cref="DefaultColour"/> will be used.</param>

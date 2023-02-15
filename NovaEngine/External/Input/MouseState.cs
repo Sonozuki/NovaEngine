@@ -22,7 +22,7 @@ public struct MouseState
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>Gets or sets the pressed state of a specified button.</summary>
     /// <param name="button">The button whose state to get or set.</param>

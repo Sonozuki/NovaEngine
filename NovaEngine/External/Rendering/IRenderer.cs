@@ -4,7 +4,7 @@
 public interface IRenderer : IDisposable
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>Whether the renderer can be used on the current environment platform.</summary>
     public bool CanUseOnPlatform { get; }

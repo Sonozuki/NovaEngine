@@ -23,7 +23,7 @@ public struct Vector4<T> : IEquatable<Vector4<T>>, IComparable<Vector4<T>>
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The length of the vector.</summary>
     public readonly T Length => T.Sqrt(LengthSquared);
@@ -791,7 +791,7 @@ public struct Vector4<T> : IEquatable<Vector4<T>>, IComparable<Vector4<T>>
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="value">The X, Y, Z, and W components of the vector.</param>
@@ -850,6 +850,10 @@ public struct Vector4<T> : IEquatable<Vector4<T>>, IComparable<Vector4<T>>
         W = w;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Scales the vector to unit length.</summary>
     public void Normalise()
     {

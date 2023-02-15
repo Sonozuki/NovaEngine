@@ -24,7 +24,7 @@ internal unsafe class VulkanDescriptorPool : IDisposable
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     public VulkanDescriptorPool(VkDescriptorSetLayout descriptorSetLayout)
@@ -55,6 +55,10 @@ internal unsafe class VulkanDescriptorPool : IDisposable
         }
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Retrieves a descriptor set.</summary>
     /// <returns>A descriptor set.</returns>
     public VulkanDescriptorSet GetDescriptorSet()

@@ -4,7 +4,7 @@
 internal class InternalConsoleString
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The characters of the string.</summary>
     public List<InternalConsoleCharacter> Characters { get; }
@@ -14,7 +14,7 @@ internal class InternalConsoleString
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="characters">The characters of the string.</param>
@@ -23,6 +23,10 @@ internal class InternalConsoleString
         Characters = characters.ToList();
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Splits the string on a character.</summary>
     /// <param name="char">The character to split the string on.</param>
     /// <returns>The string split on each instance of <paramref name="char"/>.</returns>

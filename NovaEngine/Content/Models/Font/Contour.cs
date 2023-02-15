@@ -6,14 +6,14 @@ namespace NovaEngine.Content.Models.Font;
 internal class Contour
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The edge segments the contour is comprised of.</summary>
     public List<EdgeSegmentBase> Edges { get; } = new();
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="edges">The edge segments the contour is comprised of.</param>

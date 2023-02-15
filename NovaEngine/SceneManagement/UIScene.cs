@@ -4,7 +4,7 @@
 public class UIScene : Scene
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The rendering mode of the scene.</summary>
     public UISceneRenderMode RenderMode { get; set; }
@@ -15,7 +15,7 @@ public class UIScene : Scene
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <inheritdoc/>
     public UIScene(string name, bool isActive)

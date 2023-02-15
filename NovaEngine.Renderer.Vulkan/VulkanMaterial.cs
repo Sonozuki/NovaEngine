@@ -17,7 +17,7 @@ internal struct VulkanMaterial
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="tint">The tint of the material.</param>

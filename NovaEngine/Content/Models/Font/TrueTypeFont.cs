@@ -46,7 +46,7 @@ internal class TrueTypeFont : IDisposable
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The name of the font.</summary>
     public string Name { get; internal set; }
@@ -56,7 +56,7 @@ internal class TrueTypeFont : IDisposable
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
@@ -78,6 +78,10 @@ internal class TrueTypeFont : IDisposable
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <inheritdoc/>
     public void Dispose() => BinaryReader.Dispose();
 

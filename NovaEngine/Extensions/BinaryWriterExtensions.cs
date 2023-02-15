@@ -1,15 +1,15 @@
 ﻿namespace NovaEngine.Extensions;
 
 /// <summary>Extension methods for <see cref="BinaryWriter"/>.</summary>
-public static class BinaryWriterExtensions
+internal static class BinaryWriterExtensions
 {
     /*********
-    ** Internal Methods
+    ** Public Methods
     *********/
     /// <summary>Writes a collection of inlinable object buffers to the current stream and advances the position.</summary>
     /// <param name="binaryWriter">The binary writer to write to.</param>
     /// <param name="inlinableObjects">The inlinable object buffers to write.</param>
-    internal static void Write(this BinaryWriter binaryWriter, IEnumerable<byte[]> inlinableObjects)
+    public static void Write(this BinaryWriter binaryWriter, IEnumerable<byte[]> inlinableObjects)
     {
         var array = inlinableObjects.ToArray();
 
@@ -20,7 +20,7 @@ public static class BinaryWriterExtensions
     /// <summary>Writes a collection of non inlinable object unique ids to the current stream and advances the position.</summary>
     /// <param name="binaryWriter">The binary writer to write to.</param>
     /// <param name="nonInlinableObjects">The non inlinable object ids to write.</param>
-    internal static void Write(this BinaryWriter binaryWriter, IEnumerable<uint> nonInlinableObjects)
+    public static void Write(this BinaryWriter binaryWriter, IEnumerable<uint> nonInlinableObjects)
     {
         var array = nonInlinableObjects.ToArray();
 
@@ -32,7 +32,7 @@ public static class BinaryWriterExtensions
     /// <summary>Writes a collection of inlinable members to the current stream and advances the position.</summary>
     /// <param name="binaryWriter">The binary writer to write to.</param>
     /// <param name="inlinableMembers">The inlinable members to write.</param>
-    internal static void Write(this BinaryWriter binaryWriter, IDictionary<string, byte[]> inlinableMembers)
+    public static void Write(this BinaryWriter binaryWriter, IDictionary<string, byte[]> inlinableMembers)
     {
         binaryWriter.Write((ushort)inlinableMembers.Count);
         foreach (var kvp in inlinableMembers)
@@ -45,7 +45,7 @@ public static class BinaryWriterExtensions
     /// <summary>Writes a collection of non inlinable members to the current stream and advances the position.</summary>
     /// <param name="binaryWriter">The binary writer to write to.</param>
     /// <param name="nonInlinableMembers">The non inlinable members to write.</param>
-    internal static void Write(this BinaryWriter binaryWriter, IDictionary<string, uint> nonInlinableMembers)
+    public static void Write(this BinaryWriter binaryWriter, IDictionary<string, uint> nonInlinableMembers)
     {
         binaryWriter.Write((ushort)nonInlinableMembers.Count);
         foreach (var kvp in nonInlinableMembers)

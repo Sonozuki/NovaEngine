@@ -4,7 +4,7 @@
 internal class Command
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The name of the command.</summary>
     public string Name { get; }
@@ -17,7 +17,7 @@ internal class Command
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="name">The name of the command.</param>

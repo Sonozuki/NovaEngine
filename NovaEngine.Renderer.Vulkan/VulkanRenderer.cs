@@ -29,7 +29,7 @@ public unsafe class VulkanRenderer : IRenderer
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <inheritdoc/>
     public bool CanUseOnPlatform => OperatingSystem.IsWindows();
@@ -58,7 +58,7 @@ public unsafe class VulkanRenderer : IRenderer
     /// <summary>The window surface Vulkan will draw to.</summary>
     internal VkSurfaceKHR NativeSurface { get; private set; }
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     /// <summary>The <see cref="VkPhysicalDevice"/> and it's logical <see cref="VkDevice"/> representation.</summary>
     internal VulkanDevice Device { get; private set; }
@@ -66,7 +66,7 @@ public unsafe class VulkanRenderer : IRenderer
     /// <summary>The singleton instance of <see cref="VulkanRenderer"/>.</summary>
     public static VulkanRenderer Instance { get; private set; }
 
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 
     /*********

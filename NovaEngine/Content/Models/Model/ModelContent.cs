@@ -4,7 +4,7 @@
 public class ModelContent
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The meshes of the model.</summary>
     public List<MeshContent> Meshes { get; } = new();

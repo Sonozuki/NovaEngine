@@ -4,7 +4,7 @@
 public class WindowsPlatform : IPlatform
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <inheritdoc/>
     public bool IsCurrentPlatform => OperatingSystem.IsWindows();

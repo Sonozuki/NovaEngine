@@ -4,7 +4,7 @@
 internal class FakeRenderer : IRenderer
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <inheritdoc/>
     public bool CanUseOnPlatform => true;

@@ -20,7 +20,7 @@ public struct Rectangle
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="x">The X position of the rectangle.</param>

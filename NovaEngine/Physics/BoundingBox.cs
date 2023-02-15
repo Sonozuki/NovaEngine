@@ -14,7 +14,7 @@ public struct BoundingBox
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="centre">The centre of the bounding box.</param>
@@ -25,6 +25,10 @@ public struct BoundingBox
         HalfSize = halfSize;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Calculates whether two bounding boxes are intersecting.</summary>
     /// <param name="other">The bounding box to check for intersection.</param>
     /// <returns><see langword="true"/>, if the two bounding boxes are intersecting; otherwise, <see langword="false"/>.</returns>

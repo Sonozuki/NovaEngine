@@ -14,7 +14,7 @@ internal class CmapFormat4 : ICmapFormat
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="binaryReader">The binary reader whose current position is at the start of the format 4 cmap subtable content.</param>
@@ -40,6 +40,10 @@ internal class CmapFormat4 : ICmapFormat
         }
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <inheritdoc/>
     public ushort Map(BinaryReader binaryReader, int characterCode)
     {

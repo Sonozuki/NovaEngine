@@ -87,7 +87,7 @@ public unsafe class VulkanCamera : RendererCameraBase
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The swapchain Vulkan will present to.</summary>
     internal VulkanSwapchain Swapchain { get; private set; }
@@ -127,7 +127,7 @@ public unsafe class VulkanCamera : RendererCameraBase
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
@@ -157,6 +157,10 @@ public unsafe class VulkanCamera : RendererCameraBase
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <inheritdoc/>
     public override void OnResolutionChange() => RecreateSwapchain();
 

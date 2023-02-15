@@ -5,7 +5,7 @@
 public abstract class ComponentBase : IDisposable
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>Whether the component is enabled.</summary>
     public bool IsEnabled { get; set; }
@@ -27,7 +27,7 @@ public abstract class ComponentBase : IDisposable
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
@@ -40,6 +40,10 @@ public abstract class ComponentBase : IDisposable
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <inheritdoc/>
     public virtual void Dispose() { }
 

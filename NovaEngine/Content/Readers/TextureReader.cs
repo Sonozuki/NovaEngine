@@ -10,21 +10,20 @@ public class TextureReader : IContentReader
     /// <inheritdoc/>
     public unsafe object Read(Stream stream, Type outputType)
     {
-        using (var binaryReader = new BinaryReader(stream))
-        {
-            var width = (uint)binaryReader.ReadInt32();
-            var height = (uint)binaryReader.ReadInt32();
+        using var binaryReader = new BinaryReader(stream);
 
-            var pixels = binaryReader.ReadBytes((int)(width * height * 4));
+        var width = (uint)binaryReader.ReadInt32();
+        var height = (uint)binaryReader.ReadInt32();
 
-            var pixelsArray = new Colour[height, width];
-            fixed (byte* pixelsPointer = pixels)
-            fixed (Colour* pixelsArrayPointer = pixelsArray)
-                Buffer.MemoryCopy(pixelsPointer, pixelsArrayPointer, pixels.Length, pixels.Length);
+        var pixels = binaryReader.ReadBytes((int)(width * height * 4));
 
-            var texture = new Texture2D(width, height);
-            texture.SetPixels(pixelsArray);
-            return texture;
-        }
+        var pixelsArray = new Colour[height, width];
+        fixed (byte* pixelsPointer = pixels)
+        fixed (Colour* pixelsArrayPointer = pixelsArray)
+            Buffer.MemoryCopy(pixelsPointer, pixelsArrayPointer, pixels.Length, pixels.Length);
+
+        var texture = new Texture2D(width, height);
+        texture.SetPixels(pixelsArray);
+        return texture;
     }
 }

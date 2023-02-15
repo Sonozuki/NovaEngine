@@ -4,7 +4,7 @@
 internal static class Meshes
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>An empty mesh.</summary>
     public static Mesh Empty { get; } = new("Empty", new Vertex[0], new uint[0]);

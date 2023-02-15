@@ -14,7 +14,7 @@ public unsafe class VulkanTexture : RendererTextureBase
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The texture image.</summary>
     public VkImage NativeImage { get; }
@@ -36,7 +36,7 @@ public unsafe class VulkanTexture : RendererTextureBase
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="baseTexture">The underlying texture.</param>
@@ -163,6 +163,10 @@ public unsafe class VulkanTexture : RendererTextureBase
         CommandPool = new(CommandPoolUsage.Graphics, VkCommandPoolCreateFlags.Transient);
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     // TODO: clean up
     /// <inheritdoc/>
     public override Colour32[] GetPixels()

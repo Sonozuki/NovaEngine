@@ -4,7 +4,7 @@
 public class Scene : IDisposable
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The name of the scene.</summary>
     public string Name { get; set; }
@@ -17,7 +17,7 @@ public class Scene : IDisposable
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="name">The name of the scene.</param>
@@ -30,6 +30,10 @@ public class Scene : IDisposable
         RootGameObjects = new(this);
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <inheritdoc/>
     public virtual void Dispose()
     {

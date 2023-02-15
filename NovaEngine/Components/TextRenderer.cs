@@ -14,7 +14,7 @@ public class TextRenderer : MeshRenderingComponentBase
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The text to render.</summary>
     public string Text
@@ -72,7 +72,7 @@ public class TextRenderer : MeshRenderingComponentBase
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
@@ -89,6 +89,10 @@ public class TextRenderer : MeshRenderingComponentBase
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <inheritdoc/>
     public override void Dispose()
     {
@@ -121,18 +125,16 @@ public class TextRenderer : MeshRenderingComponentBase
         var height = 0f;
         foreach (var character in Text)
         {
-            var glyph = Font.Glyphs.FirstOrDefault(g => g.Character == character);
-            if (glyph == null)
-                glyph = Font.Glyphs[0];
+            var glyph = Font.Glyphs.FirstOrDefault(g => g.Character == character) ?? Font.Glyphs[0];
 
             // draw glyph quad
             var glyphScale = FontSize / Font.MaxGlyphHeight;
             var scaledGlyphSize = glyph.Size.ToVector2<float>() * glyphScale;
 
-            vertices.Add(new Vertex(new(xPosition                    , yPosition + FontSize - scaledGlyphSize.Y, 0), new(glyph.AtlasPosition.X                            , glyph.AtlasPosition.Y                             )));
-            vertices.Add(new Vertex(new(xPosition + scaledGlyphSize.X, yPosition + FontSize - scaledGlyphSize.Y, 0), new(glyph.AtlasPosition.X + glyph.AtlasPosition.Width, glyph.AtlasPosition.Y                             )));
-            vertices.Add(new Vertex(new(xPosition                    , yPosition + FontSize                    , 0), new(glyph.AtlasPosition.X                            , glyph.AtlasPosition.Y + glyph.AtlasPosition.Height)));
-            vertices.Add(new Vertex(new(xPosition + scaledGlyphSize.X, yPosition + FontSize                    , 0), new(glyph.AtlasPosition.X + glyph.AtlasPosition.Width, glyph.AtlasPosition.Y + glyph.AtlasPosition.Height)));
+            vertices.Add(new Vertex(new(xPosition, yPosition + FontSize - scaledGlyphSize.Y, 0), new(glyph.AtlasPosition.X, glyph.AtlasPosition.Y)));
+            vertices.Add(new Vertex(new(xPosition + scaledGlyphSize.X, yPosition + FontSize - scaledGlyphSize.Y, 0), new(glyph.AtlasPosition.X + glyph.AtlasPosition.Width, glyph.AtlasPosition.Y)));
+            vertices.Add(new Vertex(new(xPosition, yPosition + FontSize, 0), new(glyph.AtlasPosition.X, glyph.AtlasPosition.Y + glyph.AtlasPosition.Height)));
+            vertices.Add(new Vertex(new(xPosition + scaledGlyphSize.X, yPosition + FontSize, 0), new(glyph.AtlasPosition.X + glyph.AtlasPosition.Width, glyph.AtlasPosition.Y + glyph.AtlasPosition.Height)));
 
             var topLeftIndex = (uint)vertices.Count - 4;
             var topRightIndex = (uint)vertices.Count - 3;

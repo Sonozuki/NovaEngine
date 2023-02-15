@@ -21,7 +21,7 @@ internal class FakeGameObject : RendererGameObjectBase
 
 
     /*********
-    ** Private Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     public FakeGameObject() : base(new("Fake")) { }

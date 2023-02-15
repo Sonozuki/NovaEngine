@@ -18,7 +18,7 @@ public class RigidBody : ComponentBase
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The mass of the body.</summary>
     public float Mass

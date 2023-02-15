@@ -4,7 +4,7 @@
 internal class Segment
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The start code of the segment.</summary>
     public ushort StartCode { get; set; }

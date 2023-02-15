@@ -17,7 +17,7 @@ public abstract class PlatformWindowBase
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The handle of the window.</summary>
     public IntPtr Handle { get; protected set; }

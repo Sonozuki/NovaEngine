@@ -4,7 +4,7 @@
 internal class FakePlatform : IPlatform
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <inheritdoc/>
     public bool IsCurrentPlatform => true;

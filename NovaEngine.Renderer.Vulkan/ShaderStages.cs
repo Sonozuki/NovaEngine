@@ -7,14 +7,14 @@ internal unsafe static class ShaderStages
     ** Fields
     *********/
     /// <summary>A pointer to a <see langword="string"/> containing "main", specifying the name of a shader entry point.</summary>
-    private static IntPtr ShaderEntryPointNamePointer;
+    private static readonly IntPtr ShaderEntryPointNamePointer;
 
     /// <summary>The created shader modules, stored for destroying.</summary>
     private static readonly List<VkShaderModule> ShaderModules = new();
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The shader stage for the generate frustums shader.</summary>
     public static VkPipelineShaderStageCreateInfo GenerateFrustumsShader;
@@ -45,7 +45,7 @@ internal unsafe static class ShaderStages
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     static ShaderStages()
     {
@@ -62,6 +62,10 @@ internal unsafe static class ShaderStages
         MTSDFTextFragmentShader = LoadShader("Shaders/mtsdf_text_frag", VkShaderStageFlags.Fragment);
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Disposes unmanaged shader stage resources.</summary>
     public static void Dispose()
     {

@@ -16,7 +16,7 @@ public class SceneRootObjects : IList<GameObject>
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <inheritdoc/>
     public int Count => RootGameObjects.Count;
@@ -37,6 +37,17 @@ public class SceneRootObjects : IList<GameObject>
             value.Scene = Scene;
             RootGameObjects[index] = value;
         }
+    }
+
+    
+    /*********
+    ** Constructors
+    *********/
+    /// <summary>Constructs an instance.</summary>
+    /// <param name="scene">The scene whose root objects this collection contains.</param>
+    internal SceneRootObjects(Scene scene)
+    {
+        Scene = scene;
     }
 
 
@@ -104,15 +115,4 @@ public class SceneRootObjects : IList<GameObject>
 
     /// <inheritdoc/>
     IEnumerator IEnumerable.GetEnumerator() => RootGameObjects.GetEnumerator();
-
-
-    /*********
-    ** Internal Methods
-    *********/
-    /// <summary>Constructs an instance.</summary>
-    /// <param name="scene">The scene whose root objects this collection contains.</param>
-    internal SceneRootObjects(Scene scene)
-    {
-        Scene = scene;
-    }
 }

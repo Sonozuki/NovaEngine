@@ -5,7 +5,7 @@
 internal class LogSeverityInfoAttribute : Attribute
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The label of the log.</summary>
     public string Label { get; }
@@ -21,7 +21,7 @@ internal class LogSeverityInfoAttribute : Attribute
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="label">The label of the log.</param>

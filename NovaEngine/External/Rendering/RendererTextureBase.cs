@@ -4,7 +4,7 @@
 public abstract class RendererTextureBase : IDisposable
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The underlying texture.</summary>
     public TextureBase BaseTexture { get; }
@@ -60,7 +60,7 @@ public abstract class RendererTextureBase : IDisposable
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="baseTexture">The underlying texture.</param>
@@ -86,6 +86,10 @@ public abstract class RendererTextureBase : IDisposable
         WrapModeW = (TextureWrapMode?)typeof(TextureBase).GetField("_WrapModeW", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(BaseTexture) ?? throw new MissingMemberException("Couldn't find '_WrapModeW' field.");
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Retrieves the pixel data of the texture.</summary>
     /// <returns>The pixel data of the texture.</returns>
     public abstract Colour32[] GetPixels();

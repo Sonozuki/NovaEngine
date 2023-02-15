@@ -1,4 +1,6 @@
-﻿namespace NovaEngine.Renderer.Vulkan.ShaderModels;
+﻿#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
+
+namespace NovaEngine.Renderer.Vulkan.ShaderModels;
 
 /// <summary>Represents a plane.</summary>
 internal struct Plane

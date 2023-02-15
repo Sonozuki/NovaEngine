@@ -11,7 +11,7 @@ public static class Debugger
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Initialises the class.</summary>
     static Debugger()
@@ -19,6 +19,10 @@ public static class Debugger
         CommandManager.Add("debug", "Provides a way of interacting with debug values at runtime.\n\nUsage: debug\nLists all the registered debug values.\n\nUsage: debug <debug_value>\nLists the documentation about a specific debug value\n- debug_value: The name of debug value to view the documentation of.\n\nUsage: debug <debug_value> <value>\nSets the value of a debug value.\n- debug_value: The name of the debug value to set the value of.\n- value: The value to set the debug value to.", DebugCommand);
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Adds a debug value that is editable through the 'debug' command.</summary>
     /// <typeparam name="T">The type of value being added.</typeparam>
     /// <param name="name">The name of the debug value.</param>

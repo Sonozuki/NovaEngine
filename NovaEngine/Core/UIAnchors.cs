@@ -4,7 +4,7 @@
 public class UIAnchors
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The horizontal anchors of the UI element.</summary>
     public HorizontalAnchor Horizontal { get; set; } = HorizontalAnchor.Centre;

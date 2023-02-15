@@ -4,7 +4,7 @@
 internal class Table
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The checksum of the table.</summary>
     public uint Checksum { get; }
@@ -17,7 +17,7 @@ internal class Table
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="checksum">The checksum of the table.</param>

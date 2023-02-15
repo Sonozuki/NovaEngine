@@ -18,7 +18,7 @@ public class CircularBuffer<T> : IEnumerable<T?>
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The current number of elements in the buffer.</summary>
     public int Size { get; private set; }
@@ -65,7 +65,7 @@ public class CircularBuffer<T> : IEnumerable<T?>
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="capacity">The maximum capacity of the buffer.</param>
@@ -91,6 +91,10 @@ public class CircularBuffer<T> : IEnumerable<T?>
         End = Size == capacity ? 0 : Size;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Pushes an element to the front of the buffer.</summary>
     /// <param name="element">The element to add.</param>
     /// <remarks>If the buffer is full, the element at the end will be popped.</remarks>

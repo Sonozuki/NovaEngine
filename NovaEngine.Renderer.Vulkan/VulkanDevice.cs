@@ -4,7 +4,7 @@
 internal unsafe class VulkanDevice : IDisposable
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The physical device Vulkan will use.</summary>
     public VkPhysicalDevice NativePhysicalDevice { get; }
@@ -23,7 +23,7 @@ internal unsafe class VulkanDevice : IDisposable
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="physicalDevice">The physical device Vulkan will use.</param>
@@ -115,7 +115,11 @@ internal unsafe class VulkanDevice : IDisposable
         TransferQueue = queues[indices.TransferFamily];
         ComputeQueue = queues[indices.ComputeFamily];
     }
-    
+
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Gets the index of a memory type that has all the requested properties.</summary>
     /// <param name="typeFilter">The bit mask of memory types that are suitable.</param>
     /// <param name="properties">The bit maks of properties the memory should have.</param>

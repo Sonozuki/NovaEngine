@@ -6,14 +6,14 @@ namespace NovaEngine.IO;
 internal static class InputHandlerManager
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The input handler that is currently being used.</summary>
     public static IInputHandler CurrentInputHandler { get; }
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 

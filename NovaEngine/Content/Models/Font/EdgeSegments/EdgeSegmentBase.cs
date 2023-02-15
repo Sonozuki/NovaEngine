@@ -4,7 +4,7 @@
 internal abstract class EdgeSegmentBase
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The points in the edge segment.</summary>
     public abstract Vector2<float>[] Points { get; }

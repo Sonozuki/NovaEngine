@@ -4,7 +4,7 @@
 public interface IPlatform
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>Whether this represents the current environment platform.</summary>
     public bool IsCurrentPlatform { get; }

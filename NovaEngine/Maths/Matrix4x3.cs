@@ -47,7 +47,7 @@ public struct Matrix4x3<T> : IEquatable<Matrix4x3<T>>
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The trace of the matrix (the sum of the values along the diagonal).</summary>
     public readonly T Trace => M11 + M22 + M33;
@@ -347,7 +347,7 @@ public struct Matrix4x3<T> : IEquatable<Matrix4x3<T>>
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="value">The value of all the matrix components.</param>
@@ -534,6 +534,10 @@ public struct Matrix4x3<T> : IEquatable<Matrix4x3<T>>
         M43 = m43;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Removes the translation from the matrix.</summary>
     public void RemoveTranslation() => Row4 = Vector3<T>.Zero;
 

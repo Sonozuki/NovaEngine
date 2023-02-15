@@ -17,7 +17,7 @@ internal struct CollisionInfo
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="a">The first rigid body of the collision.</param>

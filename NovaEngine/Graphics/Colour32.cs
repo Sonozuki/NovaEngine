@@ -20,7 +20,7 @@ public struct Colour32
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>Gets a color with (R, G, B, A) = (255, 255, 255, 0).</summary>
     public static Colour32 Transparent => Colour.Transparent.ToColour32();
@@ -447,7 +447,7 @@ public struct Colour32
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="r">The red channel.</param>
@@ -462,6 +462,10 @@ public struct Colour32
         A = a;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Gets the colour as a <see cref="Colour"/>.</summary>
     /// <returns>The colour as a <see cref="Colour"/>.</returns>
     public Colour ToColour() => new(R, G, B, A);

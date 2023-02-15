@@ -5,7 +5,7 @@
 public class ContentUnpackerAttribute : Attribute
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The type of content the unpacker is for.</summary>
     /// <remarks>For example 'texture', this is used so an asset file can't be used with the wrong unpacker.</remarks>
@@ -16,7 +16,7 @@ public class ContentUnpackerAttribute : Attribute
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="type">The type of content the unpacker is for.</param>

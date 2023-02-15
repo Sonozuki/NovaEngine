@@ -16,7 +16,7 @@ public class GameObjectComponents : IList<ComponentBase>
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <inheritdoc/>
     public int Count => Components.Count;
@@ -33,6 +33,22 @@ public class GameObjectComponents : IList<ComponentBase>
             value.GameObject = GameObject;
             Components[index] = value;
         }
+    }
+
+
+    /*********
+    ** Constructors
+    *********/
+    /// <summary>Constructs an instance.</summary>
+    /// <param name="parent">The game object whose components this collection is.</param>
+    /// <param name="components">The initial components to add.</param>
+    internal GameObjectComponents(GameObject parent, IEnumerable<ComponentBase>? components)
+    {
+        GameObject = parent;
+
+        if (components != null)
+            foreach (var component in components)
+                Add(component);
     }
 
 
@@ -184,20 +200,4 @@ public class GameObjectComponents : IList<ComponentBase>
 
     /// <inheritdoc/>
     IEnumerator IEnumerable.GetEnumerator() => Components.GetEnumerator();
-
-
-    /*********
-    ** Internal Methods
-    *********/
-    /// <summary>Constructs an instance.</summary>
-    /// <param name="parent">The game object whose components this collection is.</param>
-    /// <param name="components">The initial components to add.</param>
-    internal GameObjectComponents(GameObject parent, IEnumerable<ComponentBase>? components)
-    {
-        GameObject = parent;
-
-        if (components != null)
-            foreach (var component in components)
-                Add(component);
-    }
 }

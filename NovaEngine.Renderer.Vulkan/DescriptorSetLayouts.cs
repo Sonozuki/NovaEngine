@@ -4,7 +4,7 @@
 internal unsafe static class DescriptorSetLayouts
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The descriptor set layout for the generate frustums shader.</summary>
     public static VkDescriptorSetLayout GenerateFrustumsDescriptorSetLayout { get; }
@@ -26,7 +26,7 @@ internal unsafe static class DescriptorSetLayouts
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Initialises the class.</summary>
     static DescriptorSetLayouts()
@@ -92,6 +92,10 @@ internal unsafe static class DescriptorSetLayouts
         MTSDFTextDescriptorSetLayout = CreateDescriptorSetLayout(mtsdfTextBindings);
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Disposes unmanaged descriptor set layout resources.</summary>
     public static void Dispose()
     {

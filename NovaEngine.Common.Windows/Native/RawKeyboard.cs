@@ -13,7 +13,7 @@ public struct RawKeyboard
     public RawInputKeyboardDataFlags Flags;
 
     /// <summary>Reserved; must be zero.</summary>
-    private ushort Reserved;
+    private readonly ushort Reserved;
 
     /// <summary>The corresponding <see cref="Native.VirtualKey"/> code.</summary>
     public VirtualKey VirtualKey;

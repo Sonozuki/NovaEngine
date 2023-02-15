@@ -24,14 +24,16 @@ public class Win32Window : PlatformWindowBase
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <inheritdoc/>
     public override string Title
     {
         get
         {
+#pragma warning disable CA1806 // Do not ignore method results
             User32.GetWindowText(this.Handle, out var text, 255);
+#pragma warning restore CA1806 // Do not ignore method results
             return text;
         }
         set => User32.SetWindowText(this.Handle, value ?? "");
@@ -42,7 +44,7 @@ public class Win32Window : PlatformWindowBase
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <inheritdoc/>
     public unsafe Win32Window(string title, Vector2I size)
@@ -80,11 +82,14 @@ public class Win32Window : PlatformWindowBase
             throw new ApplicationException("Failed to craete Win32 window.").Log(LogSeverity.Fatal);
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <inheritdoc/>
     public override void ProcessEvents()
     {
-        Msg message;
-        while (User32.PeekMessage(out message, IntPtr.Zero, 0, 0, RemoveMessage.Remove))
+        while (User32.PeekMessage(out Msg message, IntPtr.Zero, 0, 0, RemoveMessage.Remove))
         {
             User32.TranslateMessage(in message);
             User32.DispatchMessage(in message);

@@ -4,7 +4,7 @@
 internal class SignedDistance
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The signed distance.</summary>
     public float Distance { get; set; }
@@ -14,7 +14,7 @@ internal class SignedDistance
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     public SignedDistance()

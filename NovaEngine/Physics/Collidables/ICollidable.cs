@@ -4,7 +4,7 @@
 internal interface ICollidable
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The id of the collidable.</summary>
     public CollidableId Id { get; }

@@ -18,7 +18,7 @@ public class Window
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The handle of the window.</summary>
     public IntPtr Handle => PlatformWindow.Handle;
@@ -42,7 +42,7 @@ public class Window
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="title">The title of the window.</param>
@@ -56,6 +56,10 @@ public class Window
         PlatformWindow.Closed += () => HasClosed = true;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Processes all pending window events.</summary>
     public void ProcessEvents() => PlatformWindow.ProcessEvents();
 

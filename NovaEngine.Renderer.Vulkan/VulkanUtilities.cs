@@ -4,7 +4,7 @@
 internal unsafe static class VulkanUtilities
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The attribute descriptions for a vertex.</summary>
     /// <remarks>Describes how to extract the vertex attributes from a chunk of vertex data from the <see cref="VertexBindingDescription"/>.</remarks>

@@ -6,11 +6,11 @@ internal static class AtlasPacker
     /*********
     ** Constants
     *********/
-    /// <summary>The amount of padding around the glyphs in the atlas.</summary>
-    private const int Padding = 1;
-
     /// <summary>The range, in pixels, of the signed distance around the glyphs.</summary>
     public const int PixelRange = 4;
+
+    /// <summary>The amount of padding around the glyphs in the atlas.</summary>
+    private const int Padding = 1;
 
 
     /*********

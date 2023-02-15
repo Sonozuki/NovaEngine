@@ -59,7 +59,7 @@ public struct Matrix4x4<T> : IEquatable<Matrix4x4<T>>
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>Whether the matrix is an identity matrix.</summary>
     public readonly bool IsIdentity => this == Identity;
@@ -396,7 +396,7 @@ public struct Matrix4x4<T> : IEquatable<Matrix4x4<T>>
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="value">The value of all the matrix components.</param>
@@ -721,6 +721,10 @@ public struct Matrix4x4<T> : IEquatable<Matrix4x4<T>>
         M44 = m44;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Transposes the matrix.</summary>
     public void Transpose() => (M12, M13, M14, M21, M23, M24, M31, M32, M34, M41, M42, M43) = (M21, M31, M41, M12, M32, M42, M13, M23, M43, M14, M24, M34);
 

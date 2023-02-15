@@ -4,7 +4,7 @@
 public sealed class UITransform : Transform
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The anchors of the UI element.</summary>
     public UIAnchors Anchors { get; } = new();
@@ -35,7 +35,7 @@ public sealed class UITransform : Transform
 
 
     /*********
-    ** Internal Methods
+    ** Constructors
     *********/
     /// <inheritdoc/>
     internal UITransform(GameObject gameObject)

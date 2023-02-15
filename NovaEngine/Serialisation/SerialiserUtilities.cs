@@ -3,7 +3,7 @@
 namespace NovaEngine.Serialisation;
 
 /// <summary>Contains useful methods for the serialiser.</summary>
-internal static class SerialiserUtilities
+internal static unsafe class SerialiserUtilities
 {
     /*********
     ** Fields
@@ -102,7 +102,7 @@ internal static class SerialiserUtilities
     /// <param name="typeInfo">The type info for the type of <paramref name="value"/>.</param>
     /// <returns>The byte array representation of <paramref name="value"/>.</returns>
     /// <remarks><paramref name="value"/> must be <see cref="TypeExtensions.IsInlinable(Type)"/>, it's the callers responibility to ensure that is the case.</remarks>
-    public unsafe static byte[] ConvertInlinableValueToBuffer(object? value, TypeInfo typeInfo)
+    public static byte[] ConvertInlinableValueToBuffer(object? value, TypeInfo typeInfo)
     {
         if (value == null)
             return new[] { (byte)0 }; // the first byte is zero if the value is null
@@ -188,7 +188,7 @@ internal static class SerialiserUtilities
     /// <param name="binaryReader">The binary reader to use to read from the stream.</param>
     /// <returns>The inlined object.</returns>
     /// <exception cref="SerialisationException">Thrown if an invalid value type was specified in the stream.</exception>
-    public unsafe static object? ReadInlinedValueFromStream(BinaryReader binaryReader)
+    public static object? ReadInlinedValueFromStream(BinaryReader binaryReader)
     {
         var valueType = binaryReader.ReadByte();
         if (valueType == 0)

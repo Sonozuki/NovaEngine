@@ -4,7 +4,7 @@
 public abstract class RendererCameraBase : IDisposable
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The underlying camera.</summary>
     public Camera BaseCamera { get; }
@@ -14,7 +14,7 @@ public abstract class RendererCameraBase : IDisposable
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="baseCamera">The underlying camera.</param>
@@ -23,6 +23,10 @@ public abstract class RendererCameraBase : IDisposable
         BaseCamera = baseCamera;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Invoked when the resolution of the camera is changed.</summary>
     public abstract void OnResolutionChange();
 

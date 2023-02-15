@@ -14,7 +14,7 @@ internal unsafe class VulkanCommandPool : IDisposable
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="usage">How the <see cref="VkCommandPool"/> will be used.</param>
@@ -47,6 +47,10 @@ internal unsafe class VulkanCommandPool : IDisposable
         NativeCommandPool = nativeCommandPool;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Allocates a command buffer from the command pool.</summary>
     /// <param name="beginCommandBuffer">Whether the command buffer should begin recording commands automatically.</param>
     /// <param name="commandBufferUsageFlags">The <see cref="VkCommandBufferUsageFlags"/> to use when starting the command buffer (this is only used if <paramref name="beginCommandBuffer"/> is <see langword="true"/>).</param>

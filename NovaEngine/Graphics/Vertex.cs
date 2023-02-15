@@ -17,7 +17,7 @@ public struct Vertex
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="position">The position of the vertex.</param>

@@ -4,7 +4,7 @@
 public class Texture2D : TextureBase
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The height of the texture.</summary>
     public uint Height => _Height;
@@ -21,7 +21,7 @@ public class Texture2D : TextureBase
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Initialises the class.</summary>
     static Texture2D()
@@ -50,6 +50,10 @@ public class Texture2D : TextureBase
     public Texture2D(uint width, uint height, bool automaticallyGenerateMipChain = true, float mipLodBias = 0, TexturePixelType pixelType = TexturePixelType.Byte, SampleCount sampleCount = SampleCount._1, bool anisotropicFilteringEnabled = true, float maxAnisotropicFilteringLevel = 16, TextureWrapMode wrapModeU = TextureWrapMode.Repeat, TextureWrapMode wrapModeV = TextureWrapMode.Repeat, TextureFilter filter = TextureFilter.Bilinear)
         : base(width, height, 1, pixelType, automaticallyGenerateMipChain, mipLodBias, 1, sampleCount, anisotropicFilteringEnabled, maxAnisotropicFilteringLevel, wrapModeU, wrapModeV, TextureWrapMode.Repeat, filter) { }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Sets pixel data for a specific one-dimensional location.</summary>
     /// <param name="pixels">The pixel data to set.</param>
     /// <param name="offset">The pixel offset for setting pixel data.</param>

@@ -1,4 +1,5 @@
 ﻿using NovaEngine.Content.Models.Model;
+using System.Globalization;
 
 namespace NovaEngine.Content.Packers;
 
@@ -121,8 +122,10 @@ public class ModelPacker : IContentPacker
                         if (vertexData.Count == 0)
                             throw new ContentException($"Model line: \"{line}\" invalid. It contains a blank vertex data token");
 
-                        var vertex = new Vertex();
-                        vertex.Position = vertexPositions[int.Parse(vertexData[0]) - 1];
+                        var vertex = new Vertex
+                        {
+                            Position = vertexPositions[int.Parse(vertexData[0]) - 1]
+                        };
 
                         // add vertex texture coordinates
                         if (vertexData.Count > 1 && !string.IsNullOrEmpty(vertexData[1])) // ensure texture coordinates aren't empty, this can be the case if only the normals are specified

@@ -4,7 +4,7 @@
 public abstract class MeshRenderingComponentBase : ComponentBase
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The mesh to render.</summary>
     public abstract Mesh Mesh { get; set; }

@@ -6,19 +6,19 @@ internal class QuadraticSegment : EdgeSegmentBase
     /*********
     ** Constants
     *********/
-    /// <summary>A really large number used to determine if a number is too big (such as when coeffiecients are normalised).</summary>
+    /// <summary>A really large number used to determine if a number is too big (such as when coefficients are normalised).</summary>
     private const float TooLargeRatio = 1e12f;
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <inheritdoc/>
     public override Vector2<float>[] Points { get; } = new Vector2<float>[3];
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="point0">The first point making up the segment.</param>
@@ -31,6 +31,10 @@ internal class QuadraticSegment : EdgeSegmentBase
         Points[2] = point2;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <inheritdoc/>
     public override Vector2<float> Direction(float amount) => Vector2<float>.Lerp(Points[1] - Points[0], Points[2] - Points[1], amount);
 

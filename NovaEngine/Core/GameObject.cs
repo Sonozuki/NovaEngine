@@ -16,7 +16,7 @@ public sealed class GameObject : IDisposable
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The name of the game object.</summary>
     public string Name { get; set; }
@@ -89,7 +89,7 @@ public sealed class GameObject : IDisposable
 
 
     /*********
-    ** Public Methods
+    ** Constructor
     *********/
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
@@ -115,6 +115,10 @@ public sealed class GameObject : IDisposable
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Deep copies the game object, meaning it will clone all value and reference types.</summary>
     /// <returns>A clone of the object.</returns>
     /// <remarks>This relies on the serialiser, any members that don't get serialised won't get cloned.<br/>The cloned object will be a sibling of the original object.</remarks>

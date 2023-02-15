@@ -4,7 +4,7 @@
 internal class TypeInfo
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The underlying type this represents.</summary>
     public Type Type { get; }
@@ -26,7 +26,7 @@ internal class TypeInfo
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="type">The object whose object info should be retrieved.</param>

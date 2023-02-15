@@ -13,7 +13,7 @@ public class VulkanGameObject : RendererGameObjectBase
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The number of vertices in the vertex buffer.</summary>
     internal int VertexCount { get; private set; }
@@ -38,6 +38,59 @@ public class VulkanGameObject : RendererGameObjectBase
 
     /// <summary>The MTSDF text descriptor set.</summary>
     internal VulkanDescriptorSet MTSDFTextDescriptorSet { get; private set; }
+
+
+    /*********
+    ** Constructors
+    *********/
+    /// <inheritdoc/>
+    internal unsafe VulkanGameObject(GameObject baseGameObject)
+        : base(baseGameObject)
+    {
+        // create the uniform buffer
+        MVPBuffer = new VulkanBuffer(sizeof(MVPBuffer), VkBufferUsageFlags.UniformBuffer, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
+
+        // create the descriptor sets for the object
+        var bufferInfo = new VkDescriptorBufferInfo { Buffer = MVPBuffer.NativeBuffer, Offset = 0, Range = sizeof(MVPBuffer) };
+
+        // TODO: temp
+        VkDescriptorImageInfo? imageInfo1 = null;
+        VkDescriptorImageInfo? imageInfo2 = null;
+        var textRenderer = baseGameObject.Components.Get<TextRenderer>();
+        if (textRenderer != null)
+        {
+            var fontAtlas = (textRenderer.Font.Atlas.RendererTexture as VulkanTexture)!;
+            var borderTexture = (textRenderer.BorderTexture.RendererTexture as VulkanTexture)!;
+            imageInfo1 = new() { ImageLayout = VkImageLayout.ShaderReadOnlyOptimal, ImageView = fontAtlas.NativeImageView, Sampler = fontAtlas.NativeSampler };
+            imageInfo2 = new() { ImageLayout = VkImageLayout.ShaderReadOnlyOptimal, ImageView = borderTexture.NativeImageView, Sampler = borderTexture.NativeSampler };
+        }
+
+        DepthPrepassDescriptorSet = DescriptorPools.DepthPrepassDescriptorPool.GetDescriptorSet();
+        DepthPrepassDescriptorSet
+            .Bind(0, &bufferInfo, VkDescriptorType.UniformBuffer)
+            .UpdateBindings();
+
+        PBRDescriptorSet = DescriptorPools.PBRDescriptorPool.GetDescriptorSet();
+        PBRDescriptorSet
+            .Bind(0, &bufferInfo, VkDescriptorType.UniformBuffer)
+            .UpdateBindings();
+
+        MTSDFTextDescriptorSet = DescriptorPools.MTSDFTextDescriptorPool.GetDescriptorSet();
+        MTSDFTextDescriptorSet.Bind(0, &bufferInfo, VkDescriptorType.UniformBuffer);
+
+        // TODO: temp
+        if (textRenderer != null)
+        {
+            var imageInfo1Copy = imageInfo1!.Value;
+            var imageInfo2Copy = imageInfo2!.Value;
+            MTSDFTextDescriptorSet
+                .Bind(1, &imageInfo1Copy)
+                .Bind(2, &imageInfo2Copy)
+                .UpdateBindings();
+        }
+        else
+            MTSDFTextDescriptorSet.UpdateBindings();
+    }
 
 
     /*********
@@ -141,58 +194,5 @@ public class VulkanGameObject : RendererGameObjectBase
         MVPBuffer.Dispose();
         VertexBuffer?.Dispose();
         IndexBuffer?.Dispose();
-    }
-
-
-    /*********
-    ** Internal Methods
-    *********/
-    /// <inheritdoc/>
-    internal unsafe VulkanGameObject(GameObject baseGameObject)
-        : base(baseGameObject)
-    {
-        // create the uniform buffer
-        MVPBuffer = new VulkanBuffer(sizeof(MVPBuffer), VkBufferUsageFlags.UniformBuffer, VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent);
-
-        // create the descriptor sets for the object
-        var bufferInfo = new VkDescriptorBufferInfo { Buffer = MVPBuffer.NativeBuffer, Offset = 0, Range = sizeof(MVPBuffer) };
-
-        // TODO: temp
-        VkDescriptorImageInfo? imageInfo1 = null;
-        VkDescriptorImageInfo? imageInfo2 = null;
-        var textRenderer = baseGameObject.Components.Get<TextRenderer>();
-        if (textRenderer != null)
-        {
-            var fontAtlas = (textRenderer.Font.Atlas.RendererTexture as VulkanTexture)!;
-            var borderTexture = (textRenderer.BorderTexture.RendererTexture as VulkanTexture)!;
-            imageInfo1 = new() { ImageLayout = VkImageLayout.ShaderReadOnlyOptimal, ImageView = fontAtlas.NativeImageView, Sampler = fontAtlas.NativeSampler };
-            imageInfo2 = new() { ImageLayout = VkImageLayout.ShaderReadOnlyOptimal, ImageView = borderTexture.NativeImageView, Sampler = borderTexture.NativeSampler };
-        }
-
-        DepthPrepassDescriptorSet = DescriptorPools.DepthPrepassDescriptorPool.GetDescriptorSet();
-        DepthPrepassDescriptorSet
-            .Bind(0, &bufferInfo, VkDescriptorType.UniformBuffer)
-            .UpdateBindings();
-
-        PBRDescriptorSet = DescriptorPools.PBRDescriptorPool.GetDescriptorSet();
-        PBRDescriptorSet
-            .Bind(0, &bufferInfo, VkDescriptorType.UniformBuffer)
-            .UpdateBindings();
-
-        MTSDFTextDescriptorSet = DescriptorPools.MTSDFTextDescriptorPool.GetDescriptorSet();
-        MTSDFTextDescriptorSet.Bind(0, &bufferInfo, VkDescriptorType.UniformBuffer);
-
-        // TODO: temp
-        if (textRenderer != null)
-        {
-            var imageInfo1Copy = imageInfo1.Value;
-            var imageInfo2Copy = imageInfo2.Value;
-            MTSDFTextDescriptorSet
-                .Bind(1, &imageInfo1Copy)
-                .Bind(2, &imageInfo2Copy)
-                .UpdateBindings();
-        }
-        else
-            MTSDFTextDescriptorSet.UpdateBindings();
     }
 }

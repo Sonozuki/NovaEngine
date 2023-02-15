@@ -4,7 +4,7 @@
 internal class KernFormat0 : IKernFormat
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>Whether the axis should be swapped when calculating the kerning of a character pair.</summary>
     public bool ShouldSwap { get; }
@@ -15,7 +15,7 @@ internal class KernFormat0 : IKernFormat
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="binaryReader">The binary reader whose current position is at the start of the format 0 kerning subtable content.</param>

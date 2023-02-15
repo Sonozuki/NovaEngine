@@ -19,7 +19,7 @@ public struct Vector3I : IEquatable<Vector3I>
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The length of the vector.</summary>
     public readonly float Length => MathF.Sqrt(LengthSquared);
@@ -200,7 +200,7 @@ public struct Vector3I : IEquatable<Vector3I>
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="value">The X, Y, and Z components of the vector.</param>
@@ -232,6 +232,10 @@ public struct Vector3I : IEquatable<Vector3I>
         Z = z;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Gets the vector as a <see cref="Vector3{T}"/>.</summary>
     /// <typeparam name="T">The type of vector to convert to.</typeparam>
     /// <returns>The converted vector.</returns>

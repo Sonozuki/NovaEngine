@@ -17,7 +17,7 @@ public sealed class Camera : ComponentBase
 
 
     /*********
-    ** Acecssors
+    ** Properties
     *********/
     /// <summary>The projection to use for the camera.</summary>
     public CameraProjection Projection { get; set; }
@@ -92,7 +92,7 @@ public sealed class Camera : ComponentBase
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="resolution">The resolution of the camera's render target; specifying <see langword="null"/> will automatically update the resolution to be the same as the window's.</param>
@@ -120,6 +120,41 @@ public sealed class Camera : ComponentBase
     public Camera(float width, float height, float nearClippingPlane, float farClippingPlane, Vector2I? resolution, bool setMainCamera)
         : this(CameraProjection.Othographic, 0, width, height, nearClippingPlane, farClippingPlane, resolution, null, setMainCamera) { }
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+    /// <summary>Constructs an instance.</summary>
+    /// <param name="projection">The projection to use for the camera.</param>
+    /// <param name="fieldOfView">The field of view of the camera, in degrees (perspective projection only).</param>
+    /// <param name="width">The width of the view frustum, in units (orthograhic projection only).</param>
+    /// <param name="height">The height of the view frustum, in units (orthograhic projection only).</param>
+    /// <param name="nearClippingPlane">The near clipping place of the camera.</param>
+    /// <param name="farClippingPlane">The far clipping place of the camera.</param>
+    /// <param name="resolution">The resolution of the camera's render target; specifying <see langword="null"/> will automatically update the resolution to be the same as the window's.</param>
+    /// <param name="aspectRatio">The aspect ratio of the camera (width / height).</param>
+    /// <param name="setMainCamera">Whether <see cref="Main"/> should be set to this camnera.</param>
+    private Camera(CameraProjection projection, float fieldOfView, float width, float height, float nearClippingPlane, float farClippingPlane, Vector2I? resolution, float? aspectRatio, bool setMainCamera)
+    {
+        Projection = projection;
+        FieldOfView = fieldOfView;
+        Width = width;
+        Height = height;
+        NearClippingPlane = nearClippingPlane;
+        FarClippingPlane = farClippingPlane;
+        _Resolution = resolution;
+        _AspectRatio = aspectRatio;
+
+        if (setMainCamera)
+            Main = this;
+
+        CreateRendererCamera();
+    }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Renders a frame using the camera.</summary>
     public void Render(bool presentRenderTarget) // TODO: create a separate system for retrieving objects to render after frustum culling etc
     {
@@ -158,40 +193,10 @@ public sealed class Camera : ComponentBase
     /// <inheritdoc/>
     public override void Dispose() => RendererCamera.Dispose();
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     /*********
     ** Private Methods
     *********/
-    /// <summary>Constructs an instance.</summary>
-    /// <param name="projection">The projection to use for the camera.</param>
-    /// <param name="fieldOfView">The field of view of the camera, in degrees (perspective projection only).</param>
-    /// <param name="width">The width of the view frustum, in units (orthograhic projection only).</param>
-    /// <param name="height">The height of the view frustum, in units (orthograhic projection only).</param>
-    /// <param name="nearClippingPlane">The near clipping place of the camera.</param>
-    /// <param name="farClippingPlane">The far clipping place of the camera.</param>
-    /// <param name="resolution">The resolution of the camera's render target; specifying <see langword="null"/> will automatically update the resolution to be the same as the window's.</param>
-    /// <param name="aspectRatio">The aspect ratio of the camera (width / height).</param>
-    /// <param name="setMainCamera">Whether <see cref="Main"/> should be set to this camnera.</param>
-    private Camera(CameraProjection projection, float fieldOfView, float width, float height, float nearClippingPlane, float farClippingPlane, Vector2I? resolution, float? aspectRatio, bool setMainCamera)
-    {
-        Projection = projection;
-        FieldOfView = fieldOfView;
-        Width = width;
-        Height = height;
-        NearClippingPlane = nearClippingPlane;
-        FarClippingPlane = farClippingPlane;
-        _Resolution = resolution;
-        _AspectRatio = aspectRatio;
-
-        if (setMainCamera)
-            Main = this;
-
-        CreateRendererCamera();
-    }
-
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-
     /// <summary>Creates the renderer camera.</summary>
     [OnDeserialised]
     private void CreateRendererCamera()

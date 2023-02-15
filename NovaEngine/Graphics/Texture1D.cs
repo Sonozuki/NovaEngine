@@ -4,7 +4,7 @@
 public class Texture1D : TextureBase
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <inheritdoc/>
     internal override TextureUsage Usage => this.PixelType == TexturePixelType.Byte ? TextureUsage.Colour : TextureUsage.Colour32;
@@ -18,7 +18,7 @@ public class Texture1D : TextureBase
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Initialises the class.</summary>
     static Texture1D()
@@ -38,6 +38,10 @@ public class Texture1D : TextureBase
     public Texture1D(uint width, TexturePixelType pixelType = TexturePixelType.Float, SampleCount sampleCount = SampleCount._1, bool anisotropicFilteringEnabled = true, float maxAnisotropicFilteringLevel = 16, TextureWrapMode wrapModeU = TextureWrapMode.Repeat, TextureFilter filter = TextureFilter.Bilinear)
         : base(width, 1, 1, pixelType, false, 0, 1, sampleCount, anisotropicFilteringEnabled, maxAnisotropicFilteringLevel, wrapModeU, TextureWrapMode.Repeat, TextureWrapMode.Repeat, filter) { }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Sets pixel data for a specific one-dimensional location.</summary>
     /// <param name="pixels">The pixel data to set.</param>
     /// <param name="offset">The pixel offset for setting pixel data.</param>

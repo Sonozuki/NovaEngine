@@ -4,7 +4,7 @@
 internal abstract class DebugValueBase
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The name of the debug value.</summary>
     public string Name { get; }
@@ -14,7 +14,7 @@ internal abstract class DebugValueBase
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="name">The name of the debug value.</param>
@@ -29,6 +29,10 @@ internal abstract class DebugValueBase
         Documentation = documentation;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Invokes the debug callback with a user entered value.</summary>
     /// <param name="value">The value to parse, then pass to the callback.</param>
     public abstract void InvokeCallback(string value);

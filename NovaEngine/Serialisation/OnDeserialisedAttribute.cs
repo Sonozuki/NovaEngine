@@ -5,14 +5,14 @@
 public sealed class OnDeserialisedAttribute : Attribute
 {
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The priority of the callback.</summary>
     public SerialiserCallbackPriority Priority { get; }
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="prioirty">The priority of the callback.</param>

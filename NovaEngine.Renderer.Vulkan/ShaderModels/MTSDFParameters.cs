@@ -35,7 +35,7 @@ internal struct MTSDFParameters
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="screenPixelRange">The pixel range that was used when generating the atlas in screen pixels.</param>

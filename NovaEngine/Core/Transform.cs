@@ -1,6 +1,6 @@
 ﻿namespace NovaEngine.Core;
 
-/// <summary>Represents the transform for an <see cref="Core.GameObject"/>.</summary>
+/// <summary>Represents the transform for an <see cref="GameObject"/>.</summary>
 public class Transform : ComponentBase
 {
     /*********
@@ -26,7 +26,7 @@ public class Transform : ComponentBase
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The position of the object relative to the object's parent.</summary>
     public Vector3<float> LocalPosition
@@ -159,7 +159,7 @@ public class Transform : ComponentBase
 
 
     /*********
-    ** Internal Methods
+    ** Constructors
     *********/
     /// <summary>Contructs an instance.</summary>
     /// <param name="gameObject">The game object the transform belongs to.</param>

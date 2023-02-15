@@ -1,4 +1,8 @@
-﻿namespace NovaEngine.Renderer.Vulkan.ShaderModels;
+﻿#pragma warning disable CS0169 // Field is never used
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
+#pragma warning disable IDE0051 // Private member is unused
+
+namespace NovaEngine.Renderer.Vulkan.ShaderModels;
 
 /// <summary>Represents a light.</summary>
 internal struct Light

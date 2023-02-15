@@ -1,4 +1,6 @@
-﻿namespace NovaEngine.Platform.Fake;
+﻿#pragma warning disable CS0067 // Event is never used
+
+namespace NovaEngine.Platform.Fake;
 
 /// <summary>Represents a window that is only used when nova is being used without a program instance.</summary>
 internal class FakeWindow : PlatformWindowBase
@@ -17,7 +19,7 @@ internal class FakeWindow : PlatformWindowBase
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <inheritdoc/>
     public override string Title { get; set; } = "";

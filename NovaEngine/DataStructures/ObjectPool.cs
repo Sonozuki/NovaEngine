@@ -19,7 +19,7 @@ public class ObjectPool<T> : IDisposable
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>The number of available objects that are currently in the pool.</summary>
     /// <remarks>If this is zero, the next <see cref="GetObject"/> call will instantiate a new object assuming <see cref="ReturnObject(T)"/> hasn't since been called (the count will remain at zero as the new instance is instantly returned).</remarks>
@@ -27,7 +27,7 @@ public class ObjectPool<T> : IDisposable
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="instantiateObject">The method that is invoked when a new object needs to be created for the pool.</param>
@@ -38,6 +38,10 @@ public class ObjectPool<T> : IDisposable
         ResetObject = resetObject;
     }
 
+
+    /*********
+    ** Public Methods
+    *********/
     /// <summary>Retrieves an object from the pool.</summary>
     /// <returns>An object from the pool.</returns>
     /// <exception cref="InvalidOperationException">Thrown if an object had to be instantiated and the provided <see cref="InstantiateObject"/> method returned <see langword="null"/>.</exception>

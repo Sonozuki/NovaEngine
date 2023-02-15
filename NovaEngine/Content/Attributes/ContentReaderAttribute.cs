@@ -16,7 +16,7 @@ public class ContentReaderAttribute : Attribute
 
 
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="type">The type of content the reader is for.</param>

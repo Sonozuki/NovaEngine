@@ -26,7 +26,7 @@ public static class Input
 
 
     /*********
-    ** Accessors
+    ** Properties
     *********/
     /// <summary>Whether the cursor is currently visible.</summary>
     public static bool IsCursorVisible
