@@ -3,7 +3,7 @@
 namespace NovaEngine.Maths;
 
 /// <summary>Represents a vector with four floating-point values.</summary>
-public struct Vector4<T> : IEquatable<Vector4<T>>
+public struct Vector4<T> : IEquatable<Vector4<T>>, IComparable<Vector4<T>>
     where T : IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>, IConvertible
 {
     /*********
@@ -444,7 +444,7 @@ public struct Vector4<T> : IEquatable<Vector4<T>>
         readonly get => new(Y, Z, X);
         set
         {
-            W = value.X;
+            Y = value.X;
             Z = value.Y;
             X = value.Z;
         }
@@ -867,6 +867,19 @@ public struct Vector4<T> : IEquatable<Vector4<T>>
     /// <param name="other">The vector to check equality with.</param>
     /// <returns><see langword="true"/> if the vectors are equal; otherwise, <see langword="false"/>.</returns>
     public readonly bool Equals(Vector4<T> other) => this == other;
+
+    /// <summary>Compares two vectors to determine whether the current instance preceeds, follows, or appears at the same position in the sort order as another vector.</summary>
+    /// <param name="other">The vector to compare against.</param>
+    /// <returns>
+    /// <b>Less than zero</b>, if this instance preceeds <paramref name="other"/> in the sort order.<br/>
+    /// <b>Zero</b>, if this instance appears in the same position as <paramref name="other"/> in the sort order.<br/>
+    /// <b>Greater than zero</b>, if this instance follows <paramref name="other"/> in the sort order.
+    /// </returns>
+    public int CompareTo(Vector4<T> other)
+    {
+        var difference = LengthSquared - other.LengthSquared;
+        return (difference > T.Zero ? T.Ceiling(difference) : T.Floor(difference)).ToInt32(null);
+    }
 
     /// <summary>Checks the vector and an object for equality.</summary>
     /// <param name="obj">The object to check equality with.</param>
