@@ -188,7 +188,7 @@ internal class Vector2Tests
     }
 
     [Test]
-    public void ConstructorFloat_SetsElements()
+    public void ConstructorFloatingPoint_SetsElements()
     {
         var vectorFloat = new Vector2<float>(1);
         var vectorDouble = new Vector2<double>(1);
@@ -204,7 +204,7 @@ internal class Vector2Tests
     }
 
     [Test]
-    public void ConstructorFloatFloat_SetsElements()
+    public void ConstructorFloatingPointFloatingPoint_SetsElements()
     {
         var vectorFloat = new Vector2<float>(1, 2);
         var vectorDouble = new Vector2<double>(1, 2);
