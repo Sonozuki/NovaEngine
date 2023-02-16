@@ -161,6 +161,8 @@ public unsafe class VulkanTexture : RendererTextureBase
 
         // create command pool
         CommandPool = new(CommandPoolUsage.Graphics, VkCommandPoolCreateFlags.Transient);
+
+        TransitionImageLayout(VkImageLayout.Undefined, VkImageLayout.ShaderReadOnlyOptimal);
     }
 
 
