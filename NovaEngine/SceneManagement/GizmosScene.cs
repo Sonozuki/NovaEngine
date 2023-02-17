@@ -1,11 +1,14 @@
 ﻿namespace NovaEngine.SceneManagement;
 
 /// <summary>Represents a scene specifically for storing gizmos.</summary>
-internal class GizmosScene : Scene
+internal sealed class GizmosScene : Scene
 {
     /*********
     ** Fields
     *********/
+    /// <summary>Whether the scene has been disposed.</summary>
+    private bool IsDisposed;
+
     /// <summary>The pool of cube game objects.</summary>
     private readonly ObjectPool<GameObject> CubeGameObjects = new(() => GameObject.Cube, gameObject => gameObject.IsEnabled = false);
 
@@ -28,6 +31,9 @@ internal class GizmosScene : Scene
     /*********
     ** Constructors
     *********/
+    /// <summary>Destructs the instance.</summary>
+    ~GizmosScene() => Dispose(false);
+
     /// <summary>Constructs an instance.</summary>
     public GizmosScene()
         : base("Gizmos", true)
@@ -84,23 +90,14 @@ internal class GizmosScene : Scene
         var gameObject = LineGameObjects.GetObject();
         gameObject.IsEnabled = true;
 
-        var meshRenderer = gameObject.Components.Get<MeshRenderer>();
-        meshRenderer!.Mesh!.VertexData[0].Position = point1;
-        meshRenderer!.Mesh!.VertexData[1].Position = point2;
-        meshRenderer!.UpdateMesh();
+        var meshRenderer = gameObject.Components.Get<MeshRenderer>()!;
+        meshRenderer.Mesh.VertexData[0].Position = point1;
+        meshRenderer.Mesh.VertexData[1].Position = point2;
+        meshRenderer.UpdateMesh();
 
-        meshRenderer!.Material.Tint = colour;
+        meshRenderer.Material.Tint = colour;
 
         LinesParent.Children.Add(gameObject);
-    }
-
-    /// <inheritdoc/>
-    public override void Dispose()
-    {
-        base.Dispose();
-        CubeGameObjects.Dispose();
-        SphereGameObjects.Dispose();
-        LineGameObjects.Dispose();
     }
 
 
@@ -138,5 +135,32 @@ internal class GizmosScene : Scene
             LinesParent.Children.RemoveAt(0);
             LineGameObjects.ReturnObject(line);
         }
+    }
+
+
+    /*********
+    ** Protected Methods
+    *********/
+    /// <summary>Cleans up unmanaged resources in the scene.</summary>
+    /// <param name="disposing">Whether the scene is being disposed deterministically.</param>
+    protected override void Dispose(bool disposing)
+    {
+        if (!IsDisposed)
+        {
+            if (disposing)
+            {
+                CubeGameObjects?.Dispose();
+                SphereGameObjects?.Dispose();
+                LineGameObjects?.Dispose();
+
+                CubesParent?.Dispose();
+                SpheresParent?.Dispose();
+                LinesParent?.Dispose();
+            }
+
+            IsDisposed = true;
+        }
+
+        base.Dispose(disposing);
     }
 }

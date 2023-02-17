@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Logging;
 
 /// <summary>Represents the creator of a <see cref="Log"/>.</summary>
-internal class LogCreator
+internal sealed class LogCreator
 {
     /*********
     ** Properties

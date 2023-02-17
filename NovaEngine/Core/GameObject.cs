@@ -6,6 +6,9 @@ public sealed class GameObject : IDisposable
     /*********
     ** Fields
     *********/
+    /// <summary>Whether the game object has been disposed.</summary>
+    private bool IsDisposed;
+
     /// <summary>The parent of the game object.</summary>
     /// <remarks>This is <see langword="null"/> when it's a root game object.</remarks>
     private GameObject? _Parent;
@@ -91,6 +94,9 @@ public sealed class GameObject : IDisposable
     /*********
     ** Constructor
     *********/
+    /// <summary>Destructs the instance.</summary>
+    ~GameObject() => Dispose(false);
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     /// <summary>Constructs an instance.</summary>
@@ -155,17 +161,11 @@ public sealed class GameObject : IDisposable
         return clone;
     }
 
-    /// <inheritdoc/>
+    /// <summary>Cleans up unmanaged resources in the game object.</summary>
     public void Dispose()
     {
-        Parent = null; // this is to remove it from the child list
-        RendererGameObject.Dispose();
-
-        foreach (var component in Components)
-            component.Dispose();
-
-        foreach (var child in Children)
-            child.Dispose();
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
 
@@ -201,7 +201,7 @@ public sealed class GameObject : IDisposable
         gameObjects.AddRange(Children.SelectMany(child => child.GetAllGameObjects(includeDisabled)));
         return gameObjects;
     }
-
+    
 
     /*********
     ** Private Methods
@@ -209,4 +209,26 @@ public sealed class GameObject : IDisposable
     /// <summary>Creates the renderer game object.</summary>
     [OnDeserialised]
     private void CreateRendererGameObject() => RendererGameObject = RendererManager.CurrentRenderer.CreateRendererGameObject(this);
+    
+    /// <summary>Cleans up unmanaged resources in the component.</summary>
+    /// <param name="disposing">Whether the component is being disposed deterministically.</param>
+    private void Dispose(bool disposing)
+    {
+        if (IsDisposed)
+            return;
+
+        if (disposing)
+        {
+            Parent = null; // this is to remove this instance from the child list
+            RendererGameObject?.Dispose();
+
+            foreach (var component in Components)
+                component.Dispose();
+
+            foreach (var child in Children)
+                child.Dispose();
+        }
+
+        IsDisposed = true;
+    }
 }

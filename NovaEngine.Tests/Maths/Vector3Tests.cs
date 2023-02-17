@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Tests.Maths;
 
 /// <summary>The <see cref="Vector3{T}"/> tests.</summary>
-internal class Vector3Tests
+public class Vector3Tests
 {
     /*********
     ** Public Methods

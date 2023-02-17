@@ -4,6 +4,13 @@
 public class Scene : IDisposable
 {
     /*********
+    ** Fields
+    *********/
+    /// <summary>Whether the scene has been disposed.</summary>
+    private bool IsDisposed;
+
+
+    /*********
     ** Properties
     *********/
     /// <summary>The name of the scene.</summary>
@@ -19,6 +26,9 @@ public class Scene : IDisposable
     /*********
     ** Constructors
     *********/
+    /// <summary>Destructs the instance.</summary>
+    ~Scene() => Dispose(false);
+
     /// <summary>Constructs an instance.</summary>
     /// <param name="name">The name of the scene.</param>
     /// <param name="isActive">Whether the scene is active.</param>
@@ -34,11 +44,11 @@ public class Scene : IDisposable
     /*********
     ** Public Methods
     *********/
-    /// <inheritdoc/>
-    public virtual void Dispose()
+    /// <summary>Cleans up unmanaged resources in the scene.</summary>
+    public void Dispose()
     {
-        foreach (var gameObject in RootGameObjects)
-            gameObject.Dispose();
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
 
@@ -80,5 +90,23 @@ public class Scene : IDisposable
                 Logger.LogError($"Component crashed on update. Technical details:\n{ex}");
             }
         });
+    }
+
+
+    /*********
+    ** Protected Methods
+    *********/
+    /// <summary>Cleans up unmanaged resources in the scene.</summary>
+    /// <param name="disposing">Whether the scene is being disposed deterministically.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (IsDisposed)
+            return;
+
+        if (disposing)
+            foreach (var gameObject in RootGameObjects)
+                gameObject.Dispose();
+
+        IsDisposed = true;
     }
 }

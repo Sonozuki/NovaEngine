@@ -19,8 +19,12 @@ public static class Serialiser
     /// <summary>Serialises an object to a stream.</summary>
     /// <param name="stream">The stream to serialise <paramref name="object"/> to.</param>
     /// <param name="object">The object to serialise to <paramref name="stream"/>.</param>
-    public static void Serialise(Stream stream, object? @object)
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> or <paramref name="object"/> is <see langword="null"/>.</exception>
+    public static void Serialise(Stream stream, object? @object) // TODO: error for ensuring parameters aren't BCL types
     {
+        ArgumentNullException.ThrowIfNull(stream);
+        ArgumentNullException.ThrowIfNull(@object);
+
         try
         {
             using var binaryWriter = new BinaryWriter(stream, Encoding.UTF8, true);
@@ -85,7 +89,7 @@ public static class Serialiser
             var allTypeInfos = new TypeInfos();
 
             var count = binaryReader.ReadInt32();
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
                 allObjectInfos.Add(ObjectInfo.Read(binaryReader, allTypeInfos));
 
             // link references of and retrieve root object

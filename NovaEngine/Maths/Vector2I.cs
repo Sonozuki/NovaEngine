@@ -218,6 +218,30 @@ public struct Vector2I : IEquatable<Vector2I>, IComparable<Vector2I>
     /// <returns>The result of the multiplication.</returns>
     public static Vector2I operator *(Vector2I left, Vector2I right) => new(left.X * right.X, left.Y * right.Y);
 
+    /// <summary>Compares two vectors.</summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns><see langword="true"/>, if <paramref name="left"/> is less than <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
+    public static bool operator <(Vector2I left, Vector2I right) => left.CompareTo(right) < 0;
+
+    /// <summary>Compares two vectors.</summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns><see langword="true"/>, if <paramref name="left"/> is less than or equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
+    public static bool operator <=(Vector2I left, Vector2I right) => left.CompareTo(right) <= 0;
+
+    /// <summary>Compares two vectors.</summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns><see langword="true"/>, if <paramref name="left"/> is greater than <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
+    public static bool operator >(Vector2I left, Vector2I right) => left.CompareTo(right) > 0;
+
+    /// <summary>Compares two vectors.</summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns><see langword="true"/>, if <paramref name="left"/> is greater than or equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
+    public static bool operator >=(Vector2I left, Vector2I right) => left.CompareTo(right) >= 0;
+
     /// <summary>Checks two vectors for equality.</summary>
     /// <param name="vector1">The first vector.</param>
     /// <param name="vector2">The second vector.</param>

@@ -25,11 +25,14 @@ public class GameObjectComponents : IList<ComponentBase>
     public bool IsReadOnly => false;
 
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref langword="value"/> is <see langword="null"/>.</exception>
     public ComponentBase this[int index]
     {
         get => Components[index];
         set
         {
+            ArgumentNullException.ThrowIfNull(value);
+
             value.GameObject = GameObject;
             Components[index] = value;
         }
@@ -56,21 +59,27 @@ public class GameObjectComponents : IList<ComponentBase>
     ** Public Methods
     *********/
     /// <inheritdoc/>
-    public void Add(ComponentBase component)
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="item"/> is <see langword="null"/>.</exception>
+    public void Add(ComponentBase item)
     {
+        ArgumentNullException.ThrowIfNull(item);
+
         // TODO: ensure component isn't a transform
         // TODO: remove component from current gameobject, if it's attached to one, so it doesn't get updated twice
 
-        component.GameObject = GameObject;
-        Components.Add(component);
+        item.GameObject = GameObject;
+        Components.Add(item);
 
-        if (component is MeshRenderer meshRenderer)
+        if (item is MeshRenderer meshRenderer)
             meshRenderer.UpdateMesh();
     }
 
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="item"/> is <see langword="null"/>.</exception>
     public bool Remove(ComponentBase item)
     {
+        ArgumentNullException.ThrowIfNull(item);
+
         var wasRemoved = Components.Remove(item);
         if (wasRemoved)
             item.GameObject = null!; // setting this is null is fine as no code will try to access it expecting a non null value
@@ -84,7 +93,7 @@ public class GameObjectComponents : IList<ComponentBase>
     public void Remove<T>(bool removeAll)
         where T : ComponentBase
     {
-        for (int i = 0; i < Components.Count; i++)
+        for (var i = 0; i < Components.Count; i++)
         {
             var component = Components[i];
             if (component.GetType() != typeof(T))
@@ -115,7 +124,7 @@ public class GameObjectComponents : IList<ComponentBase>
     /// <typeparam name="T">The type of the components to get.</typeparam>
     /// <param name="includeDisabled">Whether disabled components should be included.</param>
     /// <returns>The components with the specified type.</returns>
-    public List<T> GetRange<T>(bool includeDisabled = true)
+    public IReadOnlyList<T> GetRange<T>(bool includeDisabled = true)
         where T : ComponentBase
     {
         if (typeof(T).IsAssignableTo(typeof(Transform)))
@@ -127,7 +136,7 @@ public class GameObjectComponents : IList<ComponentBase>
             .Cast<T>()
             .ToList();
 
-        return components;
+        return components.AsReadOnly();
     }
 
     /// <summary>Gets the first component with a specified type from the children of the game object.</summary>
@@ -140,14 +149,14 @@ public class GameObjectComponents : IList<ComponentBase>
     /// <typeparam name="T">The type of the components to get.</typeparam>
     /// <param name="includeDisabled">Whether disabled components should be included.</param>
     /// <returns>The components with the specified type from the children.</returns>
-    public List<T> GetRangeFromChildren<T>(bool includeDisabled = true)
+    public IReadOnlyList<T> GetRangeFromChildren<T>(bool includeDisabled = true)
         where T : ComponentBase
     {
         var components = new List<T>();
         foreach (var child in GameObject.Children)
             components.AddRange(child.Components.GetRange<T>(includeDisabled));
 
-        return components;
+        return components.AsReadOnly();
     }
 
     /// <summary>Gets the first component with a specified type from the parent of the game object.</summary>
@@ -160,20 +169,22 @@ public class GameObjectComponents : IList<ComponentBase>
     /// <typeparam name="T">The type of the components to get.</typeparam>
     /// <param name="includeDisabled">Whether disabled components should be included.</param>
     /// <returns>The components with the specified type from the parent.</returns>
-    public List<T> GetRangeFromParent<T>(bool includeDisabled = true) where T : ComponentBase => GameObject.Components.GetRange<T>(includeDisabled);
+    public IReadOnlyList<T> GetRangeFromParent<T>(bool includeDisabled = true) where T : ComponentBase => GameObject.Components.GetRange<T>(includeDisabled);
 
     /// <summary>Gets the components with a specified type from this collection and all recursive children of the game object (all nodes to leaf nodes).</summary>
     /// <typeparam name="T">The type of the components to get.</typeparam>
     /// <param name="includeDisabled">Whether disabled components should be included.</param>
     /// <returns>The components with the specified type from this game object and all recursive children (all nodes to leaf nodes).</returns>
-    public List<T> GetAll<T>(bool includeDisabled = true)
+    public IReadOnlyList<T> GetAll<T>(bool includeDisabled = true)
         where T : ComponentBase
     {
-        var components = GetRange<T>(includeDisabled);
+        var components = new List<T>();
+
+        components.AddRange(GetRange<T>(includeDisabled));
         foreach (var child in GameObject.Children)
             components.AddRange(child.Components.GetAll<T>(includeDisabled));
 
-        return components;
+        return components.AsReadOnly();
     }
 
     /// <inheritdoc/>

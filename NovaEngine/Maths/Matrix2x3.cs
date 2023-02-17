@@ -116,7 +116,7 @@ public struct Matrix2x3<T> : IEquatable<Matrix2x3<T>>
         readonly get
         {
             if (index < 0 || index > 5)
-                throw new IndexOutOfRangeException($"{nameof(index)} must be between 0 => 5 (inclusive)");
+                throw new ArgumentOutOfRangeException(nameof(index), "Must be between 0 => 5 (inclusive)");
 
             return index switch
             {
@@ -131,7 +131,7 @@ public struct Matrix2x3<T> : IEquatable<Matrix2x3<T>>
         set
         {
             if (index < 0 || index > 5)
-                throw new IndexOutOfRangeException($"{nameof(index)} must be between 0 => 5 (inclusive)");
+                throw new ArgumentOutOfRangeException(nameof(index), "Must be between 0 => 5 (inclusive)");
 
             switch (index)
             {
@@ -154,9 +154,9 @@ public struct Matrix2x3<T> : IEquatable<Matrix2x3<T>>
         readonly get
         {
             if (rowIndex < 0 || rowIndex > 1)
-                throw new IndexOutOfRangeException($"{nameof(rowIndex)} must be between 0 => 1 (inclusive)");
+                throw new ArgumentOutOfRangeException(nameof(rowIndex), "Must be between 0 => 1 (inclusive)");
             if (columnIndex < 0 || columnIndex > 2)
-                throw new IndexOutOfRangeException($"{nameof(columnIndex)} must be between 0 => 2 (inclusive)");
+                throw new ArgumentOutOfRangeException(nameof(columnIndex), "Must be between 0 => 2 (inclusive)");
 
             return (rowIndex, columnIndex) switch
             {
@@ -171,9 +171,9 @@ public struct Matrix2x3<T> : IEquatable<Matrix2x3<T>>
         set
         {
             if (rowIndex < 0 || rowIndex > 1)
-                throw new IndexOutOfRangeException($"{nameof(rowIndex)} must be between 0 => 1 (inclusive)");
+                throw new ArgumentOutOfRangeException(nameof(rowIndex), "Must be between 0 => 1 (inclusive)");
             if (columnIndex < 0 || columnIndex > 2)
-                throw new IndexOutOfRangeException($"{nameof(columnIndex)} must be between 0 => 2 (inclusive)");
+                throw new ArgumentOutOfRangeException(nameof(columnIndex), "Must be between 0 => 2 (inclusive)");
 
             switch ((rowIndex, columnIndex))
             {

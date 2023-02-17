@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Content.Models.Font.Cmap;
 
 /// <summary>Represents a format 0 cmap subtable.</summary>
-internal class CmapFormat0 : ICmapFormat
+internal sealed class CmapFormat0 : ICmapFormat
 {
     /*********
     ** Fields

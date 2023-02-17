@@ -25,11 +25,14 @@ public class GameObjectChildren : IList<GameObject>
     public bool IsReadOnly => false;
 
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref langword="value"/> is <see langword="null"/>.</exception>
     public GameObject this[int index]
     {
         get => Children[index];
         set
         {
+            ArgumentNullException.ThrowIfNull(value);
+
             var oldChild = Children[index];
             if (oldChild != null)
                 oldChild.Parent = null;
@@ -60,9 +63,12 @@ public class GameObjectChildren : IList<GameObject>
     ** Public Methods
     *********/
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="item"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">Thrown if the item is already a child.</exception>
     public void Add(GameObject item)
     {
+        ArgumentNullException.ThrowIfNull(item);
+
         if (Children.Contains(item))
             throw new InvalidOperationException("The item is already a child.");
 
@@ -92,8 +98,11 @@ public class GameObjectChildren : IList<GameObject>
     public int IndexOf(GameObject item) => Children.IndexOf(item);
 
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="item"/> is <see langword="null"/>.</exception>
     public void Insert(int index, GameObject item)
     {
+        ArgumentNullException.ThrowIfNull(item);
+
         var oldChild = Children[index];
         if (oldChild != null)
             oldChild.Parent = null;
@@ -103,8 +112,11 @@ public class GameObjectChildren : IList<GameObject>
     }
 
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="item"/> is <see langword="null"/>.</exception>
     public bool Remove(GameObject item)
     {
+        ArgumentNullException.ThrowIfNull(item);
+
         var wasRemoved = Children.Remove(item);
         if (wasRemoved)
             item.Parent = null;

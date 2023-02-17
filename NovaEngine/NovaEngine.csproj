@@ -24,6 +24,7 @@
 		<Using Include="NovaEngine.External.Input" />
 		<Using Include="NovaEngine.External.Platform" />
 		<Using Include="NovaEngine.External.Rendering" />
+		<Using Include="NovaEngine.Globalisation" />
 		<Using Include="NovaEngine.Graphics" />
 		<Using Include="NovaEngine.IO" />
 		<Using Include="NovaEngine.Logging" />

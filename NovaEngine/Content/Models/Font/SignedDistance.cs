@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Content.Models.Font;
 
 /// <summary>Represents a signed distance.</summary>
-internal class SignedDistance
+internal sealed class SignedDistance
 {
     /*********
     ** Properties

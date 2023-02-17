@@ -29,19 +29,22 @@ public static class Debugger
     /// <param name="documentation">The documentation of the debug value.</param>
     /// <param name="callback">The callback of the debug value.</param>
     /// <returns><see langword="true"/>, if the debug value was added successfully; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is <see langword="null"/> or white space.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> or <paramref name="documentation"/> is <see langword="null"/> or empty.</exception>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="callback"/> is <see langword="null"/>.</exception>
     public static bool AddDebugValue<T>(string name, string documentation, Action<T?> callback)
     {
-        var debugValue = new DebugValue<T>(name, documentation, callback);
+        ArgumentException.ThrowIfNullOrEmpty(name);
+        ArgumentException.ThrowIfNullOrEmpty(documentation);
+        ArgumentNullException.ThrowIfNull(callback);
 
-        if (DebugValues.Any(value => value.Name.ToLower() == debugValue.Name.ToLower()))
+        name = name.ToLower(G11n.Culture);
+        if (DebugValues.Any(value => value.Name == name))
         {
-            Logger.LogError($"Cannot add debug value: '{debugValue.Name}' as it already exists.");
+            Logger.LogError($"Cannot add debug value '{name}' as it already exists.");
             return false;
         }
 
-        DebugValues.Add(debugValue);
+        DebugValues.Add(new DebugValue<T>(name, documentation, callback));
         return true;
     }
 
@@ -65,14 +68,14 @@ public static class Debugger
         }
         else if (trimmedArguments.Length == 1) // write the documentation of a specified debug value
         {
-            if (!TryGetDebugValueByName(trimmedArguments[0], out var debugValue))
+            if (!TryGetDebugValueByName(trimmedArguments[0].ToLower(G11n.Culture), out var debugValue))
                 return;
 
             Logger.LogHelp($"{debugValue!.Name}: {debugValue.Documentation}");
         }
         else // set value of command
         {
-            if (!TryGetDebugValueByName(trimmedArguments[0], out var debugValue))
+            if (!TryGetDebugValueByName(trimmedArguments[0].ToLower(G11n.Culture), out var debugValue))
                 return;
 
             try
@@ -88,10 +91,10 @@ public static class Debugger
         // Retrieves a debug value from a name.
         bool TryGetDebugValueByName(string name, out DebugValueBase? debugValue)
         {
-            debugValue = DebugValues.FirstOrDefault(value => value.Name.ToLower() == name.ToLower());
+            debugValue = DebugValues.FirstOrDefault(value => value.Name == name);
             if (debugValue == null)
             {
-                Logger.LogError($"No debug value with the name: '{name}' could be found.");
+                Logger.LogError($"No debug value with the name '{name}' could be found.");
                 Logger.LogHelp($"Type 'debug' for a list of available debug values.");
                 return false;
             }

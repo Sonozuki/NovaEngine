@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Rendering.Fake;
 
 /// <summary>Represents a camera that is only used when nova is being used without a program instance.</summary>
-internal class FakeCamera : RendererCameraBase
+internal sealed class FakeCamera : RendererCameraBase
 {
     /*********
     ** Properties
@@ -30,6 +30,11 @@ internal class FakeCamera : RendererCameraBase
     /// <inheritdoc/>
     public override void Render(IEnumerable<RendererGameObjectBase> gameObjects, IEnumerable<RendererGameObjectBase> uiGameObjects, bool presentRenderTarget) { }
 
-    /// <inheritdoc/>
-    public override void Dispose() { }
+
+    /*********
+    ** Protected Methods
+    *********/
+    /// <summary>Cleans up unmanaged resources in the camera.</summary>
+    /// <param name="disposing">Whether the camera is being disposed deterministically.</param>
+    protected override void Dispose(bool disposing) { }
 }

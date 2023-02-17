@@ -55,7 +55,7 @@ public static class User32
         {
             var error = Marshal.GetLastWin32Error();
             if (error != 0) // check if an error actually occured
-                throw new ApplicationException($"Failed to modify window attribute: {error}").Log(LogSeverity.Fatal);
+                throw new Win32Exception($"Failed to modify window attribute: {error}").Log(LogSeverity.Fatal);
         }
 
         return returnValue;

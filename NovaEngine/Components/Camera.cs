@@ -6,6 +6,9 @@ public sealed class Camera : ComponentBase
     /*********
     ** Fields
     *********/
+    /// <summary>Whether the camera has been disposed.</summary>
+    private bool IsDisposed;
+
     /// <summary>The resolution of the camera's render target.</summary>
     private Vector2I? _Resolution;
 
@@ -190,8 +193,24 @@ public sealed class Camera : ComponentBase
         RendererCamera.Render(gameObjects, uiGameObjects, presentRenderTarget);
     }
 
-    /// <inheritdoc/>
-    public override void Dispose() => RendererCamera.Dispose();
+
+    /*********
+    ** Protected Methods
+    *********/
+    /// <summary>Cleans up unmanaged resources in the camera.</summary>
+    /// <param name="disposing">Whether the camera is being disposed deterministically.</param>
+    protected override void Dispose(bool disposing)
+    {
+        if (!IsDisposed)
+        {
+            if (disposing)
+                RendererCamera.Dispose();
+
+            IsDisposed = true;
+        }
+        
+        base.Dispose(disposing);
+    }
 
 
     /*********

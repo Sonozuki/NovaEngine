@@ -242,7 +242,7 @@ public struct Matrix3x3<T> : IEquatable<Matrix3x3<T>>
         readonly get
         {
             if (index < 0 || index > 8)
-                throw new IndexOutOfRangeException($"{nameof(index)} must be between 0 => 8 (inclusive)");
+                throw new ArgumentOutOfRangeException(nameof(index), "Must be between 0 => 8 (inclusive)");
 
             return index switch
             {
@@ -260,7 +260,7 @@ public struct Matrix3x3<T> : IEquatable<Matrix3x3<T>>
         set
         {
             if (index < 0 || index > 8)
-                throw new IndexOutOfRangeException($"{nameof(index)} must be between 0 => 8 (inclusive)");
+                throw new ArgumentOutOfRangeException(nameof(index), "Must be between 0 => 8 (inclusive)");
 
             switch (index)
             {
@@ -286,9 +286,9 @@ public struct Matrix3x3<T> : IEquatable<Matrix3x3<T>>
         readonly get
         {
             if (rowIndex < 0 || rowIndex > 2)
-                throw new IndexOutOfRangeException($"{nameof(rowIndex)} must be between 0 => 2 (inclusive)");
+                throw new ArgumentOutOfRangeException(nameof(rowIndex), "Must be between 0 => 2 (inclusive)");
             if (columnIndex < 0 || columnIndex > 2)
-                throw new IndexOutOfRangeException($"{nameof(columnIndex)} must be between 0 => 2 (inclusive)");
+                throw new ArgumentOutOfRangeException(nameof(columnIndex), "Must be between 0 => 2 (inclusive)");
 
             return (rowIndex, columnIndex) switch
             {
@@ -306,9 +306,9 @@ public struct Matrix3x3<T> : IEquatable<Matrix3x3<T>>
         set
         {
             if (rowIndex < 0 || rowIndex > 2)
-                throw new IndexOutOfRangeException($"{nameof(rowIndex)} must be between 0 => 2 (inclusive)");
+                throw new ArgumentOutOfRangeException(nameof(rowIndex), "Must be between 0 => 2 (inclusive)");
             if (columnIndex < 0 || columnIndex > 2)
-                throw new IndexOutOfRangeException($"{nameof(columnIndex)} must be between 0 => 2 (inclusive)");
+                throw new ArgumentOutOfRangeException(nameof(columnIndex), "Must be between 0 => 2 (inclusive)");
 
             switch ((rowIndex, columnIndex))
             {
@@ -457,14 +457,14 @@ public struct Matrix3x3<T> : IEquatable<Matrix3x3<T>>
 
         // create matrix of minors
         var minorsMatrix = new Matrix3x3<T>();
-        for (int row = 0; row < 3; row++)
-            for (int column = 0; column < 3; column++)
+        for (var row = 0; row < 3; row++)
+            for (var column = 0; column < 3; column++)
             {
                 // create the 3x3 matrix from the elements that don't intersect the current element's row or column
                 var matrix2x2 = new Matrix2x2<T>();
                 var currentMatrix2x2Element = 0;
-                for (int matrix2x2Row = 0; matrix2x2Row < 3; matrix2x2Row++)
-                    for (int matrix2x2Column = 0; matrix2x2Column < 3; matrix2x2Column++)
+                for (var matrix2x2Row = 0; matrix2x2Row < 3; matrix2x2Row++)
+                    for (var matrix2x2Column = 0; matrix2x2Column < 3; matrix2x2Column++)
                     {
                         // ensure current matrix element doesn't intersect with the row or column of this element
                         if (matrix2x2Row == row || matrix2x2Column == column)
@@ -478,14 +478,14 @@ public struct Matrix3x3<T> : IEquatable<Matrix3x3<T>>
 
         // create matrix of cofactors
         var cofactorsMatrix = minorsMatrix;
-        for (int i = 1; i < 9; i += 2)
+        for (var i = 1; i < 9; i += 2)
             cofactorsMatrix[i] *= T.CreateChecked(-1);
 
         // get the inverted matrix
         var invertedMatrix = cofactorsMatrix.Transposed * (T.One / Determinant);
 
         // copy over the inverted matrix to this instance
-        for (int i = 0; i < 9; i++)
+        for (var i = 0; i < 9; i++)
             this[i] = invertedMatrix[i];
     }
 

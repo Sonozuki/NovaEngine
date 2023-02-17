@@ -49,7 +49,7 @@ public sealed class SerialiserLoadable<T>
     private void LoadValueFromFile()
     {
         if (string.IsNullOrWhiteSpace(Path))
-            throw new ArgumentException($"Path is invalid in a {this.GetType().Name} instance.");
+            throw new ArgumentException($"Path is invalid in a {GetType().Name} instance.");
 
         Value = ContentLoader.Load<T>(Path);
     }

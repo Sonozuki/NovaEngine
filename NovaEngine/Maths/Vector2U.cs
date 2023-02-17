@@ -3,7 +3,7 @@
 namespace NovaEngine.Maths;
 
 /// <summary>Represents a vector with two 32-bit unsigned integer values.</summary>
-public struct Vector2U
+public struct Vector2U : IEquatable<Vector2U>
 {
     /*********
     ** Fields

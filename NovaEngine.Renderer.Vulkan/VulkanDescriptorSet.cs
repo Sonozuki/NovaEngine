@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Encapsulates a <see cref="VkDescriptorSet"/>.</summary>
-internal unsafe class VulkanDescriptorSet
+internal unsafe sealed class VulkanDescriptorSet
 {
     /*********
     ** Fields

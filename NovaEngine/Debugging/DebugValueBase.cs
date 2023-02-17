@@ -19,12 +19,8 @@ internal abstract class DebugValueBase
     /// <summary>Constructs an instance.</summary>
     /// <param name="name">The name of the debug value.</param>
     /// <param name="documentation">The documentation of the debug value.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is <see langword="null"/> or white space.</exception>
     public DebugValueBase(string name, string documentation)
     {
-        if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("Cannot be null or white space.", nameof(name));
-
         Name = name;
         Documentation = documentation;
     }

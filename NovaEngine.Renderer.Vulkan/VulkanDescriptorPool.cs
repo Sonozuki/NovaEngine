@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Encapsulates a <see cref="VkDescriptorPool"/>.</summary>
-internal unsafe class VulkanDescriptorPool : IDisposable
+internal unsafe sealed class VulkanDescriptorPool : IDisposable
 {
     /*********
     ** Constants
@@ -50,7 +50,7 @@ internal unsafe class VulkanDescriptorPool : IDisposable
             };
 
             if (VK.CreateDescriptorPool(VulkanRenderer.Instance.Device.NativeDevice, ref descriptorPoolCreateInfo, null, out var descriptorPool) != VkResult.Success)
-                throw new ApplicationException("Failed to create descriptor pool.").Log(LogSeverity.Fatal);
+                throw new VulkanException("Failed to create descriptor pool.").Log(LogSeverity.Fatal);
             NativeDescriptorPool = descriptorPool;
         }
     }

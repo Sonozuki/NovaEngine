@@ -105,8 +105,8 @@ public static class Input
             throw new ArgumentNullException(nameof(callback));
 
         var listenerInfo = new MouseButtonEventListenerInfo(button, pressType);
-        if (MouseButtonEventHandlers.ContainsKey(listenerInfo))
-            MouseButtonEventHandlers[listenerInfo].Add(callback);
+        if (MouseButtonEventHandlers.TryGetValue(listenerInfo, out var eventHandler))
+            eventHandler.Add(callback);
         else
             MouseButtonEventHandlers[listenerInfo] = new() { callback };
     }

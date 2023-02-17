@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Serialisation;
 
 /// <summary>Represents the info about an object.</summary>
-internal class ObjectInfo
+internal sealed class ObjectInfo
 {
     /*********
     ** Fields

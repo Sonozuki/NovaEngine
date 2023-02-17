@@ -7,7 +7,7 @@ internal static class Meshes
     ** Properties
     *********/
     /// <summary>An empty mesh.</summary>
-    public static Mesh Empty { get; } = new("Empty", new Vertex[0], new uint[0]);
+    public static Mesh Empty { get; } = new("Empty", Array.Empty<Vertex>(), Array.Empty<uint>());
 
     /// <summary>The mesh for a unit size cube.</summary>
     public static Mesh Cube { get; } = new("Cube",

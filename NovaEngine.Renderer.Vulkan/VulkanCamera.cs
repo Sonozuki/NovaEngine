@@ -1,4 +1,6 @@
-﻿namespace NovaEngine.Renderer.Vulkan;
+﻿#pragma warning disable CA1506 // Too coupled TODO: fix with renderer rewrite (once NSL has been finished)
+
+namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Represents a Vulkan camera.</summary>
 public unsafe class VulkanCamera : RendererCameraBase
@@ -23,6 +25,9 @@ public unsafe class VulkanCamera : RendererCameraBase
     /*********
     ** Fields
     *********/
+    /// <summary>Whether the camera has been disposed.</summary>
+    private bool IsDisposed;
+
     /// <summary>The pipelines that Vulkan will use.</summary>
     private VulkanPipelines Pipelines;
 
@@ -52,7 +57,7 @@ public unsafe class VulkanCamera : RendererCameraBase
 
     /// <summary>The current frame index.</summary>
     /// <remarks>This is used to determine which sync objects to use, it will always be between 0 and --<see cref="ConcurrentFrames"/>.</remarks>
-    private int CurrentFrameIndex = 0;
+    private int CurrentFrameIndex;
 
     /// <summary>The depth pre-pass textures.</summary>
     private DepthTexture[] DepthPrepassTextures;
@@ -135,7 +140,7 @@ public unsafe class VulkanCamera : RendererCameraBase
     public VulkanCamera(Camera baseCamera)
         : base(baseCamera)
     {
-        Swapchain = new(BaseCamera.IsVSyncEnabled, new((uint)this.BaseCamera.Resolution.X, (uint)this.BaseCamera.Resolution.Y));
+        Swapchain = new(BaseCamera.IsVSyncEnabled, new((uint)BaseCamera.Resolution.X, (uint)BaseCamera.Resolution.Y));
         CreateRenderPasses();
         Swapchain.CreateFramebuffers(FinalRenderingRenderPass);
         CreateDepthPrepassResources();
@@ -207,7 +212,7 @@ public unsafe class VulkanCamera : RendererCameraBase
         };
         LightsBuffer.CopyFrom(light);
 
-        var vulkanGameObjects = gameObjects.Cast<VulkanGameObject>();
+        var vulkanGameObjects = gameObjects.Cast<VulkanGameObject>().ToList();
         var triangleVulkanGameObjects = vulkanGameObjects.Where(vulkanGameObject => vulkanGameObject.MeshType == MeshType.TriangleList).ToList();
         var lineVulkanGameObjects = vulkanGameObjects.Where(vulkanGameObject => vulkanGameObject.MeshType == MeshType.LineList).ToList();
         foreach (var vulkanGameObject in vulkanGameObjects)
@@ -358,13 +363,27 @@ public unsafe class VulkanCamera : RendererCameraBase
         }
     }
 
-    /// <inheritdoc/>
-    public override void Dispose()
+
+    /*********
+    ** Protected Methods
+    *********/
+    /// <summary>Cleans up unmanaged resources in the camera.</summary>
+    /// <param name="disposing">Whether the camera is being disposed deterministically.</param>
+    protected override void Dispose(bool disposing)
     {
+        if (IsDisposed)
+            return;
+
         CleanUpSwapchain();
         DisposeFixedBuffers();
 
-        for (int i = 0; i < ConcurrentFrames; i++)
+        if (disposing)
+        {
+            ComputeCommandPool?.Dispose();
+            GraphicsCommandPool?.Dispose();
+        }
+
+        for (var i = 0; i < ConcurrentFrames; i++)
         {
             VK.DestroySemaphore(VulkanRenderer.Instance.Device.NativeDevice, DepthPrepassFinishedSemaphores[i], null);
             VK.DestroySemaphore(VulkanRenderer.Instance.Device.NativeDevice, LightCullingFinishedSemaphores[i], null);
@@ -373,8 +392,7 @@ public unsafe class VulkanCamera : RendererCameraBase
             VK.DestroyFence(VulkanRenderer.Instance.Device.NativeDevice, InFlightFences[i], null);
         }
 
-        ComputeCommandPool.Dispose();
-        GraphicsCommandPool.Dispose();
+        IsDisposed = true;
     }
 
 
@@ -386,7 +404,7 @@ public unsafe class VulkanCamera : RendererCameraBase
     {
         CleanUpSwapchain();
 
-        Swapchain = new(BaseCamera.IsVSyncEnabled, new((uint)this.BaseCamera.Resolution.X, (uint)this.BaseCamera.Resolution.Y));
+        Swapchain = new(BaseCamera.IsVSyncEnabled, new((uint)BaseCamera.Resolution.X, (uint)BaseCamera.Resolution.Y));
         CreateRenderPasses();
         Swapchain.CreateFramebuffers(FinalRenderingRenderPass);
         CreateDepthPrepassResources();
@@ -404,15 +422,15 @@ public unsafe class VulkanCamera : RendererCameraBase
     {
         VK.DeviceWaitIdle(VulkanRenderer.Instance.Device.NativeDevice);
 
-        ComputeCommandPool.FreeCommandBuffers(new[] { GenerateFrustumsCommandBuffer });
-        ComputeCommandPool.FreeCommandBuffers(CullLightsCommandBuffers);
-        GraphicsCommandPool.FreeCommandBuffers(new[] { RenderingCommandBufferInFlight });
+        ComputeCommandPool?.FreeCommandBuffers(new[] { GenerateFrustumsCommandBuffer });
+        ComputeCommandPool?.FreeCommandBuffers(CullLightsCommandBuffers);
+        GraphicsCommandPool?.FreeCommandBuffers(new[] { RenderingCommandBufferInFlight });
         RenderingCommandBufferInFlight = new(); // reset so the rendering loop doesn't try to clean it up
 
-        Pipelines.Dispose();
+        Pipelines?.Dispose();
         VK.DestroyRenderPass(VulkanRenderer.Instance.Device.NativeDevice, DepthPrepassRenderPass, null);
         VK.DestroyRenderPass(VulkanRenderer.Instance.Device.NativeDevice, FinalRenderingRenderPass, null);
-        Swapchain.Dispose();
+        Swapchain?.Dispose();
 
         DisposeDepthPrepassResources();
 
@@ -420,7 +438,7 @@ public unsafe class VulkanCamera : RendererCameraBase
     }
 
     /// <summary>Creates the render passes.</summary>
-    /// <exception cref="ApplicationException">Thrown if a render pass couldn't be created.</exception>
+    /// <exception cref="VulkanException">Thrown if a render pass couldn't be created.</exception>
     private void CreateRenderPasses()
     {
         // two render pass are required, this is because Vulkan doesn't support compute subpasses nor does it support dispatching compute buffers inside a render pass,
@@ -476,7 +494,7 @@ public unsafe class VulkanCamera : RendererCameraBase
             };
 
             if (VK.CreateRenderPass(VulkanRenderer.Instance.Device.NativeDevice, ref renderPassCreateInfo, null, out var nativeRenderPass) != VkResult.Success)
-                throw new ApplicationException("Failed to create depth pre-pass render pass.").Log(LogSeverity.Fatal);
+                throw new VulkanException("Failed to create depth pre-pass render pass.").Log(LogSeverity.Fatal);
             DepthPrepassRenderPass = nativeRenderPass;
         }
 
@@ -604,7 +622,7 @@ public unsafe class VulkanCamera : RendererCameraBase
                 };
 
                 if (VK.CreateRenderPass(VulkanRenderer.Instance.Device.NativeDevice, ref renderPassCreateInfo, null, out var nativeRenderPass) != VkResult.Success)
-                    throw new ApplicationException("Failed to create final rendering render pass.").Log(LogSeverity.Fatal);
+                    throw new VulkanException("Failed to create final rendering render pass.").Log(LogSeverity.Fatal);
                 FinalRenderingRenderPass = nativeRenderPass;
             }
         }
@@ -615,12 +633,12 @@ public unsafe class VulkanCamera : RendererCameraBase
     {
         // textures
         DepthPrepassTextures = new DepthTexture[ConcurrentFrames];
-        for (int i = 0; i < ConcurrentFrames; i++)
+        for (var i = 0; i < ConcurrentFrames; i++)
             DepthPrepassTextures[i] = new DepthTexture(Swapchain.Extent.Width, Swapchain.Extent.Height, SampleCount._1);
 
         // framebuffers
         DepthPrepassFramebuffers = new VkFramebuffer[ConcurrentFrames];
-        for (int i = 0; i < ConcurrentFrames; i++)
+        for (var i = 0; i < ConcurrentFrames; i++)
         {
             var attachment = (DepthPrepassTextures[i].RendererTexture as VulkanTexture)!.NativeImageView;
 
@@ -636,7 +654,7 @@ public unsafe class VulkanCamera : RendererCameraBase
             };
 
             if (VK.CreateFramebuffer(VulkanRenderer.Instance.Device.NativeDevice, ref framebufferCreateInfo, null, out DepthPrepassFramebuffers[i]) != VkResult.Success)
-                throw new ApplicationException("Failed to create depth pre-pass framebuffer").Log(LogSeverity.Fatal);
+                throw new VulkanException("Failed to create depth pre-pass framebuffer").Log(LogSeverity.Fatal);
         }
     }
 
@@ -651,7 +669,7 @@ public unsafe class VulkanCamera : RendererCameraBase
     }
 
     /// <summary>Create the semaphores and fences.</summary>
-    /// <exception cref="ApplicationException">Thrown if the semaphores or fences couldn't be created.</exception>
+    /// <exception cref="VulkanException">Thrown if the semaphores or fences couldn't be created.</exception>
     private void CreateSyncObjects()
     {
         DepthPrepassFinishedSemaphores = new VkSemaphore[ConcurrentFrames];
@@ -661,7 +679,7 @@ public unsafe class VulkanCamera : RendererCameraBase
         InFlightFences = new VkFence[ConcurrentFrames];
         ImagesInFlight = new VkFence[Swapchain.NativeImages.Length];
 
-        for (int i = 0; i < ConcurrentFrames; i++)
+        for (var i = 0; i < ConcurrentFrames; i++)
         {
             var semaphoreCreateInfo = new VkSemaphoreCreateInfo()
             {
@@ -678,15 +696,15 @@ public unsafe class VulkanCamera : RendererCameraBase
                 VK.CreateSemaphore(VulkanRenderer.Instance.Device.NativeDevice, ref semaphoreCreateInfo, null, out LightCullingFinishedSemaphores[i]) != VkResult.Success ||
                 VK.CreateSemaphore(VulkanRenderer.Instance.Device.NativeDevice, ref semaphoreCreateInfo, null, out ImageAvailableSemaphores[i]) != VkResult.Success ||
                 VK.CreateSemaphore(VulkanRenderer.Instance.Device.NativeDevice, ref semaphoreCreateInfo, null, out RenderFinishedSemaphores[i]) != VkResult.Success)
-                throw new ApplicationException("Failed to create semaphores.").Log(LogSeverity.Fatal);
+                throw new VulkanException("Failed to create semaphores.").Log(LogSeverity.Fatal);
 
             if (VK.CreateFence(VulkanRenderer.Instance.Device.NativeDevice, ref fenceCreateInfo, null, out InFlightFences[i]) != VkResult.Success)
-                throw new ApplicationException("Failed to create fence.").Log(LogSeverity.Fatal);
+                throw new VulkanException("Failed to create fence.").Log(LogSeverity.Fatal);
         }
     }
 
     /// <summary>Creates the buffers that don't get recreated when the swapchain gets recreated.</summary>
-    /// <exception cref="ApplicationException">Thrown if a buffer couldn't be created.</exception>
+    /// <exception cref="VulkanException">Thrown if a buffer couldn't be created.</exception>
     private void CreateFixedBuffers()
     {
         ParametersBuffer = new VulkanBuffer(sizeof(ParametersUBO), VkBufferUsageFlags.UniformBuffer | VkBufferUsageFlags.TransferDestination, VkMemoryPropertyFlags.DeviceLocal);
@@ -696,7 +714,6 @@ public unsafe class VulkanCamera : RendererCameraBase
     }
 
     /// <summary>Creates the buffers that get recreated when the swapchain gets recreated.</summary>
-    /// <exception cref="ApplicationException">Thrown if a buffer couldn't be created.</exception>
     private void CreateDynamicBuffers()
     {
         FrustumsBuffer = new VulkanBuffer(sizeof(Frustum) * TotalNumberOfTiles, VkBufferUsageFlags.StorageBuffer, VkMemoryPropertyFlags.DeviceLocal);
@@ -709,20 +726,20 @@ public unsafe class VulkanCamera : RendererCameraBase
     /// <summary>Disposes the buffers that don't get recreated when the swapchain gets recreated.</summary>
     private void DisposeFixedBuffers()
     {
-        ParametersBuffer.Dispose();
-        LightsBuffer.Dispose();
-        OpaqueLightIndexCounterBuffer.Dispose();
-        TransparentLightIndexCounterBuffer.Dispose();
+        ParametersBuffer?.Dispose();
+        LightsBuffer?.Dispose();
+        OpaqueLightIndexCounterBuffer?.Dispose();
+        TransparentLightIndexCounterBuffer?.Dispose();
     }
 
     /// <summary>Disposes the buffers that get recreated when the swapchain gets recreated.</summary>
     private void DisposeDynamicBuffers()
     {
-        FrustumsBuffer.Dispose();
-        OpaqueLightIndexListBuffer.Dispose();
-        TransparentLightIndexListBuffer.Dispose();
-        OpaqueLightGridBuffer.Dispose();
-        TransparentLightGridBuffer.Dispose();
+        FrustumsBuffer?.Dispose();
+        OpaqueLightIndexListBuffer?.Dispose();
+        TransparentLightIndexListBuffer?.Dispose();
+        OpaqueLightGridBuffer?.Dispose();
+        TransparentLightGridBuffer?.Dispose();
     }
 
     /// <summary>Creates the descriptor sets required for the tiled rendering.</summary>
@@ -743,7 +760,7 @@ public unsafe class VulkanCamera : RendererCameraBase
 
         // cull lights
         CullLightsDescriptorSets = new VulkanDescriptorSet[ConcurrentFrames];
-        for (int i = 0; i < ConcurrentFrames; i++)
+        for (var i = 0; i < ConcurrentFrames; i++)
         {
             CullLightsDescriptorSets[i] = DescriptorPools.CullLightsDescriptorPool.GetDescriptorSet();
 
@@ -792,7 +809,7 @@ public unsafe class VulkanCamera : RendererCameraBase
         // cull lights
         {
             CullLightsCommandBuffers = new VkCommandBuffer[ConcurrentFrames];
-            for (int i = 0; i < ConcurrentFrames; i++)
+            for (var i = 0; i < ConcurrentFrames; i++)
             {
                 var commandBuffer = ComputeCommandPool.AllocateCommandBuffer(true);
 
@@ -822,7 +839,7 @@ public unsafe class VulkanCamera : RendererCameraBase
 
         // TODO: don't create a fence each time
         if (VK.CreateFence(VulkanRenderer.Instance.Device.NativeDevice, ref fenceCreateInfo, null, out var fence) != VkResult.Success)
-            throw new ApplicationException("Failed to create fence.").Log(LogSeverity.Fatal);
+            throw new VulkanException("Failed to create fence.").Log(LogSeverity.Fatal);
 
         var furstumsCommandBuffer = GenerateFrustumsCommandBuffer;
         var submitInfo = new VkSubmitInfo

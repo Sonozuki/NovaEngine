@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.IO;
 
 /// <summary>The info about the state of a mouse button to listen for, for input event handling.</summary>
-internal class MouseButtonEventListenerInfo
+internal sealed class MouseButtonEventListenerInfo
 {
     /*********
     ** Properties

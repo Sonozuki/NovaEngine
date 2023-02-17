@@ -1,6 +1,4 @@
-﻿#pragma warning disable CS0169 // Field is never used
-#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
-#pragma warning disable IDE0051 // Private member is unused
+﻿#pragma warning disable CA1823 // Unused field.
 
 namespace NovaEngine.Renderer.Vulkan.ShaderModels;
 
@@ -41,5 +39,5 @@ internal struct Light
     public bool IsEnabled;
 
     /// <summary>Unused.</summary>
-    private Vector3<float> Padding;
+    private Vector3<float> _Padding;
 }

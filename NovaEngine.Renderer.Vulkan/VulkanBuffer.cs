@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Encapsulates a <see cref="VkBuffer"/>.</summary>
-internal unsafe class VulkanBuffer : IDisposable
+internal unsafe sealed class VulkanBuffer : IDisposable
 {
     /*********
     ** Fields
@@ -34,7 +34,7 @@ internal unsafe class VulkanBuffer : IDisposable
     /// <param name="usageFlags">The usage of the buffer.</param>
     /// <param name="memoryProperties">The memory properties of the buffer.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="size"/> is 0.</exception>
-    /// <exception cref="ApplicationException">Thrown if the buffer couldn't be created or the memory couldn't be allocated or bound.</exception>
+    /// <exception cref="VulkanException">Thrown if the buffer couldn't be created or the memory couldn't be allocated or bound.</exception>
     public VulkanBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryProperties)
     {
         if (size == 0)
@@ -53,7 +53,7 @@ internal unsafe class VulkanBuffer : IDisposable
         };
 
         if (VK.CreateBuffer(VulkanRenderer.Instance.Device.NativeDevice, ref bufferCreateInfo, null, out var nativeBuffer) != VkResult.Success)
-            throw new ApplicationException("Failed to create buffer.").Log(LogSeverity.Fatal);
+            throw new VulkanException("Failed to create buffer.").Log(LogSeverity.Fatal);
         NativeBuffer = nativeBuffer;
 
         // allocate & bind buffer memory
@@ -67,10 +67,10 @@ internal unsafe class VulkanBuffer : IDisposable
         };
 
         if (VK.AllocateMemory(VulkanRenderer.Instance.Device.NativeDevice, ref memoryAllocateInfo, null, out NativeMemory) != VkResult.Success)
-            throw new ApplicationException("Failed to allocate buffer memory.").Log(LogSeverity.Fatal);
+            throw new VulkanException("Failed to allocate buffer memory.").Log(LogSeverity.Fatal);
 
         if (VK.BindBufferMemory(VulkanRenderer.Instance.Device.NativeDevice, NativeBuffer, NativeMemory, 0) != VkResult.Success)
-            throw new ApplicationException("Failed to bind buffer memory.").Log(LogSeverity.Fatal);
+            throw new VulkanException("Failed to bind buffer memory.").Log(LogSeverity.Fatal);
 
         // create a command pool for the transfer commands
         TransferCommandPool = new(CommandPoolUsage.Transfer, VkCommandPoolCreateFlags.Transient);

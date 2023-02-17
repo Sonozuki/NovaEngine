@@ -121,7 +121,7 @@ public class Win32RawInput : IInputHandler
         };
 
         if (!User32.RegisterRawInputDevices(rawInputDevices, (uint)rawInputDevices.Length, (uint)Marshal.SizeOf<RawInputDevice>()))
-            throw new ApplicationException($"Failed to register raw input device: {Marshal.GetLastWin32Error()}.").Log(LogSeverity.Fatal);
+            throw new Win32Exception($"Failed to register raw input device: {Marshal.GetLastWin32Error()}.").Log(LogSeverity.Fatal);
 
         WindowProcedure = Procedure;
         OldWindowProcedure = User32.SetWindowLong(windowHandle, WindowLongOffset.WindowProcedure, Marshal.GetFunctionPointerForDelegate(WindowProcedure));

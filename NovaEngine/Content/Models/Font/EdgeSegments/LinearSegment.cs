@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Content.Models.Font.EdgeSegments;
 
 /// <summary>Represents a linear edge segment.</summary>
-internal class LinearSegment : EdgeSegmentBase
+internal sealed class LinearSegment : EdgeSegmentBase
 {
     /*********
     ** Properties

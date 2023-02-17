@@ -5,7 +5,7 @@ using NovaEngine.Content.Models.Font.Kern;
 namespace NovaEngine.Content.Models.Font;
 
 /// <summary>Represents a true type font.</summary>
-internal class TrueTypeFont : IDisposable
+internal sealed class TrueTypeFont : IDisposable
 {
     /*********
     ** Constants
@@ -96,7 +96,7 @@ internal class TrueTypeFont : IDisposable
         var numberOfTables = BinaryReader.ReadUInt16BigEndian();
 
         BinaryReader.BaseStream.Position = 12;
-        for (int i = 0; i < numberOfTables; i++)
+        for (var i = 0; i < numberOfTables; i++)
             Tables[Encoding.UTF8.GetString(BinaryReader.ReadBytes(4))] =
                 new Table(BinaryReader.ReadUInt32BigEndian(), BinaryReader.ReadUInt32BigEndian(), BinaryReader.ReadUInt32BigEndian());
 
@@ -118,7 +118,7 @@ internal class TrueTypeFont : IDisposable
 
         var fontFamilyName = "";
         var fontSubfamilyName = "";
-        for (int i = 0; i < numberOfNameRecords; i++)
+        for (var i = 0; i < numberOfNameRecords; i++)
         {
             var platformId = BinaryReader.ReadUInt16BigEndian();
             BinaryReader.BaseStream.Position += 4;
@@ -139,7 +139,7 @@ internal class TrueTypeFont : IDisposable
 
             var name = "";
             if (platformId == 0 || platformId == 3)
-                for (int j = 0; j < length; j += 2) // unicode needs to have endian reversed (as ttf files are big endian)
+                for (var j = 0; j < length; j += 2) // unicode needs to have endian reversed (as ttf files are big endian)
                 {
                     var bytes = BinaryReader.ReadBytes(2);
                     name += new string(Encoding.Unicode.GetChars(new[] { bytes[1], bytes[0] })); // TODO: could do with cleaning up
@@ -194,7 +194,7 @@ internal class TrueTypeFont : IDisposable
         BinaryReader.BaseStream.Position = Tables["cmap"].Offset + 2;
 
         var numberOfSubtables = BinaryReader.ReadUInt16BigEndian();
-        for (int i = 0; i < numberOfSubtables; i++)
+        for (var i = 0; i < numberOfSubtables; i++)
         {
             var platformId = BinaryReader.ReadUInt16BigEndian();
             var platformSpecificId = BinaryReader.ReadUInt16BigEndian();
@@ -240,7 +240,7 @@ internal class TrueTypeFont : IDisposable
         BinaryReader.BaseStream.Position = Tables["kern"].Offset + 2;
 
         var numberOfSubtables = BinaryReader.ReadUInt16BigEndian();
-        for (int i = 0; i < numberOfSubtables; i++)
+        for (var i = 0; i < numberOfSubtables; i++)
         {
             BinaryReader.BaseStream.Position += 4;
             var coverage = BinaryReader.ReadUInt16BigEndian();
@@ -297,7 +297,7 @@ internal class TrueTypeFont : IDisposable
         var maxGlyphHeight = -1;
         foreach (var glyph in Glyphs)
         {
-            var points = glyph.Contours.SelectMany(contour => contour.Edges).SelectMany(edge => edge.Points);
+            var points = glyph.Contours.SelectMany(contour => contour.Edges).SelectMany(edge => edge.Points).ToList();
             var xMin = points.Min(point => point.X);
             var yMin = points.Min(point => point.Y);
             var xMax = points.Max(point => point.X);
@@ -421,7 +421,7 @@ internal class TrueTypeFont : IDisposable
             // calculate implicit on-curve points and correct contour ends (corrected to accomodate for the implicit points now be explicit)
             var glyphPoints = new List<Point>();
             var glyphContourEnds = new List<int>();
-            for (int i = 0; i < glyph.Points.Count; i++)
+            for (var i = 0; i < glyph.Points.Count; i++)
             {
                 var point = glyph.Points[i];
                 if (i != 0)
@@ -443,7 +443,7 @@ internal class TrueTypeFont : IDisposable
             var currentContourStartIndex = 0;
             var currentContourEndIndex = 0;
 
-            for (int i = 1; i < glyphPoints.Count; i++)
+            for (var i = 1; i < glyphPoints.Count; i++)
             {
                 var previousPoint = glyphPoints[i - 1];
                 var point = glyphPoints[i];
@@ -488,7 +488,7 @@ internal class TrueTypeFont : IDisposable
     {
         glyph.Flush(); // TODO: instead of flushing and rereading the glyph, just skip it as it already contains all the points
 
-        for (int i = 0; i < glyph.NumberOfContours; i++)
+        for (var i = 0; i < glyph.NumberOfContours; i++)
             glyph.ContourEnds.Add(BinaryReader.ReadUInt16BigEndian());
 
         BinaryReader.BaseStream.Position += BinaryReader.ReadInt16BigEndian() + 2; // skip over instructions
@@ -500,7 +500,7 @@ internal class TrueTypeFont : IDisposable
         var flags = new List<SimpleGlyphFlags>();
 
         var numberOfPoints = glyph.ContourEnds.Max() + 1;
-        for (int i = 0; i < numberOfPoints; i++)
+        for (var i = 0; i < numberOfPoints; i++)
         {
             var flag = (SimpleGlyphFlags)BinaryReader.ReadByte();
             flags.Add(flag);
@@ -510,7 +510,7 @@ internal class TrueTypeFont : IDisposable
             {
                 var repeatCount = BinaryReader.ReadByte();
                 i += repeatCount;
-                for (int j = 0; j < repeatCount; j++)
+                for (var j = 0; j < repeatCount; j++)
                 {
                     flags.Add(flag);
                     glyph.Points.Add(new(flag.HasFlag(SimpleGlyphFlags.OnCurve)));
@@ -609,11 +609,11 @@ internal class TrueTypeFont : IDisposable
 
             // merge the component glyph's contour ends into this glyphs's contour ends
             var pointOffset = glyph.Points.Count;
-            for (int i = 0; i < simpleGlyph.ContourEnds.Count; i++)
+            for (var i = 0; i < simpleGlyph.ContourEnds.Count; i++)
                 glyph.ContourEnds.Add((ushort)(simpleGlyph.ContourEnds[i] + pointOffset));
 
             // merge the component glyph's points into this glyphs's points
-            for (int i = 0; i < simpleGlyph.Points.Count; i++)
+            for (var i = 0; i < simpleGlyph.Points.Count; i++)
             {
                 var point = simpleGlyph.Points[i];
 

@@ -6,27 +6,27 @@ public abstract class TextureBase : IDisposable
     /*********
     ** Fields
     *********/
+    /// <summary>Whether the texture has been disposed.</summary>
+    private bool IsDisposed;
+
     /// <summary>The height of the texture.</summary>
-    protected uint _Height;
+    internal uint _Height;
 
     /// <summary>The depth of the texture.</summary>
-    protected uint _Depth;
+    internal uint _Depth;
 
     /// <summary>The texture wrap mode of the V axis.</summary>
-    protected TextureWrapMode _WrapModeV;
+    internal TextureWrapMode _WrapModeV;
 
     /// <summary>The texture wrap mode of the W axis.</summary>
-    protected TextureWrapMode _WrapModeW;
-
-    /// <summary>The number of mip levels the texture has.</summary>
-    protected uint _MipLevels = 1; // MipLevels has a protected backing field so renderer specific textures can set this
+    internal TextureWrapMode _WrapModeW;
 
     /// <summary>The number of layers the texture has.</summary>
-    protected uint _LayerCount;
+    internal uint _LayerCount;
 
     /// <summary>The pixel data of the texture.</summary>
     /// <remarks>This will always be <see langword="null"/> when accessed manually.<br/>When a texture gets serialised it means it woun't be loaded through the content pipeline when deserialised, therefore, we need to store the pixel data for the serialiser to save; this will be populated just before being serialised and set to <see langword="null"/> straight after.</remarks>
-    protected Colour32[]? SerialiserPixelData;
+    private Colour32[]? SerialiserPixelData;
 
 
     /*********
@@ -39,7 +39,7 @@ public abstract class TextureBase : IDisposable
     public TexturePixelType PixelType { get; }
 
     /// <summary>The number of mip levels the texture has.</summary>
-    public uint MipLevels => _MipLevels;
+    public uint MipLevels { get; internal set; } = 1;
 
     /// <summary>The mip LOD (level of detail) bias of the texture.</summary>
     public float MipLodBias { get; }
@@ -77,6 +77,9 @@ public abstract class TextureBase : IDisposable
     /*********
     ** Constructors
     *********/
+    /// <summary>Destructs the instance.</summary>
+    ~TextureBase() => Dispose(false);
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     /// <summary>Constructs an instance.</summary>
@@ -94,7 +97,7 @@ public abstract class TextureBase : IDisposable
     /// <param name="wrapModeV">The texture wrap mode of the V axis.</param>
     /// <param name="wrapModeW">The texture wrap mode of the W axis.</param>
     /// <param name="filter">The filter mode of the texture.</param>
-    public TextureBase(uint width, uint height, uint depth, TexturePixelType pixelType, bool automaticallyGenerateMipChain, float mipLodBias, uint layerCount, SampleCount sampleCount, bool anisotropicFilteringEnabled, float maxAnisotropicFilteringLevel, TextureWrapMode wrapModeU, TextureWrapMode wrapModeV, TextureWrapMode wrapModeW, TextureFilter filter)
+    protected TextureBase(uint width, uint height, uint depth, TexturePixelType pixelType, bool automaticallyGenerateMipChain, float mipLodBias, uint layerCount, SampleCount sampleCount, bool anisotropicFilteringEnabled, float maxAnisotropicFilteringLevel, TextureWrapMode wrapModeU, TextureWrapMode wrapModeV, TextureWrapMode wrapModeW, TextureFilter filter)
     {
         Width = width;
         _Height = height;
@@ -120,8 +123,12 @@ public abstract class TextureBase : IDisposable
     /*********
     ** Public Methods
     *********/
-    /// <summary>Disposes unmanaged texture resources.</summary>
-    public void Dispose() => RendererTexture.Dispose();
+    /// <summary>Cleans up unmanaged resources in the texture.</summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 
 
     /*********
@@ -129,7 +136,7 @@ public abstract class TextureBase : IDisposable
     *********/
     /// <summary>Retrieves the texture pixel data ready for the serialiser.</summary>
     [OnSerialising]
-    protected void StorePixelData() => SerialiserPixelData = this.RendererTexture.GetPixels();
+    protected void StorePixelData() => SerialiserPixelData = RendererTexture.GetPixels();
 
     /// <summary>Clears the pixel data.</summary>
     /// <remarks>This is done so it's not accidently used, this is due to <see cref="SerialiserPixelData"/> being able to desync from the texture data until the texture is next serialised.</remarks>
@@ -147,5 +154,18 @@ public abstract class TextureBase : IDisposable
             RendererTexture.SetPixels(SerialiserPixelData);
             ClearPixelData();
         }
+    }
+
+    /// <summary>Cleans up unmanaged resources in the texture.</summary>
+    /// <param name="disposing">Whether the texture is being disposed deterministically.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (IsDisposed)
+            return;
+
+        if (disposing)
+            RendererTexture?.Dispose();
+
+        IsDisposed = true;
     }
 }

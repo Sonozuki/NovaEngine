@@ -3,7 +3,7 @@
 namespace NovaEngine.Content.Models.Font;
 
 /// <summary>Represents a contour that makes up a glpyh.</summary>
-internal class Contour
+internal sealed class Contour
 {
     /*********
     ** Properties

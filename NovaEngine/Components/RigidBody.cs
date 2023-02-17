@@ -13,9 +13,6 @@ public class RigidBody : ComponentBase
     /// <summary>Whether the body is kinematic.</summary>
     private bool _IsKinematic;
 
-    /// <summary>The inverse mass of the body, considering <see cref="IsKinematic"/>.</summary>
-    private float _InverseMass;
-
 
     /*********
     ** Properties
@@ -30,9 +27,9 @@ public class RigidBody : ComponentBase
             _Mass = value;
 
             if (IsKinematic)
-                _InverseMass = 0;
+                InverseMass = 0;
             else
-                _InverseMass = 1 / Mass;
+                InverseMass = 1 / Mass;
         }
     }
 
@@ -46,14 +43,14 @@ public class RigidBody : ComponentBase
             _IsKinematic = value;
 
             if (IsKinematic)
-                _InverseMass = 0;
+                InverseMass = 0;
             else
-                _InverseMass = 1 / Mass;
+                InverseMass = 1 / Mass;
         }
     }
 
     /// <summary>The inverse mass of the body, considering <see cref="IsKinematic"/>.</summary>
-    internal float InverseMass => _InverseMass;
+    internal float InverseMass { get; private set; }
 
     /// <summary>The linear velocity of the body.</summary>
     internal Vector3<float> LinearVelocity { get; set; }
@@ -76,15 +73,15 @@ public class RigidBody : ComponentBase
     /// <summary>The global position of the body.</summary>
     internal Vector3<float> GlobalPosition
     {
-        get => this.GameObject.Transform.GlobalPosition;
-        set => this.GameObject.Transform.GlobalPosition = value;
+        get => GameObject.Transform.GlobalPosition;
+        set => GameObject.Transform.GlobalPosition = value;
     }
 
     /// <summary>The global rotation of the body.</summary>
     internal Quaternion<float> GlobalRotation
     {
-        get => this.GameObject.Transform.GlobalRotation;
-        set => this.GameObject.Transform.GlobalRotation = value;
+        get => GameObject.Transform.GlobalRotation;
+        set => GameObject.Transform.GlobalRotation = value;
     }
 
 

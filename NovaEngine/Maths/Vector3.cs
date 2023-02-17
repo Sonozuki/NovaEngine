@@ -437,6 +437,30 @@ public struct Vector3<T> : IEquatable<Vector3<T>>, IComparable<Vector3<T>>
     /// <returns>The result of the division.</returns>
     public static Vector3<T> operator /(Vector3<T> left, Vector3<T> right) => new(left.X / right.X, left.Y / right.Y, left.Z / right.Z);
 
+    /// <summary>Compares two vectors.</summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns><see langword="true"/>, if <paramref name="left"/> is less than <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
+    public static bool operator <(Vector3<T> left, Vector3<T> right) => left.CompareTo(right) < 0;
+
+    /// <summary>Compares two vectors.</summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns><see langword="true"/>, if <paramref name="left"/> is less than or equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
+    public static bool operator <=(Vector3<T> left, Vector3<T> right) => left.CompareTo(right) <= 0;
+
+    /// <summary>Compares two vectors.</summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns><see langword="true"/>, if <paramref name="left"/> is greater than <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
+    public static bool operator >(Vector3<T> left, Vector3<T> right) => left.CompareTo(right) > 0;
+
+    /// <summary>Compares two vectors.</summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns><see langword="true"/>, if <paramref name="left"/> is greater than or equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
+    public static bool operator >=(Vector3<T> left, Vector3<T> right) => left.CompareTo(right) >= 0;
+
     /// <summary>Checks two vectors for equality.</summary>
     /// <param name="vector1">The first vector.</param>
     /// <param name="vector2">The second vector.</param>

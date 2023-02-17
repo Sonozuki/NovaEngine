@@ -1,7 +1,9 @@
-﻿namespace NovaEngine.Renderer.Vulkan;
+﻿#pragma warning disable CA1506 // Too coupled TODO: fix with renderer rewrite (once NSL has been finished)
+
+namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Encapsulates all graphics and compute pipelines.</summary>
-internal unsafe class VulkanPipelines : IDisposable
+internal unsafe sealed class VulkanPipelines : IDisposable
 {
     /*********
     ** Fields
@@ -67,7 +69,7 @@ internal unsafe class VulkanPipelines : IDisposable
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="camera">The camera which the pipelines belong to.</param>
-    /// <exception cref="ApplicationException">Thrown if the pipeline layout or a pipeline couldn't be created.</exception>
+    /// <exception cref="VulkanException">Thrown if the pipeline layout or a pipeline couldn't be created.</exception>
     public VulkanPipelines(VulkanCamera camera)
     {
         Camera = camera;
@@ -107,38 +109,23 @@ internal unsafe class VulkanPipelines : IDisposable
     ** Private Methods
     *********/
     /// <summary>Creates the compute pipelines.</summary>
-    /// <exception cref="ApplicationException">Thrown if a pipeline couldn't be created.</exception>
+    /// <exception cref="VulkanException">Thrown if a pipeline couldn't be created.</exception>
     private void CreateComputePipelines()
     {
-        // generate frustums
-        {
-            // layout
-            GenerateFrustumsPipelineLayout = CreatePipelineLayout(null, DescriptorSetLayouts.GenerateFrustumsDescriptorSetLayout);
+        GenerateFrustumsPipelineLayout = CreatePipelineLayout(null, DescriptorSetLayouts.GenerateFrustumsDescriptorSetLayout);
+        GenerateFrustumsPipeline = CreateComputePipeline(ShaderStages.GenerateFrustumsShader, GenerateFrustumsPipelineLayout);
 
-            // pipeline
-            GenerateFrustumsPipeline = CreateComputePipeline(ShaderStages.GenerateFrustumsShader, GenerateFrustumsPipelineLayout);
-        }
-
-        // cull lights
-        {
-            // layout
-            CullLightsPipelineLayout = CreatePipelineLayout(null, DescriptorSetLayouts.CulLightsDescriptorSetLayout);
-
-            // pipeline
-            CullLightsPipeline = CreateComputePipeline(ShaderStages.CullLightsShader, CullLightsPipelineLayout);
-        }
+        CullLightsPipelineLayout = CreatePipelineLayout(null, DescriptorSetLayouts.CulLightsDescriptorSetLayout);
+        CullLightsPipeline = CreateComputePipeline(ShaderStages.CullLightsShader, CullLightsPipelineLayout);
     }
 
     /// <summary>Creates the graphics pipelines.</summary>
-    /// <exception cref="ApplicationException">Thrown if the graphics pipeline layout or a pipeline couldn't be created.</exception>
+    /// <exception cref="VulkanException">Thrown if the graphics pipeline layout or a pipeline couldn't be created.</exception>
     private void CreateGraphicsPipelines()
     {
         // depth pre-pass
         {
-            // layout
             DepthPrepassPipelineLayout = CreatePipelineLayout(null, DescriptorSetLayouts.DepthPrepassDescriptorSetLayout);
-
-            // pipeline
             DepthPrepassPipeline = CreateGraphicsPipeline(VulkanUtilities.VertexAttributeDesciptions, VulkanUtilities.VertexBindingDescription, new[] { ShaderStages.DepthShader }, DepthPrepassPipelineLayout, VkPrimitiveTopology.TriangleList, SampleCount._1, Camera.DepthPrepassRenderPass);
         }
 
@@ -213,7 +200,7 @@ internal unsafe class VulkanPipelines : IDisposable
             };
 
             if (VK.CreatePipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, ref pipelineLayoutCreateInfo, null, out var pipelineLayout) != VkResult.Success)
-                throw new ApplicationException("Failed to create pipeline layout.").Log(LogSeverity.Fatal);
+                throw new VulkanException("Failed to create pipeline layout.").Log(LogSeverity.Fatal);
             return pipelineLayout;
         }
     }
@@ -222,7 +209,7 @@ internal unsafe class VulkanPipelines : IDisposable
     /// <param name="shaderStage">The shader stage to use when creating the pipeline.</param>
     /// <param name="layout">The pipeline layout to use when creating the pipeline.</param>
     /// <returns>The created compute pipeline.</returns>
-    /// <exception cref="ApplicationException">Thrown if the compute pipeline couldn't be created.</exception>
+    /// <exception cref="VulkanException">Thrown if the compute pipeline couldn't be created.</exception>
     private static VkPipeline CreateComputePipeline(VkPipelineShaderStageCreateInfo shaderStage, VkPipelineLayout layout)
     {
         var pipelineCreateInfo = new VkComputePipelineCreateInfo
@@ -233,7 +220,7 @@ internal unsafe class VulkanPipelines : IDisposable
         };
 
         if (VK.CreateComputePipelines(VulkanRenderer.Instance.Device.NativeDevice, VkPipelineCache.Null, 1, new[] { pipelineCreateInfo }, null, out var computePipeline) != VkResult.Success)
-            throw new ApplicationException("Failed to create compute pipeline.").Log(LogSeverity.Fatal);
+            throw new VulkanException("Failed to create compute pipeline.").Log(LogSeverity.Fatal);
         return computePipeline;
     }
 
@@ -379,7 +366,7 @@ internal unsafe class VulkanPipelines : IDisposable
             };
 
             if (VK.CreateGraphicsPipelines(VulkanRenderer.Instance.Device.NativeDevice, VkPipelineCache.Null, 1, new[] { pipelineCreateInfo }, null, out var graphicsPipeline) != VkResult.Success)
-                throw new ApplicationException("Failed to create graphics pipeline.").Log(LogSeverity.Fatal);
+                throw new VulkanException("Failed to create graphics pipeline.").Log(LogSeverity.Fatal);
             return graphicsPipeline;
         }
     }

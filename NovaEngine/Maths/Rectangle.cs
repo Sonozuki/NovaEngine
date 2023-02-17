@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Maths;
 
 /// <summary>Represents a rectangle.</summary>
-public struct Rectangle
+public struct Rectangle : IEquatable<Rectangle>
 {
     /*********
     ** Fields
@@ -34,4 +34,42 @@ public struct Rectangle
         Width = width;
         Height = height;
     }
+
+
+    /*********
+    ** Public Methods
+    *********/
+    /// <summary>Checks two rectangles for equality.</summary>
+    /// <param name="other">The rectangle to check equality with.</param>
+    /// <returns><see langword="true"/> if the rectangles are equal; otherwise, <see langword="false"/>.</returns>
+    public bool Equals(Rectangle other) => this == other;
+
+    /// <summary>Checks the rectangle and an object for equality.</summary>
+    /// <param name="obj">The object to check equality with.</param>
+    /// <returns><see langword="true"/> if the rectangle and object are equal; otherwise, <see langword="false"/>.</returns>
+    public override bool Equals(object? obj) => obj is Rectangle state && this == state;
+
+    /// <summary>Retrieves the hash code of the rectangle.</summary>
+    /// <returns>The hash code of the rectangle.</returns>
+    public override int GetHashCode() => (X, Y, Width, Height).GetHashCode();
+
+
+    /*********
+    ** Operators
+    *********/
+    /// <summary>Checks two rectangles for equality.</summary>
+    /// <param name="left">The first rectangle.</param>
+    /// <param name="right">The second rectangle.</param>
+    /// <returns><see langword="true"/> if the rectangles are equal; otherwise, <see langword="false"/>.</returns>
+    public static bool operator ==(Rectangle left, Rectangle right) =>
+        left.X == right.X &&
+        left.Y == right.Y &&
+        left.Width == right.Width &&
+        left.Height == right.Height;
+
+    /// <summary>Checks two rectangles for inequality.</summary>
+    /// <param name="left">The first rectangle.</param>
+    /// <param name="right">The second rectangle.</param>
+    /// <returns><see langword="true"/> if the rectangles are not equal; otherwise, <see langword="false"/>.</returns>
+    public static bool operator !=(Rectangle left, Rectangle right) => !(left == right);
 }

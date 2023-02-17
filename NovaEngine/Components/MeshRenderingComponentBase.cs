@@ -15,5 +15,5 @@ public abstract class MeshRenderingComponentBase : ComponentBase
     *********/
     /// <summary>Notifies the renderer that the mesh has been changed while the <see cref="Mesh"/> reference hasn't (i.e. vertex data was changed directly such as <c>Mesh.VertexData[0].Position = new(0, 1, 2);</c></summary>
     [OnDeserialised]
-    public void UpdateMesh() => this.GameObject?.RendererGameObject.UpdateMesh(Mesh);
+    public void UpdateMesh() => GameObject?.RendererGameObject.UpdateMesh(Mesh);
 }

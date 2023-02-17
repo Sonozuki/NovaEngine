@@ -8,6 +8,9 @@ public class ObjectPool<T> : IDisposable
     /*********
     ** Fields
     *********/
+    /// <summary>Whether the object pool has been disposed.</summary>
+    private bool IsDisposed;
+
     /// <summary>The method that is invoked when a new object needs to be created for the pool.</summary>
     private readonly Func<T> InstantiateObject;
 
@@ -29,6 +32,9 @@ public class ObjectPool<T> : IDisposable
     /*********
     ** Constructors
     *********/
+    /// <summary>Destructs the instance.</summary>
+    ~ObjectPool() => Dispose(false);
+
     /// <summary>Constructs an instance.</summary>
     /// <param name="instantiateObject">The method that is invoked when a new object needs to be created for the pool.</param>
     /// <param name="resetObject">The method that is invoked when an object has been returned to the pool used to reset its state.</param>
@@ -54,22 +60,39 @@ public class ObjectPool<T> : IDisposable
     }
 
     /// <summary>Returns an object into the pool.</summary>
-    /// <param name="object">The object to add to return to the pool.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="object"/> is <see langword="null"/>.</exception>
-    public void ReturnObject(T @object)
+    /// <param name="item">The object to add to return to the pool.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="item"/> is <see langword="null"/>.</exception>
+    public void ReturnObject(T item)
     {
-        if (@object == null)
-            throw new ArgumentNullException(nameof(@object));
+        ArgumentNullException.ThrowIfNull(item);
 
-        ResetObject?.Invoke(@object);
-        AvailableObjects.Enqueue(@object);
+        ResetObject?.Invoke(item);
+        AvailableObjects.Enqueue(item);
     }
 
-    /// <summary>Disposes all the available objects in the pool.</summary>
+    /// <summary>Disposes all the available objects in the object pool.</summary>
     public void Dispose()
     {
-        foreach (var element in AvailableObjects)
-            if (element is IDisposable disposable)
-                disposable.Dispose();
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+
+    /*********
+    ** Protected Methods
+    *********/
+    /// <summary>Cleans up unmanaged resources in the object pool.</summary>
+    /// <param name="disposing">Whether the object pool is being disposed deterministically.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (IsDisposed)
+            return;
+
+        if (disposing)
+            foreach (var element in AvailableObjects)
+                if (element is IDisposable disposable)
+                    disposable.Dispose();
+
+        IsDisposed = true;
     }
 }

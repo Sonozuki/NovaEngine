@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Content.Models.Font.Cmap;
 
 /// <summary>Represents a segment in a format 4 cmap subtable.</summary>
-internal class Segment
+internal sealed class Segment
 {
     /*********
     ** Properties

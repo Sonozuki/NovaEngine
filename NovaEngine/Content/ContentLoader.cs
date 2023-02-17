@@ -49,10 +49,15 @@ public static class ContentLoader
     /// <param name="path">The relative path to the fileto load.</param>
     /// <param name="returnType">The return type to load the file to.</param>
     /// <returns>The loaded file.</returns>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="path"/> is <see langword="null"/> or empty.</exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="returnType"/> if <see langword="null"/>.</exception>
     /// <exception cref="FileNotFoundException">Thrown if <paramref name="path"/> doesn't exist.</exception>
     /// <exception cref="ContentException">Thrown if a content reader for <paramref name="returnType"/> couldn't be found, or if the file was invalid.</exception>
     public static object Load(string path, Type returnType)
     {
+        ArgumentException.ThrowIfNullOrEmpty(path);
+        ArgumentNullException.ThrowIfNull(returnType);
+
         path = Path.Combine(Constants.ContentDirectory, path);
 
         var file = path;
@@ -67,7 +72,7 @@ public static class ContentLoader
 
         try
         {
-            if (contentType.ToLower() == "serialised")
+            if (contentType.ToLower(G11n.Culture) == "serialised")
                 readObject = Serialiser.Deserialise(stream);
             else
             {
@@ -135,7 +140,7 @@ public static class ContentLoader
             if (attribute is not ContentReaderAttribute contentReaderAttribute)
                 continue;
 
-            if (contentReaderAttribute.Type.ToLower() == contentType.ToLower() && contentReaderAttribute.OutputTypes.Contains(returnType))
+            if (contentReaderAttribute.Type.ToLower(G11n.Culture) == contentType.ToLower(G11n.Culture) && contentReaderAttribute.OutputTypes.Contains(returnType))
                 return contentReader;
         }
 

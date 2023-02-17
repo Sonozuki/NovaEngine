@@ -46,9 +46,12 @@ public static class Gizmos
     /// <summary>Draws a frustum.</summary>
     /// <param name="camera">The camera whose view frustum should be drawn.</param>
     /// <param name="colour">The colour of the frustum. If <see langword="null"/>, then <see cref="DefaultColour"/> will be used.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="camera"/> is <see langword="null"/>.</exception>
     [Conditional("DEBUG")]
     public static void DrawCameraFrustum(Camera camera, Colour? colour = null)
     {
+        ArgumentNullException.ThrowIfNull(camera);
+
         if (camera.Projection == CameraProjection.Perspective)
             DrawPerspectiveFrustum(camera.Transform.GlobalPosition, camera.Transform.GlobalRotation, camera.FieldOfView, camera.AspectRatio, camera.NearClippingPlane, camera.FarClippingPlane, colour);
         else

@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Physics;
 
 /// <summary>Represents a physics simulation.</summary>
-internal class Simulation
+internal sealed class Simulation
 {
     /*********
     ** Fields
@@ -39,7 +39,7 @@ internal class Simulation
         // update acceleration from external forces
         IntegrateAcceleration(deltaTime);
 
-        for (int i = 0; i < iterationCount; i++)
+        for (var i = 0; i < iterationCount; i++)
         {
             BroadPhase();
             NarrowPhase();
@@ -110,8 +110,8 @@ internal class Simulation
     {
         // TODO: change this to use an accelerated structure
         BroadPhaseCollisions.Clear();
-        for (int i = 0; i < Bodies.Count; i++)
-            for (int j = i + 1; j < Bodies.Count; j++)
+        for (var i = 0; i < Bodies.Count; i++)
+            for (var j = i + 1; j < Bodies.Count; j++)
             {
                 var bodyA = Bodies[i];
                 var bodyB = Bodies[j];
@@ -130,7 +130,7 @@ internal class Simulation
         var sphereA = new Sphere(.5f, Vector3<float>.Zero);
         var sphereB = new Sphere(.5f, Vector3<float>.Zero);
 
-        for (int i = 0; i < BroadPhaseCollisions.Count; i++)
+        for (var i = 0; i < BroadPhaseCollisions.Count; i++)
         {
             var collisionInfo = BroadPhaseCollisions[i];
             if (AreSpheresIntersecting(sphereA, collisionInfo.A.GlobalPosition, sphereB, collisionInfo.B.GlobalPosition, ref collisionInfo))

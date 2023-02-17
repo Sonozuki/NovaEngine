@@ -6,6 +6,13 @@ namespace NovaEngine.Core;
 public class Font : IDisposable
 {
     /*********
+    ** Fields
+    *********/
+    /// <summary>Whether the font has been disposed.</summary>
+    private bool IsDisposed;
+
+
+    /*********
     ** Properties
     *********/
     /// <summary>The name of the font.</summary>
@@ -22,12 +29,15 @@ public class Font : IDisposable
     public Texture2D Atlas { get; }
 
     /// <summary>The glyphs in the font.</summary>
-    public List<GlyphData> Glyphs { get; }
+    public IReadOnlyList<GlyphData> Glyphs { get; }
 
 
     /*********
     ** Constructors
     *********/
+    /// <summary>Destructs the instance.</summary>
+    ~Font() => Dispose(false);
+
     /// <summary>Constructs an instance.</summary>
     /// <param name="name">The name of the font.</param>
     /// <param name="maxGlyphHeight">The max height of the glyphs after being scaled, in pixels.</param>
@@ -40,13 +50,34 @@ public class Font : IDisposable
         MaxGlyphHeight = maxGlyphHeight;
         PixelRange = pixelRange;
         Atlas = atlas;
-        Glyphs = glyphs.ToList();
+        Glyphs = glyphs.ToList().AsReadOnly();
     }
 
 
     /*********
     ** Public Methods
     *********/
-    /// <inheritdoc/>
-    public void Dispose() => Atlas.Dispose();
+    /// <summary>Cleans up unmanaged resources in the font.</summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+
+    /*********
+    ** Protected Methods
+    *********/
+    /// <summary>Cleans up unmanaged resources in the font.</summary>
+    /// <param name="disposing">Whether the font is being disposed deterministically.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (IsDisposed)
+            return;
+
+        if (disposing)
+            Atlas?.Dispose();
+
+        IsDisposed = true;
+    }
 }

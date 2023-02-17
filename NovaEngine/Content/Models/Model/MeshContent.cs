@@ -6,6 +6,8 @@ public class MeshContent
     /*********
     ** Properties
     *********/
+#pragma warning disable CA1002 // TODO: temp: just here to compile until content pipeline is cleaned up
+    
     /// <summary>The name of the mesh.</summary>
     public string Name { get; set; }
     
@@ -15,6 +17,7 @@ public class MeshContent
     /// <summary>The indices of the mesh.</summary>
     public List<uint> Indices { get; } = new();
 
+#pragma warning restore CA1002 // TODO: temp: just here to compile until content pipeline is cleaned up
 
     /*********
     ** Constructors

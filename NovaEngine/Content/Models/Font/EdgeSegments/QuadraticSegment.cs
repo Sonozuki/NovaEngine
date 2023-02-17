@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Content.Models.Font.EdgeSegments;
 
 /// <summary>Represents a quadratic edge segment.</summary>
-internal class QuadraticSegment : EdgeSegmentBase
+internal sealed class QuadraticSegment : EdgeSegmentBase
 {
     /*********
     ** Constants
@@ -73,7 +73,7 @@ internal class QuadraticSegment : EdgeSegmentBase
             }
         }
 
-        for (int i = 0; i < numberOfSolutions; i++)
+        for (var i = 0; i < numberOfSolutions; i++)
             if (t[i] > 0 && t[i] < 1)
             {
                 var qe = Points[0] + 2 * t[i] * abDirection + t[i] * t[i] * br - point;

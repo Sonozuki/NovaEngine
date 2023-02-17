@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Encapsulate a <see cref="VkCommandPool"/>.</summary>
-internal unsafe class VulkanCommandPool : IDisposable
+internal unsafe sealed class VulkanCommandPool : IDisposable
 {
     /*********
     ** Fields
@@ -20,7 +20,7 @@ internal unsafe class VulkanCommandPool : IDisposable
     /// <param name="usage">How the <see cref="VkCommandPool"/> will be used.</param>
     /// <param name="commandPoolCreateFlags">The create flags of the command pool creation.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="usage"/> isn't valid.</exception>
-    /// <exception cref="ApplicationException">Thrown if the command pool couldn't be created.</exception>
+    /// <exception cref="VulkanException">Thrown if the command pool couldn't be created.</exception>
     public VulkanCommandPool(CommandPoolUsage usage, VkCommandPoolCreateFlags? commandPoolCreateFlags = null)
     {
         // determine which queue family should be used based on usage
@@ -43,7 +43,7 @@ internal unsafe class VulkanCommandPool : IDisposable
         };
 
         if (VK.CreateCommandPool(VulkanRenderer.Instance.Device.NativeDevice, ref commandPoolCreateInfo, null, out var nativeCommandPool) != VkResult.Success)
-            throw new ApplicationException("Failed to create command pool.").Log(LogSeverity.Fatal);
+            throw new VulkanException("Failed to create command pool.").Log(LogSeverity.Fatal);
         NativeCommandPool = nativeCommandPool;
     }
 
@@ -55,7 +55,7 @@ internal unsafe class VulkanCommandPool : IDisposable
     /// <param name="beginCommandBuffer">Whether the command buffer should begin recording commands automatically.</param>
     /// <param name="commandBufferUsageFlags">The <see cref="VkCommandBufferUsageFlags"/> to use when starting the command buffer (this is only used if <paramref name="beginCommandBuffer"/> is <see langword="true"/>).</param>
     /// <returns>A command buffer.</returns>
-    /// <exception cref="ApplicationException">Thrown if the command buffer couldn't be allocated or started (if <paramref name="beginCommandBuffer"/> is <see langword="true"/>).</exception>
+    /// <exception cref="VulkanException">Thrown if the command buffer couldn't be allocated or started (if <paramref name="beginCommandBuffer"/> is <see langword="true"/>).</exception>
     public VkCommandBuffer AllocateCommandBuffer(bool beginCommandBuffer, VkCommandBufferUsageFlags? commandBufferUsageFlags = null)
     {
         // allocate command buffer
@@ -69,7 +69,7 @@ internal unsafe class VulkanCommandPool : IDisposable
 
         var commandBuffers = new VkCommandBuffer[1];
         if (VK.AllocateCommandBuffers(VulkanRenderer.Instance.Device.NativeDevice, ref commandBufferAllocateInfo, commandBuffers) != VkResult.Success)
-            throw new ApplicationException("Failed to allocate command buffer.").Log(LogSeverity.Fatal);
+            throw new VulkanException("Failed to allocate command buffer.").Log(LogSeverity.Fatal);
         var commandBuffer = commandBuffers[0];
 
         // begin and return command buffer
@@ -82,7 +82,7 @@ internal unsafe class VulkanCommandPool : IDisposable
             };
 
             if (VK.BeginCommandBuffer(commandBuffer, &commandBufferBeginInfo) != VkResult.Success)
-                throw new ApplicationException("Failed to start command buffer.").Log(LogSeverity.Fatal);
+                throw new VulkanException("Failed to start command buffer.").Log(LogSeverity.Fatal);
         }
 
         return commandBuffer;
@@ -96,13 +96,13 @@ internal unsafe class VulkanCommandPool : IDisposable
     /// <param name="waitDestinationStageMask">The pipeline stages at which each corresponding semaphore wait will occur.</param>
     /// <param name="signalSemaphores">The semaphores to signal when the command buffer finishes execution.</param>
     /// <param name="signalFence">The fence to signal when the command buffer finishes execution.</param>
-    /// <exception cref="ApplicationException">Thrown if the command buffer couldn't be ended, submited, or the queue couldn't be waited.</exception>
+    /// <exception cref="VulkanException">Thrown if the command buffer couldn't be ended, submited, or the queue couldn't be waited.</exception>
     public void SubmitCommandBuffer(bool endCommandBuffer, VkCommandBuffer commandBuffer, bool freeCommandBuffer = true, VkSemaphore[]? waitSemaphores = null, VkPipelineStageFlags[]? waitDestinationStageMask = null, VkSemaphore[]? signalSemaphores = null, VkFence? signalFence = null)
     {
         // end recording commands
         if (endCommandBuffer)
             if (VK.EndCommandBuffer(commandBuffer) != VkResult.Success)
-                throw new ApplicationException("Failed to end command buffer.").Log(LogSeverity.Fatal);
+                throw new VulkanException("Failed to end command buffer.").Log(LogSeverity.Fatal);
 
         waitSemaphores ??= Array.Empty<VkSemaphore>();
         waitDestinationStageMask ??= Array.Empty<VkPipelineStageFlags>();
@@ -126,10 +126,10 @@ internal unsafe class VulkanCommandPool : IDisposable
             };
 
             if (VK.QueueSubmit(Queue, 1, new[] { submitInfo }, VkFence.Null) != VkResult.Success)
-                throw new ApplicationException("Failed to submit command buffer.").Log(LogSeverity.Fatal);
+                throw new VulkanException("Failed to submit command buffer.").Log(LogSeverity.Fatal);
 
             if (VK.QueueWaitIdle(Queue) != VkResult.Success)
-                throw new ApplicationException("Failed to queue wait idle.").Log(LogSeverity.Fatal);
+                throw new VulkanException("Failed to queue wait idle.").Log(LogSeverity.Fatal);
         }
 
         // free command buffer

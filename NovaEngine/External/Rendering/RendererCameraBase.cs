@@ -16,9 +16,12 @@ public abstract class RendererCameraBase : IDisposable
     /*********
     ** Constructors
     *********/
+    /// <summary>Destructs the instance.</summary>
+    ~RendererCameraBase() => Dispose(false);
+
     /// <summary>Constructs an instance.</summary>
     /// <param name="baseCamera">The underlying camera.</param>
-    public RendererCameraBase(Camera baseCamera)
+    protected RendererCameraBase(Camera baseCamera)
     {
         BaseCamera = baseCamera;
     }
@@ -39,6 +42,18 @@ public abstract class RendererCameraBase : IDisposable
     /// <param name="presentRenderTarget">Whether the camera's render target should get presented directly to the screen.</param>
     public abstract void Render(IEnumerable<RendererGameObjectBase> gameObjects, IEnumerable<RendererGameObjectBase> uiGameObjects, bool presentRenderTarget);
 
-    /// <inheritdoc/>
-    public abstract void Dispose();
+    /// <summary>Cleans up unmanaged resources in the camera.</summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+
+    /*********
+    ** Protected Methods
+    *********/
+    /// <summary>Cleans up unmanaged resources in the camera.</summary>
+    /// <param name="disposing">Whether the camera is being disposed deterministically.</param>
+    protected abstract void Dispose(bool disposing);
 }

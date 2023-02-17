@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Represents a graphics renderer using Vulkan.</summary>
-public unsafe class VulkanRenderer : IRenderer
+public unsafe sealed class VulkanRenderer : IRenderer
 {
     /*********
     ** Constants
@@ -73,13 +73,25 @@ public unsafe class VulkanRenderer : IRenderer
     ** Public Methods
     *********/
     /// <inheritdoc/>
-    public RendererTextureBase CreateRendererTexture(TextureBase baseTexture) => new VulkanTexture(baseTexture);
+    public RendererTextureBase CreateRendererTexture(TextureBase baseTexture)
+    {
+        ArgumentNullException.ThrowIfNull(baseTexture);
+        return new VulkanTexture(baseTexture);
+    }
 
     /// <inheritdoc/>
-    public RendererGameObjectBase CreateRendererGameObject(GameObject baseGameObject) => new VulkanGameObject(baseGameObject);
+    public RendererGameObjectBase CreateRendererGameObject(GameObject baseGameObject)
+    {
+        ArgumentNullException.ThrowIfNull(baseGameObject);
+        return new VulkanGameObject(baseGameObject);
+    }
 
     /// <inheritdoc/>
-    public RendererCameraBase CreateRendererCamera(Camera baseCamera) => new VulkanCamera(baseCamera);
+    public RendererCameraBase CreateRendererCamera(Camera baseCamera)
+    {
+        ArgumentNullException.ThrowIfNull(baseCamera);
+        return new VulkanCamera(baseCamera);
+    }
 
     /// <inheritdoc/>
     public void OnInitialise(IntPtr windowHandle)
@@ -121,7 +133,7 @@ public unsafe class VulkanRenderer : IRenderer
     ** Private Methods
     *********/
     /// <summary>Creates the Vulkan instance.</summary>
-    /// <exception cref="ApplicationException">Thrown if the instance or debug report callback (if validation layers are enabled) couldn't be created.</exception>
+    /// <exception cref="VulkanException">Thrown if the instance or debug report callback (if validation layers are enabled) couldn't be created.</exception>
     private void CreateInstance()
     {
         var applicationInfo = new VkApplicationInfo
@@ -177,13 +189,13 @@ public unsafe class VulkanRenderer : IRenderer
             var extensionProperties = new VkExtensionProperties[extensionPropertyCount];
             VK.EnumerateInstanceExtensionProperties(null, ref extensionPropertyCount, extensionProperties);
 
-            var availableExtensionNames = extensionProperties.Select(property => Marshal.PtrToStringAnsi((IntPtr)property.ExtensionName));
-            for (int i = 0; i < extensionNames.Count; i++)
+            var availableExtensionNames = extensionProperties.Select(property => Marshal.PtrToStringAnsi((IntPtr)property.ExtensionName)).ToList();
+            for (var i = 0; i < extensionNames.Count; i++)
             {
                 var extensionName = extensionNames[i];
 
                 if (!availableExtensionNames.Contains(extensionName))
-                    throw new ApplicationException($"Required extension '{extensionName}' is not available.").Log(LogSeverity.Fatal);
+                    throw new VulkanException($"Required extension '{extensionName}' is not available.").Log(LogSeverity.Fatal);
 
                 enabledExtensionNames[i] = Marshal.StringToHGlobalAnsi(extensionNames[i]);
             }
@@ -198,7 +210,7 @@ public unsafe class VulkanRenderer : IRenderer
                 instanceCreateInfo.EnabledExtensionNames = (byte**)enabledExtensionNamesPointer;
 
                 if (VK.CreateInstance(ref instanceCreateInfo, null, out NativeInstance) != VkResult.Success)
-                    throw new ApplicationException("Failed to create Vulkan instance.").Log(LogSeverity.Fatal);
+                    throw new VulkanException("Failed to create Vulkan instance.").Log(LogSeverity.Fatal);
 
                 VK.InitialiseInstanceMethods(NativeInstance);
             }
@@ -214,7 +226,7 @@ public unsafe class VulkanRenderer : IRenderer
                 };
 
                 if (VK.CreateDebugReportCallbackEXT(NativeInstance, ref debugReportCallbackCreateInfo, null, out NativeDebugReportCallback) != VkResult.Success)
-                    throw new ApplicationException("Failed to create debug report callback.").Log(LogSeverity.Fatal);
+                    throw new VulkanException("Failed to create debug report callback.").Log(LogSeverity.Fatal);
             }
         }
         finally
@@ -241,7 +253,7 @@ public unsafe class VulkanRenderer : IRenderer
             };
 
             if (VK.CreateWin32SurfaceKHR(NativeInstance, ref win32SurfaceCreateInfo, null, out var nativeSurface) != VkResult.Success)
-                throw new ApplicationException("Failed to create surface.").Log(LogSeverity.Fatal);
+                throw new VulkanException("Failed to create surface.").Log(LogSeverity.Fatal);
             NativeSurface = nativeSurface;
         }
         // TODO: add mac and linux support

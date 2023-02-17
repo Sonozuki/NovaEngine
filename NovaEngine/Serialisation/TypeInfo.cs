@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Serialisation;
 
 /// <summary>Represents the info about a type.</summary>
-internal class TypeInfo
+internal sealed class TypeInfo
 {
     /*********
     ** Properties

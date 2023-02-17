@@ -1,7 +1,9 @@
-﻿namespace NovaEngine.Renderer.Vulkan;
+﻿#pragma warning disable CA1506 // Too coupled TODO: fix with renderer rewrite (once NSL has been finished)
+
+namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Encapsulates a <see cref="VkSwapchainKHR"/>.</summary>
-internal unsafe class VulkanSwapchain : IDisposable
+internal unsafe sealed class VulkanSwapchain : IDisposable
 {
     /*********
     ** Fields
@@ -42,7 +44,7 @@ internal unsafe class VulkanSwapchain : IDisposable
     /// <param name="vsync">Whether vsync should be used when presenting.</param>
     /// <param name="extent">The extent to set the swapchain.</param>
     /// <exception cref="InvalidOperationException">Thrown if the physical device doesn't support the surface.</exception>
-    /// <exception cref="ApplicationException">Thrown if the swapchain or swapchain image views couldn't be created.</exception>
+    /// <exception cref="VulkanException">Thrown if the swapchain or swapchain image views couldn't be created.</exception>
     public VulkanSwapchain(bool vsync, VkExtent2D extent)
     {
         // get the swapchain details
@@ -102,7 +104,7 @@ internal unsafe class VulkanSwapchain : IDisposable
         };
 
         if (VK.CreateSwapchainKHR(VulkanRenderer.Instance.Device.NativeDevice, ref swapchainCreateInfo, null, out var nativeSwapchain) != VkResult.Success)
-            throw new ApplicationException("Failed to create swapchain.").Log(LogSeverity.Fatal);
+            throw new VulkanException("Failed to create swapchain.").Log(LogSeverity.Fatal);
         NativeSwapchain = nativeSwapchain;
 
         // retrieve images and create image views
@@ -113,7 +115,7 @@ internal unsafe class VulkanSwapchain : IDisposable
         NativeImages = swapchainImages;
 
         NativeImageViews = new VkImageView[NativeImages.Length];
-        for (int i = 0; i < NativeImages.Length; i++)
+        for (var i = 0; i < NativeImages.Length; i++)
         {
             var imageViewCreateInfo = new VkImageViewCreateInfo
             {
@@ -126,7 +128,7 @@ internal unsafe class VulkanSwapchain : IDisposable
             };
 
             if (VK.CreateImageView(VulkanRenderer.Instance.Device.NativeDevice, ref imageViewCreateInfo, null, out var nativeImageView) != VkResult.Success)
-                throw new ApplicationException("Failed to create swapchain image view.").Log(LogSeverity.Fatal);
+                throw new VulkanException("Failed to create swapchain image view.").Log(LogSeverity.Fatal);
             NativeImageViews[i] = nativeImageView;
         }
 
@@ -141,11 +143,11 @@ internal unsafe class VulkanSwapchain : IDisposable
     *********/
     /// <summary>Creates the framebuffers.</summary>
     /// <param name="renderPass">The render pass to use when creating the framebuffers.</param>
-    /// <exception cref="ApplicationException">Thrown if the framebuffers couldn't be created.</exception>
+    /// <exception cref="VulkanException">Thrown if the framebuffers couldn't be created.</exception>
     public void CreateFramebuffers(VkRenderPass renderPass)
     {
         NativeFramebuffers = new VkFramebuffer[NativeImageViews.Length];
-        for (int i = 0; i < NativeImageViews.Length; i++)
+        for (var i = 0; i < NativeImageViews.Length; i++)
         {
             var attachments = new[] { (DepthTexture.RendererTexture as VulkanTexture)!.NativeImageView, (ColourTexture.RendererTexture as VulkanTexture)!.NativeImageView, NativeImageViews[i] };
 
@@ -163,7 +165,7 @@ internal unsafe class VulkanSwapchain : IDisposable
                 };
 
                 if (VK.CreateFramebuffer(VulkanRenderer.Instance.Device.NativeDevice, ref framebufferCreateInfo, null, out var framebuffer) != VkResult.Success)
-                    throw new ApplicationException("Failed to create framebuffer.").Log(LogSeverity.Fatal);
+                    throw new VulkanException("Failed to create framebuffer.").Log(LogSeverity.Fatal);
                 NativeFramebuffers[i] = framebuffer;
             }
         }
@@ -172,11 +174,11 @@ internal unsafe class VulkanSwapchain : IDisposable
     /// <summary>Retrieves the index of the next available presentable image.</summary>
     /// <param name="semaphore">The semaphore to signal when the image is available.</param>
     /// <returns>The index of the next available presentable image.</returns>
-    /// <exception cref="ApplicationException">Thrown if the next image couldn't be acquired.</exception>
+    /// <exception cref="VulkanException">Thrown if the next image couldn't be acquired.</exception>
     public uint AcquireNextImage(VkSemaphore semaphore)
     {
         if (VK.AcquireNextImageKHR(VulkanRenderer.Instance.Device.NativeDevice, NativeSwapchain, ulong.MaxValue, semaphore, VkFence.Null, out var imageIndex) != VkResult.Success)
-            throw new ApplicationException("Failed to acquire next image.").Log(LogSeverity.Fatal);
+            throw new VulkanException("Failed to acquire next image.").Log(LogSeverity.Fatal);
         return imageIndex;
     }
 
@@ -184,7 +186,7 @@ internal unsafe class VulkanSwapchain : IDisposable
     /// <param name="waitSemaphore">The semaphore to wait on before presenting.</param>
     /// <param name="imageIndex">The index of the swapchain image to  presentation.</param>
     /// <returns>The result from the presentation.</returns>
-    /// <exception cref="ApplicationException">Thrown if the image couldn't be presented.</exception>
+    /// <exception cref="VulkanException">Thrown if the image couldn't be presented.</exception>
     public void QueuePresent(VkSemaphore waitSemaphore, uint imageIndex)
     {
         var swapchain = NativeSwapchain;
@@ -199,7 +201,7 @@ internal unsafe class VulkanSwapchain : IDisposable
         };
 
         if (VK.QueuePresentKHR(VulkanRenderer.Instance.Device.GraphicsQueue, ref presentInfo) != VkResult.Success)
-            throw new ApplicationException("Failed to queue presentation.").Log(LogSeverity.Fatal);
+            throw new VulkanException("Failed to queue presentation.").Log(LogSeverity.Fatal);
     }
 
     /// <summary>Gets the format for a depth texture.</summary>

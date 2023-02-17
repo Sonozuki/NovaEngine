@@ -1,4 +1,6 @@
-﻿namespace NovaEngine.Renderer.Vulkan.ShaderModels;
+﻿#pragma warning disable CA1823 // Unused field.
+
+namespace NovaEngine.Renderer.Vulkan.ShaderModels;
 
 /// <summary>The rendering parameters for the MTSDF fragment shader.</summary>
 internal struct MTSDFParameters
@@ -9,11 +11,11 @@ internal struct MTSDFParameters
     /// <summary>The pixel range that was used when generating the atlas in screen pixels.</summary>
     public float ScreenPixelRange;
 
-    /// <summary>How the fill (inside) of the MTSDF should be rendered.</summary>
-    public MTSDFFillType FillType;
+    /// <summary>How the fill of the MTSDF should be rendered.</summary>
+    public TextFillType FillType;
 
     /// <summary>How the border of the MTSDF should be rendered.</summary>
-    public MTSDFBorderType BorderType;
+    public TextBorderType BorderType;
 
     /// <summary>The width (in pixels) of the border.</summary>
     public float BorderWidth;
@@ -25,12 +27,12 @@ internal struct MTSDFParameters
     public float BloomBrightness;
 
     /// <summary>Unused.</summary>
-    private Vector2<float> _Padding = default;
+    private Vector2<float> _Padding;
 
-    /// <summary>The colour of the fill (inside) (if <see cref="FillType"/> is <see cref="MTSDFFillType.Colour"/>).</summary>
+    /// <summary>The colour of the fill (if <see cref="FillType"/> is <see cref="TextFillType.Colour"/>).</summary>
     public Colour32 FillColour;
 
-    /// <summary>The colour of the border (if the <see cref="BorderType"/> is <see cref="MTSDFBorderType.Colour"/>).</summary>
+    /// <summary>The colour of the border (if the <see cref="BorderType"/> is <see cref="TextBorderType.Colour"/>).</summary>
     public Colour32 BorderColour;
 
 
@@ -44,9 +46,9 @@ internal struct MTSDFParameters
     /// <param name="borderWidth">The width (in pixels) of the border.</param>
     /// <param name="bloomPower">The power of the bloom.</param>
     /// <param name="bloomBrightness">The brightness of the bloom.</param>
-    /// <param name="fillColour">The colour of the fill (inside) (if <paramref name="fillType"/> is <see cref="MTSDFFillType.Colour"/>).</param>
-    /// <param name="borderColour">The colour of the border (if the <paramref name="borderType"/> is <see cref="MTSDFBorderType.Colour"/>).</param>
-    public MTSDFParameters(float screenPixelRange, MTSDFFillType fillType, MTSDFBorderType borderType, float borderWidth, float bloomPower, float bloomBrightness, Colour32 fillColour, Colour32 borderColour)
+    /// <param name="fillColour">The colour of the fill (inside) (if <paramref name="fillType"/> is <see cref="TextFillType.Colour"/>).</param>
+    /// <param name="borderColour">The colour of the border (if the <paramref name="borderType"/> is <see cref="TextBorderType.Colour"/>).</param>
+    public MTSDFParameters(float screenPixelRange, TextFillType fillType, TextBorderType borderType, float borderWidth, float bloomPower, float bloomBrightness, Colour32 fillColour, Colour32 borderColour)
     {
         ScreenPixelRange = screenPixelRange;
         FillType = fillType;

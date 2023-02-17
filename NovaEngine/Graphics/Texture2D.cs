@@ -10,7 +10,7 @@ public class Texture2D : TextureBase
     public uint Height => _Height;
 
     /// <inheritdoc/>
-    internal override TextureUsage Usage => this.PixelType == TexturePixelType.Byte ? TextureUsage.Colour : TextureUsage.Colour32;
+    internal override TextureUsage Usage => PixelType == TexturePixelType.Byte ? TextureUsage.Colour : TextureUsage.Colour32;
 
     /// <inheritdoc/>
     internal override TextureType Type => TextureType.Texture2D;

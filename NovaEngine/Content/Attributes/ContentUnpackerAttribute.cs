@@ -2,7 +2,7 @@
 
 /// <summary>An aatribute used for specifying information about a content unpacker.</summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-public class ContentUnpackerAttribute : Attribute
+public sealed class ContentUnpackerAttribute : Attribute
 {
     /*********
     ** Properties

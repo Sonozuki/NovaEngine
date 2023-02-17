@@ -4,8 +4,16 @@
 public class ContentException : Exception
 {
     /*********
-    ** Public Methods
+    ** Constructors
     *********/
+    /// <summary>Contructs an instance.</summary>
+    public ContentException() { }
+
+    /// <summary>Constructs an instance.</summary>
+    /// <param name="message">The message that describes the error.</param>
+    public ContentException(string? message)
+        : base(message) { }
+
     /// <summary>Constructs an instance.</summary>
     /// <param name="message">The message that describes the error.</param>
     /// <param name="innerException">The exception that is the cause of the current exception.</param>

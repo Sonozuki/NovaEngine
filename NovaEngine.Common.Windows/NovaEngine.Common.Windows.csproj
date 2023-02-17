@@ -17,6 +17,7 @@
 		<Using Include="NovaEngine.IO" />
 		<Using Include="NovaEngine.Logging" />
 		<Using Include="NovaEngine.Maths" />
+		<Using Include="NovaEngine.Platform" />
 		<Using Include="System.Runtime.InteropServices" />
 	</ItemGroup>
 

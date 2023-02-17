@@ -7,7 +7,7 @@ public class MeshRenderer : MeshRenderingComponentBase
     ** Fields
     *********/
     /// <summary>The mesh to render.</summary>
-    protected Mesh _Mesh;
+    private Mesh _Mesh;
 
 
     /*********
@@ -20,7 +20,7 @@ public class MeshRenderer : MeshRenderingComponentBase
         set
         {
             _Mesh = value;
-            this.UpdateMesh();
+            UpdateMesh();
         }
     }
 

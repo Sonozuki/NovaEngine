@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Logging;
 
 /// <summary>Represents a log.</summary>
-internal class Log
+internal sealed class Log
 {
     /*********
     ** Properties

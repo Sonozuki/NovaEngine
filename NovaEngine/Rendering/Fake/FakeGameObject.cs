@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Rendering.Fake;
 
 /// <summary>Represents a game object that is only used when nova is being used without a program instance.</summary>
-internal class FakeGameObject : RendererGameObjectBase
+internal sealed class FakeGameObject : RendererGameObjectBase
 {
     /*********
     ** Public Methods
@@ -16,13 +16,18 @@ internal class FakeGameObject : RendererGameObjectBase
     /// <inheritdoc/>
     public override void PrepareForCamera(Camera camera) { }
 
-    /// <inheritdoc/>
-    public override void Dispose() { }
-
 
     /*********
     ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     public FakeGameObject() : base(new("Fake")) { }
+
+
+    /*********
+    ** Protected Methods
+    *********/
+    /// <summary>Cleans up unmanaged resources in the game object.</summary>
+    /// <param name="disposing">Whether the game object is being disposed deterministically.</param>
+    protected override void Dispose(bool disposing) { }
 }

@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.IO;
 
 /// <summary>The info about the state of a key to listen for, for input event handling.</summary>
-internal class KeyEventListenerInfo
+internal sealed class KeyEventListenerInfo
 {
     /*********
     ** Properties

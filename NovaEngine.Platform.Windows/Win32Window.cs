@@ -32,11 +32,11 @@ public class Win32Window : PlatformWindowBase
         get
         {
 #pragma warning disable CA1806 // Do not ignore method results
-            User32.GetWindowText(this.Handle, out var text, 255);
+            User32.GetWindowText(Handle, out var text, 255);
 #pragma warning restore CA1806 // Do not ignore method results
             return text;
         }
-        set => User32.SetWindowText(this.Handle, value ?? "");
+        set => User32.SetWindowText(Handle, value ?? "");
     }
 
     /// <inheritdoc/>
@@ -69,7 +69,7 @@ public class Win32Window : PlatformWindowBase
         var style = WindowStyle.OverlappedWindow;
 
         if (!User32.AdjustWindowRect(&rectangle, style, false))
-            throw new ApplicationException("Failed to adjust Win32 window client area.").Log(LogSeverity.Fatal);
+            throw new Win32Exception("Failed to adjust Win32 window client area.").Log(LogSeverity.Fatal);
 
         // change rectangle top left to be zero (so it's not off of the screen) // TODO: temp?
         rectangle.Right -= rectangle.Left;
@@ -77,9 +77,9 @@ public class Win32Window : PlatformWindowBase
         rectangle.Left = 0;
         rectangle.Top = 0;
 
-        this.Handle = User32.CreateWindowEx(0, className, title, style, rectangle.Left, rectangle.Top, rectangle.Right - rectangle.Left, rectangle.Bottom - rectangle.Top, IntPtr.Zero, IntPtr.Zero, Program.Handle, IntPtr.Zero);
-        if (this.Handle == IntPtr.Zero)
-            throw new ApplicationException("Failed to craete Win32 window.").Log(LogSeverity.Fatal);
+        Handle = User32.CreateWindowEx(0, className, title, style, rectangle.Left, rectangle.Top, rectangle.Right - rectangle.Left, rectangle.Bottom - rectangle.Top, IntPtr.Zero, IntPtr.Zero, Program.Handle, IntPtr.Zero);
+        if (Handle == IntPtr.Zero)
+            throw new Win32Exception("Failed to craete Win32 window.").Log(LogSeverity.Fatal);
     }
 
 
@@ -89,7 +89,7 @@ public class Win32Window : PlatformWindowBase
     /// <inheritdoc/>
     public override void ProcessEvents()
     {
-        while (User32.PeekMessage(out Msg message, IntPtr.Zero, 0, 0, RemoveMessage.Remove))
+        while (User32.PeekMessage(out var message, IntPtr.Zero, 0, 0, RemoveMessage.Remove))
         {
             User32.TranslateMessage(in message);
             User32.DispatchMessage(in message);

@@ -56,10 +56,10 @@ public static class Logger
     public static void Log<T>(IEnumerable<T> collection, LogSeverity severity = LogSeverity.Info) => Log(Assembly.GetCallingAssembly(), severity, $"[{string.Join(", ", collection)}]");
 
     /// <summary>Logs an object.</summary>
-    /// <param name="object">The object to log.</param>
+    /// <param name="value">The object to log.</param>
     /// <param name="severity">The severity of the log.</param>
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void Log(object? @object, LogSeverity severity = LogSeverity.Info) => Log(Assembly.GetCallingAssembly(), severity, @object?.ToString());
+    public static void Log(object? value, LogSeverity severity = LogSeverity.Info) => Log(Assembly.GetCallingAssembly(), severity, value?.ToString());
 
     /// <summary>Logs a message with <see cref="LogSeverity.Debug"/>.</summary>
     /// <param name="message">The message to log.</param>
@@ -73,9 +73,9 @@ public static class Logger
     public static void LogDebug<T>(IEnumerable<T> collection) => Log(Assembly.GetCallingAssembly(), LogSeverity.Debug, $"[{string.Join(", ", collection)}]");
 
     /// <summary>Logs an object with <see cref="LogSeverity.Debug"/>.</summary>
-    /// <param name="object">The object to log.</param>
+    /// <param name="value">The object to log.</param>
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogDebug(object? @object) => Log(Assembly.GetCallingAssembly(), LogSeverity.Debug, @object?.ToString());
+    public static void LogDebug(object? value) => Log(Assembly.GetCallingAssembly(), LogSeverity.Debug, value?.ToString());
 
     /// <summary>Logs a message with <see cref="LogSeverity.Help"/>.</summary>
     /// <param name="message">The message to log.</param>
@@ -89,9 +89,9 @@ public static class Logger
     public static void LogHelp<T>(IEnumerable<T> collection) => Log(Assembly.GetCallingAssembly(), LogSeverity.Help, $"[{string.Join(", ", collection)}]");
 
     /// <summary>Logs an object with <see cref="LogSeverity.Help"/>.</summary>
-    /// <param name="object">The object to log.</param>
+    /// <param name="value">The object to log.</param>
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogHelp(object? @object) => Log(Assembly.GetCallingAssembly(), LogSeverity.Help, @object?.ToString());
+    public static void LogHelp(object? value) => Log(Assembly.GetCallingAssembly(), LogSeverity.Help, value?.ToString());
 
     /// <summary>Logs a message with <see cref="LogSeverity.Info"/>.</summary>
     /// <param name="message">The message to log.</param>
@@ -105,9 +105,9 @@ public static class Logger
     public static void LogInfo<T>(IEnumerable<T> collection) => Log(Assembly.GetCallingAssembly(), LogSeverity.Info, $"[{string.Join(", ", collection)}]");
 
     /// <summary>Logs an object with <see cref="LogSeverity.Info"/>.</summary>
-    /// <param name="object">The object to log.</param>
+    /// <param name="value">The object to log.</param>
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogInfo(object? @object) => Log(Assembly.GetCallingAssembly(), LogSeverity.Info, @object?.ToString());
+    public static void LogInfo(object? value) => Log(Assembly.GetCallingAssembly(), LogSeverity.Info, value?.ToString());
 
     /// <summary>Logs a message with <see cref="LogSeverity.Alert"/>.</summary>
     /// <param name="message">The message to log.</param>
@@ -121,9 +121,9 @@ public static class Logger
     public static void LogAlert<T>(IEnumerable<T> collection) => Log(Assembly.GetCallingAssembly(), LogSeverity.Alert, $"[{string.Join(", ", collection)}]");
 
     /// <summary>Logs an object with <see cref="LogSeverity.Alert"/>.</summary>
-    /// <param name="object">The object to log.</param>
+    /// <param name="value">The object to log.</param>
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogAlert(object? @object) => Log(Assembly.GetCallingAssembly(), LogSeverity.Alert, @object?.ToString());
+    public static void LogAlert(object? value) => Log(Assembly.GetCallingAssembly(), LogSeverity.Alert, value?.ToString());
 
     /// <summary>Logs a message with <see cref="LogSeverity.Warning"/>.</summary>
     /// <param name="message">The message to log.</param>
@@ -137,9 +137,9 @@ public static class Logger
     public static void LogWarning<T>(IEnumerable<T> collection) => Log(Assembly.GetCallingAssembly(), LogSeverity.Warning, $"[{string.Join(", ", collection)}]");
 
     /// <summary>Logs an object with <see cref="LogSeverity.Warning"/>.</summary>
-    /// <param name="object">The object to log.</param>
+    /// <param name="value">The object to log.</param>
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogWarning(object? @object) => Log(Assembly.GetCallingAssembly(), LogSeverity.Warning, @object?.ToString());
+    public static void LogWarning(object? value) => Log(Assembly.GetCallingAssembly(), LogSeverity.Warning, value?.ToString());
 
     /// <summary>Logs a message with <see cref="LogSeverity.Error"/>.</summary>
     /// <param name="message">The message to log.</param>
@@ -153,9 +153,9 @@ public static class Logger
     public static void LogError<T>(IEnumerable<T> collection) => Log(Assembly.GetCallingAssembly(), LogSeverity.Error, $"[{string.Join(", ", collection)}]");
 
     /// <summary>Logs an object with <see cref="LogSeverity.Error"/>.</summary>
-    /// <param name="object">The object to log.</param>
+    /// <param name="value">The object to log.</param>
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogError(object? @object) => Log(Assembly.GetCallingAssembly(), LogSeverity.Error, @object?.ToString());
+    public static void LogError(object? value) => Log(Assembly.GetCallingAssembly(), LogSeverity.Error, value?.ToString());
 
     /// <summary>Logs a message with <see cref="LogSeverity.Fatal"/>.</summary>
     /// <param name="message">The message to log.</param>
@@ -169,9 +169,9 @@ public static class Logger
     public static void LogFatal<T>(IEnumerable<T> collection) => Log(Assembly.GetCallingAssembly(), LogSeverity.Fatal, $"[{string.Join(", ", collection)}]");
 
     /// <summary>Logs an object with <see cref="LogSeverity.Fatal"/>.</summary>
-    /// <param name="object">The object to log.</param>
+    /// <param name="value">The object to log.</param>
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogFatal(object? @object) => Log(Assembly.GetCallingAssembly(), LogSeverity.Fatal, @object?.ToString());
+    public static void LogFatal(object? value) => Log(Assembly.GetCallingAssembly(), LogSeverity.Fatal, value?.ToString());
 
 
     /*********
@@ -202,7 +202,7 @@ public static class Logger
     ** Private Methods
     *********/
     /// <summary>Logs the general engine and system details.</summary>
-    private static void LogHeader() => Logger.LogInfo($"{Constants.EngineName} {Constants.EngineVersion} running {Program.Name} on {Environment.OSVersion}");
+    private static void LogHeader() => LogInfo($"{Constants.EngineName} {Constants.EngineVersion} running {Program.Name} on {Environment.OSVersion}");
 
     /// <summary>Logs a message as a creator.</summary>
     /// <param name="creator">The creator to log the message as.</param>

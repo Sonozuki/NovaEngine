@@ -2,7 +2,7 @@
 
 /// <summary>An aatribute used for specifying information about a content reader.</summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-public class ContentReaderAttribute : Attribute
+public sealed class ContentReaderAttribute : Attribute
 {
     /*********
     ** Accesors

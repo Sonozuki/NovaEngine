@@ -52,7 +52,7 @@ public class Window
         PlatformWindow = PlatformManager.CurrentPlatform.CreatePlatformWindow(title, size);
 
         PlatformWindow.Resize += (e) => Resize?.Invoke(e);
-        PlatformWindow.LostFocus += () => Input.ResetInputState();
+        PlatformWindow.LostFocus += Input.ResetInputState;
         PlatformWindow.Closed += () => HasClosed = true;
     }
 

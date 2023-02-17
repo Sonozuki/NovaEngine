@@ -23,6 +23,8 @@ internal static class InternalConsole
     /*********
     ** Constructors
     *********/
+#pragma warning disable CA1810 // Initialize all static fields when those fields are declared are remove the explicit static constructor.
+
     /// <summary>Initialises the class.</summary>
     static InternalConsole()
     {
@@ -33,6 +35,8 @@ internal static class InternalConsole
 
         Input.AddKeyHandler(Key.OEM_8, PressType.Press, () => IsVisible = !IsVisible); // TODO: load key bind from settings
     }
+
+#pragma warning restore CA1810 // Initialize all static fields when those fields are declared are remove the explicit static constructor.
 
 
     /*********

@@ -51,7 +51,7 @@ internal static class PropertyInfoExtensions
     {
         // key value pair is a special case as it doesn't use auto generated properteries
         if (propertyInfo.DeclaringType?.Name == "KeyValuePair`2")
-            return propertyInfo.Name.ToLower();
+            return propertyInfo.Name.ToLower(G11n.Culture);
         else
             return $"<{propertyInfo.Name}>k__BackingField";
     }

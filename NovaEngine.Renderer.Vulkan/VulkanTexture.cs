@@ -1,4 +1,6 @@
-﻿namespace NovaEngine.Renderer.Vulkan;
+﻿#pragma warning disable CA1506 // Too coupled TODO: fix with renderer rewrite (once NSL has been finished)
+
+namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Represents a Vulkan specific texture.</summary>
 public unsafe class VulkanTexture : RendererTextureBase
@@ -6,6 +8,9 @@ public unsafe class VulkanTexture : RendererTextureBase
     /*********
     ** Fields
     *********/
+    /// <summary>Whether the texture has been disposed.</summary>
+    private bool IsDisposed;
+
     /// <summary>The memory for the <see cref="NativeImage"/>.</summary>
     private readonly VkDeviceMemory NativeMemory;
 
@@ -40,38 +45,38 @@ public unsafe class VulkanTexture : RendererTextureBase
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="baseTexture">The underlying texture.</param>
-    /// <exception cref="ApplicationException">Thrown if the image, image view, or sampler couldn't be created or the memory couldn't be allocated or bound.</exception>
+    /// <exception cref="VulkanException">Thrown if the image, image view, or sampler couldn't be created or the memory couldn't be allocated or bound.</exception>
     public VulkanTexture(TextureBase baseTexture)
         : base(baseTexture)
     {
         // calculate the number of mip levels for the texture
-        if (this.AutomaticallyGenerateMipChain)
-            this.MipLevels = (uint)Math.Floor(MathF.Log2(Math.Max(this.Width, this.Height))) + 1; // +1 so original image has a mip level
+        if (AutomaticallyGenerateMipChain)
+            MipLevels = (uint)Math.Floor(MathF.Log2(Math.Max(Width, Height))) + 1; // +1 so original image has a mip level
 
         // convert generic texture types to Vulkan specific ones
-        SampleCount = VulkanUtilities.ConvertSampleCount(this.BaseTexture.SampleCount);
+        SampleCount = VulkanUtilities.ConvertSampleCount(BaseTexture.SampleCount);
 
-        Format = this.Usage switch
+        Format = Usage switch
         {
             TextureUsage.Colour => VkFormat.B8G8R8A8UNorm,
             TextureUsage.Colour32 => VkFormat.R32G32B32A32SFloat,
             TextureUsage.Depth => VulkanSwapchain.GetDepthFormat(),
-            _ => throw new InvalidOperationException($"{nameof(this.Usage)} isn't valid.")
+            _ => throw new InvalidOperationException($"{nameof(Usage)} isn't valid.")
         };
 
         VkImageUsageFlags usage;
-        (usage, AspectFlags) = this.Usage switch
+        (usage, AspectFlags) = Usage switch
         {
             TextureUsage.Colour => (VkImageUsageFlags.ColorAttachment, VkImageAspectFlags.Color),
             TextureUsage.Colour32 => (VkImageUsageFlags.Sampled, VkImageAspectFlags.Color), // TODO: make this a little nicer than forcing all 32 to sampled
             TextureUsage.Depth => (VkImageUsageFlags.DepthStencilAttachment, VkImageAspectFlags.Depth),
-            _ => throw new InvalidOperationException($"{nameof(this.Usage)} isn't valid.")
+            _ => throw new InvalidOperationException($"{nameof(Usage)} isn't valid.")
         };
         usage = usage | VkImageUsageFlags.TransferSource | VkImageUsageFlags.TransferDestination | VkImageUsageFlags.Sampled;
 
         VkImageType imageType;
         VkImageViewType imageViewType;
-        (imageType, imageViewType) = this.Type switch
+        (imageType, imageViewType) = Type switch
         {
             TextureType.Texture1D => (VkImageType._1D, VkImageViewType._1D),
             TextureType.Texture1DArray => (VkImageType._1D, VkImageViewType._1DArray),
@@ -80,7 +85,7 @@ public unsafe class VulkanTexture : RendererTextureBase
             TextureType.Texture3D => (VkImageType._3D, VkImageViewType._3D),
             TextureType.CubeMap => (VkImageType._2D, VkImageViewType.Cube),
             TextureType.CubeMapArray => (VkImageType._2D, VkImageViewType.CubeArray),
-            _ => throw new InvalidOperationException($"{nameof(this.Type)} isn't valid.")
+            _ => throw new InvalidOperationException($"{nameof(Type)} isn't valid.")
         };
 
         // create image
@@ -89,9 +94,9 @@ public unsafe class VulkanTexture : RendererTextureBase
             SType = VkStructureType.ImageCreateInfo,
             ImageType = imageType,
             Format = Format,
-            Extent = new(this.Width, this.Height, this.Depth),
-            MipLevels = this.MipLevels,
-            ArrayLayers = this.LayerCount,
+            Extent = new(Width, Height, Depth),
+            MipLevels = MipLevels,
+            ArrayLayers = LayerCount,
             Samples = SampleCount,
             Tiling = VkImageTiling.Optimal,
             Usage = usage,
@@ -100,7 +105,7 @@ public unsafe class VulkanTexture : RendererTextureBase
         };
 
         if (VK.CreateImage(VulkanRenderer.Instance.Device.NativeDevice, ref imageCreateInfo, null, out var nativeImage) != VkResult.Success)
-            throw new ApplicationException("Failed to create image.").Log(LogSeverity.Fatal);
+            throw new VulkanException("Failed to create image.").Log(LogSeverity.Fatal);
         NativeImage = nativeImage;
 
         // allocate memory
@@ -114,10 +119,10 @@ public unsafe class VulkanTexture : RendererTextureBase
         };
 
         if (VK.AllocateMemory(VulkanRenderer.Instance.Device.NativeDevice, ref memoryAllocateInfo, null, out NativeMemory) != VkResult.Success)
-            throw new ApplicationException("Failed to allocate image memory.").Log(LogSeverity.Fatal);
+            throw new VulkanException("Failed to allocate image memory.").Log(LogSeverity.Fatal);
 
         if (VK.BindImageMemory(VulkanRenderer.Instance.Device.NativeDevice, NativeImage, NativeMemory, 0) != VkResult.Success)
-            throw new ApplicationException("Failed to bind image memory.").Log(LogSeverity.Fatal);
+            throw new VulkanException("Failed to bind image memory.").Log(LogSeverity.Fatal);
 
         // create image view
         var imageViewCreateInfo = new VkImageViewCreateInfo
@@ -127,11 +132,11 @@ public unsafe class VulkanTexture : RendererTextureBase
             ViewType = imageViewType,
             Format = Format,
             Components = VkComponentMapping.Identity,
-            SubresourceRange = new(AspectFlags, 0, this.MipLevels, 0, this.LayerCount)
+            SubresourceRange = new(AspectFlags, 0, MipLevels, 0, LayerCount)
         };
 
         if (VK.CreateImageView(VulkanRenderer.Instance.Device.NativeDevice, ref imageViewCreateInfo, null, out var nativeImageView) != VkResult.Success)
-            throw new ApplicationException("Failed to create image view.").Log(LogSeverity.Fatal);
+            throw new VulkanException("Failed to create image view.").Log(LogSeverity.Fatal);
         NativeImageView = nativeImageView;
 
         // create sampler
@@ -141,25 +146,24 @@ public unsafe class VulkanTexture : RendererTextureBase
             MagFilter = VkFilter.Linear,
             MinFilter = VkFilter.Linear,
             MipmapMode = VkSamplerMipmapMode.Linear,
-            AddressModeU = (VkSamplerAddressMode)this.WrapModeU,
-            AddressModeV = (VkSamplerAddressMode)this.WrapModeV,
-            AddressModeW = (VkSamplerAddressMode)this.WrapModeW,
-            MipLodBias = this.MipLodBias,
-            AnisotropyEnable = this.AnisotropicFilteringEnabled,
-            MaxAnisotropy = this.MaxAnisotropicFilteringLevel,
+            AddressModeU = (VkSamplerAddressMode)WrapModeU,
+            AddressModeV = (VkSamplerAddressMode)WrapModeV,
+            AddressModeW = (VkSamplerAddressMode)WrapModeW,
+            MipLodBias = MipLodBias,
+            AnisotropyEnable = AnisotropicFilteringEnabled,
+            MaxAnisotropy = MaxAnisotropicFilteringLevel,
             CompareEnable = false,
             CompareOp = VkCompareOp.Always,
             MinLod = 0,
-            MaxLod = this.MipLevels,
+            MaxLod = MipLevels,
             BorderColor = VkBorderColor.IntOpaqueBlack,
             UnnormalizedCoordinates = false
         };
 
         if (VK.CreateSampler(VulkanRenderer.Instance.Device.NativeDevice, ref samplerCreateInfo, null, out var nativeSampler) != VkResult.Success)
-            throw new ApplicationException("Failed to create sampler.").Log(LogSeverity.Fatal);
+            throw new VulkanException("Failed to create sampler.").Log(LogSeverity.Fatal);
         NativeSampler = nativeSampler;
 
-        // create command pool
         CommandPool = new(CommandPoolUsage.Graphics, VkCommandPoolCreateFlags.Transient);
 
         TransitionImageLayout(VkImageLayout.Undefined, VkImageLayout.ShaderReadOnlyOptimal);
@@ -173,7 +177,7 @@ public unsafe class VulkanTexture : RendererTextureBase
     /// <inheritdoc/>
     public override Colour32[] GetPixels()
     {
-        var bufferSize = this.Width * this.Height * (this.Usage == TextureUsage.Colour32 ? sizeof(Colour32) : sizeof(Colour));
+        var bufferSize = Width * Height * (Usage == TextureUsage.Colour32 ? sizeof(Colour32) : sizeof(Colour));
 
         // transition layout to TransferSource
         TransitionImageLayout(VkImageLayout.Undefined, VkImageLayout.TransferSourceOptimal, VkPipelineStageFlags.Transfer, VkPipelineStageFlags.Transfer);
@@ -183,7 +187,7 @@ public unsafe class VulkanTexture : RendererTextureBase
         stagingBuffer.CopyFrom(this);
 
         // get the pixel data from the staging buffer
-        if (this.Usage == TextureUsage.Colour32)
+        if (Usage == TextureUsage.Colour32)
         {
             var pixelBuffer = new Colour32[bufferSize / sizeof(Colour32)];
             var pixelBufferSpan = pixelBuffer.AsSpan();
@@ -199,7 +203,7 @@ public unsafe class VulkanTexture : RendererTextureBase
             stagingBuffer.CopyTo(pixelBufferSpan);
 
             var convertedPixelBuffer = new Colour32[pixelBuffer.Length];
-            for (int i = 0; i < pixelBuffer.Length; i++)
+            for (var i = 0; i < pixelBuffer.Length; i++)
                 convertedPixelBuffer[i] = pixelBuffer[i].ToColour32();
 
             TransitionImageLayout(VkImageLayout.TransferSourceOptimal, VkImageLayout.ShaderReadOnlyOptimal, VkPipelineStageFlags.Transfer, VkPipelineStageFlags.Transfer);
@@ -210,7 +214,9 @@ public unsafe class VulkanTexture : RendererTextureBase
     /// <inheritdoc/>
     public override void SetPixels(Colour[] pixels, int offset = 0)
     {
-        var bufferSize = this.Width * this.Height * sizeof(Colour);
+        ArgumentNullException.ThrowIfNull(pixels);
+
+        var bufferSize = Width * Height * sizeof(Colour);
 
         // transition layout to TransferSource
         TransitionImageLayout(VkImageLayout.Undefined, VkImageLayout.TransferSourceOptimal, VkPipelineStageFlags.Transfer, VkPipelineStageFlags.Transfer);
@@ -233,7 +239,7 @@ public unsafe class VulkanTexture : RendererTextureBase
         TransitionImageLayout(VkImageLayout.TransferSourceOptimal, VkImageLayout.TransferDestinationOptimal, VkPipelineStageFlags.Transfer, VkPipelineStageFlags.Transfer);
         stagingBuffer.CopyTo(this);
 
-        if (this.AutomaticallyGenerateMipChain)
+        if (AutomaticallyGenerateMipChain)
             GenerateMipChain();
         else
             TransitionImageLayout(VkImageLayout.Undefined, VkImageLayout.ShaderReadOnlyOptimal);
@@ -243,7 +249,9 @@ public unsafe class VulkanTexture : RendererTextureBase
     /// <inheritdoc/>
     public override void SetPixels(Colour32[] pixels, int offset = 0)
     {
-        var bufferSize = this.Width * this.Height * (this.Usage == TextureUsage.Colour32 ? sizeof(Colour32) : sizeof(Colour));
+        ArgumentNullException.ThrowIfNull(pixels);
+
+        var bufferSize = Width * Height * (Usage == TextureUsage.Colour32 ? sizeof(Colour32) : sizeof(Colour));
 
         // transition layout to TransferSource
         TransitionImageLayout(VkImageLayout.Undefined, VkImageLayout.TransferSourceOptimal, VkPipelineStageFlags.Transfer, VkPipelineStageFlags.Transfer);
@@ -253,9 +261,9 @@ public unsafe class VulkanTexture : RendererTextureBase
         stagingBuffer.CopyFrom(this);
 
         // get the pixel data from the staging buffer and apply pixel changes
-        if (this.Usage == TextureUsage.Colour32)
+        if (Usage == TextureUsage.Colour32)
         {
-            var pixelBuffer = new Colour32[this.Width * this.Height];
+            var pixelBuffer = new Colour32[Width * Height];
             var pixelBufferSpan = pixelBuffer.AsSpan();
             stagingBuffer.CopyTo(pixelBufferSpan);
 
@@ -265,12 +273,12 @@ public unsafe class VulkanTexture : RendererTextureBase
         }
         else
         {
-            var pixelBuffer = new Colour[this.Width * this.Height];
+            var pixelBuffer = new Colour[Width * Height];
             var pixelBufferSpan = pixelBuffer.AsSpan();
             stagingBuffer.CopyTo(pixelBufferSpan);
 
             var convertedPixels = new Colour[pixels.Length];
-            for (int i = 0; i < pixels.Length; i++)
+            for (var i = 0; i < pixels.Length; i++)
                 convertedPixels[i] = pixels[i].ToColour();
 
             Array.Copy(convertedPixels, 0, pixelBuffer, offset, convertedPixels.Length);
@@ -282,7 +290,7 @@ public unsafe class VulkanTexture : RendererTextureBase
         TransitionImageLayout(VkImageLayout.TransferSourceOptimal, VkImageLayout.TransferDestinationOptimal, VkPipelineStageFlags.Transfer, VkPipelineStageFlags.Transfer);
         stagingBuffer.CopyTo(this);
 
-        if (this.AutomaticallyGenerateMipChain)
+        if (AutomaticallyGenerateMipChain)
             GenerateMipChain();
         else
             TransitionImageLayout(VkImageLayout.Undefined, VkImageLayout.ShaderReadOnlyOptimal);
@@ -291,7 +299,9 @@ public unsafe class VulkanTexture : RendererTextureBase
     /// <inheritdoc/>
     public override void SetPixels(Colour[,] pixels, int xOffset = 0, int yOffset = 0)
     {
-        var bufferSize = this.Width * this.Height * sizeof(Colour);
+        ArgumentNullException.ThrowIfNull(pixels);
+
+        var bufferSize = Width * Height * sizeof(Colour);
 
         // transition layout to TransferSource
         TransitionImageLayout(VkImageLayout.Undefined, VkImageLayout.TransferSourceOptimal, VkPipelineStageFlags.Transfer, VkPipelineStageFlags.Transfer);
@@ -305,17 +315,17 @@ public unsafe class VulkanTexture : RendererTextureBase
         stagingBuffer.CopyTo(pixelBuffer);
 
         // apply pixel changes
-        for (int y = 0; y < pixels.GetLength(0); y++)
+        for (var y = 0; y < pixels.GetLength(0); y++)
         {
-            if (y + yOffset < 0 || y + yOffset >= this.Height)
+            if (y + yOffset < 0 || y + yOffset >= Height)
                 continue;
 
-            for (int x = 0; x < pixels.GetLength(1); x++)
+            for (var x = 0; x < pixels.GetLength(1); x++)
             {
-                if (x + xOffset < 0 || x + xOffset >= this.Width)
+                if (x + xOffset < 0 || x + xOffset >= Width)
                     continue;
 
-                pixelBuffer[(y + yOffset) * (int)this.Width + (x + xOffset)] = pixels[x, y];
+                pixelBuffer[(y + yOffset) * (int)Width + (x + xOffset)] = pixels[x, y];
             }
         }
 
@@ -349,7 +359,7 @@ public unsafe class VulkanTexture : RendererTextureBase
     public override void GenerateMipChain()
     {
         // ensure there is more than one mip level
-        if (this.MipLevels <= 1)
+        if (MipLevels <= 1)
             return;
 
         // ensure the texture format supports linear blitting
@@ -373,11 +383,11 @@ public unsafe class VulkanTexture : RendererTextureBase
             SubresourceRange = new(VkImageAspectFlags.Color, 0, 1, 0, 1)
         };
 
-        var mipWidth = (int)this.Width;
-        var mipHeight = (int)this.Height;
+        var mipWidth = (int)Width;
+        var mipHeight = (int)Height;
 
         // create a blit command for each mip level
-        for (uint i = 1; i < this.MipLevels; i++)
+        for (uint i = 1; i < MipLevels; i++)
         {
             // transition current level layout to TransferSource
             imageMemoryBarrier.SubresourceRange.BaseMipLevel = i - 1;
@@ -413,7 +423,7 @@ public unsafe class VulkanTexture : RendererTextureBase
         }
 
         // transition the final mip level to shader readonly as the loop doesn't handle it
-        imageMemoryBarrier.SubresourceRange.BaseMipLevel = this.MipLevels - 1;
+        imageMemoryBarrier.SubresourceRange.BaseMipLevel = MipLevels - 1;
         imageMemoryBarrier.OldLayout = VkImageLayout.TransferDestinationOptimal;
         imageMemoryBarrier.NewLayout = VkImageLayout.ShaderReadOnlyOptimal;
         imageMemoryBarrier.SourceAccessMask = VkAccessFlags.TransferWrite;
@@ -423,14 +433,26 @@ public unsafe class VulkanTexture : RendererTextureBase
         CommandPool.SubmitCommandBuffer(true, commandBuffer);
     }
 
-    /// <inheritdoc/>
-    public override void Dispose()
+
+    /*********
+    ** Protected Methods
+    *********/
+    /// <summary>Cleans up unmanaged resources in the texture.</summary>
+    /// <param name="disposing">Whether the texture is being disposed deterministically.</param>
+    protected override void Dispose(bool disposing)
     {
-        CommandPool.Dispose();
+        if (IsDisposed)
+            return;
+
+        if (disposing)
+            CommandPool?.Dispose();
+
         VK.DestroySampler(VulkanRenderer.Instance.Device.NativeDevice, NativeSampler, null);
         VK.DestroyImageView(VulkanRenderer.Instance.Device.NativeDevice, NativeImageView, null);
         VK.DestroyImage(VulkanRenderer.Instance.Device.NativeDevice, NativeImage, null);
         VK.FreeMemory(VulkanRenderer.Instance.Device.NativeDevice, NativeMemory, null);
+
+        IsDisposed = true;
     }
 
 
@@ -453,7 +475,7 @@ public unsafe class VulkanTexture : RendererTextureBase
             SourceQueueFamilyIndex = VK.QueueFamilyIgnored,
             DestinationQueueFamilyIndex = VK.QueueFamilyIgnored,
             Image = NativeImage,
-            SubresourceRange = new(AspectFlags, 0, this.MipLevels, 0, 1)
+            SubresourceRange = new(AspectFlags, 0, MipLevels, 0, 1)
         };
 
         // set the source access mask

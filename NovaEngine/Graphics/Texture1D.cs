@@ -7,7 +7,7 @@ public class Texture1D : TextureBase
     ** Properties
     *********/
     /// <inheritdoc/>
-    internal override TextureUsage Usage => this.PixelType == TexturePixelType.Byte ? TextureUsage.Colour : TextureUsage.Colour32;
+    internal override TextureUsage Usage => PixelType == TexturePixelType.Byte ? TextureUsage.Colour : TextureUsage.Colour32;
 
     /// <inheritdoc/>
     internal override TextureType Type => TextureType.Texture1D;
@@ -46,11 +46,11 @@ public class Texture1D : TextureBase
     /// <param name="pixels">The pixel data to set.</param>
     /// <param name="offset">The pixel offset for setting pixel data.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="pixels.Length"/> + offset goes out of range of the texture.</exception>
-    public void SetPixels(Colour[] pixels, int offset = 0) => this.RendererTexture.SetPixels(pixels, offset);
+    public void SetPixels(Colour[] pixels, int offset = 0) => RendererTexture.SetPixels(pixels, offset);
 
     /// <summary>Sets pixel data for a specific one-dimensional location.</summary>
     /// <param name="pixels">The pixel data to set.</param>
     /// <param name="offset">The pixel offset for setting pixel data.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="pixels.Length"/> + offset goes out of range of the texture.</exception>
-    public void SetPixels(Colour32[] pixels, int offset = 0) => this.RendererTexture.SetPixels(pixels, offset);
+    public void SetPixels(Colour32[] pixels, int offset = 0) => RendererTexture.SetPixels(pixels, offset);
 }

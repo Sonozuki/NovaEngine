@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Physics.Collidables;
 
 /// <summary>Represents a sphere collider.</summary>
-internal class Sphere : ICollidable
+internal sealed class Sphere : ICollidable
 {
     /*********
     ** Fields

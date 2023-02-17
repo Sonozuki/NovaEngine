@@ -8,6 +8,9 @@ public class VulkanGameObject : RendererGameObjectBase
     /*********
     ** Fields
     *********/
+    /// <summary>Whether the game object has been disposed.</summary>
+    private bool IsDisposed;
+
     /// <summary>The mvp buffer.</summary>
     private readonly VulkanBuffer MVPBuffer;
 
@@ -99,6 +102,8 @@ public class VulkanGameObject : RendererGameObjectBase
     /// <inheritdoc/>
     public override void UpdateMesh(Mesh mesh)
     {
+        ArgumentNullException.ThrowIfNull(mesh);
+
         VertexCount = mesh.VertexData.Length;
         IndexCount = mesh.IndexData.Length;
         MeshType = mesh.Type;
@@ -117,6 +122,8 @@ public class VulkanGameObject : RendererGameObjectBase
     /// <inheritdoc/>
     public override unsafe void PrepareForCamera(Camera camera)
     {
+        ArgumentNullException.ThrowIfNull(camera);
+
         var vulkanCamera = (camera.RendererCamera as VulkanCamera)!;
         var isInUIScene = BaseGameObject.Scene is UIScene;
 
@@ -184,15 +191,28 @@ public class VulkanGameObject : RendererGameObjectBase
         }
     }
 
-    /// <inheritdoc/>
-    public override void Dispose()
-    {
-        DescriptorPools.DepthPrepassDescriptorPool.DisposeDescriptorSet(DepthPrepassDescriptorSet);
-        DescriptorPools.PBRDescriptorPool.DisposeDescriptorSet(PBRDescriptorSet);
-        DescriptorPools.MTSDFTextDescriptorPool.DisposeDescriptorSet(MTSDFTextDescriptorSet);
 
-        MVPBuffer.Dispose();
-        VertexBuffer?.Dispose();
-        IndexBuffer?.Dispose();
+    /*********
+    ** Protected Methods
+    *********/
+    /// <summary>Cleans up unmanaged resources in the game object.</summary>
+    /// <param name="disposing">Whether the game object is being disposed deterministically.</param>
+    protected override void Dispose(bool disposing)
+    {
+        if (IsDisposed)
+            return;
+
+        if (disposing)
+        {
+            DescriptorPools.DepthPrepassDescriptorPool?.DisposeDescriptorSet(DepthPrepassDescriptorSet);
+            DescriptorPools.PBRDescriptorPool?.DisposeDescriptorSet(PBRDescriptorSet);
+            DescriptorPools.MTSDFTextDescriptorPool?.DisposeDescriptorSet(MTSDFTextDescriptorSet);
+
+            MVPBuffer?.Dispose();
+            VertexBuffer?.Dispose();
+            IndexBuffer?.Dispose();
+        }
+
+        IsDisposed = true;
     }
 }

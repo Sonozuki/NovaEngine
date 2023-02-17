@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Content.Models.Font;
 
 /// <summary>Represents a point that makes up a segment.</summary>
-internal class Point
+internal sealed class Point
 {
     /*********
     ** Properties

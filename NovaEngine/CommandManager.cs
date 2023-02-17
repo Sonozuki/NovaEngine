@@ -16,8 +16,7 @@ public static class CommandManager
     /// <summary>Initialises the class.</summary>
     static CommandManager()
     {
-        var standardInput = new StreamReader(Console.OpenStandardInput());
-        ReadCommands(standardInput);
+        ReadCommands();
 
         Add("help", "Lists all registered command documentation.\n\nUsage: help\nLists all the registered commands.\n\nUsage: help <command>\nLists the documentation about a specific command\n- command: The name of command to view the documentation of.", HelpCommand);
         Add("qqq", "Closes the application.\n\nUsage: qqq\nCloses the application.", (_) => Environment.Exit(0));
@@ -32,19 +31,22 @@ public static class CommandManager
     /// <param name="documentation">The documentation of the command.</param>
     /// <param name="callback">The callback of the command.</param>
     /// <returns><see langword="true"/>, if the command was added successfully; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is <see langword="null"/> or white space.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> or <paramref name="documentation"/> is <see langword="null"/> or empty.</exception>
     /// <exception cref="ArgumentNullException">Thrown is <paramref name="callback"/> is <see langword="null"/>.</exception>
     public static bool Add(string name, string documentation, Action<string[]> callback)
     {
-        var command = new Command(name, documentation, callback);
+        ArgumentException.ThrowIfNullOrEmpty(name);
+        ArgumentException.ThrowIfNullOrEmpty(documentation);
+        ArgumentNullException.ThrowIfNull(callback);
 
-        if (Commands.Any(c => c.Name.ToLower() == command.Name.ToLower()))
+        name = name.ToLower(G11n.Culture);
+        if (Commands.Any(c => c.Name == name))
         {
-            Logger.LogError($"Cannot add command: '{command.Name}' as it already exists.");
+            Logger.LogError($"Cannot add command '{name}' as it already exists.");
             return false;
         }
 
-        Commands.Add(command);
+        Commands.Add(new(name, documentation, callback));
         return true;
     }
 
@@ -52,26 +54,23 @@ public static class CommandManager
     /*********
     ** Private Methods
     *********/
-    /// <summary>Reads a <see cref="StreamReader"/> and executes commands written to it.</summary>
-    /// <param name="streamReader">The <see cref="StreamReader"/> to listen for commands on.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="streamReader"/> is <see langword="null"/>.</exception>
-    private static async void ReadCommands(StreamReader streamReader)
+    /// <summary>Reads any commands written to the console.</summary>
+    private static async void ReadCommands()
     {
-        if (streamReader == null)
-            throw new ArgumentNullException(nameof(streamReader));
+        using var streamReader = new StreamReader(Console.OpenStandardInput());
 
         while (true)
         {
-            var input = await streamReader.ReadLineAsync();
+            var input = await streamReader.ReadLineAsync().ConfigureAwait(true);
             if (string.IsNullOrWhiteSpace(input))
                 continue;
 
             var splitString = input.Split(' ');
             var commandName = splitString[0];
-            var command = Commands.FirstOrDefault(command => command.Name.ToLower() == commandName.ToLower());
+            var command = Commands.FirstOrDefault(command => command.Name.ToLower(G11n.Culture) == commandName.ToLower(G11n.Culture));
             if (command == null)
             {
-                Logger.LogError($"No command with the name: '{commandName}' could be found.");
+                Logger.LogError($"No command with the name '{commandName}' could be found.");
                 Logger.LogHelp("Type 'help' for a list of available commands.");
                 continue;
             }
@@ -92,11 +91,10 @@ public static class CommandManager
     /// <param name="args">The command arguments.</param>
     private static void HelpCommand(string[] args)
     {
-        // check if a specific command was requested
         if (args.Length > 0)
         {
-            var requestedCommandName = args[0];
-            var requestedCommand = Commands.FirstOrDefault(command => command.Name.ToLower() == requestedCommandName.ToLower());
+            var requestedCommandName = args[0].ToLower(G11n.Culture);
+            var requestedCommand = Commands.FirstOrDefault(command => command.Name == requestedCommandName);
             if (requestedCommand == null)
             {
                 Logger.LogError($"No command with the name: '{requestedCommandName}' could be found.");
@@ -106,7 +104,7 @@ public static class CommandManager
 
             Logger.LogHelp($"{requestedCommand.Name}: {requestedCommand.Documentation}");
         }
-        else // write out command list
+        else
         {
             Logger.LogHelp("All registered commands are:");
             foreach (var command in Commands.OrderBy(command => command.Name))

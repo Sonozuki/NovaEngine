@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Logging;
 
 /// <summary>Represents a string in <see cref="InternalConsole"/>.</summary>
-internal class InternalConsoleString
+internal sealed class InternalConsoleString
 {
     /*********
     ** Properties

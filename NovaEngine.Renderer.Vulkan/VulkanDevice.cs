@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Renderer.Vulkan;
 
 /// <summary>Encapsulates a <see cref="VkPhysicalDevice"/> and it's logical <see cref="VkDevice"/> representation.</summary>
-internal unsafe class VulkanDevice : IDisposable
+internal unsafe sealed class VulkanDevice : IDisposable
 {
     /*********
     ** Properties
@@ -27,7 +27,7 @@ internal unsafe class VulkanDevice : IDisposable
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="physicalDevice">The physical device Vulkan will use.</param>
-    /// <exception cref="ApplicationException">Thrown if the device couldn't be created.</exception>
+    /// <exception cref="VulkanException">Thrown if the device couldn't be created.</exception>
     public VulkanDevice(VkPhysicalDevice physicalDevice)
     {
         NativePhysicalDevice = physicalDevice;
@@ -37,7 +37,7 @@ internal unsafe class VulkanDevice : IDisposable
 
         // create device queues
         var deviceQueueCreateInfos = new VkDeviceQueueCreateInfo[queueFamilyIndices.Length];
-        for (int i = 0; i < queueFamilyIndices.Length; i++)
+        for (var i = 0; i < queueFamilyIndices.Length; i++)
         {
             var queuePriorities = 0f;
             deviceQueueCreateInfos[i] = new VkDeviceQueueCreateInfo
@@ -67,13 +67,13 @@ internal unsafe class VulkanDevice : IDisposable
             var extensionProperties = new VkExtensionProperties[extensionPropertyCount];
             VK.EnumerateDeviceExtensionProperties(NativePhysicalDevice, null, ref extensionPropertyCount, extensionProperties);
 
-            var availableExtensionNames = extensionProperties.Select(property => Marshal.PtrToStringAnsi((IntPtr)property.ExtensionName));
-            for (int i = 0; i < extensionNames.Count; i++)
+            var availableExtensionNames = extensionProperties.Select(property => Marshal.PtrToStringAnsi((IntPtr)property.ExtensionName)).ToList();
+            for (var i = 0; i < extensionNames.Count; i++)
             {
                 var extensionName = extensionNames[i];
 
                 if (!availableExtensionNames.Contains(extensionName))
-                    throw new ApplicationException($"Required extension '{extensionName}' is not available.").Log(LogSeverity.Fatal);
+                    throw new VulkanException($"Required extension '{extensionName}' is not available.").Log(LogSeverity.Fatal);
 
                 enabledExtensionNames[i] = Marshal.StringToHGlobalAnsi(extensionNames[i]);
             }
@@ -93,7 +93,7 @@ internal unsafe class VulkanDevice : IDisposable
                 };
 
                 if (VK.CreateDevice(NativePhysicalDevice, ref deviceCreateInfo, null, out var nativeDevice) != VkResult.Success)
-                    throw new ApplicationException("Failed to create device.").Log(LogSeverity.Fatal);
+                    throw new VulkanException("Failed to create device.").Log(LogSeverity.Fatal);
                 NativeDevice = nativeDevice;
             }
         }
@@ -129,7 +129,7 @@ internal unsafe class VulkanDevice : IDisposable
     {
         VK.GetPhysicalDeviceMemoryProperties(NativePhysicalDevice, out var memoryProperties);
 
-        for (int i = 0; i < memoryProperties.MemoryTypeCount; i++)
+        for (var i = 0; i < memoryProperties.MemoryTypeCount; i++)
         {
             var memoryType = *(&memoryProperties.MemoryTypes_0 + i);
             if ((typeFilter & (1 << i)) != 0 && (memoryType.PropertyFlags & properties) == properties)

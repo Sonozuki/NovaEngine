@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Content.Models.Font.Kern;
 
 /// <summary>Represents a format 0 kerning subtable.</summary>
-internal class KernFormat0 : IKernFormat
+internal sealed class KernFormat0 : IKernFormat
 {
     /*********
     ** Properties
@@ -27,7 +27,7 @@ internal class KernFormat0 : IKernFormat
         var numberOfPairs = binaryReader.ReadUInt16BigEndian();
 
         binaryReader.BaseStream.Position += 6;
-        for (int i = 0; i < numberOfPairs; i++)
+        for (var i = 0; i < numberOfPairs; i++)
         {
             var leftGlyphIndex = binaryReader.ReadUInt16BigEndian();
             var rightGlyphIndex = binaryReader.ReadUInt16BigEndian();

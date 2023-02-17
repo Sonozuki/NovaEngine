@@ -2,7 +2,7 @@
 
 /// <summary>Stores all the methods that are called by the serialiser for a certain type.</summary>
 /// <remarks>The type is not stored locally, that is the callers responsibility.</remarks>
-internal class SerialiserCallbacks
+internal sealed class SerialiserCallbacks
 {
     /*********
     ** Properties

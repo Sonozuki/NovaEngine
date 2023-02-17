@@ -15,9 +15,9 @@ public sealed class OnDeserialisingAttribute : Attribute
     ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
-    /// <param name="prioirty">The priority of the callback.</param>
-    public OnDeserialisingAttribute(SerialiserCallbackPriority prioirty = SerialiserCallbackPriority.Normal)
+    /// <param name="priority">The priority of the callback.</param>
+    public OnDeserialisingAttribute(SerialiserCallbackPriority priority = SerialiserCallbackPriority.Normal)
     {
-        Priority = prioirty;
+        Priority = priority;
     }
 }

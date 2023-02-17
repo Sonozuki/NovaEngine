@@ -7,7 +7,7 @@ internal unsafe static class ShaderStages
     ** Fields
     *********/
     /// <summary>A pointer to a <see langword="string"/> containing "main", specifying the name of a shader entry point.</summary>
-    private static readonly IntPtr ShaderEntryPointNamePointer;
+    private static readonly IntPtr ShaderEntryPointNamePointer = Marshal.StringToHGlobalAnsi("main");
 
     /// <summary>The created shader modules, stored for destroying.</summary>
     private static readonly List<VkShaderModule> ShaderModules = new();
@@ -17,50 +17,31 @@ internal unsafe static class ShaderStages
     ** Properties
     *********/
     /// <summary>The shader stage for the generate frustums shader.</summary>
-    public static VkPipelineShaderStageCreateInfo GenerateFrustumsShader;
+    public static VkPipelineShaderStageCreateInfo GenerateFrustumsShader = LoadShader("Shaders/generate_frustums_comp", VkShaderStageFlags.Compute);
 
     /// <summary>The shader stage for the depth pre-pass shader.</summary>
-    public static VkPipelineShaderStageCreateInfo DepthShader;
+    public static VkPipelineShaderStageCreateInfo DepthShader = LoadShader("Shaders/depth_vert", VkShaderStageFlags.Vertex);
 
     /// <summary>The shader stage for the cull lights shader.</summary>
-    public static VkPipelineShaderStageCreateInfo CullLightsShader;
+    public static VkPipelineShaderStageCreateInfo CullLightsShader = LoadShader("Shaders/cull_lights_comp", VkShaderStageFlags.Compute);
 
     /// <summary>The shader stage for the PBR vertex shader.</summary>
-    public static VkPipelineShaderStageCreateInfo PBRVertexShader;
+    public static VkPipelineShaderStageCreateInfo PBRVertexShader = LoadShader("Shaders/pbr_vert", VkShaderStageFlags.Vertex);
 
     /// <summary>The shader stage for the PBR fragment shader.</summary>
-    public static VkPipelineShaderStageCreateInfo PBRFragmentShader;
+    public static VkPipelineShaderStageCreateInfo PBRFragmentShader = LoadShader("Shaders/pbr_frag", VkShaderStageFlags.Fragment);
 
     /// <summary>The shader stage for the solid colour vertex shader.</summary>
-    public static VkPipelineShaderStageCreateInfo SolidColourVertexShader;
+    public static VkPipelineShaderStageCreateInfo SolidColourVertexShader = LoadShader("Shaders/solid_colour_vert", VkShaderStageFlags.Vertex);
 
     /// <summary>The shader stage for the solid colour fragment shader.</summary>
-    public static VkPipelineShaderStageCreateInfo SolidColourFragmentShader;
+    public static VkPipelineShaderStageCreateInfo SolidColourFragmentShader = LoadShader("Shaders/solid_colour_frag", VkShaderStageFlags.Fragment);
 
     /// <summary>The shader stage for the MTSDF text vertex shader.</summary>
-    public static VkPipelineShaderStageCreateInfo MTSDFTextVertexShader;
+    public static VkPipelineShaderStageCreateInfo MTSDFTextVertexShader = LoadShader("Shaders/mtsdf_text_vert", VkShaderStageFlags.Vertex);
 
     /// <summary>The shader stage for the MTSDF text fragment shader.</summary>
-    public static VkPipelineShaderStageCreateInfo MTSDFTextFragmentShader;
-
-
-    /*********
-    ** Constructors
-    *********/
-    static ShaderStages()
-    {
-        ShaderEntryPointNamePointer = Marshal.StringToHGlobalAnsi("main");
-
-        GenerateFrustumsShader = LoadShader("Shaders/generate_frustums_comp", VkShaderStageFlags.Compute);
-        DepthShader = LoadShader("Shaders/depth_vert", VkShaderStageFlags.Vertex);
-        CullLightsShader = LoadShader("Shaders/cull_lights_comp", VkShaderStageFlags.Compute);
-        PBRVertexShader = LoadShader("Shaders/pbr_vert", VkShaderStageFlags.Vertex);
-        PBRFragmentShader = LoadShader("Shaders/pbr_frag", VkShaderStageFlags.Fragment);
-        SolidColourVertexShader = LoadShader("Shaders/solid_colour_vert", VkShaderStageFlags.Vertex);
-        SolidColourFragmentShader = LoadShader("Shaders/solid_colour_frag", VkShaderStageFlags.Fragment);
-        MTSDFTextVertexShader = LoadShader("Shaders/mtsdf_text_vert", VkShaderStageFlags.Vertex);
-        MTSDFTextFragmentShader = LoadShader("Shaders/mtsdf_text_frag", VkShaderStageFlags.Fragment);
-    }
+    public static VkPipelineShaderStageCreateInfo MTSDFTextFragmentShader = LoadShader("Shaders/mtsdf_text_frag", VkShaderStageFlags.Fragment);
 
 
     /*********
@@ -100,7 +81,7 @@ internal unsafe static class ShaderStages
             };
 
             if (VK.CreateShaderModule(VulkanRenderer.Instance.Device.NativeDevice, ref shaderModuleCreateInfo, null, out shaderModule) != VkResult.Success)
-                throw new ApplicationException($"Failed to create shader module: {path}.").Log(LogSeverity.Fatal);
+                throw new VulkanException($"Failed to create shader module: {path}.").Log(LogSeverity.Fatal);
             ShaderModules.Add(shaderModule);
         }
 

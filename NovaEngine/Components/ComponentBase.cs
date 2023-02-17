@@ -29,11 +29,14 @@ public abstract class ComponentBase : IDisposable
     /*********
     ** Constructors
     *********/
+    /// <summary>Destructs the instance.</summary>
+    ~ComponentBase() => Dispose(false);
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     /// <summary>Constructs an instance.</summary>
     /// <param name="isEnabled">Whether the component is enabled.</param>
-    public ComponentBase(bool isEnabled = true)
+    protected ComponentBase(bool isEnabled = true)
     {
         IsEnabled = isEnabled;
     }
@@ -44,8 +47,12 @@ public abstract class ComponentBase : IDisposable
     /*********
     ** Public Methods
     *********/
-    /// <inheritdoc/>
-    public virtual void Dispose() { }
+    /// <summary>Cleans up unmanaged resources in the component.</summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 
 
     /*********
@@ -56,4 +63,12 @@ public abstract class ComponentBase : IDisposable
 
     /// <summary>Invoked when the component should get updated (once per tick).</summary>
     protected internal virtual void OnUpdate() { }
+
+
+    /*********
+    ** Protected Methods
+    *********/
+    /// <summary>Cleans up unmanaged resources in the component.</summary>
+    /// <param name="disposing">Whether the component is being disposed deterministically.</param>
+    protected virtual void Dispose(bool disposing) { }
 }

@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Content.Models.Font.Cmap;
 
 /// <summary>Represents a format 4 cmap subtable.</summary>
-internal class CmapFormat4 : ICmapFormat
+internal sealed class CmapFormat4 : ICmapFormat
 {
     /*********
     ** Fields
@@ -23,14 +23,14 @@ internal class CmapFormat4 : ICmapFormat
         var segmentCount = binaryReader.ReadUInt16BigEndian() / 2;
         binaryReader.BaseStream.Position += 6;
 
-        for (int i = 0; i < segmentCount; i++)
+        for (var i = 0; i < segmentCount; i++)
             Segments.Add(new() { EndCode = binaryReader.ReadUInt16BigEndian() });
         binaryReader.BaseStream.Position += 2;
-        for (int i = 0; i < segmentCount; i++)
+        for (var i = 0; i < segmentCount; i++)
             Segments[i].StartCode = binaryReader.ReadUInt16BigEndian();
-        for (int i = 0; i < segmentCount; i++)
+        for (var i = 0; i < segmentCount; i++)
             Segments[i].IdDelta = binaryReader.ReadUInt16BigEndian();
-        for (int i = 0; i < segmentCount; i++)
+        for (var i = 0; i < segmentCount; i++)
         {
             var rangeOffset = binaryReader.ReadUInt16BigEndian();
             if (rangeOffset != 0)

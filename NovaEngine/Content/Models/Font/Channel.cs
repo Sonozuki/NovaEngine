@@ -3,7 +3,7 @@
 namespace NovaEngine.Content.Models.Font;
 
 /// <summary>Represents a colour channel for a specific pixel in an MTSDF texture for a glyph.</summary>
-internal class Channel
+internal sealed class Channel
 {
     /*********
     ** Properties

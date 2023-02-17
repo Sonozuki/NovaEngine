@@ -34,7 +34,7 @@ internal static class TypeExtensions
             return fieldInfos;
 
         fieldInfos = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
-            .Where(fieldInfo => !fieldInfo.Name.EndsWith(">k__BackingField") // backing fields are serialised seperately, based on whether properties are serialisable, so exclude them here
+            .Where(fieldInfo => !fieldInfo.Name.EndsWith(">k__BackingField", true, G11n.Culture) // backing fields are serialised seperately, based on whether properties are serialisable, so exclude them here
                              && !fieldInfo.HasCustomAttribute<NonSerialisableAttribute>()
                              && !(fieldInfo.IsStatic && fieldInfo.IsInitOnly)) // the serialiser isn't able to set the value of static initonly fields
             .ToArray();
@@ -92,7 +92,7 @@ internal static class TypeExtensions
             return isUnmanaged;
 
         try { typeof(U<>).MakeGenericType(type); isUnmanaged = true; }
-        catch { isUnmanaged = false; }
+        catch (ArgumentException) { isUnmanaged = false; }
 
         CachedTypeUnmanaged[type] = isUnmanaged;
         return isUnmanaged;
@@ -116,6 +116,8 @@ internal static class TypeExtensions
     }
 }
 
+#pragma warning disable CA1812 // Internal class that is apparently never instantiated.
+
 /// <summary>A class used for checking if a type is <see langword="unmanaged"/>.</summary>
 /// <typeparam name="T">The type to check if it's unmanaged.</typeparam>
-file class U<T> where T : unmanaged { }
+file sealed class U<T> where T : unmanaged { }

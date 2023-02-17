@@ -13,9 +13,12 @@ public abstract class RendererGameObjectBase : IDisposable
     /*********
     ** Constructors
     *********/
+    /// <summary>Destructs the instance.</summary>
+    ~RendererGameObjectBase() => Dispose(false);
+
     /// <summary>Constructs an instance.</summary>
     /// <param name="baseGameObject">The underlying game object.</param>
-    public RendererGameObjectBase(GameObject baseGameObject)
+    protected RendererGameObjectBase(GameObject baseGameObject)
     {
         BaseGameObject = baseGameObject;
     }
@@ -33,6 +36,18 @@ public abstract class RendererGameObjectBase : IDisposable
     /// <remarks>Used for updating UBOs etc.</remarks>
     public abstract void PrepareForCamera(Camera camera);
 
-    /// <inheritdoc/>
-    public abstract void Dispose();
+    /// <summary>Cleans up unmanaged resources in the game object.</summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+
+    /*********
+    ** Protected Methods
+    *********/
+    /// <summary>Cleans up unmanaged resources in the game object.</summary>
+    /// <param name="disposing">Whether the game object is being disposed deterministically.</param>
+    protected abstract void Dispose(bool disposing);
 }

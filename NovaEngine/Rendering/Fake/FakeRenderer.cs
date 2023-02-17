@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Rendering.Fake;
 
 /// <summary>Represents a renderer that is only used when nova is being used without a program instance.</summary>
-internal class FakeRenderer : IRenderer
+internal sealed class FakeRenderer : IRenderer
 {
     /*********
     ** Properties
@@ -14,9 +14,6 @@ internal class FakeRenderer : IRenderer
 
     /// <inheritdoc/>
     public string DeviceName => "";
-
-    /// <inheritdoc/>
-    public bool VSync { set { } }
 
 
     /*********

@@ -10,80 +10,66 @@ public abstract class RendererTextureBase : IDisposable
     public TextureBase BaseTexture { get; }
 
     /// <summary>The width of the texture.</summary>
-    public uint Width { get; }
+    public uint Width => BaseTexture.Width;
 
     /// <summary>The height of the texture.</summary>
-    public uint Height { get; }
+    public uint Height => BaseTexture._Height;
 
     /// <summary>The depth of the texture.</summary>
-    public uint Depth { get; }
+    public uint Depth => BaseTexture._Depth;
 
     /// <summary>The type of pixel the texture stores underlying data as.</summary>
-    public TexturePixelType PixelType { get; }
+    public TexturePixelType PixelType => BaseTexture.PixelType;
 
     /// <summary>Whether a mip chain will be generated for the texture and automatically regenerated when the texture is changed.</summary>
-    public bool AutomaticallyGenerateMipChain { get; }
+    public bool AutomaticallyGenerateMipChain => BaseTexture.AutomaticallyGenerateMipChain;
 
     /// <summary>The mip LOD (level of detail) bias of the texture.</summary>
-    public float MipLodBias { get; }
+    public float MipLodBias => BaseTexture.MipLodBias;
 
     /// <summary>Whether the texture has anisotropic filtering enabled.</summary>
-    public bool AnisotropicFilteringEnabled { get; }
+    public bool AnisotropicFilteringEnabled => BaseTexture.AnisotropicFilteringEnabled;
 
     /// <summary>The max anisotropic filtering level of the texture.</summary>
-    public float MaxAnisotropicFilteringLevel { get; }
+    public float MaxAnisotropicFilteringLevel => BaseTexture.MaxAnisotropicFilteringLevel;
 
     /// <summary>The number of mip levels the texture has.</summary>
     public uint MipLevels
     {
         get => BaseTexture.MipLevels;
-        set => typeof(TextureBase).GetField("_MipLevels", BindingFlags.NonPublic | BindingFlags.Instance)!.SetValue(BaseTexture, value);
+        set => BaseTexture.MipLevels = value;
     }
 
     /// <summary>The number of layers the texture has.</summary>
-    public uint LayerCount { get; }
+    public uint LayerCount => BaseTexture._LayerCount;
 
     /// <summary>The usage of the texture.</summary>
-    public TextureUsage Usage { get; }
+    public TextureUsage Usage => BaseTexture.Usage;
 
     /// <summary>The type of the texture.</summary>
-    public TextureType Type { get; }
+    public TextureType Type => BaseTexture.Type;
 
     /// <summary>The texture wrap mode of the U axis.</summary>
-    public TextureWrapMode WrapModeU { get; }
+    public TextureWrapMode WrapModeU => BaseTexture.WrapModeU;
 
     /// <summary>The texture wrap mode of the V axis.</summary>
-    public TextureWrapMode WrapModeV { get; }
+    public TextureWrapMode WrapModeV => BaseTexture._WrapModeV;
 
     /// <summary>The texture wrap mode of the W axis.</summary>
-    public TextureWrapMode WrapModeW { get; }
+    public TextureWrapMode WrapModeW => BaseTexture._WrapModeW;
 
 
     /*********
     ** Constructors
     *********/
+    /// <summary>Destructs the instance.</summary>
+    ~RendererTextureBase() => Dispose(false);
+
     /// <summary>Constructs an instance.</summary>
     /// <param name="baseTexture">The underlying texture.</param>
-    public RendererTextureBase(TextureBase baseTexture)
+    protected RendererTextureBase(TextureBase baseTexture)
     {
         BaseTexture = baseTexture;
-
-        // TODO: fix this
-        // fill in convenience properties. reflection is used instead of changing the accessibility as exposing these would lead to rather confusing Texture types (for example, having a '_Height' and 'Height' members, both of which would be public).
-        Width = BaseTexture.Width;
-        Height = (uint?)typeof(TextureBase).GetField("_Height", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(BaseTexture) ?? throw new MissingMemberException("Couldn't find '_Height' field.");
-        Depth = (uint?)typeof(TextureBase).GetField("_Depth", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(BaseTexture) ?? throw new MissingMemberException("Couldn't find '_Depth' field.");
-        PixelType = BaseTexture.PixelType;
-        AutomaticallyGenerateMipChain = BaseTexture.AutomaticallyGenerateMipChain;
-        MipLodBias = BaseTexture.MipLodBias;
-        AnisotropicFilteringEnabled = BaseTexture.AnisotropicFilteringEnabled;
-        MaxAnisotropicFilteringLevel = BaseTexture.MaxAnisotropicFilteringLevel;
-        LayerCount = (uint?)typeof(TextureBase).GetField("_LayerCount", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(BaseTexture) ?? throw new MissingMemberException("Couldn't find '_LayerCount' field.");
-        Usage = (TextureUsage?)typeof(TextureBase).GetProperty("Usage", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(BaseTexture) ?? throw new MissingMemberException("Couldn't find 'Usage' property.");
-        Type = (TextureType?)typeof(TextureBase).GetProperty("Type", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(BaseTexture) ?? throw new MissingMemberException("Couldn't find 'Type' property.");
-        WrapModeU = BaseTexture.WrapModeU;
-        WrapModeV = (TextureWrapMode?)typeof(TextureBase).GetField("_WrapModeV", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(BaseTexture) ?? throw new MissingMemberException("Couldn't find '_WrapModeV' field.");
-        WrapModeW = (TextureWrapMode?)typeof(TextureBase).GetField("_WrapModeW", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(BaseTexture) ?? throw new MissingMemberException("Couldn't find '_WrapModeW' field.");
     }
 
 
@@ -139,6 +125,18 @@ public abstract class RendererTextureBase : IDisposable
     /// <summary>Generates the mip chain for the texture.</summary>
     public abstract void GenerateMipChain();
 
-    /// <summary>Disposes unmanaged texture resources.</summary>
-    public abstract void Dispose();
+    /// <summary>Cleans up unmanaged resources in the texture.</summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+
+    /*********
+    ** Protected Methods
+    *********/
+    /// <summary>Cleans up unmanaged resources in the texture.</summary>
+    /// <param name="disposing">Whether the texture is being disposed deterministically.</param>
+    protected abstract void Dispose(bool disposing);
 }

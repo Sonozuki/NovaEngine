@@ -56,7 +56,7 @@ public class ModelPacker : IContentPacker
     private static void ParseLine(string line, ModelContent modelContent, ref MeshContent meshContent, List<Vector3<float>> vertexPositions, List<Vector2<float>> vertexTextureCoordinates, List<Vector3<float>> vertexNormals)
     {
         var tokens = line.Split(' ');
-        if (tokens.Length == 0 || tokens[0].StartsWith("#"))
+        if (tokens.Length == 0 || tokens[0].StartsWith("#", true, G11n.Culture))
             return;
 
         switch (tokens[0])
@@ -77,18 +77,18 @@ public class ModelPacker : IContentPacker
                 }
             case "v": // vertex position
                 {
-                    var x = float.Parse(tokens[1]);
-                    var y = float.Parse(tokens[2]);
-                    var z = float.Parse(tokens[3]);
+                    var x = float.Parse(tokens[1], G11n.Culture);
+                    var y = float.Parse(tokens[2], G11n.Culture);
+                    var z = float.Parse(tokens[3], G11n.Culture);
 
                     vertexPositions.Add(new(x, y, z));
                     return;
                 }
             case "vt": // texture coordinates
                 {
-                    var u = float.Parse(tokens[1]);
+                    var u = float.Parse(tokens[1], G11n.Culture);
                     var v = 1 - ((tokens.Length > 2) // '1 -' because .obj V coordinate is 0 at the bottom but nova has 0 at the top
-                        ? float.Parse(tokens[2])
+                        ? float.Parse(tokens[2], G11n.Culture)
                         : 0);
                     // TODO: does obj support 3d texture coordinates?
 
@@ -97,9 +97,9 @@ public class ModelPacker : IContentPacker
                 }
             case "vn": // normal
                 {
-                    var x = float.Parse(tokens[1]);
-                    var y = float.Parse(tokens[2]);
-                    var z = float.Parse(tokens[3]);
+                    var x = float.Parse(tokens[1], G11n.Culture);
+                    var y = float.Parse(tokens[2], G11n.Culture);
+                    var z = float.Parse(tokens[3], G11n.Culture);
 
                     vertexNormals.Add(new(x, y, z));
                     return;
@@ -112,11 +112,11 @@ public class ModelPacker : IContentPacker
 
                     // split each token on the '/' character (used to separate the positions, texture coordinates, and normals)
                     var vertexDataGroups = new List<List<string>>();
-                    for (int i = 0; i < 3; i++)
+                    for (var i = 0; i < 3; i++)
                         vertexDataGroups.Add(tokens[i + 1].Split('/').ToList()); // +1 to accomodate for the first 'f' token
 
                     // create the face
-                    for (int i = 0; i < 3; i++)
+                    for (var i = 0; i < 3; i++)
                     {
                         var vertexData = vertexDataGroups[i];
                         if (vertexData.Count == 0)
@@ -124,13 +124,13 @@ public class ModelPacker : IContentPacker
 
                         var vertex = new Vertex
                         {
-                            Position = vertexPositions[int.Parse(vertexData[0]) - 1]
+                            Position = vertexPositions[int.Parse(vertexData[0], G11n.Culture) - 1]
                         };
 
                         // add vertex texture coordinates
                         if (vertexData.Count > 1 && !string.IsNullOrEmpty(vertexData[1])) // ensure texture coordinates aren't empty, this can be the case if only the normals are specified
                         {
-                            var textureCoordinatesIndex = int.Parse(vertexData[1]);
+                            var textureCoordinatesIndex = int.Parse(vertexData[1], G11n.Culture);
                             if (textureCoordinatesIndex < 0) // if the token is negative, convert the number to a positive
                                 textureCoordinatesIndex += vertexTextureCoordinates.Count + 1;
 
@@ -140,7 +140,7 @@ public class ModelPacker : IContentPacker
                         // add vertex normal
                         if (vertexData.Count > 2)
                         {
-                            var textureNormalIndex = int.Parse(vertexData[2]);
+                            var textureNormalIndex = int.Parse(vertexData[2], G11n.Culture);
                             if (textureNormalIndex < 0) // if the token is negative, convert the number to a positive
                                 textureNormalIndex += vertexNormals.Count + 1;
 

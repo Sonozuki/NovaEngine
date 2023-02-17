@@ -6,6 +6,9 @@ public class TextRenderer : MeshRenderingComponentBase
     /*********
     ** Fields
     *********/
+    /// <summary>Whether the text renderer has been disposed.</summary>
+    private bool IsDisposed;
+
     /// <summary>The text to render.</summary>
     private string _Text = "";
 
@@ -42,7 +45,7 @@ public class TextRenderer : MeshRenderingComponentBase
     public float FontSize { get; set; }
 
     /// <summary>How the fill (inside) of the text should be rendered.</summary>
-    public MTSDFFillType FillType { get; set; }
+    public TextFillType FillType { get; set; }
 
     /// <summary>The colour of the fill (inside).</summary>
     public Colour FillColour { get; set; }
@@ -51,7 +54,7 @@ public class TextRenderer : MeshRenderingComponentBase
     public float BorderWidth { get; set; }
 
     /// <summary>How the border of the text should be rendered.</summary>
-    public MTSDFBorderType BorderType { get; set; }
+    public TextBorderType BorderType { get; set; }
 
     /// <summary>The colour of the border.</summary>
     public Colour BorderColour { get; set; }
@@ -91,13 +94,24 @@ public class TextRenderer : MeshRenderingComponentBase
 
 
     /*********
-    ** Public Methods
+    ** Protected Methods
     *********/
-    /// <inheritdoc/>
-    public override void Dispose()
+    /// <summary>Cleans up unmanaged resources in the text renderer.</summary>
+    /// <param name="disposing">Whether the text renderer is being disposed deterministically.</param>
+    protected override void Dispose(bool disposing)
     {
-        Font.Dispose();
-        BorderTexture.Dispose();
+        if (!IsDisposed)
+        {
+            if (disposing)
+            {
+                BorderTexture?.Dispose();
+                Font?.Dispose();
+            }
+
+            IsDisposed = true;
+        }
+
+        base.Dispose(disposing);
     }
 
 
@@ -108,7 +122,6 @@ public class TextRenderer : MeshRenderingComponentBase
     [OnDeserialised(SerialiserCallbackPriority.High)]
     private void GenerateMesh()
     {
-        // check there is text to render.
         if (string.IsNullOrEmpty(Text))
         {
             Mesh = new("Text", Array.Empty<Vertex>(), Array.Empty<uint>());
@@ -162,7 +175,7 @@ public class TextRenderer : MeshRenderingComponentBase
 
         var halfWidth = width / 2;
         var halfHeight = height / 2;
-        for (int i = 0; i < verticesArray.Length; i++)
+        for (var i = 0; i < verticesArray.Length; i++)
         {
             ref var vertex = ref verticesArray[i];
             vertex.Position.X -= halfWidth;

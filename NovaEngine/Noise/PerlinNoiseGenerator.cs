@@ -27,13 +27,16 @@ public class PerlinNoiseGenerator
 
     /// <summary>Constructs an instance.</summary>
     /// <param name="random">The rng to use when generating the noise.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="random"/> is <see langword="null"/>.</exception>
     public PerlinNoiseGenerator(Random random)
     {
+        ArgumentNullException.ThrowIfNull(random);
+
         var shortPermutation = Enumerable.Range(0, 256).ToArray();
-        for (int i = shortPermutation.Length - 1; i >= 0; i--) // shuffle using Fisher-Yates shuffle algorithm. see: https://blog.codinghorror.com/the-danger-of-naivete/
+        for (var i = shortPermutation.Length - 1; i >= 0; i--) // shuffle using Fisher-Yates shuffle algorithm. see: https://blog.codinghorror.com/the-danger-of-naivete/
             Swap(ref shortPermutation[i], ref shortPermutation[random.Next(i + 1)]);
 
-        for (int i = 0; i < 256; i++)
+        for (var i = 0; i < 256; i++)
             Permutation[i] = Permutation[i + 256] = shortPermutation[i];
 
         static void Swap(ref int a, ref int b) => (a, b) = (b, a);

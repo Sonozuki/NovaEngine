@@ -3,7 +3,7 @@
 namespace NovaEngine.Platform.Fake;
 
 /// <summary>Represents a window that is only used when nova is being used without a program instance.</summary>
-internal class FakeWindow : PlatformWindowBase
+internal sealed class FakeWindow : PlatformWindowBase
 {
     /*********
     ** Events

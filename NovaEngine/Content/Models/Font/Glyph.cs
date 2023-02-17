@@ -2,16 +2,16 @@
 
 /// <summary>Represents a font glyph.</summary>
 /// <remarks>This if used internally while parsing the font file for packing.</remarks>
-internal class Glyph
+internal sealed class Glyph
 {
     /*********
     ** Fields
     *********/
     /// <summary>The bounds of the glyph in the font file.</summary>
-    public Rectangle UnscaledBounds = new();
+    public Rectangle UnscaledBounds;
 
     /// <summary>The bounds of the glyph in the texture atlas, in pixels.</summary>
-    public Rectangle ScaledBounds = new();
+    public Rectangle ScaledBounds;
 
 
     /*********

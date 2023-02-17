@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Serialisation;
 
 /// <summary>Represents a collection of <see cref="TypeInfo"/>s.</summary>
-internal class TypeInfos : IEnumerable<TypeInfo>
+internal sealed class TypeInfos : IEnumerable<TypeInfo>
 {
     /*********
     ** Fields

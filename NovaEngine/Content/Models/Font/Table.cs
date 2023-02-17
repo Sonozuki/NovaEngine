@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Content.Models.Font;
 
 /// <summary>Represents a table in a TTF file.</summary>
-internal class Table
+internal sealed class Table
 {
     /*********
     ** Properties

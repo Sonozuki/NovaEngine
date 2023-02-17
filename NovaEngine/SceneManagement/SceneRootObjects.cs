@@ -25,11 +25,14 @@ public class SceneRootObjects : IList<GameObject>
     public bool IsReadOnly => false;
 
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException">Thrown if <see langword="value"/> is <see langword="null"/>.</exception>
     public GameObject this[int index]
     {
         get => RootGameObjects[index];
         set
         {
+            ArgumentNullException.ThrowIfNull(value);
+
             var oldRootObject = RootGameObjects[index];
             if (oldRootObject != null)
                 oldRootObject.Scene = null;
@@ -55,8 +58,11 @@ public class SceneRootObjects : IList<GameObject>
     ** Public Methods
     *********/
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="item"/> is <see langword="null"/>.</exception>
     public void Add(GameObject item)
     {
+        ArgumentNullException.ThrowIfNull(item);
+
         if (RootGameObjects.Contains(item))
             throw new InvalidOperationException("The item is already a root object.");
 
@@ -86,8 +92,11 @@ public class SceneRootObjects : IList<GameObject>
     public int IndexOf(GameObject item) => RootGameObjects.IndexOf(item);
 
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="item"/> is <see langword="null"/>.</exception>
     public void Insert(int index, GameObject item)
     {
+        ArgumentNullException.ThrowIfNull(item);
+
         var oldRootObject = RootGameObjects[index];
         if (oldRootObject != null)
             oldRootObject.Scene = null;
@@ -97,8 +106,11 @@ public class SceneRootObjects : IList<GameObject>
     }
 
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="item"/> is <see langword="null"/>.</exception>
     public bool Remove(GameObject item)
     {
+        ArgumentNullException.ThrowIfNull(item);
+
         var removed = RootGameObjects.Remove(item);
         if (removed)
             item.Scene = null;

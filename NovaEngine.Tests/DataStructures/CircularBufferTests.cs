@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Tests.DataStructures;
 
 /// <summary>The <see cref="CircularBuffer{T}"/> tests.</summary>
-internal class CircularBufferTests
+public class CircularBufferTests
 {
     /*********
     ** Public Methods
@@ -264,7 +264,7 @@ internal class CircularBufferTests
     public void PopFront_BufferIsEmpty_ThrowsInvalidOperationException()
     {
         var buffer = new CircularBuffer<int>(3);
-        Assert.That(() => buffer.PopFront(), Throws.InstanceOf<InvalidOperationException>());
+        Assert.That(buffer.PopFront, Throws.InstanceOf<InvalidOperationException>());
     }
 
     [Test]
@@ -295,7 +295,7 @@ internal class CircularBufferTests
     public void PopBack_BufferIsEmpty_ThrowsInvalidOperationException()
     {
         var buffer = new CircularBuffer<int>(3);
-        Assert.That(() => buffer.PopBack(), Throws.InstanceOf<InvalidOperationException>());
+        Assert.That(buffer.PopBack, Throws.InstanceOf<InvalidOperationException>());
     }
 
     [Test]
@@ -340,7 +340,7 @@ internal class CircularBufferTests
     {
         var buffer = new CircularBuffer<int>(3);
         var array = buffer.ToArray();
-        Assert.That(array.Length, Is.EqualTo(0));
+        Assert.That(array, Has.Length.EqualTo(0));
     }
 
     [Test]

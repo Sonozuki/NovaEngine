@@ -46,9 +46,9 @@ internal static unsafe class SerialiserUtilities
         {
             objectInfo.AreCollectionElementsInlinable = type.GetElementType()?.IsInlinable() ?? false;
             if (objectInfo.AreCollectionElementsInlinable)
-                objectInfo.InlinableCollectionElements.AddRange(array.OfType<object>().Select(element => SerialiserUtilities.ConvertInlinableValueToBuffer(element, allTypeInfos.Get(element.GetType()))));
+                objectInfo.InlinableCollectionElements.AddRange(array.OfType<object>().Select(element => ConvertInlinableValueToBuffer(element, allTypeInfos.Get(element.GetType()))));
             else
-                objectInfo.NonInlinableCollectionElements.AddRange(array.OfType<object>().Select(element => GetObjectInfoIdByObject(element)));
+                objectInfo.NonInlinableCollectionElements.AddRange(array.OfType<object>().Select(GetObjectInfoIdByObject));
         }
 
         // flatten/inline all serialisable member values
@@ -58,7 +58,7 @@ internal static unsafe class SerialiserUtilities
             var value = field.GetValue(@object);
 
             if (value == null || memberTypeInfo.IsInlinable)
-                objectInfo.InlinableFields[field.Name] = SerialiserUtilities.ConvertInlinableValueToBuffer(value, memberTypeInfo);
+                objectInfo.InlinableFields[field.Name] = ConvertInlinableValueToBuffer(value, memberTypeInfo);
             else
                 objectInfo.NonInlinableFields[field.Name] = GetObjectInfoIdByObject(value);
         }
@@ -69,7 +69,7 @@ internal static unsafe class SerialiserUtilities
             var value = property.GetValue(@object);
 
             if (value == null || memberTypeInfo.IsInlinable)
-                objectInfo.InlinableProperties[property.Name] = SerialiserUtilities.ConvertInlinableValueToBuffer(value, memberTypeInfo);
+                objectInfo.InlinableProperties[property.Name] = ConvertInlinableValueToBuffer(value, memberTypeInfo);
             else
                 objectInfo.NonInlinableProperties[property.Name] = GetObjectInfoIdByObject(value);
         }
@@ -93,7 +93,7 @@ internal static unsafe class SerialiserUtilities
             if (objectInfo != null)
                 return objectInfo.Id;
             else
-                return SerialiserUtilities.FlattenObject(@object, allObjectInfos, allTypeInfos);
+                return FlattenObject(@object, allObjectInfos, allTypeInfos);
         }
     }
 
@@ -228,7 +228,7 @@ internal static unsafe class SerialiserUtilities
         }
 
         // Reads an enum from the stream
-        object ReadEnumFromStream() => Enum.Parse(SerialiserUtilities.GetAnyType(ReadStringFromStream())!, ReadStringFromStream());
+        object ReadEnumFromStream() => Enum.Parse(GetAnyType(ReadStringFromStream())!, ReadStringFromStream());
 
         // Reads an unmanaged type from the stream
         object ReadUnmanagedObjectFromStream()
@@ -237,7 +237,7 @@ internal static unsafe class SerialiserUtilities
             var objectSize = binaryReader.ReadInt32();
             var buffer = binaryReader.ReadBytes(objectSize);
             fixed (byte* bufferPointer = buffer)
-                return Marshal.PtrToStructure((IntPtr)bufferPointer, SerialiserUtilities.GetAnyType(typeName)!)!;
+                return Marshal.PtrToStructure((IntPtr)bufferPointer, GetAnyType(typeName)!)!;
         }
     }
 

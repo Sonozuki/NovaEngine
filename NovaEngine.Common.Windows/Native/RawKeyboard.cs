@@ -1,4 +1,6 @@
-﻿namespace NovaEngine.Common.Windows.Native;
+﻿#pragma warning disable CA1823 // Unused field.
+
+namespace NovaEngine.Common.Windows.Native;
 
 /// <summary>Contains information about the state of a keyboard.</summary>
 public struct RawKeyboard
@@ -13,7 +15,7 @@ public struct RawKeyboard
     public RawInputKeyboardDataFlags Flags;
 
     /// <summary>Reserved; must be zero.</summary>
-    private readonly ushort Reserved;
+    private readonly ushort _Reserved;
 
     /// <summary>The corresponding <see cref="Native.VirtualKey"/> code.</summary>
     public VirtualKey VirtualKey;

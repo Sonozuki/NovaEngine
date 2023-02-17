@@ -2,7 +2,7 @@
 
 /// <summary>An attribute to specify information of a <see cref="LogSeverity"/></summary>
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
-internal class LogSeverityInfoAttribute : Attribute
+internal sealed class LogSeverityInfoAttribute : Attribute
 {
     /*********
     ** Properties

@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Graphics;
 
 /// <summary>Represents a colour with four <see langword="float"/> channels (R, G, B, A).</summary>
-public struct Colour32
+public struct Colour32 : IEquatable<Colour32>
 {
     /*********
     ** Fields
@@ -470,17 +470,18 @@ public struct Colour32
     /// <returns>The colour as a <see cref="Colour"/>.</returns>
     public Colour ToColour() => new(R, G, B, A);
 
-    /// <inheritdoc/>
-    public override bool Equals(object? obj)
-    {
-        return obj is Colour32 colour
-               && R == colour.R
-               && G == colour.G
-               && B == colour.B
-               && A == colour.A;
-    }
+    /// <summary>Checks two colours for equality.</summary>
+    /// <param name="other">The colour to check equality with.</param>
+    /// <returns><see langword="true"/> if the colours are equal; otherwise, <see langword="false"/>.</returns>
+    public bool Equals(Colour32 other) => this == other;
 
-    /// <inheritdoc/>
+    /// <summary>Checks the colour and an object for equality.</summary>
+    /// <param name="obj">The object to check equality with.</param>
+    /// <returns><see langword="true"/> if the colour and object are equal; otherwise, <see langword="false"/>.</returns>
+    public override bool Equals(object? obj) => obj is Colour32 colour && this == colour;
+
+    /// <summary>Retrieves the hash code of the colour.</summary>
+    /// <returns>The hash code of the colour.</returns>
     public override int GetHashCode() => (R, G, B, A).GetHashCode();
 
 
@@ -488,16 +489,20 @@ public struct Colour32
     ** Operators
     *********/
     /// <summary>Checks two colours for equality.</summary>
-    /// <param name="a">The first colour.</param>
-    /// <param name="b">The second colour.</param>
+    /// <param name="left">The first colour.</param>
+    /// <param name="right">The second colour.</param>
     /// <returns><see langword="true"/> if the colours are equal; otherwise, <see langword="false"/>.</returns>
-    public static bool operator ==(Colour32 a, Colour32 b) => a.Equals(b);
+    public static bool operator ==(Colour32 left, Colour32 right) =>
+        left.R == right.R &&
+        left.G == right.G &&
+        left.B == right.B &&
+        left.A == right.A;
 
     /// <summary>Checks two colours for inequality.</summary>
-    /// <param name="a">The first colour.</param>
-    /// <param name="b">The second colour.</param>
+    /// <param name="left">The first colour.</param>
+    /// <param name="right">The second colour.</param>
     /// <returns><see langword="true"/> if the colours are not equal; otherwise, <see langword="false"/>.</returns>
-    public static bool operator !=(Colour32 a, Colour32 b) => !a.Equals(b);
+    public static bool operator !=(Colour32 left, Colour32 right) => !(left == right);
 
     /// <summary>Converts a <see cref="Colour32"/> to a <see cref="Colour"/>.</summary>
     /// <param name="colour">The colour to convert.</param>
