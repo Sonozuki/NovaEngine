@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Content.Attributes;
 
 /// <summary>An aatribute used for specifying information about a content unpacker.</summary>
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+[AttributeUsage(AttributeTargets.Class)]
 public sealed class ContentUnpackerAttribute : Attribute
 {
     /*********
