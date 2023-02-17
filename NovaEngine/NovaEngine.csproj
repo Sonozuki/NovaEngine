@@ -12,11 +12,10 @@
 
 	<ItemGroup>
 		<Using Include="NovaEngine.Components" />
-		<Using Include="NovaEngine.Content" />
-		<Using Include="NovaEngine.Content.Attributes" />
-		<Using Include="NovaEngine.Content.Models" />
-		<Using Include="NovaEngine.Content.Packers" />
-		<Using Include="NovaEngine.Content.Readers" />
+		<Using Include="NovaEngine.ContentPipeline" />
+		<Using Include="NovaEngine.ContentPipeline.Packers" />
+		<Using Include="NovaEngine.ContentPipeline.Readers" />
+		<Using Include="NovaEngine.ContentPipeline.Unpackers" />
 		<Using Include="NovaEngine.Core" />
 		<Using Include="NovaEngine.DataStructures" />
 		<Using Include="NovaEngine.Debugging" />

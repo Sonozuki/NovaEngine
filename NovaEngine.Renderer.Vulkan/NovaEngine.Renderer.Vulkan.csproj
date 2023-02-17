@@ -11,7 +11,7 @@
 
 	<ItemGroup>
 		<Using Include="NovaEngine.Components" />
-		<Using Include="NovaEngine.Content" />
+		<Using Include="NovaEngine.ContentPipeline" />
 		<Using Include="NovaEngine.Core" />
 		<Using Include="NovaEngine.Extensions" />
 		<Using Include="NovaEngine.External.Rendering" />

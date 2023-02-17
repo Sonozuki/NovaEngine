@@ -77,7 +77,7 @@ public static class Serialiser
     {
         try
         {
-            using var binaryReader = new BinaryReader(stream);
+            using var binaryReader = new BinaryReader(stream, Encoding.UTF8, leaveOpen: true);
             binaryReader.ReadByte(); // version (always 1)
 
             // check if the root object has been inlined

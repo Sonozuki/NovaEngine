@@ -26,7 +26,7 @@ public class Texture2D : TextureBase
     /// <summary>Initialises the class.</summary>
     static Texture2D()
     {
-        Undefined = ContentLoader.Load<Texture2D>("Textures/Undefined");
+        Undefined = Content.Load<Texture2D>("Textures/Undefined");
     }
 
     /// <summary>Constructs an instance.</summary>

@@ -67,7 +67,7 @@ internal unsafe static class ShaderStages
     private static VkPipelineShaderStageCreateInfo LoadShader(string path, VkShaderStageFlags stage)
     {
         // create shader module
-        var fileData = new Span<byte>(ContentLoader.Load<byte[]>(path));
+        var fileData = new Span<byte>(Content.Load<byte[]>(path));
         var shaderData = MemoryMarshal.Cast<byte, uint>(fileData);
 
         VkShaderModule shaderModule;

@@ -40,7 +40,7 @@ public static class SceneManager
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
 
-        var loadedScene = ContentLoader.Load<Scene>(Path.Combine(Constants.RelativeSceneDirectory, name + Constants.SceneFileExtension));
+        var loadedScene = Content.Load<Scene>(Path.Combine(Constants.RelativeSceneDirectory, name + Constants.SceneFileExtension));
         _LoadedScenes.Add(loadedScene);
         loadedScene.Start();
     }

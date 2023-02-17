@@ -51,6 +51,6 @@ public sealed class SerialiserLoadable<T>
         if (string.IsNullOrWhiteSpace(Path))
             throw new ArgumentException($"Path is invalid in a {GetType().Name} instance.");
 
-        Value = ContentLoader.Load<T>(Path);
+        Value = Content.Load<T>(Path);
     }
 }
