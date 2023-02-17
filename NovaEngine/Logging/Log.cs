@@ -42,8 +42,10 @@ internal sealed class Log
     /// <summary>Writes the log to the console.</summary>
     public void WriteToConsole()
     {
+        var labelStart = ConsoleSettings.Instance.ShowTimeStamp ? $"[{DateTime.ToLocalTime():HH:mm:ss} " : "[";
+
         // TODO: colours
-        InternalConsole.Write($"[{DateTime.ToLocalTime():HH:mm:ss} ");
+        InternalConsole.Write(labelStart);
         InternalConsole.Write(SeverityInfo.Label);
         InternalConsole.Write($" {Creator.Name}");
         InternalConsole.Write("] ");
@@ -52,7 +54,7 @@ internal sealed class Log
         // TODO: remove
         // label
         Console.ResetColor();
-        Console.Write($"[{DateTime.ToLocalTime():HH:mm:ss} ");
+        Console.Write(labelStart);
 
         Console.ForegroundColor = SeverityInfo.LabelColour;
         Console.Write(SeverityInfo.Label);

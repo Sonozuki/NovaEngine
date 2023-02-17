@@ -211,7 +211,9 @@ public static class Logger
     private static void Log(LogCreator creator, LogSeverity severity, string? message)
     {
         var log = new Log(creator, severity, message ?? "");
-        log.WriteToConsole();
         log.WriteToStream(LogFileStream);
+
+        if (severity != LogSeverity.Debug || ConsoleSettings.Instance.ShowDebugLogs)
+            log.WriteToConsole();
     }
 }
