@@ -51,7 +51,12 @@ public unsafe sealed class VulkanRenderer : IRenderer
         get
         {
             VK.GetPhysicalDeviceProperties(Device.NativePhysicalDevice, out var physicalDeviceProperties);
-            return Encoding.ASCII.GetString(physicalDeviceProperties.DeviceName, 256);
+
+            var deviceNameLength = 0;
+            while (*(physicalDeviceProperties.DeviceName + deviceNameLength) != 0)
+                deviceNameLength++;
+
+            return Encoding.ASCII.GetString(physicalDeviceProperties.DeviceName, deviceNameLength);
         }
     }
 
