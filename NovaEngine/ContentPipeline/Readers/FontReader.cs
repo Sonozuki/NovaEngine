@@ -19,9 +19,9 @@ public class FontReader : IContentReader
     ** Public Methods
     *********/
     /// <inheritdoc/>
-    public unsafe object? Read(Stream stream, Type outputType)
+    public unsafe object? Read(FileStream novaFileStream, Type outputType)
     {
-        using var binaryReader = new BinaryReader(stream);
+        using var binaryReader = new BinaryReader(novaFileStream);
 
         var name = binaryReader.ReadString();
         var maxGlyphHeight = binaryReader.ReadSingle();

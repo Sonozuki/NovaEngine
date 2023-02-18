@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace NovaEngine.ContentPipeline;
+﻿namespace NovaEngine.ContentPipeline;
 
 /// <summary>Interacts with the content pipeline to pack, read, and unpack data files.</summary>
 public static class Content
@@ -93,7 +91,7 @@ public static class Content
         path = Path.Combine(Constants.ContentDirectory, path);
 
         var file = path;
-        if (string.IsNullOrEmpty(new FileInfo(file).Extension))
+        if (string.IsNullOrEmpty(GetExtension(file)))
             file += Constants.ContentFileExtension;
 
         using var fileStream = OpenFile(file);
@@ -108,7 +106,7 @@ public static class Content
             {
                 var contentReader = GetContentReader(returnType, contentType)
                     ?? throw new ContentException($"Cannot find content reader for object type '{returnType}' and content type '{contentType}'.");
-                
+
                 return contentReader.Read(fileStream, returnType)
                     ?? throw new ContentException("Content reader returned null.");
             }
@@ -131,10 +129,10 @@ public static class Content
         ArgumentException.ThrowIfNullOrEmpty(destinationFile);
 
         using var fileStream = OpenFile(fileToPack);
-        var extension = new FileInfo(fileToPack).Extension.TrimStart('.');
+        var extension = GetExtension(fileToPack);
 
-        if (string.IsNullOrEmpty(new FileInfo(destinationFile).Extension))
-            destinationFile = Path.ChangeExtension(destinationFile, ".nova");
+        if (string.IsNullOrEmpty(GetExtension(destinationFile)))
+            destinationFile = Path.ChangeExtension(destinationFile, "nova");
         using var novaFileStream = CreateFile(destinationFile);
 
         try
@@ -142,9 +140,10 @@ public static class Content
             var contentPacker = GetContentPacker(extension)
                 ?? throw new ContentException($"Cannot find content packer for extension '{extension}'.");
 
-            var contentStream = contentPacker.Write(fileStream);
+            var contentStream = contentPacker.Write(fileStream)
+                ?? throw new ContentException("Content packer returned null");
             contentStream.Position = 0;
-            
+
             WriteHeader(novaFileStream, contentPacker.Type);
             contentStream.CopyTo(novaFileStream);
         }
@@ -166,8 +165,8 @@ public static class Content
         ArgumentNullException.ThrowIfNull(value);
         ArgumentException.ThrowIfNullOrEmpty(destinationFile);
 
-        if (string.IsNullOrEmpty(new FileInfo(destinationFile).Extension))
-            destinationFile = Path.ChangeExtension(destinationFile, ".nova");
+        if (string.IsNullOrEmpty(GetExtension(destinationFile)))
+            destinationFile = Path.ChangeExtension(destinationFile, "nova");
         using var novaFileStream = CreateFile(destinationFile);
 
         try
@@ -311,7 +310,7 @@ public static class Content
     }
 
     /// <summary>Retrieves an <see cref="IContentReader"/> for a specified object type and content type.</summary>
-    /// <param name="returnType">The type the content reader must return.</param>
+    /// <param name="returnType">The type the reader must return.</param>
     /// <param name="contentType">The type of content file the reader must handle.</param>
     /// <returns>The content reader for <paramref name="returnType"/> and content type for <paramref name="contentType"/>, if one exists; otherwise, <see langword="null"/>.</returns>
     private static IContentReader? GetContentReader(Type returnType, string contentType)
@@ -324,7 +323,7 @@ public static class Content
     }
 
     /// <summary>Retrieves an <see cref="IContentPacker"/> for a specified file extension.</summary>
-    /// <param name="extension">The file extension the content packer must be able to handle.</param>
+    /// <param name="extension">The file extension the packer must be able to handle.</param>
     /// <returns>The content packer for <paramref name="extension"/>, if one exists; otherwise, <see langword="null"/>.</returns>
     private static IContentPacker? GetContentPacker(string extension)
     {

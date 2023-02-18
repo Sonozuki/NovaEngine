@@ -19,9 +19,9 @@ public class ModelReader : IContentReader
     ** Public Methods
     *********/
     /// <inheritdoc/>
-    public object? Read(Stream stream, Type outputType)
+    public object? Read(FileStream novaFileStream, Type outputType)
     {
-        var modelContent = Serialiser.Deserialise<ModelContent>(stream);
+        var modelContent = Serialiser.Deserialise<ModelContent>(novaFileStream);
         if (modelContent == null)
             return null;
 

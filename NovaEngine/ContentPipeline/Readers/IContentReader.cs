@@ -18,8 +18,8 @@ public interface IContentReader
     ** Public Methods
     *********/
     /// <summary>Reads content from a <see cref="Stream"/>.</summary>
-    /// <param name="stream">The stream to read the content from.</param>
-    /// <param name="outputType">The type to read to. This will always be one of the types specified in <see cref="OutputTypes"/>.</param>
+    /// <param name="novaFileStream">The fille stream of the nova file to read the content from.</param>
+    /// <param name="outputType">The type to output. This will always be one of the types specified in <see cref="OutputTypes"/>.</param>
     /// <returns>The content read from the stream.</returns>
-    public object? Read(Stream stream, Type outputType);
+    public object? Read(FileStream novaFileStream, Type outputType);
 }
