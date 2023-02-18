@@ -18,7 +18,7 @@ public interface IContentUnpacker
     ** Public Methods
     *********/
     /// <summary>Writes the a packed stream to an unpacked file.</summary>
-    /// <param name="stream">The packed stream to convert.</param>
-    /// <param name="destinationFile">The file that should be created/overwrote with the unpacked content.</param>
-    public void Write(Stream stream, string destinationFile);
+    /// <param name="novaFileStream">The file stream of the packed nova file to unpack.</param>
+    /// <param name="destinationFileStream">The file stream of the destination file to write the unpacked data to.</param>
+    public void Write(FileStream novaFileStream, FileStream destinationFileStream);
 }

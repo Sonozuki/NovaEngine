@@ -20,14 +20,14 @@ public class TextureUnpacker : IContentUnpacker
     ** Public Methods
     *********/
     /// <inheritdoc/>
-    public void Write(Stream stream, string destinationFile)
+    public void Write(FileStream novaFileStream, FileStream destinationFileStream)
     {
-        using var binaryReader = new BinaryReader(stream);
+        using var binaryReader = new BinaryReader(novaFileStream);
         var width = binaryReader.ReadInt32();
         var height = binaryReader.ReadInt32();
         var pixels = MemoryMarshal.Cast<byte, Rgba32>(binaryReader.ReadBytes(width * height * 4));
 
         using var image = Image.LoadPixelData(pixels.ToArray(), width, height);
-        image.SaveAsPng(destinationFile);
+        image.SaveAsPng(destinationFileStream);
     }
 }

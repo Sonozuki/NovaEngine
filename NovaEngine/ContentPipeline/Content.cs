@@ -181,10 +181,58 @@ public static class Content
         }
     }
 
+    /// <summary>Unpacks content from a nova file to a non-nova file.</summary>
+    /// <param name="fileToUnpack">The nova file to unpack.</param>
+    /// <param name="destinationFile">The non-nova file to unpack to.<br/>If an extension is specified then only an unpacker that outputs to that extension will be selected; otherwise, any unpacker that is able to parse the nova file contents according to the header will be used.</param>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="fileToUnpack"/> or <paramref name="destinationFile"/> is <see langword="null"/> or empty.</exception>
+    /// <exception cref="FileNotFoundException">Thrown if <paramref name="fileToUnpack"/> doesn't exist.</exception>
+    /// <exception cref="ContentException">Thrown if <paramref name="fileToUnpack"/> couldn't be opened, or if <paramref name="destinationFile"/> couldn't be created, or if an unpacker couldn't be found, or if the unpacker failed to unpack the file.</exception>
+    public static void Unpack(string fileToUnpack, string destinationFile)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(fileToUnpack);
+        ArgumentException.ThrowIfNullOrEmpty(destinationFile);
+
+        using var fileToUnpackStream = OpenFile(fileToUnpack);
+        using var destinationFileStream = CreateFile(destinationFile);
+
+        if (!ReadHeader(fileToUnpackStream, out var contentType))
+            throw new ContentException($"'{fileToUnpack}' is not a valid nova file.");
+
+        var extension = GetExtension(destinationFile);
+
+        try
+        {
+            var contentUnpacker = GetContentUnpacker(contentType, extension) ??
+                throw new ContentException($"Cannot find content unpacker for content type '{contentType}'{(string.IsNullOrEmpty(extension) ? "" : $" and extension '{extension}'")}.");
+
+            contentUnpacker.Write(fileToUnpackStream, destinationFileStream);
+        }
+        catch (Exception ex)
+        {
+            throw new ContentException("Failed to pack content.", ex);
+        }
+    }
+
 
     /*********
     ** Private Methods
     *********/
+    /// <summary>Retrieves the file extension of a file.</summary>
+    /// <param name="file">The file to retrieve the extension of.</param>
+    /// <returns>The extension of the file, without the leading '.'.</returns>
+    /// <exception cref="ContentException">Thrown if the extension couldn't be retrieved.</exception>
+    private static string GetExtension(string file)
+    {
+        try
+        {
+            return new FileInfo(file).Extension.TrimStart('.');
+        }
+        catch (Exception ex)
+        {
+            throw new ContentException($"Failed to get file extension of '{file}'.", ex);
+        }
+    }
+
     /// <summary>Attempts to open a file.</summary>
     /// <param name="file">The file to try and open.</param>
     /// <returns>The file stream of the file.</returns>
@@ -284,6 +332,20 @@ public static class Content
         foreach (var contentPacker in LoadedContentPackers)
             if (contentPacker.Extensions.Any(packerExtension => packerExtension.ToLower(G11n.Culture) == extension))
                 return contentPacker;
+
+        return null;
+    }
+
+    /// <summary>Retrieves an <see cref="IContentUnpacker"/> for a specified content type and file extension.</summary>
+    /// <param name="contentType">The type of content the unpacker must handle.</param>
+    /// <param name="extension">The file extension the unpacker should output as, or an empty string for any extension.</param>
+    /// <returns>The content unpacker for <paramref name="extension"/> and content type for <paramref name="contentType"/>, if one exists; otherwise, <see langword="null"/>.</returns>
+    private static IContentUnpacker? GetContentUnpacker(string contentType, string extension)
+    {
+        extension = extension.ToLower(G11n.Culture);
+        foreach (var contentUnpacker in LoadedContentUnpackers)
+            if (contentUnpacker.Type == contentType && (string.IsNullOrEmpty(extension) || contentUnpacker.Extension.ToLower(G11n.Culture) == extension))
+                return contentUnpacker;
 
         return null;
     }
