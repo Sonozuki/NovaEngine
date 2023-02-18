@@ -20,9 +20,9 @@ public class TexturePacker : IContentPacker
     ** Public Methods
     *********/
     /// <inheritdoc/>
-    public Stream Write(string file)
+    public Stream Write(FileStream fileStream)
     {
-        using var image = Image.Load<Rgba32>(file);
+        using var image = Image.Load<Rgba32>(fileStream);
 
         var stream = new MemoryStream();
         using var binaryWriter = new BinaryWriter(stream, Encoding.UTF8, true);

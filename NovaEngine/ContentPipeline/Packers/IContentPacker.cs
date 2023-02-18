@@ -18,8 +18,8 @@ public interface IContentPacker
     ** Public Methods
     *********/
     /// <summary>Rewrites a file to a <see cref="Stream"/> (the stream that will be written to the nova file).</summary>
-    /// <param name="file">The file to write to the stream.</param>
+    /// <param name="fileStream">The file stream of the file to rewrite.</param>
     /// <returns>The file rewritten to a <see cref="Stream"/>.</returns>
     /// <remarks>This is used to order file contents to a format this is faster to read from for an <see cref="IContentReader"/>.</remarks>
-    public Stream Write(string file);
+    public Stream Write(FileStream fileStream);
 }

@@ -19,10 +19,10 @@ public class ModelPacker : IContentPacker
     ** Public Methods
     *********/
     /// <inheritdoc/>
-    public Stream Write(string file)
+    public Stream Write(FileStream fileStream)
     {
         var stream = new MemoryStream();
-        Serialiser.Serialise(stream, ParseObjFile(file));
+        Serialiser.Serialise(stream, ParseObjFile(fileStream));
         return stream;
     }
 
@@ -31,8 +31,8 @@ public class ModelPacker : IContentPacker
     ** Private Methods
     *********/
     /// <summary>Parses an .obj file to a <see cref="MeshContent"/>.</summary>
-    /// <param name="file">The .obj file to parse.</param>
-    private static ModelContent ParseObjFile(string file)
+    /// <param name="fileStream">The .obj file to parse.</param>
+    private static ModelContent ParseObjFile(FileStream fileStream)
     {
         // TODO: smooth shading
 
@@ -43,7 +43,7 @@ public class ModelPacker : IContentPacker
         var vertexTextureCoordinates = new List<Vector2<float>>();
         var vertexNormals = new List<Vector3<float>>();
 
-        using var reader = new StreamReader(file);
+        using var reader = new StreamReader(fileStream);
         while (!reader.EndOfStream)
             ParseLine(reader.ReadLine()!, modelContent, ref meshContent, vertexPositions, vertexTextureCoordinates, vertexNormals);
 

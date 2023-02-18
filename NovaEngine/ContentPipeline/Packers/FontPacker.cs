@@ -12,16 +12,16 @@ public class FontPacker : IContentPacker
     public string Type => "font";
 
     /// <inheritdoc/>
-    public string[] Extensions => new[] { "tff" };
+    public string[] Extensions => new[] { "ttf" };
 
 
     /*********
     ** Public Methods
     *********/
     /// <inheritdoc/>
-    public unsafe Stream Write(string file)
+    public unsafe Stream Write(FileStream fileStream)
     {
-        using var ttf = new TrueTypeFont(file);
+        using var ttf = new TrueTypeFont(fileStream);
         var atlas = AtlasPacker.CreateAtlas(ttf);
 
         var memoryStream = new MemoryStream();

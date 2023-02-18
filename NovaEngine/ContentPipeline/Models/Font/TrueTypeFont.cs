@@ -61,10 +61,10 @@ internal sealed class TrueTypeFont : IDisposable
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     /// <summary>Constructs an instance.</summary>
-    /// <param name="ttfFile">The path to the ttf file to load.</param>
-    public TrueTypeFont(string ttfFile)
+    /// <param name="ttfFile">The to the ttf file stream to load from.</param>
+    public TrueTypeFont(FileStream ttfFile)
     {
-        BinaryReader = new BinaryReader(File.OpenRead(ttfFile));
+        BinaryReader = new BinaryReader(ttfFile, Encoding.UTF8, leaveOpen: true);
 
         ReadTables();
         ReadNameTable();
