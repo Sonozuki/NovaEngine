@@ -191,6 +191,9 @@ public static class Content
         ArgumentException.ThrowIfNullOrEmpty(fileToUnpack);
         ArgumentException.ThrowIfNullOrEmpty(destinationFile);
 
+        if (string.IsNullOrEmpty(GetExtension(fileToUnpack)))
+            fileToUnpack = Path.ChangeExtension(fileToUnpack, "nova");
+
         using var fileToUnpackStream = OpenFile(fileToUnpack);
         using var destinationFileStream = CreateFile(destinationFile);
 
