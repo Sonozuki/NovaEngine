@@ -140,7 +140,7 @@ public static class Content
             var contentPacker = GetContentPacker(extension)
                 ?? throw new ContentException($"Cannot find content packer for extension '{extension}'.");
 
-            var contentStream = contentPacker.Write(fileStream)
+            using var contentStream = contentPacker.Write(fileStream)
                 ?? throw new ContentException("Content packer returned null");
             contentStream.Position = 0;
 
@@ -266,7 +266,8 @@ public static class Content
 
         try
         {
-            Directory.CreateDirectory(directory);
+            if (!string.IsNullOrEmpty(directory))
+                Directory.CreateDirectory(directory);
             return File.Create(file);
         }
         catch (Exception ex)
