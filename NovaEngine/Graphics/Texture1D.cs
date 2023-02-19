@@ -24,7 +24,7 @@ public class Texture1D : TextureBase
     static Texture1D()
     {
         Undefined = new(1);
-        Undefined.SetPixels(new[] { Colour32.White });
+        Undefined.SetPixels(new[] { Colour32.HotPink });
     }
 
     /// <summary>Constructs an instance.</summary>

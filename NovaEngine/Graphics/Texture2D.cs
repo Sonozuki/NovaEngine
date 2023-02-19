@@ -26,7 +26,8 @@ public class Texture2D : TextureBase
     /// <summary>Initialises the class.</summary>
     static Texture2D()
     {
-        Undefined = Content.Load<Texture2D>("Textures/Undefined");
+        Undefined = new(1, 1);
+        Undefined.SetPixels(new[] { Colour32.HotPink });
     }
 
     /// <summary>Constructs an instance.</summary>
