@@ -310,7 +310,8 @@ public static class Content
 
         binaryWriter.Write("NOVA"u8);
         binaryWriter.Write((byte)1);
-        binaryWriter.Write(contentType);
+        binaryWriter.Write(Encoding.UTF8.GetBytes(contentType));
+        binaryWriter.Write((byte)0);
     }
 
     /// <summary>Retrieves an <see cref="IContentReader"/> for a specified object type and content type.</summary>
