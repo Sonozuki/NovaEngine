@@ -152,6 +152,29 @@ internal class Program
 
 (This example just processes files relative to the .exe of the app being executed, you can specify a full path or a different relative path if desired.)
 
+### Logger
+The logger is respondible for writing to the console.
+
+There are multiple log 'severities' `debug`, `help`, `info`, `alert`, `warning`, `error`, and `fatal`. Anything logged with a `debug` severity may not be shown to end users (depending on their console settings // link to settings), all other severities will always be shown to end users.
+
+There are two ways to log a message, `Logger.Log(message, severity)` or `Logger.Log{Severity}(message)`. `message` can be a string, collection, or object; objects will converted with their `ToString()` method.
+
+Some examples of calling the logger:
+
+![](pics/logger_calls.png)
+
+This will result in the output:
+
+![](pics/logger_calls_output.png)
+
+The location of the logger will be determined at runtime, calling the logger from the renderer would give an output:
+
+![](pics/logger_renderer_output.png)
+
+The callee (the `Engine` and `Renderer` in these examples) has been greyed out, this indicates they are internal calls; any calls from a game or mod will not be internal and will be white.
+
+// TODO: add image once that's implemented
+
 ## Building
 Currently Nova Engine uses Vulkan for rendering, in order to develop with Nova Engine you will need the [Vulkan SDK](https://vulkan.lunarg.com/sdk/home) as well as the [.NET 7 SDK](https://dotnet.microsoft.com/en-us/download).  
 
