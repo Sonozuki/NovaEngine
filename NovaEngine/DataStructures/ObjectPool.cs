@@ -40,6 +40,8 @@ public class ObjectPool<T> : IDisposable
     /// <param name="resetObject">The method that is invoked when an object has been returned to the pool used to reset its state.</param>
     public ObjectPool(Func<T> instantiateObject, Action<T>? resetObject = null)
     {
+        ArgumentNullException.ThrowIfNull(instantiateObject);
+
         InstantiateObject = instantiateObject;
         ResetObject = resetObject;
     }
