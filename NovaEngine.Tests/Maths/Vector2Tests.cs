@@ -724,6 +724,102 @@ public class Vector2Tests
         });
 
     [Test]
+    public void OperatorLessThan_LeftIsLessThanRight_ReturnsTrue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1) < new Vector2<float>(2), Is.True);
+            Assert.That(new Vector2<double>(1) < new Vector2<double>(2), Is.True);
+        });
+
+    [Test]
+    public void OperatorLessThan_LeftIsEqualToRight_ReturnsFalse() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1) < new Vector2<float>(1), Is.False);
+            Assert.That(new Vector2<double>(1) < new Vector2<double>(1), Is.False);
+        });
+
+    [Test]
+    public void OperatorLessThan_LeftIsGreaterThanRight_ReturnsFalse() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(2) < new Vector2<float>(1), Is.False);
+            Assert.That(new Vector2<double>(2) < new Vector2<double>(1), Is.False);
+        });
+
+    [Test]
+    public void OperatorLessThanEquals_LeftIsLessThanRight_ReturnsTrue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1) <= new Vector2<float>(2), Is.True);
+            Assert.That(new Vector2<double>(1) <= new Vector2<double>(2), Is.True);
+        });
+
+    [Test]
+    public void OperatorLessThanEquals_LeftIsEqualToRight_ReturnsTrue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1) <= new Vector2<float>(1), Is.True);
+            Assert.That(new Vector2<double>(1) <= new Vector2<double>(1), Is.True);
+        });
+
+    [Test]
+    public void OperatorLessThanEquals_LeftIsGreaterThanRight_ReturnsFalse() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(2) <= new Vector2<float>(1), Is.False);
+            Assert.That(new Vector2<double>(2) <= new Vector2<double>(1), Is.False);
+        });
+
+    [Test]
+    public void OperatorGreaterThan_LeftIsLessThanRight_ReturnsFalse() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1) > new Vector2<float>(2), Is.False);
+            Assert.That(new Vector2<double>(1) > new Vector2<double>(2), Is.False);
+        });
+
+    [Test]
+    public void OperatorGreaterThan_LeftIsEqualToRight_ReturnsFalse() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1) > new Vector2<float>(1), Is.False);
+            Assert.That(new Vector2<double>(1) > new Vector2<double>(1), Is.False);
+        });
+
+    [Test]
+    public void OperatorGreaterThan_LeftIsGreaterThanRight_ReturnsTrue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(2) > new Vector2<float>(1), Is.True);
+            Assert.That(new Vector2<double>(2) > new Vector2<double>(1), Is.True);
+        });
+
+    [Test]
+    public void OperatorGreaterThanEquals_LeftIsLessThanRight_ReturnsFalse() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1) >= new Vector2<float>(2), Is.False);
+            Assert.That(new Vector2<double>(1) >= new Vector2<double>(2), Is.False);
+        });
+
+    [Test]
+    public void OperatorGreaterThanEquals_LeftIsEqualToRight_ReturnsTrue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(1) >= new Vector2<float>(1), Is.True);
+            Assert.That(new Vector2<double>(1) >= new Vector2<double>(1), Is.True);
+        });
+
+    [Test]
+    public void OperatorGreaterThanEquals_LeftIsGreaterThanRight_ReturnsTrue() =>
+        Assert.Multiple(() =>
+        {
+            Assert.That(new Vector2<float>(2) >= new Vector2<float>(1), Is.True);
+            Assert.That(new Vector2<double>(2) >= new Vector2<double>(1), Is.True);
+        });
+
+    [Test]
     public void OperatorEquals_ValuesAreEqual_ReturnsTrue() =>
         Assert.Multiple(() =>
         {
