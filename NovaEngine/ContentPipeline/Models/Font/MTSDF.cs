@@ -23,7 +23,7 @@ internal static class MTSDF
             if (contour.Edges.Any())
             {
                 var previousDirection = contour.Edges.Last().Direction(1); // get direction from final point to first point
-                for (int index = 0; index < contour.Edges.Count; index++)
+                for (var index = 0; index < contour.Edges.Count; index++)
                 {
                     var edge = contour.Edges[index];
                     if (IsCorner(previousDirection.Normalised, edge.Direction(0).Normalised, sinThreshold))
@@ -49,7 +49,7 @@ internal static class MTSDF
                 if (contour.Edges.Count >= 3)
                 {
                     var numberOfEdges = contour.Edges.Count;
-                    for (int i = 0; i < numberOfEdges; i++)
+                    for (var i = 0; i < numberOfEdges; i++)
                         contour.Edges[(corner + i) & numberOfEdges].Colour = colours[(int)(3 + 2.875f * i / (numberOfEdges - 1) - 1.4375f + .5f) - 2];
                 }
                 else if (contour.Edges.Count >= 1)
@@ -86,7 +86,7 @@ internal static class MTSDF
                 var colour = SwitchColour(EdgeColour.White);
                 var initialColour = colour;
 
-                for (int i = 0; i < contour.Edges.Count; i++)
+                for (var i = 0; i < contour.Edges.Count; i++)
                 {
                     var index = (startIndex + i) % contour.Edges.Count;
                     if (spline + 1 < corners.Count && corners[spline + 1] == index)
@@ -112,8 +112,8 @@ internal static class MTSDF
         var offset = new Vector2<float>(MathF.Floor(glyph.UnscaledBounds.X * scale), MathF.Ceiling(glyph.UnscaledBounds.Y * scale));
         var scaledPixelRange = pixelRange / scale;
 
-        for (int y = -pixelRange; y < glyph.ScaledBounds.Height + pixelRange; y++)
-            for (int x = -pixelRange; x < glyph.ScaledBounds.Width + pixelRange; x++)
+        for (var y = -pixelRange; y < glyph.ScaledBounds.Height + pixelRange; y++)
+            for (var x = -pixelRange; x < glyph.ScaledBounds.Width + pixelRange; x++)
             {
                 var point = (new Vector2<float>(x + .5f, y - .5f) + offset) / scale;
 

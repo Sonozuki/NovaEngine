@@ -196,7 +196,7 @@ public class CircularBuffer<T> : IEnumerable<T?>
     public IEnumerator<T?> GetEnumerator()
     {
         foreach (var segment in GetArraySegments())
-            for (int i = 0; i < segment.Count; i++)
+            for (var i = 0; i < segment.Count; i++)
                 yield return segment.Array![segment.Offset + i];
     }
 

@@ -49,7 +49,7 @@ internal readonly struct QueueFamilyIndices
         var queueFamilies = new VkQueueFamilyProperties[queueFamilyCount];
         VK.GetPhysicalDeviceQueueFamilyProperties(physicalDevice, ref queueFamilyCount, queueFamilies);
 
-        for (uint i = 0; i < queueFamilies.Length; i++)
+        for (var i = 0u; i < queueFamilies.Length; i++)
         {
             var queueFamily = queueFamilies[i];
 
@@ -68,7 +68,7 @@ internal readonly struct QueueFamilyIndices
 
         // ensure a transfer and compute queue family were found, otherwise check again but allow for graphics queue families
         if (_TransferFamily == null || _ComputeFamily == null)
-            for (uint i = 0; i < queueFamilies.Length; i++)
+            for (var i = 0u; i < queueFamilies.Length; i++)
             {
                 var queueFamily = queueFamilies[i];
 

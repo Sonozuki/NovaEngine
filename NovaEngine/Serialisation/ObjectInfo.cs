@@ -205,7 +205,7 @@ internal sealed class ObjectInfo
         if (UnderlyingObject is not Array array)
             throw new SerialisationException("A non array object contains collection elements.");
 
-        for (int i = 0; i < CollectionElements.Count; i++)
+        for (var i = 0; i < CollectionElements.Count; i++)
             array.SetValue(CollectionElements[i], i);
     }
 }

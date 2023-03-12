@@ -36,7 +36,7 @@ internal static class BinaryReaderExtensions
         var list = new List<object?>();
 
         var count = binaryReader.ReadUInt16();
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
             list.Add(SerialiserUtilities.ReadInlinedValueFromStream(binaryReader));
 
         return list;
@@ -50,7 +50,7 @@ internal static class BinaryReaderExtensions
         var list = new List<uint>();
 
         var count = binaryReader.ReadUInt16();
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
             list.Add(binaryReader.ReadUInt32());
 
         return list;
@@ -64,7 +64,7 @@ internal static class BinaryReaderExtensions
         var dictionary = new Dictionary<string, object?>();
         
         var count = binaryReader.ReadUInt16();
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
             dictionary[binaryReader.ReadString()] = SerialiserUtilities.ReadInlinedValueFromStream(binaryReader);
 
         return dictionary;
@@ -78,7 +78,7 @@ internal static class BinaryReaderExtensions
         var dictionary = new Dictionary<string, uint>();
 
         var count = binaryReader.ReadUInt16();
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
             dictionary[binaryReader.ReadString()] = binaryReader.ReadUInt32();
 
         return dictionary;

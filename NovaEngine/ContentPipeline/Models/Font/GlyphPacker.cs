@@ -76,10 +76,10 @@ internal static class GlyphPacker
         bestGlyphIndex = -1;
         var bestFit = WorstFit;
 
-        for (int i = 0; i < Spaces.Count; i++)
+        for (var i = 0; i < Spaces.Count; i++)
         {
             var space = Spaces[i];
-            for (int j = 0; j < remainingGlyphs.Count; j++)
+            for (var j = 0; j < remainingGlyphs.Count; j++)
             {
                 var glyph = remainingGlyphs[j];
 

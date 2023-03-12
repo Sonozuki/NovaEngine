@@ -278,7 +278,7 @@ internal sealed class TrueTypeFont : IDisposable
             glyph.HorizontalMetrics = HorizontalMetrics[0];
             Glyphs.Add(glyph);
 
-            for (ushort i = 0x21; i < 0x7F; i++)
+            for (var i = 0x21; i < 0x7F; i++)
             {
                 var glyphIndex = characterMap.Map(BinaryReader, i);
 
@@ -531,7 +531,7 @@ internal sealed class TrueTypeFont : IDisposable
 
             var value = 0;
 
-            for (int i = 0; i < numberOfPoints; i++)
+            for (var i = 0; i < numberOfPoints; i++)
             {
                 var flag = flags[i];
                 if (flag.HasFlag(byteFlag))

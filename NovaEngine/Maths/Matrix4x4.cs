@@ -738,14 +738,14 @@ public struct Matrix4x4<T> : IEquatable<Matrix4x4<T>>
 
         // create matrix of minors
         var minorsMatrix = new Matrix4x4<T>();
-        for (int row = 0; row < 4; row++)
-            for (int column = 0; column < 4; column++)
+        for (var row = 0; row < 4; row++)
+            for (var column = 0; column < 4; column++)
             {
                 // create the 3x3 matrix from the elements that don't intersect the current element's row or column
                 var matrix3x3 = new Matrix3x3<T>();
                 var currentMatrix3x3Element = 0;
-                for (int matrix3x3Row = 0; matrix3x3Row < 4; matrix3x3Row++)
-                    for (int matrix3x3Column = 0; matrix3x3Column < 4; matrix3x3Column++)
+                for (var matrix3x3Row = 0; matrix3x3Row < 4; matrix3x3Row++)
+                    for (var matrix3x3Column = 0; matrix3x3Column < 4; matrix3x3Column++)
                     {
                         // ensure current matrix element doesn't intersect with the row or column of this element
                         if (matrix3x3Row == row || matrix3x3Column == column)
@@ -759,8 +759,8 @@ public struct Matrix4x4<T> : IEquatable<Matrix4x4<T>>
 
         // create matrix of cofactors
         var cofactorsMatrix = minorsMatrix;
-        for (int row = 0; row < 4; row++)
-            for (int column = 0; column < 4; column++)
+        for (var row = 0; row < 4; row++)
+            for (var column = 0; column < 4; column++)
                 if ((row + column) % 2 != 0)
                     cofactorsMatrix[row, column] *= T.CreateChecked(-1);
 
@@ -768,7 +768,7 @@ public struct Matrix4x4<T> : IEquatable<Matrix4x4<T>>
         var invertedMatrix = cofactorsMatrix.Transposed * (T.One / Determinant);
 
         // copy over the inverted matrix to this instance
-        for (int i = 0; i < 16; i++)
+        for (var i = 0; i < 16; i++)
             this[i] = invertedMatrix[i];
     }
 

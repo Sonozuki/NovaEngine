@@ -387,7 +387,7 @@ public unsafe class VulkanTexture : RendererTextureBase
         var mipHeight = (int)Height;
 
         // create a blit command for each mip level
-        for (uint i = 1; i < MipLevels; i++)
+        for (var i = 1u; i < MipLevels; i++)
         {
             // transition current level layout to TransferSource
             imageMemoryBarrier.SubresourceRange.BaseMipLevel = i - 1;
