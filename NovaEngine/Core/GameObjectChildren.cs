@@ -71,18 +71,18 @@ public class GameObjectChildren : IList<GameObject>
 
         if (Children.Contains(item))
             throw new InvalidOperationException("The item is already a child.");
+        
+        if (!object.ReferenceEquals(item.Parent, Parent))
+            item.Parent = Parent;
 
         Children.Add(item);
-        item.Parent = Parent;
     }
 
     /// <inheritdoc/>
     public void Clear()
     {
-        foreach (var child in Children)
-            child.Parent = null;
-
-        Children.Clear();
+        while (Children.Any())
+            Children[0].Parent = null;
     }
 
     /// <inheritdoc/>
@@ -103,12 +103,8 @@ public class GameObjectChildren : IList<GameObject>
     {
         ArgumentNullException.ThrowIfNull(item);
 
-        var oldChild = Children[index];
-        if (oldChild != null)
-            oldChild.Parent = null;
-
         item.Parent = Parent;
-        Children[index] = item;
+        Children.Insert(index, item);
     }
 
     /// <inheritdoc/>
@@ -127,8 +123,9 @@ public class GameObjectChildren : IList<GameObject>
     /// <inheritdoc/>
     public void RemoveAt(int index)
     {
-        Children[index].Parent = null;
+        var removedChild = Children[index];
         Children.RemoveAt(index);
+        removedChild.Parent = null;
     }
 
     /// <inheritdoc/>

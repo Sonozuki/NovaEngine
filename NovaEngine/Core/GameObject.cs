@@ -29,7 +29,7 @@ public sealed class GameObject : IDisposable
 
     /// <summary>The transform component of the game object.</summary>
     public Transform Transform { get; }
-    
+
     /// <summary>The parent of the game object.</summary>
     /// <remarks>This is <see langword="null"/> when it's a root game object.</remarks>
     /// <exception cref="InvalidOperationException">Thrown if the parent being set is a child of the object.</exception>
@@ -38,12 +38,12 @@ public sealed class GameObject : IDisposable
         get => _Parent;
         set
         {
-            if (!object.ReferenceEquals(Parent, value))
+            if (object.ReferenceEquals(Parent, value))
                 return;
 
             // ensure new parent is not a child of the object
             var allChildren = GetAllGameObjects(true).Skip(1); // skip the first element as that is this instance
-            if (allChildren.Any(child => object.ReferenceEquals(this, child)))
+            if (allChildren.Any(child => object.ReferenceEquals(value, child)))
                 throw new InvalidOperationException("Cannot set the parent as it's a child of the object, which would cause a circular dependency.");
 
             Parent?.Children.Remove(this);
@@ -180,7 +180,7 @@ public sealed class GameObject : IDisposable
         var components = new List<ComponentBase>(Components);
         if (!includeDisabled)
             components = components.Where(component => component.IsEnabled).ToList();
-        
+
         foreach (var child in Children)
             if (includeDisabled || child.IsEnabled)
                 components.AddRange(child.GetAllComponents(includeDisabled));
@@ -201,7 +201,7 @@ public sealed class GameObject : IDisposable
         gameObjects.AddRange(Children.SelectMany(child => child.GetAllGameObjects(includeDisabled)));
         return gameObjects;
     }
-    
+
 
     /*********
     ** Private Methods
@@ -209,7 +209,7 @@ public sealed class GameObject : IDisposable
     /// <summary>Creates the renderer game object.</summary>
     [OnDeserialised]
     private void CreateRendererGameObject() => RendererGameObject = RendererManager.CurrentRenderer.CreateRendererGameObject(this);
-    
+
     /// <summary>Cleans up unmanaged resources in the component.</summary>
     /// <param name="disposing">Whether the component is being disposed deterministically.</param>
     private void Dispose(bool disposing)
