@@ -557,7 +557,7 @@ namespace Foo
 }
 ```
 
-12. Files should only contain one interface or class.
+12. Files should only contain one interface or class (excluding `file class`es).
 ```cs
 // valid 
 
@@ -566,6 +566,13 @@ class Bar { }
 
 // Foo.cs
 class Foo { }
+```
+```cs
+// valid
+
+// Classes.cs
+class Bar { }
+file class Foo { }
 ```
 ```cs
 // invalid
@@ -687,9 +694,11 @@ class Foo
 }
 ```
 
-22. Use `this.` and `base.` only when absolutely neccessary.
+22. Avoid using `private` classes, use `file` if possible instead.
 
-23. When a constructor calls another constructor always new line the `: this(...)`. If the constructor has no body that the braces should be on the same line too.
+23. Use `this.` and `base.` only when absolutely neccessary.
+
+24. When a constructor calls another constructor always new line the `: this(...)`. If the constructor has no body that the braces should be on the same line too.
 ```
 // valid
 class Foo
@@ -717,7 +726,7 @@ class Foo
 }
 ```
 
-24. Never have public fields in a class, use a property instead, even if both the getter and setter are public.
+25. Never have public fields in a class, use a property instead, even if both the getter and setter are public.
 ```cs
 // valid
 class Foo
