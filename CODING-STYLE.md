@@ -284,6 +284,7 @@ internal class Transform { }
 
 1. All the members in a class, struct, or interface should be grouped by type and each type should follow a specific order. The groups and order of the types are: `Constants`, `Events`, `Delegates`, `Fields`, `Properties`, `Indexers`, `Constructors`, `Public Methods`, `Protected Internal Methods`, `Internal Methods`, `Protected Methods`, `Private Protected Methods`, `Private Methods`, `Operators`.  
 The class initialiser should be at the top of the `Constructors` group, and the finaliser should be after the initialiser.  
+In each group the instance members should be first, followed by the overriden members, followed by the static members.  
 Each group should be separated by two new lines and have a comment header exactly matching:
 ```cs
 /*********
