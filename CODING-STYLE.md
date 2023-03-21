@@ -686,54 +686,7 @@ class Foo
 }
 ```
 
-22. Use `this.` when using a member defined in an inherited class or when neccessary.
-```cs
-// valid
-abstract class FooBase
-{
-    protected virtual void MethodFromBase() { }
-}
-
-class Foo : FooBase
-{
-    public void SomeMethod()
-    {
-        this.MethodFromBase()
-    }
-}
-```
-```cs
-// valid
-abstract class FooBase
-{
-    protected virtual void MethodFromBase() { }
-}
-
-class Foo : FooBase
-{
-    public void SomeMethod()
-    {
-        MethodFromBase(); // this. not specified as it's been overriden in this class
-    }
-
-    protected override void MethodFromBase() { }
-}
-```
-```cs
-// invalid
-abstract class FooBase
-{
-    protected virtual void MethodFromBase() { }
-}
-
-class Foo : FooBase
-{
-    public void SomeMethod()
-    {
-        MethodFromBase()
-    }
-}
-```
+22. Use `this.` and `base.` only when absolutely neccessary.
 
 23. When a constructor calls another constructor always new line the `: this(...)`. If the constructor has no body that the braces should be on the same line too.
 ```
