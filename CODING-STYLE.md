@@ -77,7 +77,7 @@ multiple line comment
 /// <summary>
 ```
 
-5. Every class, interface, member, etc should have XML documentation, regardless of privacy.
+5. Every class, interface, member, etc should have XML documentation, regardless of privacy, and regardless of how tautological it is.
 ```cs
 /// <summary>Some relevant documentation.</summary>
 public class Foo
