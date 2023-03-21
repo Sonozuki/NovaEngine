@@ -525,7 +525,7 @@ static private int Bar;
 sealed override protected internal ref int Foo => ref Bar;
 ```
 
-10. Using directives should always be specified in the .csproj file in there own `<PropertyGroup>`, sorted alphabetically.
+10. Using directives should always be specified in the .csproj file in there own `<ItemGroup>`, sorted alphabetically.
 ```cs
 using System; // invalid
 ```
