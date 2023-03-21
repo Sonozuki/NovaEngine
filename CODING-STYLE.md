@@ -526,7 +526,7 @@ static private int Bar;
 sealed override protected internal ref int Foo => ref Bar;
 ```
 
-10. Using directives should always be specified in the .csproj file in there own `<ItemGroup>`, sorted alphabetically.
+10. Using directives should be specified in the .csproj file in there own `<ItemGroup>`, sorted alphabetically, unless they are very specific to a small set of classes or if adding the using would lead to ambigious definitions.
 ```cs
 using System; // invalid
 ```
@@ -542,7 +542,7 @@ using System; // invalid
 </ItemGroup>
 ```
 
-11. Namespaces should always be file scoped and located at the very top of the file.
+11. Namespaces should always be file scoped and located at the top of the file (after any usings, if any are present).
 ```cs
 // valid
 namespace Foo;
