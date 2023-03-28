@@ -38,6 +38,7 @@
 		<Using Include="NovaEngine.Settings" />
 		<Using Include="NovaEngine.Windowing" />
 		<Using Include="System.Collections" />
+		<Using Include="System.Collections.Immutable" />
 		<Using Include="System.ComponentModel" />
 		<Using Include="System.Diagnostics" />
 		<Using Include="System.Reflection" />

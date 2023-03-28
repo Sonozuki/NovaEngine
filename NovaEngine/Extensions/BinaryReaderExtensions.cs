@@ -1,4 +1,5 @@
-﻿using System.Buffers.Binary;
+﻿using NovaEngine.ContentPipeline.Font;
+using System.Buffers.Binary;
 
 namespace NovaEngine.Extensions;
 
@@ -8,25 +9,51 @@ internal static class BinaryReaderExtensions
     /*********
     ** Public Methods
     *********/
+    /// <summary>Reads a 4-byte tag from the current stream and advances the current position of the stream by four bytes.</summary>
+    /// <param name="binaryReader">The binary reader to read the bytes from.</param>
+    /// <returns>A 4-byte tag read from the current stream.</returns>
+    public static Tag ReadOTFTag(this BinaryReader binaryReader) => new(binaryReader.ReadByte(), binaryReader.ReadByte(), binaryReader.ReadByte(), binaryReader.ReadByte());
+
+    /// <summary>Reads an 8-byte date time as big endian from the current stream and advances the current position of the stream by eight bytes.</summary>
+    /// <param name="binaryReader">The binary reader to read the bytes from.</param>
+    /// <returns>The 8-byte date time read from the current stream.</returns>
+    /// <remarks>This will read an 8-byte number representing the number of seconds that have elapsed since 12:00 midnight, January 1, 1904, UTC.</remarks>
+    public static DateTime ReadOTFDateTime(this BinaryReader binaryReader) => new DateTime(1904, 1, 1).AddSeconds(binaryReader.ReadInt64BigEndian());
+
     /// <summary>Reads a 2-byte signed integer as big endian from the current stream and advances the current position of the stream by two bytes.</summary>
     /// <param name="binaryReader">The binary reader to read the bytes from.</param>
     /// <returns>A 2-byte signed integer read from the current stream.</returns>
     public static short ReadInt16BigEndian(this BinaryReader binaryReader) => BinaryPrimitives.ReverseEndianness(binaryReader.ReadInt16());
 
-    /// <summary>Reads a 2-byte signed integer as big endian from the current stream and advances the current position of the stream by two bytes.</summary>
+    /// <summary>Reads a 2-byte unsigned integer as big endian from the current stream and advances the current position of the stream by two bytes.</summary>
     /// <param name="binaryReader">The binary reader to read the bytes from.</param>
-    /// <returns>A 2-byte signed integer read from the current stream.</returns>
+    /// <returns>A 2-byte unsigned integer read from the current stream.</returns>
     public static ushort ReadUInt16BigEndian(this BinaryReader binaryReader) => BinaryPrimitives.ReverseEndianness(binaryReader.ReadUInt16());
 
     /// <summary>Reads a 4-byte signed integer as big endian from the current stream and advances the current position of the stream by four bytes.</summary>
     /// <param name="binaryReader">The binary reader to read the bytes from.</param>
     /// <returns>A 4-byte signed integer read from the current stream.</returns>
+    public static int ReadInt32BigEndian(this BinaryReader binaryReader) => BinaryPrimitives.ReverseEndianness(binaryReader.ReadInt32());
+    
+    /// <summary>Reads a 4-byte unsigned integer as big endian from the current stream and advances the current position of the stream by four bytes.</summary>
+    /// <param name="binaryReader">The binary reader to read the bytes from.</param>
+    /// <returns>A 4-byte unsigned integer read from the current stream.</returns>
     public static uint ReadUInt32BigEndian(this BinaryReader binaryReader) => BinaryPrimitives.ReverseEndianness(binaryReader.ReadUInt32());
 
-    /// <summary>Reads a 2-byte floating-point number with the low 14 bits representing fraction, and advances the current position of the stream by two bytes.</summary>
+    /// <summary>Reads an 8-byte signed integer as big endian from the current stream and advances the current position of the stream by eight bytes.</summary>
     /// <param name="binaryReader">The binary reader to read the bytes from.</param>
-    /// <returns>A 2-byte floating-point number with the low 14 bits representing fraction.</returns>
+    /// <returns>An 8-byte signed integer read from the current stream.</returns>
+    public static long ReadInt64BigEndian(this BinaryReader binaryReader) => BinaryPrimitives.ReverseEndianness(binaryReader.ReadInt64());
+
+    /// <summary>Reads a 2-byte fixed-point number with the low 14 bits representing the fraction, and advances the current position of the stream by two bytes.</summary>
+    /// <param name="binaryReader">The binary reader to read the bytes from.</param>
+    /// <returns>A 2-byte fixed-point number with the low 14 bits representing fraction.</returns>
     public static float Read2Dot14(this BinaryReader binaryReader) => binaryReader.ReadInt16BigEndian() / (float)(1 << 14);
+
+    /// <summary>Reads a 4-byte fixed-point number with the low 16 bits representing the fraction, and advances the current position of the stream by four bytes.</summary>
+    /// <param name="binaryReader">The binary reader to read the bytes from.</param>
+    /// <returns>A 4-byte fixed-point number with the low 16 bits representing fraction.</returns>
+    public static float Read16Dot16(this BinaryReader binaryReader) => binaryReader.ReadInt32BigEndian() / (float)(1 << 16);
 
     /// <summary>Reads a collection of inlinable objects from the current stream and advances the position.</summary>
     /// <param name="binaryReader">The binary reader to read from.</param>
