@@ -6,6 +6,9 @@ internal sealed class CmapFormat4 : CmapFormatBase
     /*********
     ** Fields
     *********/
+    /// <summary>The character code to glyph index map.</summary>
+    private readonly Dictionary<int, ushort> Cache = new();
+
     /// <summary>The segments in the cmap.</summary>
     private readonly List<CmapFormat4Segment> Segments = new();
 
@@ -45,5 +48,35 @@ internal sealed class CmapFormat4 : CmapFormatBase
             else
                 Segments[i].IdRangeOffset = 0;
         }
+    }
+
+
+    /*********
+    ** Public Methods
+    *********/
+    /// <inheritdoc/>
+    public override ushort Map(BinaryReader binaryReader, int characterCode)
+    {
+        if (Cache.TryGetValue(characterCode, out var glyphIndex))
+            return glyphIndex;
+
+        foreach (var segment in Segments)
+        {
+            if (segment.StartCode > characterCode || segment.EndCode < characterCode)
+                continue;
+
+            if (segment.IdRangeOffset > 0)
+            {
+                binaryReader.BaseStream.Position = segment.IdRangeOffset + 2 * (characterCode - segment.StartCode);
+                glyphIndex = binaryReader.ReadUInt16BigEndian();
+            }
+            else
+                glyphIndex = (ushort)((segment.IdDelta + characterCode) & 0xFFFF);
+
+            break;
+        }
+
+        Cache[characterCode] = glyphIndex;
+        return glyphIndex;
     }
 }

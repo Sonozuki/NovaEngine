@@ -26,4 +26,14 @@ internal abstract class CmapFormatBase
         Length = binaryReader.ReadUInt16BigEndian();
         Language = binaryReader.ReadUInt16BigEndian();
     }
+
+
+    /*********
+    ** Public Methods
+    *********/
+    /// <summary>Retrieves the glyph index for a character.</summary>
+    /// <param name="binaryReader">The binary reader to use to retrieve the glyph index.</param>
+    /// <param name="characterCode">The character code to get the glyph index of.</param>
+    /// <returns>The glyph index.</returns>
+    public abstract ushort Map(BinaryReader binaryReader, int characterCode);
 }

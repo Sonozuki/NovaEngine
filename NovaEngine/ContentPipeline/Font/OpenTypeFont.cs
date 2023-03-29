@@ -1,4 +1,5 @@
-﻿using NovaEngine.ContentPipeline.Font.Tables;
+﻿using NovaEngine.ContentPipeline.Font.GlyphParsers;
+using NovaEngine.ContentPipeline.Font.Tables;
 
 namespace NovaEngine.ContentPipeline.Font;
 
@@ -18,6 +19,9 @@ internal sealed class OpenTypeFont : IDisposable
     /*********
     ** Properties
     *********/
+    /// <summary>The type of glyph outlines the font uses.</summary>
+    public OutlineType OutlineType { get; private set; }
+
     /// <summary>The table directory of the font.</summary>
     public TableDirectory TableDirectory { get; private set; }
 
@@ -44,6 +48,13 @@ internal sealed class OpenTypeFont : IDisposable
 
     /// <summary>The 'post' table of the font.</summary>
     public PostTable PostTable { get; private set; }
+
+    /// <summary>The 'loca' table of the font.</summary>
+    /// <remarks>This is only used if <see cref="OutlineType"/> is <see cref="OutlineType.TrueType"/>.</remarks>
+    public LocaTable? LocaTable { get; private set; }
+
+    /// <summary>The glyphs in the font.</summary>
+    public ImmutableArray<Glyph> Glyphs { get; }
 
 
     /*********
@@ -72,6 +83,30 @@ internal sealed class OpenTypeFont : IDisposable
         ReadNameTable();
         ReadOS2Table();
         ReadPostTable();
+
+        DetermineOutlineType();
+        var glyphParser = CreateGlyphParser();
+        
+        // TODO: currently only reads ASCII glyphs
+        {
+            var glyphs = new List<Glyph>();
+            var characterMap = CmapTable!.Subtables.First();
+
+            var glyph = glyphParser.Parse(characterMap.Map(BinaryReader, -1));
+            glyph.Character = '\0';
+            glyphs.Add(glyph);
+
+            for (var i = 0x21; i < 0x7F; i++)
+            {
+                var glyphIndex = characterMap.Map(BinaryReader, i);
+
+                glyph = glyphParser.Parse(glyphIndex);
+                glyph.Character = (char)i;
+                glyphs.Add(glyph);
+            }
+
+            Glyphs = glyphs.ToImmutableArray();
+        }
     }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -169,6 +204,56 @@ internal sealed class OpenTypeFont : IDisposable
         BinaryReader.BaseStream.Position = GetTableOffset("post");
         PostTable = new(BinaryReader);
     }
+
+    /// <summary>Reads the 'loca' table from the font.</summary>
+    private void ReadLocaTable()
+    {
+        BinaryReader.BaseStream.Position = GetTableOffset("loca");
+        LocaTable = new(BinaryReader, HeadTable.IndexToLocFormat, MaxpTable.NumberOfGlyphs);
+    }
+
+    /// <summary>Determines the type of glyph outlines used in the font.</summary>
+    /// <exception cref="FontException">Thrown if the type of outline couldn't be determined.</exception>
+    private void DetermineOutlineType()
+    {
+        if (DoesTableExist("glyf"))
+            OutlineType = OutlineType.TrueType;
+        else if (DoesTableExist("CFF "))
+            OutlineType = OutlineType.CFF;
+        else if (DoesTableExist("CFF2"))
+            OutlineType = OutlineType.CFF2;
+        else
+            throw new FontException("Failed to determine type of outline used in the font.");
+    }
+
+    /// <summary>Creates a glyph parser for the font.</summary>
+    /// <returns>The created glyph parser.</returns>
+    /// <exception cref="FontException">Thrown if a glyph parser couldn't be created.</exception>
+    private GlyphParserBase CreateGlyphParser()
+    {
+        var glyphParser = (GlyphParserBase?)null;
+
+        switch (OutlineType)
+        {
+            case OutlineType.TrueType:
+                ReadLocaTable();
+                glyphParser = new TTFGlyphParser(BinaryReader, LocaTable!, GetTableOffset("glyf"));
+                break;
+
+            case OutlineType.CFF:
+                throw new NotImplementedException();
+
+            case OutlineType.CFF2:
+                throw new NotImplementedException();
+        }
+
+        return glyphParser!;
+    }
+
+    /// <summary>Determines whether a table with a specified tag exists.</summary>
+    /// <param name="tableTag">The tag of the table to check exists.</param>
+    /// <returns><see langword="true"/>, if a table with the tag of <paramref name="tableTag"/> exists; otherwise, <see langword="false"/>.</returns>
+    private bool DoesTableExist(string tableTag) => TableDirectory.TableRecords.Any(tableRecord => tableRecord.Tag == tableTag);
 
     /// <summary>Retrieves the offset of the table with a specified tag.</summary>
     /// <param name="tableTag">The tag of the table to retrieve the offset of.</param>

@@ -7,7 +7,7 @@ internal sealed class CmapFormat0 : CmapFormatBase
     ** Fields
     *********/
     /// <summary>The glyph index to character code map.</summary>
-    private readonly byte[] GlyphIds;
+    private readonly byte[] GlyphIndices;
 
 
     /*********
@@ -24,6 +24,19 @@ internal sealed class CmapFormat0 : CmapFormatBase
     public CmapFormat0(BinaryReader binaryReader)
         : base(binaryReader)
     {
-        GlyphIds = binaryReader.ReadBytes(256);
+        GlyphIndices = binaryReader.ReadBytes(256);
+    }
+
+
+    /*********
+    ** Public Methods
+    *********/
+    /// <inheritdoc/>
+    public override ushort Map(BinaryReader binaryReader, int characterCode)
+    {
+        if (characterCode >= 0 && characterCode <= 255)
+            return GlyphIndices[characterCode];
+
+        return 0;
     }
 }
