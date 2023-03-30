@@ -1,4 +1,5 @@
 ﻿using NovaEngine.ContentPipeline.Font.Tables;
+using NovaEngine.ContentPipeline.Font.EdgeSegments;
 
 namespace NovaEngine.ContentPipeline.Font.GlyphParsers;
 
@@ -53,6 +54,8 @@ internal sealed class TTFGlyphParser : GlyphParserBase
         else
             ParseSimpleGlyph(glyph);
 
+        CalculateGlyphContours(glyph);
+
         ParsedGlyphs[glyphIndex] = glyph;
         return glyph;
     }
@@ -61,7 +64,7 @@ internal sealed class TTFGlyphParser : GlyphParserBase
     /*********
     ** Private Methods
     *********/
-    /// <summary>Parses a composite glyph.</summary>
+    /// <summary>Parses a composite glyph's contour ends and points.</summary>
     /// <param name="glyph">The glyph to parse contour ends and points for.</param>
     /// <remarks>This assumes <see cref="BinaryReader"/> has had its position set for the glyph to be read.</remarks>
     private void ParseCompositeGlyph(Glyph glyph)
@@ -140,7 +143,7 @@ internal sealed class TTFGlyphParser : GlyphParserBase
         glyph.Points = points.ToImmutableArray();
     }
 
-    /// <summary>Parses a simple glyph.</summary>
+    /// <summary>Parses a simple glyph's contour ends and points.</summary>
     /// <param name="glyph">The glyph to parse contour ends and points for.</param>
     /// <remarks>This assumes <see cref="BinaryReader"/> has had its position set for the glyph to be read.</remarks>
     private void ParseSimpleGlyph(Glyph glyph)
@@ -214,5 +217,76 @@ internal sealed class TTFGlyphParser : GlyphParserBase
 
             return coordinates;
         }
+    }
+
+    /// <summary>Calculates a glyph's contours.</summary>
+    /// <param name="glyph">The glyph to calculate the contours of.</param>
+    private void CalculateGlyphContours(Glyph glyph)
+    {
+        // calculate implicit on-curve points and correct contour ends (corrected to accomodate for the implicit points now be explicit)
+        var glyphPoints = new List<Point>();
+        var glyphContourEnds = new List<int>();
+        for (var i = 0; i < glyph.Points.Length; i++)
+        {
+            var point = glyph.Points[i];
+            if (i != 0)
+            {
+                var previousPoint = glyphPoints.Last();
+                // if this point and the previous point are both off-curve points, add the implicit on-curve point between them.
+                if (!previousPoint.IsOnCurve && !point.IsOnCurve)
+                    glyphPoints.Add(new((previousPoint.X + point.X) / 2, (previousPoint.Y + point.Y) / 2, true));
+            }
+            glyphPoints.Add(point);
+
+            // check for a contour end to add
+            if (glyph.ContourEnds.Contains((ushort)i))
+                glyphContourEnds.Add(glyphPoints.Count - 1);
+        }
+
+        // calculate contours
+        var contours = new List<Contour>();
+        var edges = new List<EdgeSegmentBase>();
+
+        var currentContourStartIndex = 0;
+        var currentContourEndIndex = 0;
+
+        for (var i = 1; i < glyphPoints.Count; i++)
+        {
+            var previousPoint = glyphPoints[i - 1];
+            var point = glyphPoints[i];
+
+            if (previousPoint.IsOnCurve)
+            {
+                // if both the previous and current point is on-curve, it's a straight line segment
+                if (point.IsOnCurve)
+                    edges.Add(new LinearSegment(previousPoint, point));
+            }
+            else
+            {
+                // if the previous point is off-curve, it means it's a control point for a quadratic segment, of which this is the final point
+                var previousPreviousPoint = glyphPoints[i - 2];
+                edges.Add(new QuadraticSegment(previousPreviousPoint, previousPoint, point));
+            }
+
+            // check if this is the end of the contour
+            if (i == glyphContourEnds[currentContourEndIndex])
+            {
+                var contourStartPoint = glyphPoints[currentContourStartIndex];
+                if (point.IsOnCurve)
+                    edges.Add(new LinearSegment(point, contourStartPoint));
+                else // if this point is off-curve, it means it's a control point for a quadratric segment that needs to link to the start of the contour
+                    edges.Add(new QuadraticSegment(previousPoint, point, contourStartPoint));
+
+                currentContourStartIndex = i + 1;
+                currentContourEndIndex++;
+
+                i++; // this is required as the segments are calculated by looking back at the previous point, without this it will look back at a point from a different contour
+
+                contours.Add(new(edges));
+                edges = new();
+            }
+        }
+
+        glyph.Contours = contours.ToImmutableArray();
     }
 }

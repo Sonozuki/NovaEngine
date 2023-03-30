@@ -34,6 +34,9 @@ internal sealed class Glyph
     /// <summary>The points that comprise the glyph.</summary>
     public ImmutableArray<Point> Points { get; internal set; }
 
+    /// <summary>The contours in the glyph.</summary>
+    public ImmutableArray<Contour> Contours { get; internal set; }
+
 
     /*********
     ** Constructors

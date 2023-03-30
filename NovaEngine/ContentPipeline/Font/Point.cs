@@ -30,4 +30,12 @@ internal sealed class Point
         Y = y;
         IsOnCurve = isOnCurve;
     }
+
+
+    /*********
+    ** Operators
+    *********/
+    /// <summary>Converts a point to a vector.</summary>
+    /// <param name="point">The point to convert.</param>
+    public static implicit operator Vector2<float>(Point point) => new(point.X, point.Y);
 }
