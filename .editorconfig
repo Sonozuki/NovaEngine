@@ -1,4 +1,4 @@
-﻿[*]
+[*]
 
 #### Whitespace ####
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
@@ -280,7 +280,7 @@ dotnet_diagnostic.SYSLIB1054.severity = suggestion
 
 # Maintainability
 dotnet_diagnostic.CA1507.severity = error
-dotnet_diagnostic.CA1501.severity = error
+dotnet_diagnostic.CA1501.severity = silent
 dotnet_diagnostic.CA1502.severity = error
 dotnet_diagnostic.CA1505.severity = error
 dotnet_diagnostic.CA1506.severity = error
