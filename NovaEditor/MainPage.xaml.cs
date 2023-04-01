@@ -10,6 +10,19 @@ public partial class MainPage : ContentPage
     public MainPage()
     {
         InitializeComponent();
+
+        AddPanelsToViewMenu();
+    }
+
+
+    /*********
+    ** Private Methods
+    *********/
+    /// <summary>Adds all panels to the 'View' menu.</summary>
+    private void AddPanelsToViewMenu()
+    {
+        foreach (var panel in PanelManager.GetAllPanels())
+            ViewMenuBarItem.Add(new MenuFlyoutItem() { Text = panel.Title });
     }
 }
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<controls:PanelBase xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:controls="clr-namespace:NovaEditor.Controls"
+                    xmlns:viewModels="clr-namespace:NovaEditor.ViewModels"
+                    x:Class="NovaEditor.Controls.PanelPair">
+
+    <ContentView.BindingContext>
+        <viewModels:PanelPairViewModel />
+    </ContentView.BindingContext>
+
+    <StackLayout Orientation="{Binding Orientation}"
+                 BindableLayout.ItemsSource="{Binding Panels}">
+        
+        <BindableLayout.ItemTemplate>
+            <DataTemplate>
+                <ContentView Content="{Binding}"
+                             HorizontalOptions="FillAndExpand"
+                             VerticalOptions="FillAndExpand" />
+            </DataTemplate>
+        </BindableLayout.ItemTemplate>
+        
+    </StackLayout>
+
+</controls:PanelBase>

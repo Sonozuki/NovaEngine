@@ -4,8 +4,7 @@
        xmlns:local="clr-namespace:NovaEditor"
        Shell.FlyoutBehavior="Disabled"
        x:Class="NovaEditor.AppShell">
-
-    <ShellContent Title="Home"
-                  ContentTemplate="{DataTemplate local:MainPage}" />
+    
+    <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
 
 </Shell>

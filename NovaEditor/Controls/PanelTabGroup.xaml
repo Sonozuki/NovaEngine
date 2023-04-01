@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<controls:PanelBase xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:controls="clr-namespace:NovaEditor.Controls"
+                    xmlns:viewModels="clr-namespace:NovaEditor.ViewModels"
+                    x:Class="NovaEditor.Controls.PanelTabGroup">
+
+    <ContentView.BindingContext>
+        <viewModels:PanelTabGroupViewModel />
+    </ContentView.BindingContext>
+
+    <Grid RowDefinitions="*, auto">
+
+        <Frame>
+            <VerticalStackLayout>
+
+                <!-- tab group controls -->
+                <Grid ColumnDefinitions="*,auto">
+                    <Label Text="{Binding ActivePanel.Title}" />
+
+                    <Button Grid.Column="1"
+                            ImageSource="{FontImage Glyph='x', Color=White, Size=20}"/>
+                </Grid>
+
+                <!-- content -->
+                <ContentView Content="{Binding ActivePanel}" />
+
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- tabs -->
+        <HorizontalStackLayout Grid.Row="1"
+                               BindableLayout.ItemsSource="{Binding Panels}">
+
+            <BindableLayout.ItemTemplate>
+                <DataTemplate>
+                    <Button Text="{Binding Title}" />
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+
+        </HorizontalStackLayout>
+
+    </Grid>
+
+</controls:PanelBase>
