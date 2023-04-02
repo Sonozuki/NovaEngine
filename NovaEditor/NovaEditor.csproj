@@ -33,13 +33,17 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Using Include="CommunityToolkit.Mvvm.Input" />
         <Using Include="NovaEditor.Controls" />
         <Using Include="NovaEditor.DataModels" />
         <Using Include="NovaEditor.ViewModels" />
         <Using Include="System.Collections.ObjectModel" />
+        <Using Include="System.Reflection" />
+        <Using Include="System.Windows.Input" />
     </ItemGroup>
     
     <ItemGroup>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
     </ItemGroup>
 

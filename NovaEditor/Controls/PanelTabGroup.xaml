@@ -9,6 +9,31 @@
         <viewModels:PanelTabGroupViewModel />
     </ContentView.BindingContext>
 
+    <ContentView.Resources>
+
+        <DataTemplate x:Key="ActiveTabTemplate">
+            <!-- ContentView is used as a 3 sided border -->
+            <ContentView BackgroundColor="{StaticResource BorderColourMedium}" 
+                         Padding="1,-1,1,1">
+                <Button Text="{Binding Title}"
+                        Style="{StaticResource TabButton}"
+                        BackgroundColor="{StaticResource BackgroundColourMedium}" /> <!-- setting the background here so it overrides the background colour of the hover style -->
+            </ContentView>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="InactiveTabTemplate">
+            <Button Text="{Binding Title}"
+                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:PanelTabGroupViewModel}}, Path=ChangeActiveTabCommand}"
+                    CommandParameter="{Binding}"
+                    Style="{StaticResource InactiveTabButton}" />
+        </DataTemplate>
+
+        <controls:PanelTabGroupTabDataTemplateSelector x:Key="PanelTabGroupTabDataTemplateSelector"
+                                                       ActiveTemplate="{StaticResource ActiveTabTemplate}"
+                                                       InactiveTemplate="{StaticResource InactiveTabTemplate}" />
+        
+    </ContentView.Resources>
+    
     <Grid RowDefinitions="*, auto">
 
         <Frame>
@@ -18,8 +43,8 @@
                 <Grid ColumnDefinitions="*,auto">
                     <Label Text="{Binding ActivePanel.Title}" />
 
-                    <Button Grid.Column="1"
-                            ImageSource="{FontImage Glyph='x', Color=White, Size=20}"/>
+                    <ImageButton Grid.Column="1"
+                                 Style="{StaticResource CloseButton}" />
                 </Grid>
 
                 <!-- content -->
@@ -30,16 +55,8 @@
 
         <!-- tabs -->
         <HorizontalStackLayout Grid.Row="1"
-                               BindableLayout.ItemsSource="{Binding Panels}">
-
-            <BindableLayout.ItemTemplate>
-                <DataTemplate>
-                    <Button Text="{Binding Title}" />
-                </DataTemplate>
-            </BindableLayout.ItemTemplate>
-
-        </HorizontalStackLayout>
-
+                               BindableLayout.ItemsSource="{Binding Panels}"
+                               BindableLayout.ItemTemplateSelector="{StaticResource PanelTabGroupTabDataTemplateSelector}" />
     </Grid>
 
 </controls:PanelBase>
