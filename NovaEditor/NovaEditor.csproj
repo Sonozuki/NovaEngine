@@ -53,6 +53,15 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Compile Update="Controls\AssetsPanel.xaml.cs">
+        <DependentUpon>AssetsPanel.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="Controls\HierarchyPanel.xaml.cs">
+        <DependentUpon>HierarchyPanel.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="Controls\InspectorPanel.xaml.cs">
+        <DependentUpon>InspectorPanel.xaml</DependentUpon>
+      </Compile>
       <Compile Update="Controls\PanelPair.xaml.cs">
         <DependentUpon>PanelPair.xaml</DependentUpon>
       </Compile>
