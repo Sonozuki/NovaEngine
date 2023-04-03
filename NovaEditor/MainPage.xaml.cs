@@ -41,19 +41,19 @@ public partial class MainPage : ContentPage
         (tabGroup4.BindingContext as PanelTabGroupViewModel).Panels.Add(new AssetsPanel());
         (tabGroup4.BindingContext as PanelTabGroupViewModel).Panels.Add(new InspectorPanel());
 
-        var panelPair1 = new PanelPair();
-        (panelPair1.BindingContext as PanelPairViewModel).Orientation = StackOrientation.Vertical;
-        (panelPair1.BindingContext as PanelPairViewModel).Panels[0] = tabGroup3;
-        (panelPair1.BindingContext as PanelPairViewModel).Panels[1] = tabGroup4;
+        var panelTabGroupGroup1 = new PanelTabGroupGroup();
+        (panelTabGroupGroup1.BindingContext as PanelTabGroupGroupViewModel).Orientation = StackOrientation.Vertical;
+        (panelTabGroupGroup1.BindingContext as PanelTabGroupGroupViewModel).Panels.Add(tabGroup3);
+        (panelTabGroupGroup1.BindingContext as PanelTabGroupGroupViewModel).Panels.Add(tabGroup4);
 
-        var panelPair2 = new PanelPair();
-        (panelPair2.BindingContext as PanelPairViewModel).Orientation = StackOrientation.Horizontal;
-        (panelPair2.BindingContext as PanelPairViewModel).Panels[0] = tabGroup1;
-        (panelPair2.BindingContext as PanelPairViewModel).Panels[1] = panelPair1;
+        var panelTabGroupGroup2 = new PanelTabGroupGroup();
+        (panelTabGroupGroup2.BindingContext as PanelTabGroupGroupViewModel).Orientation = StackOrientation.Horizontal;
+        (panelTabGroupGroup2.BindingContext as PanelTabGroupGroupViewModel).Panels.Add(tabGroup1);
+        (panelTabGroupGroup2.BindingContext as PanelTabGroupGroupViewModel).Panels.Add(panelTabGroupGroup1);
 
-        (RootPanelPair.BindingContext as PanelPairViewModel).Orientation = StackOrientation.Vertical;
-        (RootPanelPair.BindingContext as PanelPairViewModel).Panels[0] = panelPair2;
-        (RootPanelPair.BindingContext as PanelPairViewModel).Panels[1] = tabGroup2;
+        (RootPanelTabGroupGroup.BindingContext as PanelTabGroupGroupViewModel).Orientation = StackOrientation.Vertical;
+        (RootPanelTabGroupGroup.BindingContext as PanelTabGroupGroupViewModel).Panels.Add(panelTabGroupGroup2);
+        (RootPanelTabGroupGroup.BindingContext as PanelTabGroupGroupViewModel).Panels.Add(tabGroup2);
     }
 
 

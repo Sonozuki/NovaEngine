@@ -3,15 +3,15 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                     xmlns:controls="clr-namespace:NovaEditor.Controls"
                     xmlns:viewModels="clr-namespace:NovaEditor.ViewModels"
-                    x:Class="NovaEditor.Controls.PanelPair">
+                    x:Class="NovaEditor.Controls.PanelTabGroupGroup">
 
     <ContentView.BindingContext>
-        <viewModels:PanelPairViewModel />
+        <viewModels:PanelTabGroupGroupViewModel />
     </ContentView.BindingContext>
 
     <StackLayout Orientation="{Binding Orientation}"
                  BindableLayout.ItemsSource="{Binding Panels}">
-        
+
         <BindableLayout.ItemTemplate>
             <DataTemplate>
                 <ContentView Content="{Binding}"
@@ -19,7 +19,7 @@
                              VerticalOptions="FillAndExpand" />
             </DataTemplate>
         </BindableLayout.ItemTemplate>
-        
+
     </StackLayout>
 
 </controls:PanelBase>

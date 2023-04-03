@@ -20,6 +20,6 @@
 
     </ContentPage.MenuBarItems>
 
-    <controls:PanelPair x:Name="RootPanelPair" />
+    <controls:PanelTabGroupGroup x:Name="RootPanelTabGroupGroup" />
 
 </ContentPage>

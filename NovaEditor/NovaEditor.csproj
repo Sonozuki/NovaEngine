@@ -35,9 +35,9 @@
     <ItemGroup>
         <Using Include="CommunityToolkit.Mvvm.Input" />
         <Using Include="NovaEditor.Controls" />
-        <Using Include="NovaEditor.DataModels" />
         <Using Include="NovaEditor.ViewModels" />
         <Using Include="System.Collections.ObjectModel" />
+        <Using Include="System.Collections.Specialized" />
         <Using Include="System.Reflection" />
         <Using Include="System.Windows.Input" />
     </ItemGroup>
@@ -62,8 +62,8 @@
       <Compile Update="Controls\InspectorPanel.xaml.cs">
         <DependentUpon>InspectorPanel.xaml</DependentUpon>
       </Compile>
-      <Compile Update="Controls\PanelPair.xaml.cs">
-        <DependentUpon>PanelPair.xaml</DependentUpon>
+      <Compile Update="Controls\PanelTabGroupGroup.xaml.cs">
+        <DependentUpon>PanelTabGroupGroup.xaml</DependentUpon>
       </Compile>
       <Compile Update="Controls\PanelTabGroup.xaml.cs">
         <DependentUpon>PanelTabGroup.xaml</DependentUpon>

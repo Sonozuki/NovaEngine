@@ -1,13 +1,13 @@
 namespace NovaEditor.Controls;
 
-/// <summary>Represents a pair of panels.</summary>
-public partial class PanelPair : PanelBase
+/// <summary>Represents a group of <see cref="PanelTabGroup"/>s.</summary>
+public partial class PanelTabGroupGroup : PanelBase
 {
     /*********
     ** Constructor
     *********/
     /// <summary>Constructs an instance.</summary>
-	public PanelPair()
+	public PanelTabGroupGroup()
 	{
 		InitializeComponent();
 	}

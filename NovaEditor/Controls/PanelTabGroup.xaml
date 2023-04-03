@@ -15,12 +15,13 @@
             <!-- ContentView is used as a 3 sided border -->
             <ContentView BackgroundColor="{StaticResource BorderColourMedium}" 
                          Padding="1,-1,1,1">
+                <!-- setting the background in the button here so it overrides the background colour of the hover style -->
                 <Button Text="{Binding Title}"
                         Style="{StaticResource TabButton}"
-                        BackgroundColor="{StaticResource BackgroundColourMedium}" /> <!-- setting the background here so it overrides the background colour of the hover style -->
+                        BackgroundColor="{StaticResource BackgroundColourMedium}" />
             </ContentView>
         </DataTemplate>
-        
+
         <DataTemplate x:Key="InactiveTabTemplate">
             <Button Text="{Binding Title}"
                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:PanelTabGroupViewModel}}, Path=ChangeActiveTabCommand}"
@@ -31,9 +32,9 @@
         <controls:PanelTabGroupTabDataTemplateSelector x:Key="PanelTabGroupTabDataTemplateSelector"
                                                        ActiveTemplate="{StaticResource ActiveTabTemplate}"
                                                        InactiveTemplate="{StaticResource InactiveTabTemplate}" />
-        
+
     </ContentView.Resources>
-    
+
     <Grid RowDefinitions="*, auto">
 
         <Frame>
@@ -44,6 +45,7 @@
                     <Label Text="{Binding ActivePanel.Title}" />
 
                     <ImageButton Grid.Column="1"
+                                 Command="{Binding CloseActivePanel}"
                                  Style="{StaticResource CloseButton}" />
                 </Grid>
 
