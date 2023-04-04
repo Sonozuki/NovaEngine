@@ -9,17 +9,7 @@
         <viewModels:PanelTabGroupGroupViewModel />
     </ContentView.BindingContext>
 
-    <StackLayout Orientation="{Binding Orientation}"
-                 BindableLayout.ItemsSource="{Binding Panels}">
-
-        <BindableLayout.ItemTemplate>
-            <DataTemplate>
-                <ContentView Content="{Binding}"
-                             HorizontalOptions="FillAndExpand"
-                             VerticalOptions="FillAndExpand" />
-            </DataTemplate>
-        </BindableLayout.ItemTemplate>
-
-    </StackLayout>
+    <StackLayout x:Name="MainStackLayout"
+                 Orientation="{Binding Orientation}" />
 
 </controls:PanelBase>
