@@ -1,19 +1,17 @@
-#pragma warning disable CS0618 // Type or member is obsolete
-
-namespace NovaEditor.Controls;
+﻿namespace NovaEditor.Controls;
 
 /// <summary>Represents a group of <see cref="PanelTabGroup"/>s.</summary>
-public partial class PanelTabGroupGroup : PanelBase
+public partial class PanelTabGroupGroup : EditorPanelBase
 {
     /*********
-    ** Constructor
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
-	public PanelTabGroupGroup()
+    public PanelTabGroupGroup()
     {
         InitializeComponent();
 
-        ((PanelTabGroupGroupViewModel)BindingContext).Panels.CollectionChanged += OnCollectionChanged;
+        ((PanelTabGroupGroupViewModel)DataContext).Panels.CollectionChanged += OnCollectionChanged;
     }
 
 
@@ -25,56 +23,93 @@ public partial class PanelTabGroupGroup : PanelBase
     /// <param name="e">The event data.</param>
     private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
-        var viewModel = (PanelTabGroupGroupViewModel)BindingContext;
-
         if (e.Action == NotifyCollectionChangedAction.Add)
-        {
-            if (MainStackLayout.Any())
-                MainStackLayout.Add(CreateResizeBoxView(viewModel.Orientation));
-
-            MainStackLayout.Add(new ContentView
-            {
-                Content = (View)e.NewItems[0],
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand
-            });
-        }
+            CreateGridChildren((EditorPanelBase)e.NewItems[0], addSplitter: MainGrid.Children.Count > 0);
         else if (e.Action == NotifyCollectionChangedAction.Remove)
-        {
-            var index = e.OldStartingIndex;
-            MainStackLayout.RemoveAt(index);
-
-            if (index < MainStackLayout.Count) // check for a box view after
-                MainStackLayout.RemoveAt(index);
-        }
+            RemoveGridChildren(e.OldStartingIndex);
         else
         {
             throw new NotImplementedException();
         }
     }
 
-    /// <summary>Creates a resize box view of a specific orientation.</summary>
-    /// <param name="orientation">The orientation to create the resize box view for.</param>
-    /// <returns>The created box view.</returns>
-    private BoxView CreateResizeBoxView(StackOrientation orientation)
+    /// <summary>Adds a child and grid splitter (and corresponding row/column definitions) to the grid.</summary>
+    /// <param name="panel">The child to add.</param>
+    /// <param name="addSplitter">Whether a splitter should be added.</param>
+    private void CreateGridChildren(EditorPanelBase panel, bool addSplitter)
     {
-        var boxView = new BoxView();
-
-        if (orientation == StackOrientation.Horizontal)
+        if (addSplitter)
         {
-            boxView.WidthRequest = 6;
-            boxView.VerticalOptions = LayoutOptions.FillAndExpand;
+            AddDefinition(GridLength.Auto);
+            AddSplitter();
+        }
 
-            CursorManager.SetHoverCursor(boxView, Cursor.ResiveHorizontal);
+        AddDefinition(new(1, GridUnitType.Star));
+        AddPanel(panel);
+    }
+
+    /// <summary>Removes a child and grid splitter (and corresponding row/column definitions) from the grid.</summary>
+    /// <param name="index">The index of the child to remove.</param>
+    private void RemoveGridChildren(int index)
+    {
+        RemoveChild();
+
+        if (index < MainGrid.Children.Count) // check for a splitter after
+            RemoveChild();
+
+        // Removes a child and the corresponding row/column definition from the grid.
+        void RemoveChild()
+        {
+            MainGrid.Children.RemoveAt(index);
+
+            if (((PanelTabGroupGroupViewModel)DataContext).Orientation == Orientation.Horizontal)
+                MainGrid.ColumnDefinitions.RemoveAt(index);
+            else
+                MainGrid.RowDefinitions.RemoveAt(index);
+        }
+    }
+
+    /// <summary>Adds a grid splitter to the grid.</summary>
+    private void AddSplitter()
+    {
+        var gridSplitter = new GridSplitter()
+        {
+            HorizontalAlignment = HorizontalAlignment.Stretch
+        };
+
+        if (((PanelTabGroupGroupViewModel)DataContext).Orientation == Orientation.Horizontal)
+        {
+            gridSplitter.Width = 5;
+            gridSplitter.SetValue(Grid.ColumnProperty, MainGrid.Children.Count);
         }
         else
         {
-            boxView.HorizontalOptions = LayoutOptions.FillAndExpand;
-            boxView.HeightRequest = 6;
-
-            CursorManager.SetHoverCursor(boxView, Cursor.ResiveVertical);
+            gridSplitter.Height = 5;
+            gridSplitter.SetValue(Grid.RowProperty, MainGrid.Children.Count);
         }
 
-        return boxView;
+        MainGrid.Children.Add(gridSplitter);
+    }
+
+    /// <summary>Adds a panel to the grid.</summary>
+    /// <param name="panel">The panel to add to the grid.</param>
+    private void AddPanel(EditorPanelBase panel)
+    {
+        if (((PanelTabGroupGroupViewModel)DataContext).Orientation == Orientation.Horizontal)
+            panel.SetValue(Grid.ColumnProperty, MainGrid.Children.Count);
+        else
+            panel.SetValue(Grid.RowProperty, MainGrid.Children.Count);
+
+        MainGrid.Children.Add(panel);
+    }
+
+    /// <summary>Adds a row/column definition to the grid.</summary>
+    /// <param name="size">The size of the row/column.</param>
+    private void AddDefinition(GridLength size)
+    {
+        if (((PanelTabGroupGroupViewModel)DataContext).Orientation == Orientation.Horizontal)
+            MainGrid.ColumnDefinitions.Add(new() { Width = size });
+        else
+            MainGrid.RowDefinitions.Add(new() { Height = size });
     }
 }

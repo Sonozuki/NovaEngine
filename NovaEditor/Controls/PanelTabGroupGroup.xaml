@@ -1,15 +1,13 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<controls:PanelBase xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                    xmlns:controls="clr-namespace:NovaEditor.Controls"
-                    xmlns:viewModels="clr-namespace:NovaEditor.ViewModels"
-                    x:Class="NovaEditor.Controls.PanelTabGroupGroup">
+﻿<controls:EditorPanelBase x:Class="NovaEditor.Controls.PanelTabGroupGroup"
+                          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:controls="clr-namespace:NovaEditor.Controls"
+                          xmlns:viewModels="clr-namespace:NovaEditor.ViewModels">
 
-    <ContentView.BindingContext>
+    <UserControl.DataContext>
         <viewModels:PanelTabGroupGroupViewModel />
-    </ContentView.BindingContext>
+    </UserControl.DataContext>
 
-    <StackLayout x:Name="MainStackLayout"
-                 Orientation="{Binding Orientation}" />
+    <Grid x:Name="MainGrid" />
 
-</controls:PanelBase>
+</controls:EditorPanelBase>

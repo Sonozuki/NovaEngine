@@ -1,7 +1,7 @@
 ﻿namespace NovaEditor.ViewModels;
 
 /// <summary>Represents the view model for <see cref="PanelTabGroup"/>.</summary>
-internal sealed class PanelTabGroupViewModel : BindableObject
+internal sealed class PanelTabGroupViewModel : DependencyObject
 {
     /*********
     ** Events
@@ -14,27 +14,24 @@ internal sealed class PanelTabGroupViewModel : BindableObject
     ** Fields
     *********/
     /// <summary>The panel currently active in the group.</summary>
-    public static readonly BindableProperty ActivePanelProperty = BindableProperty.Create(nameof(ActivePanel), typeof(PanelBase), typeof(PanelTabGroupViewModel));
+    public static readonly DependencyProperty ActivePanelProperty = DependencyProperty.Register(nameof(ActivePanel), typeof(EditorPanelBase), typeof(PanelTabGroupViewModel));
 
 
     /*********
     ** Properties
     *********/
     /// <summary>The panel currently active in the group.</summary>
-    public PanelBase ActivePanel
+    public EditorPanelBase ActivePanel
     {
-        get => (PanelBase)GetValue(ActivePanelProperty);
+        get => (EditorPanelBase)GetValue(ActivePanelProperty);
         set => SetValue(ActivePanelProperty, value);
     }
 
     /// <summary>The panels in the group.</summary>
-    public ObservableCollection<PanelBase> Panels { get; } = new();
+    public ObservableCollection<EditorPanelBase> Panels { get; } = new();
 
     /// <summary>The command used to close the active tab.</summary>
     public ICommand CloseActivePanel { get; set; }
-
-    /// <summary>The command used to change the active tab.</summary>
-    public ICommand ChangeActiveTabCommand { get; set; }
 
 
     /*********
@@ -44,7 +41,6 @@ internal sealed class PanelTabGroupViewModel : BindableObject
     public PanelTabGroupViewModel()
     {
         CloseActivePanel = new RelayCommand(CloseActiveTab);
-        ChangeActiveTabCommand = new RelayCommand<PanelBase>(ChangeActiveTab);
 
         Panels.CollectionChanged += (sender, e) =>
         {
@@ -75,17 +71,6 @@ internal sealed class PanelTabGroupViewModel : BindableObject
         if (activeTabIndex == Panels.Count)
             activeTabIndex--;
 
-        ChangeActiveTab(Panels[activeTabIndex]);
-    }
-
-    /// <summary>Changes the active tab of the group.</summary>
-    /// <param name="panel">The panel to set as the active panel.</param>
-    private void ChangeActiveTab(PanelBase panel)
-    {
-        ActivePanel = panel;
-
-        // resetting the collection is required so the UI rerenders the tabs to reset the style for the active tab
-        // invoking a reset isn't great but a property change notification wasn't making it get rerendered
-        Panels.GetType().GetMethod("OnCollectionReset", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(Panels, null);
+        ActivePanel = Panels[activeTabIndex];
     }
 }

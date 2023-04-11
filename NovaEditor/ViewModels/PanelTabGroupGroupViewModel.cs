@@ -1,7 +1,7 @@
 ﻿namespace NovaEditor.ViewModels;
 
 /// <summary>Represents the view model for <see cref="PanelTabGroupGroup"/>.</summary>
-internal sealed class PanelTabGroupGroupViewModel : BindableObject
+internal sealed class PanelTabGroupGroupViewModel : DependencyObject
 {
     /*********
     ** Events
@@ -14,21 +14,21 @@ internal sealed class PanelTabGroupGroupViewModel : BindableObject
     ** Fields
     *********/
     /// <summary>The orientation of the group.</summary>
-    public static readonly BindableProperty OrientationProperty = BindableProperty.Create(nameof(Orientation), typeof(StackOrientation), typeof(PanelTabGroupGroupViewModel));
+    public static readonly DependencyProperty OrientationProperty = DependencyProperty.Register(nameof(Orientation), typeof(Orientation), typeof(PanelTabGroupGroupViewModel));
 
 
     /*********
     ** Properties
     *********/
     /// <summary>The orientation of the group.</summary>
-    public StackOrientation Orientation
+    public Orientation Orientation
     {
-        get => (StackOrientation)GetValue(OrientationProperty);
+        get => (Orientation)GetValue(OrientationProperty);
         set => SetValue(OrientationProperty, value);
     }
 
     /// <summary>The panels in the group.</summary>
-    public ObservableCollection<PanelBase> Panels { get; } = new();
+    public ObservableCollection<EditorPanelBase> Panels { get; } = new();
 
 
     /*********
@@ -42,9 +42,9 @@ internal sealed class PanelTabGroupGroupViewModel : BindableObject
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 if (e.NewItems[0] is PanelTabGroup panelTabGroup)
-                    ((PanelTabGroupViewModel)panelTabGroup.BindingContext).Emptied += () => Panels.Remove(panelTabGroup);
+                    ((PanelTabGroupViewModel)panelTabGroup.DataContext).Emptied += () => Panels.Remove(panelTabGroup);
                 else if (e.NewItems[0] is PanelTabGroupGroup panelTabGroupGroup)
-                    ((PanelTabGroupGroupViewModel)panelTabGroupGroup.BindingContext).Emptied += () => Panels.Remove(panelTabGroupGroup);
+                    ((PanelTabGroupGroupViewModel)panelTabGroupGroup.DataContext).Emptied += () => Panels.Remove(panelTabGroupGroup);
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {

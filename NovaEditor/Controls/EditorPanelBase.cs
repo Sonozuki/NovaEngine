@@ -1,14 +1,14 @@
 ﻿namespace NovaEditor.Controls;
 
-/// <summary>Represents a panel.</summary>
-/// <remarks>A panel refers to a control that can be docked.</remarks>
-public abstract partial class PanelBase : ContentView
+/// <summary>Represents an editor panel.</summary>
+/// <remarks>An editor panel refers to a control that can be docked.</remarks>
+public abstract class EditorPanelBase : UserControl
 {
     /*********
     ** Fields
     *********/
     /// <summary>The title of the panel.</summary>
-    public static readonly BindableProperty TitleProperty = BindableProperty.Create(nameof(Title), typeof(string), typeof(PanelBase));
+    public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(nameof(Title), typeof(string), typeof(EditorPanelBase));
 
 
     /*********

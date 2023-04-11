@@ -1,0 +1,8 @@
+﻿<Button x:Class="NovaEditor.Controls.TextButton"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:NovaEditor.Controls">
+
+    <Label Content="{Binding Text, RelativeSource={RelativeSource AncestorType={x:Type controls:TextButton}}}" />
+
+</Button>
