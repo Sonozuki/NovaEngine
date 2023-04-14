@@ -1,7 +1,8 @@
-﻿<Window x:Class="NovaEditor.MainWindow"
+﻿<Window x:Class="NovaEditor.Windows.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:NovaEditor.Controls"
+        WindowStartupLocation="CenterScreen"
         Title="Nova Editor">
 
     <controls:PanelTabGroupGroup x:Name="RootPanelTabGroupGroup" Style="{StaticResource RootPanelTabGroupGroup}" />
