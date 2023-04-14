@@ -2,9 +2,44 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:NovaEditor.Controls"
+        xmlns:viewModels="clr-namespace:NovaEditor.ViewModels"
         WindowStartupLocation="CenterScreen"
         Title="Nova Editor">
 
-    <controls:PanelTabGroupGroup x:Name="RootPanelTabGroupGroup" Style="{StaticResource RootPanelTabGroupGroup}" />
+    <Window.DataContext>
+        <viewModels:MainWindowViewModel />
+    </Window.DataContext>
+    
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New">
+                    <MenuItem Header="_Project" Command="{Binding CreateNewProjectCommand}" InputGestureText="Ctrl+Shift+N" />
+                </MenuItem>
+                <MenuItem Header="_Open">
+                    <MenuItem Header="_Project" Command="{Binding OpenProjectCommand}" InputGestureText="Ctrl+Shift+O" />
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="_Save" Command="{Binding SaveProjectCommand}" InputGestureText="Ctrl+S" />
+            </MenuItem>
+
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Undo" Command="{Binding UndoCommand}" InputGestureText="Ctrl+Z" />
+                <MenuItem Header="_Redo" Command="{Binding RedoCommand}" InputGestureText="Ctrl+Y" />
+                <Separator />
+                <MenuItem Header="Cu_t" Command="{Binding CutCommand}" InputGestureText="Ctrl+X" />
+                <MenuItem Header="_Copy" Command="{Binding CopyCommand}" InputGestureText="Ctrl+C" />
+                <MenuItem Header="_Paste" Command="{Binding PasteCommand}" InputGestureText="Ctrl+V" />
+            </MenuItem>
+
+            <MenuItem Header="_View">
+                <MenuItem Header="_Properties" Command="{Binding CreatePanelCommand}" CommandParameter="Properties" InputGestureText="Shift+Alt+P" />
+                <MenuItem Header="_Assets" Command="{Binding CreatePanelCommand}" CommandParameter="Assets" InputGestureText="Shift+Alt+A" />
+                <MenuItem Header="_Hierarchy" Command="{Binding CreatePanelCommand}" CommandParameter="Hierarchy" InputGestureText="Shift+Alt+H" />
+            </MenuItem>
+        </Menu>
+
+        <controls:PanelTabGroupGroup x:Name="RootPanelTabGroupGroup" Style="{StaticResource RootPanelTabGroupGroup}" />
+    </DockPanel>
 
 </Window>
