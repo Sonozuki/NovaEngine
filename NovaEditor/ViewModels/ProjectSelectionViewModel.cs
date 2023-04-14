@@ -15,6 +15,9 @@ internal sealed class ProjectSelectionViewModel
     /// <summary>The command used to create a new project.</summary>
     public ICommand CreateProjectCommand { get; set; }
 
+    /// <summary>The command used to load a project.</summary>
+    public ICommand LoadProjectCommand { get; set; }
+
 
     /*********
     ** Constructors
@@ -24,6 +27,7 @@ internal sealed class ProjectSelectionViewModel
     {
         OpenProjectCommand = new RelayCommand(OpenProject);
         CreateProjectCommand = new RelayCommand(CreateProject);
+        LoadProjectCommand = new RelayCommand<string>(LoadProject);
 
         var recentProjects = ProjectManager.GetRecentProjects();
         foreach (var recentProject in recentProjects)
@@ -44,7 +48,7 @@ internal sealed class ProjectSelectionViewModel
         };
 
         if (dialog.ShowDialog() == true)
-            ProjectManager.CurrentProject = dialog.FileName;
+            LoadProject(dialog.FileName);
     }
 
     /// <summary>Changes view to create a project.</summary>
@@ -52,4 +56,8 @@ internal sealed class ProjectSelectionViewModel
     {
         // TODO: implement
     }
+
+    /// <summary>Loads a project.</summary>
+    /// <param name="project">The project to load.</param>
+    private void LoadProject(string project) => ProjectManager.CurrentProject = project;
 }
