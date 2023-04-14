@@ -1,6 +1,6 @@
 ﻿namespace NovaEditor.Windows;
 
-/// <summary>The main window of the application.</summary>
+/// <summary>Represents the main window of the application.</summary>
 public partial class MainWindow : Window
 {
     /*********

@@ -11,11 +11,15 @@
 
     <ItemGroup>
         <Using Include="CommunityToolkit.Mvvm.Input" />
+        <Using Include="Microsoft.Win32" />
         <Using Include="NovaEditor.Controls" />
         <Using Include="NovaEditor.ViewModels" />
+        <Using Include="NovaEditor.Windows" />
         <Using Include="System.Collections.ObjectModel" />
         <Using Include="System.Collections.Specialized" />
         <Using Include="System.Globalization" />
+        <Using Include="System.IO" />
+        <Using Include="System.Text.Json" />
         <Using Include="System.Windows" />
         <Using Include="System.Windows.Controls" />
         <Using Include="System.Windows.Data" />
@@ -24,6 +28,10 @@
 
     <ItemGroup>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\NovaEngine\NovaEngine.csproj" />
     </ItemGroup>
 
 </Project>

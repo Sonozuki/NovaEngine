@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:NovaEditor.Controls"
              xmlns:multiValueConverters="clr-namespace:NovaEditor.MultiValueConverters"
-             StartupUri="MainWindow.xaml">
+             Startup="OnStartup">
 
     <Application.Resources>
 
