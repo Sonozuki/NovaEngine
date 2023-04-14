@@ -31,7 +31,7 @@ internal sealed class PanelTabGroupViewModel : DependencyObject
     public ObservableCollection<EditorPanelBase> Panels { get; } = new();
 
     /// <summary>The command used to close the active tab.</summary>
-    public ICommand CloseActivePanel { get; set; }
+    public ICommand CloseActivePanelCommand { get; set; }
 
 
     /*********
@@ -40,7 +40,7 @@ internal sealed class PanelTabGroupViewModel : DependencyObject
     /// <summary>Constructs an instance.</summary>
     public PanelTabGroupViewModel()
     {
-        CloseActivePanel = new RelayCommand(CloseActiveTab);
+        CloseActivePanelCommand = new RelayCommand(CloseActiveTab);
 
         Panels.CollectionChanged += (sender, e) =>
         {
