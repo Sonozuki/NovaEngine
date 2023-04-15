@@ -15,11 +15,13 @@
         <Using Include="NovaEditor.Controls" />
         <Using Include="NovaEditor.ViewModels" />
         <Using Include="NovaEditor.Windows" />
+        <Using Include="NovaEditor.Workspace" />
         <Using Include="System.Collections.ObjectModel" />
         <Using Include="System.Collections.Specialized" />
         <Using Include="System.Globalization" />
         <Using Include="System.IO" />
         <Using Include="System.Text.Json" />
+        <Using Include="System.Text.Json.Serialization" />
         <Using Include="System.Windows" />
         <Using Include="System.Windows.Controls" />
         <Using Include="System.Windows.Data" />

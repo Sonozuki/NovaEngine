@@ -13,12 +13,6 @@ internal static class ProjectManager
     /*********
     ** Fields
     *********/
-    /// <summary>The directory all app data is stored in.</summary>
-    private static readonly string AppDataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NovaEditor");
-
-    /// <summary>The json file containing the recent projects.</summary>
-    private static readonly string RecentProjectsFile = Path.Combine(AppDataDirectory, "recentProjects.json");
-
     /// <summary>The current loaded project.</summary>
     private static string _CurrentProject;
 
@@ -49,16 +43,16 @@ internal static class ProjectManager
     /// <returns>The recent projects.</returns>
     public static List<string> GetRecentProjects()
     {
-        if (!File.Exists(RecentProjectsFile))
+        if (!File.Exists(Constants.RecentProjectsFile))
             return new();
 
         try
         {
-            return JsonSerializer.Deserialize<List<string>>(File.ReadAllText(RecentProjectsFile));
+            return JsonSerializer.Deserialize<List<string>>(File.ReadAllText(Constants.RecentProjectsFile));
         }
         catch
         {
-            File.Delete(RecentProjectsFile);
+            File.Delete(Constants.RecentProjectsFile);
             return new();
         }
     }
@@ -69,10 +63,10 @@ internal static class ProjectManager
     *********/
     /// <summary>Saves the recent projects.</summary>
     /// <param name="recentProjects">The new contents of the recent projects file.</param>
-    private static void SetRecentProjects(IEnumerable<string> recentProjects)
+    private static void SaveRecentProjects(IEnumerable<string> recentProjects)
     {
-        Directory.CreateDirectory(AppDataDirectory);
-        File.WriteAllText(RecentProjectsFile, JsonSerializer.Serialize(recentProjects));
+        Directory.CreateDirectory(Constants.AppDataDirectory);
+        File.WriteAllText(Constants.RecentProjectsFile, JsonSerializer.Serialize(recentProjects));
     }
 
     /// <summary>Adds a project to the recent projects file.</summary>
@@ -81,6 +75,6 @@ internal static class ProjectManager
     {
         var recentProjects = GetRecentProjects();
         recentProjects.Insert(0, project);
-        SetRecentProjects(recentProjects.Distinct());
+        SaveRecentProjects(recentProjects.Distinct());
     }
 }

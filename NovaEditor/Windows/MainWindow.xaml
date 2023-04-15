@@ -4,7 +4,8 @@
         xmlns:controls="clr-namespace:NovaEditor.Controls"
         xmlns:viewModels="clr-namespace:NovaEditor.ViewModels"
         WindowStartupLocation="CenterScreen"
-        Title="Nova Editor">
+        Title="Nova Editor"
+        Loaded="OnLoaded">
 
     <Window.DataContext>
         <viewModels:MainWindowViewModel />

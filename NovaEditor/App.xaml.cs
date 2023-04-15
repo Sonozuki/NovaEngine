@@ -4,13 +4,13 @@
 public partial class App : Application
 {
     /*********
-    ** Fields
+    ** Properties
     *********/
     /// <summary>The project selection window.</summary>
-    private ProjectSelectionWindow ProjectSelectionWindow;
+    internal ProjectSelectionWindow ProjectSelectionWindow { get; private set; }
 
     /// <summary>The main window.</summary>
-    private new MainWindow MainWindow;
+    internal new MainWindow MainWindow { get; private set; }
 
 
     /*********
