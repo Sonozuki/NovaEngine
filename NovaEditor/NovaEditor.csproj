@@ -26,6 +26,7 @@
         <Using Include="System.Windows.Controls" />
         <Using Include="System.Windows.Data" />
         <Using Include="System.Windows.Input" />
+        <Using Include="System.Windows.Media" />
     </ItemGroup>
 
     <ItemGroup>
