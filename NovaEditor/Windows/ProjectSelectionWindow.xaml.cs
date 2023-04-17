@@ -7,7 +7,7 @@ public partial class ProjectSelectionWindow : Window
     ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
-    public ProjectSelectionWindow()
+    internal ProjectSelectionWindow()
     {
         InitializeComponent();
     }

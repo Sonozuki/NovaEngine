@@ -7,7 +7,7 @@ public partial class MainWindow : Window
     ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
-    public MainWindow()
+    internal MainWindow()
     {
         InitializeComponent();
     }
