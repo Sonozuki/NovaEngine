@@ -1,4 +1,4 @@
-﻿namespace NovaEditor;
+﻿namespace NovaEditor.Managers;
 
 /// <summary>The event data for <see cref="ProjectManager.CurrentProjectChanged"/>.</summary>
 public class CurrentProjectChangedEventArgs : EventArgs

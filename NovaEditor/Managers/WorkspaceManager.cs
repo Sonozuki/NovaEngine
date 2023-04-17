@@ -1,4 +1,4 @@
-﻿namespace NovaEditor;
+﻿namespace NovaEditor.Managers;
 
 /// <summary>Manages the editor workspace.</summary>
 internal static class WorkspaceManager

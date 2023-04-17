@@ -1,4 +1,4 @@
-﻿namespace NovaEditor;
+﻿namespace NovaEditor.Managers;
 
 /// <summary>Manages nova projects.</summary>
 internal static class ProjectManager
