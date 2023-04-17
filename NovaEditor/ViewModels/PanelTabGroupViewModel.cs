@@ -51,10 +51,10 @@ internal sealed class PanelTabGroupViewModel : DependencyObject
 
 
     /*********
-    ** Private Methods
+    ** Internal Methods
     *********/
     /// <summary>Closes the active tab.</summary>
-    private void CloseActiveTab()
+    internal void CloseActiveTab()
     {
         if (!Panels.Any()) // if the user repeatedly closes tabs fast enough, then sometimes a click registers after the last tab was closed before the UI is updated
             return;

@@ -9,20 +9,32 @@ public partial class PanelTabGroup : EditorPanelBase
     /// <summary>The position of the mouse when the mouse button is first pressed.</summary>
     private Point RelativePosition;
 
+    /// <summary>The cached bounding box of all the tabs in the tab group.</summary>
+    private Rect TabsBoundingBox;
+
     /// <summary>The cached position boundries of each tag in the tab group.</summary>
     private List<double> TabBoundries;
 
-    /// <summary>The index into <see cref="TabBoundries"/> the mouse position currently falls into.</summary>
-    private int CurrentBoundryIndex;
+    /// <summary>The index into <see cref="TabBoundries"/> the mouse position fell into last move event.</summary>
+    private int OldBoundryIndex;
 
 
     /*********
-    ** Constructor
+    ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     public PanelTabGroup()
     {
         InitializeComponent();
+    }
+
+    /// <summary>Constructs an instance.</summary>
+    public PanelTabGroup(EditorPanelBase panel)
+        : this()
+    {
+        ArgumentNullException.ThrowIfNull(panel);
+
+        ((PanelTabGroupViewModel)DataContext).Panels.Add(panel);
     }
 
 
@@ -34,20 +46,15 @@ public partial class PanelTabGroup : EditorPanelBase
     /// <param name="e">The event data.</param>
     private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
     {
-        RelativePosition = Mouse.GetPosition((IInputElement)VisualTreeHelper.GetParent(this));
+        RelativePosition = Mouse.GetPosition(this);
 
         // calculate tab boundries, when the mouse crosses one of these the tab being dragged will change index
         // these are cached as tabs can be variable width meaning the tab could go back and forth quickly if
         // the boundries are calculated each move event
-        var tabPanel = VisualTreeHelper.GetParent((DependencyObject)sender);
-        TabBoundries = Enumerable.Range(0, VisualTreeHelper.GetChildrenCount(tabPanel))
-            .Select(childIndex => VisualTreeHelper.GetChild(tabPanel, childIndex))
-            .Cast<TabItem>()
-            .Select(tabItem => tabItem.TransformToAncestor((Visual)tabPanel).Transform(new()).X + tabItem.RenderSize.Width)
-            .Order()
-            .ToList();
+        var tabPanel = (TabPanel)VisualTreeHelper.GetParent((DependencyObject)sender);
+        CalculateTabMetrics(tabPanel);
 
-        CurrentBoundryIndex = CalculateBoundyIndex(RelativePosition.X);
+        OldBoundryIndex = CalculateBoundyIndex(RelativePosition.X);
 
         ((IInputElement)sender).CaptureMouse();
     }
@@ -60,14 +67,24 @@ public partial class PanelTabGroup : EditorPanelBase
         if (!((IInputElement)sender).IsMouseCaptured)
             return;
 
-        var mousePosition = Mouse.GetPosition((IInputElement)VisualTreeHelper.GetParent(this));
-        var boundryIndex = CalculateBoundyIndex(mousePosition.X);
+        var viewModel = (PanelTabGroupViewModel)DataContext;
+        var mousePosition = Mouse.GetPosition(this);
 
-        if (CurrentBoundryIndex != boundryIndex)
+        // check for floating window creation
+        if (!TabsBoundingBox.Contains(mousePosition))
         {
-            var viewModel = (PanelTabGroupViewModel)DataContext;
-            viewModel.Panels.Move(CurrentBoundryIndex, boundryIndex);
-            CurrentBoundryIndex = boundryIndex;
+            WindowManager.CreateFloatingPanelWindow(viewModel.ActivePanel, RenderSize);
+            viewModel.CloseActiveTab();
+
+            ((IInputElement)sender).ReleaseMouseCapture();
+        }
+
+        // check for tab reorganisation
+        var boundryIndex = CalculateBoundyIndex(mousePosition.X);
+        if (OldBoundryIndex != boundryIndex)
+        {
+            viewModel.Panels.Move(OldBoundryIndex, boundryIndex);
+            OldBoundryIndex = boundryIndex;
         }
     }
 
@@ -76,6 +93,33 @@ public partial class PanelTabGroup : EditorPanelBase
     /// <param name="e">The event data.</param>
     private void OnPreviewMouseUp(object sender, MouseButtonEventArgs e) => ((IInputElement)sender).ReleaseMouseCapture();
 
+    /// <summary>Calculates the metrics of the tabs in a tab panel.</summary>
+    /// <param name="tabPanel">The tab panel whose tab metrics should be calculated.</param>
+    private void CalculateTabMetrics(TabPanel tabPanel)
+    {
+        var tabItems = Enumerable.Range(0, VisualTreeHelper.GetChildrenCount(tabPanel))
+            .Select(childIndex => VisualTreeHelper.GetChild(tabPanel, childIndex))
+            .Cast<TabItem>()
+            .OrderBy(tabItem => CalculateTabTopLeft(tabItem).X).ToList();
+
+        TabsBoundingBox = new(CalculateTabTopLeft(tabItems.First()), CalculateTabBottomRight(tabItems.Last()));
+
+        TabBoundries = tabItems.Skip(1)
+            .Select(tabItem => CalculateTabTopLeft(tabItem).X)
+            .ToList();
+
+        // Calculates the top left point of a tab item.
+        Point CalculateTabTopLeft(TabItem tabItem) => tabItem.TransformToAncestor(this).Transform(new());
+
+        // Calculates the bottom right point of a tab item.
+        Point CalculateTabBottomRight(TabItem tabItem)
+        {
+            var topLeft = CalculateTabTopLeft(tabItem);
+            return new(topLeft.X + tabItem.RenderSize.Width,
+                       topLeft.Y + tabItem.RenderSize.Height);
+        }
+    }
+
     /// <summary>Calculates the index into <see cref="TabBoundries"/> a specified value falls into.</summary>
     /// <param name="xPosition">The value to determine which boundry it falls in.</param>
     /// <returns>The index into <see cref="TabBoundries"/> <paramref name="xPosition"/> falls into.</returns>
@@ -83,7 +127,7 @@ public partial class PanelTabGroup : EditorPanelBase
     {
         var boundryIndex = 0;
 
-        for (var i = 0; i < TabBoundries.Count - 1; i++)
+        for (var i = 0; i < TabBoundries.Count; i++)
         {
             if (TabBoundries[boundryIndex] >= xPosition)
                 break;

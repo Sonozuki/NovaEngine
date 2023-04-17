@@ -25,6 +25,7 @@
         <Using Include="System.Text.Json.Serialization" />
         <Using Include="System.Windows" />
         <Using Include="System.Windows.Controls" />
+        <Using Include="System.Windows.Controls.Primitives" />
         <Using Include="System.Windows.Data" />
         <Using Include="System.Windows.Input" />
         <Using Include="System.Windows.Media" />
