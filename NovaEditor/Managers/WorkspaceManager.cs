@@ -52,7 +52,7 @@ internal static class WorkspaceManager
         if (editorPanel is PanelTabGroup panelTabGroup)
         {
             var viewModel = (PanelTabGroupViewModel)panelTabGroup.DataContext;
-            return new WorkspaceTabGroup(viewModel.Panels.Select(CreatePanel), viewModel.Panels.IndexOf(viewModel.ActivePanel));
+            return new WorkspaceTabGroup(viewModel.Panels.Select(CreatePanel), panelTabGroup.PanelTabControl.SelectedIndex);
         }
         else if (editorPanel is PanelTabGroupGroup panelTabGroupGroup)
         {
@@ -75,7 +75,7 @@ internal static class WorkspaceManager
 
             foreach (var editorPanel in workspaceTabGroup.Panels.Select(CreatePanel))
                 viewModel.Panels.Add(editorPanel);
-            viewModel.ActivePanel = viewModel.Panels[workspaceTabGroup.ActivePanelIndex];
+            panelTabGroup.PanelTabControl.SelectedIndex = workspaceTabGroup.ActivePanelIndex;
 
             return panelTabGroup;
         }

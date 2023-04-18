@@ -34,9 +34,7 @@ public partial class PanelTabGroup : EditorPanelBase
     {
         ArgumentNullException.ThrowIfNull(panel);
 
-        var viewModel = (PanelTabGroupViewModel)DataContext;
-        viewModel.ActivePanel = panel;
-        viewModel.Panels.Add(panel);
+        ((PanelTabGroupViewModel)DataContext).Panels.Add(panel);
     }
 
 
@@ -83,8 +81,8 @@ public partial class PanelTabGroup : EditorPanelBase
         // check for floating window creation
         if (!TabsBoundingBox.Contains(mousePosition))
         {
-            var window = WindowManager.CreateFloatingPanelWindow(viewModel.ActivePanel, RenderSize);
-            viewModel.CloseActiveTab();
+            var window = WindowManager.CreateFloatingPanelWindow((EditorPanelBase)PanelTabControl.SelectedItem, RenderSize);
+            CloseSelectedPanel();
 
             ((IInputElement)sender).ReleaseMouseCapture();
 
@@ -156,4 +154,13 @@ public partial class PanelTabGroup : EditorPanelBase
 
         return boundryIndex;
     }
+
+    /// <summary>Closes the selected panel.</summary>
+    private void CloseSelectedPanel() =>
+        ((PanelTabGroupViewModel)DataContext).Panels.Remove((EditorPanelBase)PanelTabControl.SelectedItem);
+
+    /// <summary>Invoked when the close button is clicked.</summary>
+    /// <param name="sender">The event sender.</param>
+    /// <param name="e">The event data.</param>
+    private void OnCloseButtonClick(object sender, RoutedEventArgs e) => CloseSelectedPanel();
 }

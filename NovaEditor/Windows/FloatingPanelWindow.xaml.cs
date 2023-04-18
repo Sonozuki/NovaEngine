@@ -1,8 +1,6 @@
 ﻿namespace NovaEditor.Windows;
 
-/// <summary>
-/// Interaction logic for FloatingPanelWindow.xaml
-/// </summary>
+/// <summary>Represents the floating <see cref="EditorPanelBase"/> window.</summary>
 public partial class FloatingPanelWindow : Window
 {
     /*********
@@ -28,17 +26,6 @@ public partial class FloatingPanelWindow : Window
         ArgumentNullException.ThrowIfNull(content);
 
         Content = content;
-        ((PanelTabGroupViewModel)content.DataContext).Emptied += OnEmptied;
-    }
-
-
-    /*********
-    ** Private Methods
-    *********/
-    /// <summary>Invoked when the containing panel tab group is emptied.</summary>
-    private void OnEmptied()
-    {
-        ((PanelTabGroupViewModel)((PanelTabGroup)Content).DataContext).Emptied -= OnEmptied;
-        Close();
+        ((PanelTabGroupViewModel)content.DataContext).Emptied += Close;
     }
 }

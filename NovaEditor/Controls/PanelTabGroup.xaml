@@ -8,7 +8,8 @@
         <viewModels:PanelTabGroupViewModel />
     </UserControl.DataContext>
 
-    <TabControl TabStripPlacement="Bottom"
+    <TabControl x:Name="PanelTabControl"
+                TabStripPlacement="Bottom"
                 ItemsSource="{Binding Panels}">
 
         <TabControl.ItemContainerStyle>
@@ -36,7 +37,7 @@
 
                         <controls:FontIconButton Grid.Column="1"
                                                  Glyph="x"
-                                                 Command="{Binding DataContext.CloseActivePanelCommand, RelativeSource={RelativeSource AncestorType={x:Type controls:PanelTabGroup}}}"
+                                                 Click="OnCloseButtonClick"
                                                  Margin="-2" />
 
                     </Grid>
