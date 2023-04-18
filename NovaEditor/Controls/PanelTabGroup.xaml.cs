@@ -72,13 +72,24 @@ public partial class PanelTabGroup : EditorPanelBase
         var viewModel = (PanelTabGroupViewModel)DataContext;
         var mousePosition = Mouse.GetPosition(this);
 
+        // if the tab is the only tab and the tab group is the root of a floating window, the window should be moved instead
+        if (viewModel.Panels.Count == 1 && Window.GetWindow((DependencyObject)sender) is FloatingPanelWindow floatingPanelWindow)
+        {
+            ((IInputElement)sender).ReleaseMouseCapture();
+            floatingPanelWindow.DragMove();
+            return;
+        }
+
         // check for floating window creation
         if (!TabsBoundingBox.Contains(mousePosition))
         {
-            WindowManager.CreateFloatingPanelWindow(viewModel.ActivePanel, RenderSize);
+            var window = WindowManager.CreateFloatingPanelWindow(viewModel.ActivePanel, RenderSize);
             viewModel.CloseActiveTab();
 
             ((IInputElement)sender).ReleaseMouseCapture();
+            window.Show();
+            window.DragMove();
+            return;
         }
 
         // check for tab reorganisation
