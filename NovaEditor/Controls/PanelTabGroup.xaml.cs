@@ -87,6 +87,12 @@ public partial class PanelTabGroup : EditorPanelBase
             viewModel.CloseActiveTab();
 
             ((IInputElement)sender).ReleaseMouseCapture();
+
+            var thisWindow = Window.GetWindow(this);
+            var screenMousePosition = thisWindow.PointToScreen(Mouse.GetPosition(thisWindow));
+            window.Top = screenMousePosition.Y - mousePosition.Y;
+            window.Left = screenMousePosition.X - mousePosition.X;
+
             window.Show();
             window.DragMove();
             return;
