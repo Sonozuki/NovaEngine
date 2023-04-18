@@ -34,7 +34,9 @@ public partial class PanelTabGroup : EditorPanelBase
     {
         ArgumentNullException.ThrowIfNull(panel);
 
-        ((PanelTabGroupViewModel)DataContext).Panels.Add(panel);
+        var viewModel = (PanelTabGroupViewModel)DataContext;
+        viewModel.ActivePanel = panel;
+        viewModel.Panels.Add(panel);
     }
 
 
