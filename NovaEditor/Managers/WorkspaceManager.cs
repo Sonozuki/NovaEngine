@@ -75,7 +75,7 @@ internal static class WorkspaceManager
 
             foreach (var editorPanel in workspaceTabGroup.Panels.Select(CreatePanel))
                 viewModel.Panels.Add(editorPanel);
-            panelTabGroup.PanelTabControl.SelectedIndex = workspaceTabGroup.ActivePanelIndex;
+            panelTabGroup.PanelTabControl.SelectedIndex = workspaceTabGroup.SelectedPanelIndex;
 
             return panelTabGroup;
         }
