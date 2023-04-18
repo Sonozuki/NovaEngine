@@ -114,6 +114,17 @@
         </Style>
 
         <!-- explicit -->
+        <Style x:Key="DockSelectorContent" TargetType="Border">
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColourMediumBrush}" />
+        </Style>
+
+        <Style x:Key="DockSelectorBorder" TargetType="Border" BasedOn="{StaticResource DockSelectorContent}">
+            <Setter Property="Padding" Value="2" />
+            <Setter Property="Margin" Value="1" />
+            <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
+        </Style>
+        
         <Style x:Key="RootPanelTabGroupGroup" TargetType="controls:PanelTabGroupGroup" BasedOn="{StaticResource {x:Type controls:PanelTabGroupGroup}}">
             <Setter Property="Padding" Value="5" />
         </Style>
