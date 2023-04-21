@@ -83,7 +83,7 @@ internal static class BinaryReaderExtensions
         return list;
     }
 
-    /// <summary>Writes a collection of inlinable members to the current stream and advances the position.</summary>
+    /// <summary>Reads a collection of inlinable members from the current stream and advances the position.</summary>
     /// <param name="binaryReader">The binary reader to read from.</param>
     /// <returns>The read inlinable members.</returns>
     public static Dictionary<string, object?> ReadInlinableMembers(this BinaryReader binaryReader)
@@ -97,7 +97,7 @@ internal static class BinaryReaderExtensions
         return dictionary;
     }
 
-    /// <summary>Writes a collection of non inlinable members to the current stream and advances the position.</summary>
+    /// <summary>Reads a collection of non inlinable members from the current stream and advances the position.</summary>
     /// <param name="binaryReader">The binary reader to read from.</param>
     /// <returns>The read non inlinable members.</returns>
     public static Dictionary<string, uint> ReadNonInlinableMembers(this BinaryReader binaryReader)

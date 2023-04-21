@@ -17,7 +17,7 @@ internal static class BinaryWriterExtensions
         binaryWriter.Write(array.SelectMany(buffer => buffer).ToArray());
     }
 
-    /// <summary>Writes a collection of non inlinable object unique ids to the current stream and advances the position.</summary>
+    /// <summary>Writes a collection of non inlinable object unique ids to the current stream and advances the stream position.</summary>
     /// <param name="binaryWriter">The binary writer to write to.</param>
     /// <param name="nonInlinableObjects">The non inlinable object ids to write.</param>
     public static void Write(this BinaryWriter binaryWriter, IEnumerable<uint> nonInlinableObjects)
@@ -29,7 +29,7 @@ internal static class BinaryWriterExtensions
             binaryWriter.Write(element);
     }
 
-    /// <summary>Writes a collection of inlinable members to the current stream and advances the position.</summary>
+    /// <summary>Writes a collection of inlinable members to the current stream and advances the stream position.</summary>
     /// <param name="binaryWriter">The binary writer to write to.</param>
     /// <param name="inlinableMembers">The inlinable members to write.</param>
     public static void Write(this BinaryWriter binaryWriter, IDictionary<string, byte[]> inlinableMembers)
@@ -42,7 +42,7 @@ internal static class BinaryWriterExtensions
         }
     }
 
-    /// <summary>Writes a collection of non inlinable members to the current stream and advances the position.</summary>
+    /// <summary>Writes a collection of non inlinable members to the current stream and advances the stream position.</summary>
     /// <param name="binaryWriter">The binary writer to write to.</param>
     /// <param name="nonInlinableMembers">The non inlinable members to write.</param>
     public static void Write(this BinaryWriter binaryWriter, IDictionary<string, uint> nonInlinableMembers)
