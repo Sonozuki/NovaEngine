@@ -297,7 +297,7 @@ public static class Content
         if (version != 1)
             return false;
 
-        contentType = binaryReader.ReadString();
+        contentType = binaryReader.ReadUTF8NullTerminatedString();
         return true;
     }
 
@@ -310,8 +310,7 @@ public static class Content
 
         binaryWriter.Write("NOVA"u8);
         binaryWriter.Write((byte)1);
-        binaryWriter.Write(Encoding.UTF8.GetBytes(contentType));
-        binaryWriter.Write((byte)0);
+        binaryWriter.WriteUTF8NullTerminatedString(contentType);
     }
 
     /// <summary>Retrieves an <see cref="IContentReader"/> for a specified object type and content type.</summary>

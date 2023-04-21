@@ -54,4 +54,13 @@ internal static class BinaryWriterExtensions
             binaryWriter.Write(kvp.Value);
         }
     }
+
+    /// <summary>Writes a UTF-8 encoded null-terminated string to the current stream and advances the stream position.</summary>
+    /// <param name="binaryWriter">The binary writer to write to.</param>
+    /// <param name="value">The string to write.</param>
+    public static void WriteUTF8NullTerminatedString(this BinaryWriter binaryWriter, string value)
+    {
+        binaryWriter.Write(Encoding.UTF8.GetBytes(value));
+        binaryWriter.Write((byte)0);
+    }
 }

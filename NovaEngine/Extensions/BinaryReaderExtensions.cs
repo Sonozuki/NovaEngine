@@ -110,4 +110,18 @@ internal static class BinaryReaderExtensions
 
         return dictionary;
     }
+
+    /// <summary>Reads a UTF-8 encoded null-terminated string.</summary>
+    /// <param name="binaryReader">The binary reader to read from.</param>
+    /// <returns>The read string.</returns>
+    public static string ReadUTF8NullTerminatedString(this BinaryReader binaryReader)
+    {
+        var contentTypeBytes = new List<byte>();
+
+        byte nextCharacter;
+        while ((nextCharacter = binaryReader.ReadByte()) != 0)
+            contentTypeBytes.Add(nextCharacter);
+
+        return Encoding.UTF8.GetString(contentTypeBytes.ToArray());
+    }
 }
