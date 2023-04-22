@@ -1,6 +1,6 @@
 ﻿using NovaEngine.ContentPipeline.Font.Cmap;
 
-namespace NovaEngine.ContentPipeline.Font.Models;
+namespace NovaEngine.ContentPipeline.Font.Records;
 
 /// <summary>Represents a character map subtable record.</summary>
 internal sealed class EncodingRecord

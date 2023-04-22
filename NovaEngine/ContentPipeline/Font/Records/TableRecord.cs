@@ -1,4 +1,4 @@
-﻿namespace NovaEngine.ContentPipeline.Font.Models;
+﻿namespace NovaEngine.ContentPipeline.Font.Records;
 
 /// <summary>Represents a top-level table record.</summary>
 internal sealed class TableRecord

@@ -1,5 +1,3 @@
-﻿using NovaEngine.ContentPipeline.Font.Models;
-
 namespace NovaEngine.ContentPipeline.Font.Tables;
 
 /// <summary>Represents the horizontal metrics table.</summary>

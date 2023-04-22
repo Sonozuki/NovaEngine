@@ -1,5 +1,5 @@
 ﻿using NovaEngine.ContentPipeline.Font.Cmap;
-using NovaEngine.ContentPipeline.Font.Models;
+using NovaEngine.ContentPipeline.Font.Records;
 
 namespace NovaEngine.ContentPipeline.Font.Tables;
 
