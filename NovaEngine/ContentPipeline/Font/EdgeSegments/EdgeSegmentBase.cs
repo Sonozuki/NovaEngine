@@ -32,8 +32,8 @@ internal abstract class EdgeSegmentBase
     /// <param name="t">
     /// How far along the segment, the point is.<br/>
     /// Between 0 and 1 (inclusive) means it's closest to somewhere on the segment.<br/>
-    /// &lt;0 means the closest point is somewhere on the segment if it carried on before the first point.<br/>
-    /// &gt;1 means the closest point is somewhere on the segment if it carried on after the last point.
+    /// &lt; 0 means the closest point is somewhere on the segment if it carried on before the first point.<br/>
+    /// &gt; 1 means the closest point is somewhere on the segment if it carried on after the last point.
     /// </param>
     /// <returns>The signed distance from the point to the segment.</returns>
     public abstract SignedDistance SignedDistance(Vector2<float> point, out float t);
