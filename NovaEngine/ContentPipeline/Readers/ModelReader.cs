@@ -1,4 +1,4 @@
-﻿using NovaEngine.ContentPipeline.Models.Model;
+﻿using NovaEngine.ContentPipeline.Model;
 
 namespace NovaEngine.ContentPipeline.Readers;
 
