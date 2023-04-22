@@ -52,7 +52,7 @@ public class Win32Window : PlatformWindowBase
         WindowProcedure = Procedure;
         Size = size;
 
-        var className = "NovaWindowClass";
+        var className = "nova";
 
         var windowClass = new WindowClass()
         {
