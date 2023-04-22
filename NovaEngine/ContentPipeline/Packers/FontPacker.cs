@@ -1,4 +1,4 @@
-﻿using NovaEngine.ContentPipeline.Models.Font;
+﻿using NovaEngine.ContentPipeline.Font;
 
 namespace NovaEngine.ContentPipeline.Packers;
 
@@ -12,7 +12,7 @@ public class FontPacker : IContentPacker
     public string Type => "font";
 
     /// <inheritdoc/>
-    public string[] Extensions => new[] { "ttf" };
+    public string[] Extensions => new[] { "otf", "ttf" };
 
 
     /*********
@@ -21,14 +21,14 @@ public class FontPacker : IContentPacker
     /// <inheritdoc/>
     public unsafe Stream Write(FileStream fileStream)
     {
-        using var ttf = new TrueTypeFont(fileStream);
-        var atlas = AtlasPacker.CreateAtlas(ttf);
+        using var font = new OpenTypeFont(fileStream);
+        var atlas = AtlasPacker.CreateAtlas(font);
 
         var memoryStream = new MemoryStream();
         using var binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true);
 
-        binaryWriter.Write(ttf.Name);
-        binaryWriter.Write(TrueTypeFont.MaxGlyphHeight);
+        binaryWriter.Write(font.Name);
+        binaryWriter.Write(OpenTypeFont.MaxGlyphHeight);
         binaryWriter.Write(AtlasPacker.PixelRange);
 
         // TODO: add support for multiple texture atlases
@@ -41,8 +41,8 @@ public class FontPacker : IContentPacker
             Buffer.MemoryCopy(atlasPointer, pixelsBufferPointer, pixelsBuffer.Length, pixelsBuffer.Length);
         binaryWriter.Write(pixelsBuffer);
 
-        binaryWriter.Write(ttf.Glyphs.Count);
-        foreach (var glyph in ttf.Glyphs)
+        binaryWriter.Write(font.Glyphs.Length);
+        foreach (var glyph in font.Glyphs)
         {
             binaryWriter.Write(glyph.Character);
 
@@ -54,11 +54,9 @@ public class FontPacker : IContentPacker
             binaryWriter.Write((glyph.ScaledBounds.Width + 2 * AtlasPacker.PixelRange) / atlasEdgeLength);
             binaryWriter.Write((glyph.ScaledBounds.Height + 2 * AtlasPacker.PixelRange) / atlasEdgeLength);
 
-            binaryWriter.Write(glyph.HorizontalMetrics.AdvanceWidth);
-            binaryWriter.Write(glyph.HorizontalMetrics.LeftSideBearing);
+            binaryWriter.Write(glyph.ScaledHorizontalMetrics.AdvanceWidth);
+            binaryWriter.Write(glyph.ScaledHorizontalMetrics.LeftSideBearing);
         }
-
-        // TODO: kerning
 
         return memoryStream;
     }

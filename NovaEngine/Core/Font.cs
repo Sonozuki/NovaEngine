@@ -1,4 +1,4 @@
-﻿using NovaEngine.ContentPipeline.Models.Font;
+﻿using NovaEngine.ContentPipeline.Font;
 
 namespace NovaEngine.Core;
 

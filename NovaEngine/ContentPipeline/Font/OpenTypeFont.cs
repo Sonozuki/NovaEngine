@@ -7,6 +7,13 @@ namespace NovaEngine.ContentPipeline.Font;
 internal sealed class OpenTypeFont : IDisposable
 {
     /*********
+    ** Constants
+    *********/
+    /// <summary>The max height of the glyphs after being scaled, in pixels.</summary>
+    public const float MaxGlyphHeight = 64;
+
+
+    /*********
     ** Fields
     *********/
     /// <summary>Whether the font has been disposed.</summary>
@@ -56,6 +63,9 @@ internal sealed class OpenTypeFont : IDisposable
     /// <summary>The glyphs in the font.</summary>
     public ImmutableArray<Glyph> Glyphs { get; }
 
+    /// <summary>The name of the font.</summary>
+    public string Name => NameTable.NameRecords.First(nameRecord => nameRecord.NameId == NameId.FullName).Value;
+
 
     /*********
     ** Constructors
@@ -92,21 +102,25 @@ internal sealed class OpenTypeFont : IDisposable
             var glyphs = new List<Glyph>();
             var characterMap = CmapTable!.Subtables.First();
 
-            var glyph = glyphParser.Parse(characterMap.Map(BinaryReader, -1));
-            glyph.Character = '\0';
-            glyphs.Add(glyph);
-
+            var glyphCharacterCodes = new List<char> { '\0' };
             for (var i = 0x21; i < 0x7F; i++)
-            {
-                var glyphIndex = characterMap.Map(BinaryReader, i);
+                glyphCharacterCodes.Add((char)i);
 
-                glyph = glyphParser.Parse(glyphIndex);
-                glyph.Character = (char)i;
+            foreach (var glyphCharacterCode in glyphCharacterCodes)
+            {
+                var glyphIndex = characterMap.Map(BinaryReader, glyphCharacterCode);
+
+                var glyph = glyphParser.Parse(glyphIndex);
+                glyph.Character = glyphCharacterCode;
+                glyph.UnscaledHorizontalMetrics = HmtxTable!.HorizontalMetrics[glyphIndex];
                 glyphs.Add(glyph);
             }
 
             Glyphs = glyphs.ToImmutableArray();
         }
+
+        CalculateGlyphEdgeColours();
+        CalculateGlyphScales();
     }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -248,6 +262,50 @@ internal sealed class OpenTypeFont : IDisposable
         }
 
         return glyphParser!;
+    }
+
+    /// <summary>Calculates the colours of each edge segment in each glyph.</summary>
+    private void CalculateGlyphEdgeColours()
+    {
+        foreach (var glyph in Glyphs)
+            MTSDF.ColourEdges(glyph);
+    }
+
+    /// <summary>Calculates the <see cref="Glyph.UnscaledBounds"/>, <see cref="Glyph.ScaledBounds"/>, and <see cref="Glyph.ScaledHorizontalMetrics"/> or each glyph.</summary>
+    private void CalculateGlyphScales()
+    {
+        var maxGlyphHeight = -1;
+        foreach (var glyph in Glyphs)
+        {
+            var points = glyph.Contours
+                .SelectMany(contour => contour.Edges)
+                .SelectMany(edge => edge.Points)
+                .ToList();
+
+            var xMin = points.Min(point => point.X);
+            var yMin = points.Min(point => point.Y);
+            var xMax = points.Max(point => point.X);
+            var yMax = points.Max(point => point.Y);
+            glyph.UnscaledBounds = new(xMin, yMin, xMax - xMin, yMax - yMin);
+
+            // record height so glyphs can be correctly scaled in the atlas
+            if (glyph.UnscaledBounds.Height > maxGlyphHeight)
+                maxGlyphHeight = (int)glyph.UnscaledBounds.Height;
+        }
+
+        var scale = maxGlyphHeight / MaxGlyphHeight;
+        foreach (var glyph in Glyphs)
+        {
+            glyph.ScaledBounds = new(0, 0,
+                (uint)MathF.Ceiling(glyph.UnscaledBounds.Width / scale),
+                (uint)MathF.Ceiling(glyph.UnscaledBounds.Height / scale)
+            );
+
+            glyph.ScaledHorizontalMetrics = new(
+                (ushort)MathF.Round(glyph.UnscaledHorizontalMetrics.AdvanceWidth / scale),
+                (short)MathF.Round(glyph.UnscaledHorizontalMetrics.LeftSideBearing / scale)
+            );
+        }
     }
 
     /// <summary>Determines whether a table with a specified tag exists.</summary>

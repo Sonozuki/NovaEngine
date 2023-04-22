@@ -37,10 +37,24 @@ internal sealed class Glyph
     /// <summary>The contours in the glyph.</summary>
     public ImmutableArray<Contour> Contours { get; internal set; }
 
+    /// <summary>The bounds of the glyph in the font file, in font design units.</summary>
+    public Rectangle UnscaledBounds { get; internal set; }
+
+    /// <summary>The bounds of the glyph in the texture atlas, in pixels.</summary>
+    public Rectangle ScaledBounds { get; internal set; }
+
+    /// <summary>The horizontal metrics of the glyph, in font design units.</summary>
+    public HorizontalMetrics UnscaledHorizontalMetrics { get; internal set; }
+
+    /// <summary>The horizontal metrics of the glyph, in pixels.</summary>
+    public HorizontalMetrics ScaledHorizontalMetrics { get; internal set; }
+
 
     /*********
     ** Constructors
     *********/
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
     /// <summary>Constructs an instance.</summary>
     /// <param name="binaryReader">
     /// The binary reader to use when reading the glyph.<br/>
@@ -56,4 +70,6 @@ internal sealed class Glyph
 
         IsComposite = NumberOfContours < 0;
     }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
