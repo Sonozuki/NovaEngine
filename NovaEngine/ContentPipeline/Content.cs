@@ -66,6 +66,23 @@ public static class Content
         }
     }
 
+    /// <summary>Checks whether a file exists.</summary>
+    /// <param name="path">The relative path to the file to check.</param>
+    /// <returns><see langword="true"/>, if the file exists; otherwise, <see langword="false"/>.</returns>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="path"/> is <see langword="null"/> or empty.</exception>
+    public static bool DoesFileExist(string path)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(path);
+
+        path = Path.Combine(Constants.ContentDirectory, path);
+
+        var file = path;
+        if (string.IsNullOrEmpty(GetExtension(file)))
+            file += Constants.ContentFileExtension;
+
+        return File.Exists(file);
+    }
+
     /// <summary>Loads content from a file to a specified type.</summary>
     /// <typeparam name="T">The return type to load the file to.</typeparam>
     /// <param name="path">The relative path to the file to load.</param>
@@ -76,7 +93,7 @@ public static class Content
     public static T Load<T>(string path) => (T)Load(path, typeof(T));
 
     /// <summary>Loads content from a file to a specified type.</summary>
-    /// <param name="path">The relative path to the fileto load.</param>
+    /// <param name="path">The relative path to the file to load.</param>
     /// <param name="returnType">The return type to load the file to.</param>
     /// <returns>The loaded file.</returns>
     /// <exception cref="ArgumentException">Thrown if <paramref name="path"/> is <see langword="null"/> or empty.</exception>
