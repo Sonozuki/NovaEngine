@@ -20,6 +20,16 @@ public struct Rectangle : IEquatable<Rectangle>
 
 
     /*********
+    ** Properties
+    *********/
+    /// <summary>The right position of the rectangle.</summary>
+    public float Right => X + Width;
+
+    /// <summary>The bottom position of the rectangle.</summary>
+    public float Bottom => Y + Height;
+
+
+    /*********
     ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
