@@ -37,9 +37,10 @@ public abstract class SettingsBase<TSelf>
                 try { instance = JsonSerializer.Deserialize<TSelf>(File.ReadAllText(emptySettings.Path)); }
                 catch (Exception ex)
                 {
+                    var invalidPath = emptySettings.InvalidPath.Replace("{time}", DateTime.UtcNow.ToString("yyyyMMddHHmmss", G11n.Culture.DateTimeFormat), StringComparison.InvariantCulture);
                     Logger.LogError($"Failed to deserialise a settings file {emptySettings.Path}, reverting to default settings. Technical details:\n{ex}");
-                    Logger.LogError($"The invalid settings file has been moved to: \"{emptySettings.InvalidPath}\".");
-                    File.Move(emptySettings.Path, emptySettings.InvalidPath, true);
+                    Logger.LogError($"The invalid settings file has been moved to: \"{invalidPath}\".");
+                    File.Move(emptySettings.Path, invalidPath, true);
                 }
             }
 
