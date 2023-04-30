@@ -1,0 +1,5 @@
+<Project>
+    <PropertyGroup>
+        <ArtifactsProjectName>$(OutputFolderName)</ArtifactsProjectName>
+    </PropertyGroup>
+</Project>

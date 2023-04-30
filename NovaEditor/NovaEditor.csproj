@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <OutputFolderName>Editor</OutputFolderName>
         <OutputType>WinExe</OutputType>
         <TargetFramework>net8.0-windows</TargetFramework>
         <UseWPF>true</UseWPF>
         <ImplicitUsings>enable</ImplicitUsings>
-
         <NoWarn>CA1812</NoWarn>
     </PropertyGroup>
 

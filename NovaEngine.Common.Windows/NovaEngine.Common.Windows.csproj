@@ -1,36 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<Nullable>enable</Nullable>
-		<WarningsAsErrors>CS8600;CS8601;CS8602;CS8603;CS8604;CS8613;CS8618;CS8625;CS1570;CS1571;CS1572;CS1573;CS1574;CS1580;CS1581;CS1584;CS1587;CS1589;CS1590;CS1591;CS1592</WarningsAsErrors>
-		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-	</PropertyGroup>
+    <PropertyGroup>
+        <OutputFolderName>Engine</OutputFolderName>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <Nullable>enable</Nullable>
+        <WarningsAsErrors>CS8600;CS8601;CS8602;CS8603;CS8604;CS8613;CS8618;CS8625;CS1570;CS1571;CS1572;CS1573;CS1574;CS1580;CS1581;CS1584;CS1587;CS1589;CS1590;CS1591;CS1592</WarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<Using Include="NovaEngine.Common.Windows.Api" />
-		<Using Include="NovaEngine.Common.Windows.Native" />
-		<Using Include="NovaEngine.Extensions" />
-		<Using Include="NovaEngine.External.Input" />
-		<Using Include="NovaEngine.IO" />
-		<Using Include="NovaEngine.Logging" />
-		<Using Include="NovaEngine.Maths" />
-		<Using Include="NovaEngine.Platform" />
-		<Using Include="System.Runtime.InteropServices" />
-	</ItemGroup>
+    <ItemGroup>
+        <Using Include="NovaEngine.Common.Windows.Api" />
+        <Using Include="NovaEngine.Common.Windows.Native" />
+        <Using Include="NovaEngine.Extensions" />
+        <Using Include="NovaEngine.External.Input" />
+        <Using Include="NovaEngine.IO" />
+        <Using Include="NovaEngine.Logging" />
+        <Using Include="NovaEngine.Maths" />
+        <Using Include="NovaEngine.Platform" />
+        <Using Include="System.Runtime.InteropServices" />
+    </ItemGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<OutputPath>C:\Development\Source\NovaEngine\NovaEngine\bin\Debug</OutputPath>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<OutputPath>C:\Development\Source\NovaEngine\NovaEngine\bin\Release</OutputPath>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\NovaEngine\NovaEngine.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\NovaEngine\NovaEngine.csproj" />
+    </ItemGroup>
 
 </Project>
