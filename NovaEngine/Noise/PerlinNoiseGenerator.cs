@@ -33,13 +33,10 @@ public class PerlinNoiseGenerator
         ArgumentNullException.ThrowIfNull(random);
 
         var shortPermutation = Enumerable.Range(0, 256).ToArray();
-        for (var i = shortPermutation.Length - 1; i >= 0; i--) // shuffle using Fisher-Yates shuffle algorithm. see: https://blog.codinghorror.com/the-danger-of-naivete/
-            Swap(ref shortPermutation[i], ref shortPermutation[random.Next(i + 1)]);
+        random.Shuffle(shortPermutation);
 
         for (var i = 0; i < 256; i++)
             Permutation[i] = Permutation[i + 256] = shortPermutation[i];
-
-        static void Swap(ref int a, ref int b) => (a, b) = (b, a);
     }
 
 
