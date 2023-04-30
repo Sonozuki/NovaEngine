@@ -176,7 +176,7 @@ The callee (the `Engine` and `Renderer` in these examples) has been greyed out, 
 // TODO: add image once that's implemented
 
 ## Building
-Currently Nova Engine uses Vulkan for rendering, in order to develop with Nova Engine you will need the [Vulkan SDK](https://vulkan.lunarg.com/sdk/home) as well as the [.NET 7 SDK](https://dotnet.microsoft.com/en-us/download).  
+Currently Nova Engine uses Vulkan for rendering, in order to develop with Nova Engine you will need the [Vulkan SDK](https://vulkan.lunarg.com/sdk/home) as well as the [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0).  
 
 Once installed, open the solution in Visual Studio and build the input handler, platform, and renderer first; afterwards the NovaEngine project. Due to how the input handler, platform, and renderer are loaded at runtime instead of being a project dependency, they won't automatically be built if building just the NovaEngine project.  
 
