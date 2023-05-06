@@ -101,8 +101,7 @@ public static class Input
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="callback"/> is <see langword="null"/>.</exception>
     public static void AddMouseButtonHandler(MouseButton button, PressType pressType, Action callback)
     {
-        if (callback == null)
-            throw new ArgumentNullException(nameof(callback));
+        ArgumentNullException.ThrowIfNull(callback);
 
         var listenerInfo = new MouseButtonEventListenerInfo(button, pressType);
         if (MouseButtonEventHandlers.TryGetValue(listenerInfo, out var eventHandler))
@@ -118,8 +117,7 @@ public static class Input
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="callback"/> is <see langword="null"/>.</exception>
     public static void RemoveMouseButtonHandler(MouseButton button, PressType pressType, Action callback)
     {
-        if (callback == null)
-            throw new ArgumentNullException(nameof(callback));
+        ArgumentNullException.ThrowIfNull(callback);
 
         var listenerInfo = new MouseButtonEventListenerInfo(button, pressType);
         if (MouseButtonEventHandlers.TryGetValue(listenerInfo, out var eventHandlers))
@@ -141,8 +139,7 @@ public static class Input
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="callback"/> is <see langword="null"/>.</exception>
     public static void AddKeyHandler(Key key, Modifiers modifiers, PressType pressType, Action callback)
     {
-        if (callback == null)
-            throw new ArgumentNullException(nameof(callback));
+        ArgumentNullException.ThrowIfNull(callback);
 
         var listenerInfo = new KeyEventListenerInfo(key, modifiers, pressType);
         if (KeyEventHandlers.TryGetValue(listenerInfo, out var eventHandlers))
@@ -166,8 +163,7 @@ public static class Input
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="callback"/> is <see langword="null"/>.</exception>
     public static void RemoveKeyHandler(Key key, Modifiers modifiers, PressType pressType, Action callback)
     {
-        if (callback == null)
-            throw new ArgumentNullException(nameof(callback));
+        ArgumentNullException.ThrowIfNull(callback);
 
         var listenerInfo = new KeyEventListenerInfo(key, modifiers, pressType);
         if (KeyEventHandlers.TryGetValue(listenerInfo, out var eventHandlers))
