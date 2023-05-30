@@ -1,6 +1,6 @@
 ﻿namespace NovaEditor.ViewModels;
 
-/// <summary>Represents the view model for <see cref="ProjectSelectionWindow"/>.</summary>
+/// <summary>Represents the view model for <see cref="ProjectSelectionPanel"/>.</summary>
 internal sealed class ProjectSelectionViewModel
 {
     /*********

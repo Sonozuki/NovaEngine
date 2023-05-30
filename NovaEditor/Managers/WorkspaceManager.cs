@@ -22,6 +22,12 @@ internal static class WorkspaceManager
         (Application.Current as App).MainWindow.RootPanelTabGroupGroup.Content = rootEditorPanel;
     }
 
+    /// <summary>Loads the project selection workspace.</summary>
+    public static void LoadProjectSelectionWorkspace()
+    {
+        (Application.Current as App).MainWindow.RootPanelTabGroupGroup.Content = new ProjectSelectionPanel();
+    }
+
 
     /*********
     ** Private Methods

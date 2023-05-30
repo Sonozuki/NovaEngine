@@ -11,16 +11,4 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
     }
-
-
-    /*********
-    ** Private Methods
-    *********/
-    /// <summary>Invoked when the window is loaded.</summary>
-    /// <param name="sender">The event sender.</param>
-    /// <param name="e">The event data.</param>
-    private void OnLoaded(object sender, RoutedEventArgs e)
-    {
-        WorkspaceManager.LoadWorkspace();
-    }
 }

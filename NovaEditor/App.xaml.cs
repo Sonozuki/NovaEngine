@@ -6,9 +6,6 @@ public partial class App : Application
     /*********
     ** Properties
     *********/
-    /// <summary>The project selection window.</summary>
-    internal ProjectSelectionWindow ProjectSelectionWindow { get; private set; }
-
     /// <summary>The main window.</summary>
     internal new MainWindow MainWindow { get; private set; }
 
@@ -21,8 +18,12 @@ public partial class App : Application
     /// <param name="e">The event data.</param>
     private void OnStartup(object sender, StartupEventArgs e)
     {
+        MainWindow = new();
+
         ProjectManager.CurrentProjectChanged += OnCurrentProjectChanged;
         ProjectManager.CurrentProject = null;
+
+        MainWindow.Show();
     }
 
     /// <summary>Invoked when the current loaded project changes.</summary>
@@ -31,18 +32,8 @@ public partial class App : Application
     private void OnCurrentProjectChanged(object sender, CurrentProjectChangedEventArgs e)
     {
         if (e.NewProject == null)
-        {
-            ProjectSelectionWindow = new();
-            ProjectSelectionWindow.Show();
-
-            MainWindow?.Close();
-        }
+            WorkspaceManager.LoadProjectSelectionWorkspace();
         else
-        {
-            MainWindow = new();
-            MainWindow.Show();
-
-            ProjectSelectionWindow?.Close();
-        }
+            WorkspaceManager.LoadWorkspace();
     }
 }
