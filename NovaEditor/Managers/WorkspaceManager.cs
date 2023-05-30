@@ -23,10 +23,10 @@ internal static class WorkspaceManager
     }
 
     /// <summary>Loads the project selection workspace.</summary>
-    public static void LoadProjectSelectionWorkspace()
-    {
-        (Application.Current as App).MainWindow.RootPanelTabGroupGroup.Content = new ProjectSelectionPanel();
-    }
+    internal static void LoadProjectSelectionWorkspace() => (Application.Current as App).MainWindow.RootPanelTabGroupGroup.Content = new ProjectSelectionPanel();
+
+    /// <summary>Loads the project creation workspace.</summary>
+    internal static void LoadProjectCreationWorkspace() => (Application.Current as App).MainWindow.RootPanelTabGroupGroup.Content = new ProjectCreationPanel();
 
 
     /*********

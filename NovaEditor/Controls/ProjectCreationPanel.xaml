@@ -1,0 +1,25 @@
+﻿<controls:EditorPanelBase x:Class="NovaEditor.Controls.ProjectCreationPanel"
+                          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:controls="clr-namespace:NovaEditor.Controls"
+                          xmlns:viewModels="clr-namespace:NovaEditor.ViewModels">
+
+    <UserControl.DataContext>
+        <viewModels:ProjectCreationViewModel />
+    </UserControl.DataContext>
+    
+    <StackPanel Orientation="Vertical">
+        
+        <Label Content="Project Name" />
+        <TextBox Text="{Binding ProjectName}" />
+
+        <Label Content="Source Location" />
+        <TextBox Text="{Binding SourceLocation}" />
+        <Button Command="{Binding ChooseSourceLocationCommand}">...</Button>
+
+        <Button Command="{Binding BackCommand}">Back</Button>
+        <Button Command="{Binding CreateCommand}">Create</Button>
+        
+    </StackPanel>
+    
+</controls:EditorPanelBase>

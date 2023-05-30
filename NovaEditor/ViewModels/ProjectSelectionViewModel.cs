@@ -52,10 +52,7 @@ internal sealed class ProjectSelectionViewModel
     }
 
     /// <summary>Changes view to create a project.</summary>
-    private void CreateProject()
-    {
-        // TODO: implement
-    }
+    private void CreateProject() => WorkspaceManager.LoadProjectCreationWorkspace();
 
     /// <summary>Loads a project.</summary>
     /// <param name="project">The project to load.</param>
