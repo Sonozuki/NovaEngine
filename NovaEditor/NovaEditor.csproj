@@ -40,8 +40,43 @@
         <ProjectReference Include="..\NovaEngine\NovaEngine.csproj" />
     </ItemGroup>
 
+    <!--
+    calculate all the NovaEngine* projects to build before the editor, this is so all the projects are included in the
+    embedded engine for the editor 
+    
+    these can't really be handled through project references as projects that aren't included in the solution should still be copied over.
+    if, for example, the project is an implementation of a platform that can't be open source due to console development licensing
+    
+    this will also build test projects which isn't ideal, but doesn't really matter. the important part is that it doesn't build the editor
+    itself as that would be a circular reference
+    -->
+    <Target Name="CalculateProjectsToBuild" BeforeTargets="BeforeBuild">
+        <ItemGroup>
+            <EngineProjects Include="..\..\..\..\NovaEngine%2A\*.csproj" />
+        </ItemGroup>
+
+        <CreateItem Include="@(EngineProjects->'$(TargetDir)\%(Identity)')">
+            <Output TaskParameter="Include" ItemName="ProjectsToBuild" />
+        </CreateItem>
+    </Target>
+
+    <!-- build all the projects found above -->
+    <Target Name="BuildEngineProjects" BeforeTargets="BeforeBuild">
+        <MSBuild Projects="%(ProjectsToBuild.FullPath)" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform)" />
+    </Target>
+
+    <!-- remove the NovaEngine.exe from the NovaEditor output, this isn't necessary and may be confusing if present -->
     <Target Name="RemoveEngineExecutableFile" AfterTargets="AfterBuild">
         <Delete Files="$(OutDir)NovaEngine.exe" />
     </Target>
 
+    <!-- copy all the previously build projects into the embedded engine folder out of output directory -->
+    <Target Name="CopyEngineFilesToEmbeddedEngine" AfterTargets="AfterBuild">
+        <ItemGroup>
+            <EngineFiles Include="$(OutDir)\..\..\Engine\$(Configuration)\*.*" />
+        </ItemGroup>
+        
+        <Copy SourceFiles="@(EngineFiles)" DestinationFolder="$(OutDir)/EmbeddedEngine" />
+    </Target>
+    
 </Project>
