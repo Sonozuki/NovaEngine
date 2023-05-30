@@ -40,4 +40,8 @@
         <ProjectReference Include="..\NovaEngine\NovaEngine.csproj" />
     </ItemGroup>
 
+    <Target Name="RemoveEngineExecutableFile" AfterTargets="AfterBuild">
+        <Delete Files="$(OutDir)NovaEngine.exe" />
+    </Target>
+
 </Project>
