@@ -16,7 +16,8 @@ public static class CommandManager
     /// <summary>Initialises the class.</summary>
     static CommandManager()
     {
-        ReadCommands();
+        if (!Program.Arguments.DisableReadCommands)
+            ReadCommands();
 
         Add("help", "Lists all registered command documentation.\n\nUsage: help\nLists all the registered commands.\n\nUsage: help <command>\nLists the documentation about a specific command\n- command: The name of command to view the documentation of.", HelpCommand);
         Add("qqq", "Closes the application.\n\nUsage: qqq\nCloses the application.", (_) => Environment.Exit(0));

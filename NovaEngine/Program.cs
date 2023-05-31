@@ -17,6 +17,9 @@ public static class Program
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 
+    /// <summary>The command-line arguments of the application.</summary>
+    public static Arguments Arguments { get; private set; }
+
     /// <summary>The main window of the application.</summary>
     public static Window MainWindow { get; private set; }
 
@@ -33,6 +36,9 @@ public static class Program
     /// <param name="args">The command-line arguments.</param>
     public static void Main(string[] args)
     {
+        ArgumentNullException.ThrowIfNull(args);
+        Arguments = Arguments.Parse(args);
+
         try
         {
             HasProgramInstance = true;
@@ -42,7 +48,9 @@ public static class Program
             if (!InitialiseEngine())
                 return;
             LoadInitialScenes();
-            MainWindow.Show();
+
+            if (!Arguments.HideWindow)
+                MainWindow.Show();
 
             ApplicationLoop.Run();
 
