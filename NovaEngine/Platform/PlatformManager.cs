@@ -26,7 +26,7 @@ internal static class PlatformManager
             return;
         }
 
-        var platformFiles = Directory.GetFiles(Environment.CurrentDirectory, "NovaEngine.Platform.*.dll");
+        var platformFiles = Directory.GetFiles(Constants.AssemblyDirectory, "NovaEngine.Platform.*.dll");
         var types = platformFiles
             .Select(Assembly.LoadFrom)
             .SelectMany(assembly => assembly.GetExportedTypes())

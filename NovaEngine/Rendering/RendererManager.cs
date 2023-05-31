@@ -26,7 +26,7 @@ internal static class RendererManager
             return;
         }
 
-        var rendererFiles = Directory.GetFiles(Environment.CurrentDirectory, "NovaEngine.Renderer.*.dll");
+        var rendererFiles = Directory.GetFiles(Constants.AssemblyDirectory, "NovaEngine.Renderer.*.dll");
         var types = rendererFiles
             .Select(Assembly.LoadFrom)
             .SelectMany(assembly => assembly.GetExportedTypes())

@@ -4,6 +4,13 @@
 public static class Constants
 {
     /*********
+    ** Fields
+    *********/
+    /// <summary>The directory the NovaEngine assembly is located.</summary>
+    private static string? _AssemblyDirectory;
+
+
+    /*********
     ** Properties
     *********/
     /// <summary>The name of the engine.</summary>
@@ -35,13 +42,23 @@ public static class Constants
     /// <remarks>If <see cref="ConsoleSettingsFilePath"/> failed to deserialise, it'll get moved here. This is so the existing settings can be recovered if a manual edit was invalid.</remarks>
     public static string InvalidConsoleSettingsFilePath => Path.Combine(SettingsDirectory, "ConsoleSettings_Invalid_{time}.json");
 
+    /// <summary>The directory the NovaEngine assembly is located.</summary>
+    public static string AssemblyDirectory
+    {
+        get
+        {
+            _AssemblyDirectory ??= Path.GetDirectoryName(Assembly.GetAssembly(typeof(Program))!.Location)!;
+            return _AssemblyDirectory;
+        }
+    }
+
     /// <summary>The root content directory.</summary>
-    public static string ContentDirectory => Path.Combine(Environment.CurrentDirectory, "Data");
+    public static string ContentDirectory => Path.Combine(AssemblyDirectory, "Data");
 
     /// <summary>The scene directory.</summary>
     public static string SceneDirectory => Path.Combine(ContentDirectory, RelativeSceneDirectory);
 
-    /// <summary>The scene directory, relative to <see cref="Constants.ContentDirectory"/>.</summary>
+    /// <summary>The scene directory, relative to <see cref="ContentDirectory"/>.</summary>
     public static string RelativeSceneDirectory => "Scenes";
 
     /// <summary>The file extension for content files.</summary>

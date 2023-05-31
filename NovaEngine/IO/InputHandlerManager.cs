@@ -26,7 +26,7 @@ internal static class InputHandlerManager
             return;
         }
 
-        var inputHandlerFiles = Directory.GetFiles(Environment.CurrentDirectory, "NovaEngine.InputHandler.*.dll");
+        var inputHandlerFiles = Directory.GetFiles(Constants.AssemblyDirectory, "NovaEngine.InputHandler.*.dll");
         var types = inputHandlerFiles
             .Select(Assembly.LoadFrom)
             .SelectMany(assembly => assembly.GetExportedTypes())
