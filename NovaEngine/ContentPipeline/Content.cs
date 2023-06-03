@@ -66,6 +66,9 @@ public static class Content
         }
     }
 
+    /// <summary>Ensures the content directory exists.</summary>
+    public static void EnsureDirectoryExists() => Directory.CreateDirectory(Constants.ContentDirectory);
+
     /// <summary>Checks whether a file exists.</summary>
     /// <param name="path">The relative path to the file to check.</param>
     /// <returns><see langword="true"/>, if the file exists; otherwise, <see langword="false"/>.</returns>
