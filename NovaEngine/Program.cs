@@ -6,6 +6,13 @@ namespace NovaEngine;
 public static class Program
 {
     /*********
+    ** Fields
+    *********/
+    /// <summary>The completion source for <see cref="MainWindowTask"/>.</summary>
+    private static readonly TaskCompletionSource<Window> MainWindowTaskCompletionSource = new();
+
+
+    /*********
     ** Properties
     *********/
     /// <summary>Whether the program has been ran.</summary>
@@ -22,6 +29,9 @@ public static class Program
 
     /// <summary>The main window of the application.</summary>
     public static Window MainWindow { get; private set; }
+
+    /// <summary>A task used for retrieving the main window once it has been created.</summary>
+    public static Task<Window> MainWindowTask => MainWindowTaskCompletionSource.Task;
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 
