@@ -17,10 +17,14 @@
         <Using Include="NovaEditor.ViewModels" />
         <Using Include="NovaEditor.Windows" />
         <Using Include="NovaEditor.Workspace" />
+        <Using Include="NovaEngine.Common.Windows.Api" />
+        <Using Include="NovaEngine.Globalisation" />
         <Using Include="System.Collections.ObjectModel" />
         <Using Include="System.Collections.Specialized" />
         <Using Include="System.Globalization" />
         <Using Include="System.IO" />
+        <Using Include="System.Reflection" />
+        <Using Include="System.Runtime.InteropServices" />
         <Using Include="System.Text.Json" />
         <Using Include="System.Text.Json.Serialization" />
         <Using Include="System.Windows" />
@@ -28,6 +32,7 @@
         <Using Include="System.Windows.Controls.Primitives" />
         <Using Include="System.Windows.Data" />
         <Using Include="System.Windows.Input" />
+        <Using Include="System.Windows.Interop" />
         <Using Include="System.Windows.Media" />
     </ItemGroup>
 
@@ -37,7 +42,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\NovaEngine\NovaEngine.csproj" />
+        <ProjectReference Include="..\NovaEngine.Common.Windows\NovaEngine.Common.Windows.csproj">
+            <Private>False</Private>
+        </ProjectReference>
+
+        <ProjectReference Include="..\NovaEngine\NovaEngine.csproj">
+            <Private>False</Private>
+        </ProjectReference>
     </ItemGroup>
 
     <!--
@@ -65,18 +76,13 @@
         <MSBuild Projects="%(ProjectsToBuild.FullPath)" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform)" />
     </Target>
 
-    <!-- remove the NovaEngine.exe from the NovaEditor output, this isn't necessary and may be confusing if present -->
-    <Target Name="RemoveEngineExecutableFile" AfterTargets="AfterBuild">
-        <Delete Files="$(OutDir)NovaEngine.exe" />
-    </Target>
-
     <!-- copy all the previously build projects into the embedded engine folder out of output directory -->
     <Target Name="CopyEngineFilesToEmbeddedEngine" AfterTargets="AfterBuild">
         <ItemGroup>
             <EngineFiles Include="$(OutDir)\..\..\Engine\$(Configuration)\*.*" />
         </ItemGroup>
-        
+
         <Copy SourceFiles="@(EngineFiles)" DestinationFolder="$(OutDir)/EmbeddedEngine" />
     </Target>
-    
+
 </Project>

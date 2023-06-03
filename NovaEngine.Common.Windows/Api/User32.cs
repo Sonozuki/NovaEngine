@@ -118,6 +118,12 @@ public static class User32
     [DllImport("User32", SetLastError = true)]
     public static extern IntPtr DefWindowProc(IntPtr window, Message message, IntPtr wParam, IntPtr lParam);
 
+    /// <summary>Destroys the specified window.</summary>
+    /// <param name="windowHandle">A handle to the window to be destroyed.</param>
+    /// <returns><see langword="true"/>, if the call succeeds; otherwise, <see langword="false"/>.</returns>
+    [DllImport("User32", SetLastError = true)]
+    public static extern bool DestroyWindow(IntPtr windowHandle);
+
     /// <summary>Dispatches a message to a window procedure.</summary>
     /// <param name="message">The message information.</param>
     /// <returns>The value returned by the window procedure, which depends on the message being dispatched.</returns>

@@ -18,6 +18,10 @@ public partial class App : Application
     /// <param name="e">The event data.</param>
     private void OnStartup(object sender, StartupEventArgs e)
     {
+        // the NovaEngine project isn't copied over to the output meaning the runtime doesn't
+        // automatically load it into the app domain, so we just need to manually load it
+        Assembly.LoadFrom("./EmbeddedEngine/NovaEngine.dll");
+
         MainWindow = new();
 
         ProjectManager.CurrentProjectChanged += OnCurrentProjectChanged;

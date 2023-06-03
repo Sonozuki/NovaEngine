@@ -1,5 +1,4 @@
 ﻿using Microsoft.WindowsAPICodePack.Dialogs;
-using NovaEngine.Globalisation;
 
 namespace NovaEditor.ViewModels;
 
