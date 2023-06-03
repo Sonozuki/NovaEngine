@@ -45,23 +45,32 @@ public static class Program
             Name = Process.GetCurrentProcess().ProcessName;
             Handle = Process.GetCurrentProcess().Handle;
 
-            if (!InitialiseEngine())
-                return;
-            LoadInitialScenes();
+            var engineThread = new Thread(() =>
+            {
+                if (!InitialiseEngine())
+                    return;
 
-            if (!Arguments.HideWindow)
-                MainWindow.Show();
+                Content.EnsureDirectoryExists();
+                LoadInitialScenes();
 
-            ApplicationLoop.Run();
+                if (!Arguments.HideWindow)
+                    MainWindow.Show();
 
-            RendererManager.CurrentRenderer.PrepareDispose();
-            SceneManager.GizmosScene.Dispose();
-            foreach (var scene in SceneManager.LoadedScenes)
-                scene.Dispose();
+                ApplicationLoop.Run();
 
-            Texture1D.Undefined.Dispose();
-            Texture2D.Undefined.Dispose();
-            RendererManager.CurrentRenderer.Dispose();
+                RendererManager.CurrentRenderer.PrepareDispose();
+                SceneManager.GizmosScene.Dispose();
+                foreach (var scene in SceneManager.LoadedScenes)
+                    scene.Dispose();
+
+                Texture1D.Undefined.Dispose();
+                Texture2D.Undefined.Dispose();
+                RendererManager.CurrentRenderer.Dispose();
+            });
+            engineThread.Start();
+
+            if (!Arguments.RemoveEngineThreadBlock)
+                engineThread.Join();
         }
         catch (Exception ex)
         {
@@ -80,6 +89,7 @@ public static class Program
         if (PlatformManager.CurrentPlatform == null)
             return false; // manager has already created a fatal log
         MainWindow = new Window("NovaEngine", new(1280, 720)); // TODO: don't hardcode
+        MainWindowTaskCompletionSource.SetResult(MainWindow);
 
         if (InputHandlerManager.CurrentInputHandler == null)
             return false; // manager has already created a fatal log

@@ -12,6 +12,9 @@ public sealed class Arguments
     /// <summary>Whether the console commands should be disabled.</summary>
     public bool DisableReadCommands { get; private set; }
 
+    /// <summary>Whether the block on the engine thread should be removed.</summary>
+    public bool RemoveEngineThreadBlock { get; private set; }
+
 
     /*********
     ** Constructors
@@ -30,7 +33,10 @@ public sealed class Arguments
     {
         var arguments = new Arguments();
 
-        foreach (var arg in args)
+        for (var i = 0; i < args.Length; i++)
+        {
+            var arg = args[i];
+
             switch (arg)
             {
                 case "-hide-window":
@@ -41,10 +47,15 @@ public sealed class Arguments
                     arguments.DisableReadCommands = true;
                     break;
 
+                case "-remove-engine-thread-block":
+                    arguments.RemoveEngineThreadBlock = true;
+                    break;
+
                 default:
                     Logger.LogError($"Unrecognised command-line argument '{arg}'.");
                     break;
             }
+        }
 
         return arguments;
     }
