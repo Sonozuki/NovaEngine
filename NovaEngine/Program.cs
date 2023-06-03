@@ -120,8 +120,11 @@ public static class Program
     /// <summary>Loads the initial scenes.</summary>
     private static void LoadInitialScenes()
     {
-        var initialScenes = Content.Load<string[]>("InitialScenes");
-        foreach (var scene in initialScenes)
-            SceneManager.LoadScene(scene);
+        if (Content.DoesFileExist("InitialScenes"))
+        {
+            var initialScenes = Content.Load<string[]>("InitialScenes");
+            foreach (var scene in initialScenes)
+                SceneManager.LoadScene(scene);
+        }
     }
 }
