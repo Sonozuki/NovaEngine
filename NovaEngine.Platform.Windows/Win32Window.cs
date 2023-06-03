@@ -67,6 +67,8 @@ public class Win32Window : PlatformWindowBase
         // adjust window size so client area is the specified size
         var rectangle = new Common.Windows.Native.Rectangle(Vector2I.Zero, Size);
         var style = WindowStyle.OverlappedWindow;
+        if (Program.Arguments.WindowParent != 0)
+            style |= WindowStyle.Child;
 
         if (!User32.AdjustWindowRect(&rectangle, style, false))
             throw new Win32Exception("Failed to adjust Win32 window client area.").Log(LogSeverity.Fatal);
@@ -77,7 +79,7 @@ public class Win32Window : PlatformWindowBase
         rectangle.Left = 0;
         rectangle.Top = 0;
 
-        Handle = User32.CreateWindowEx(0, className, title, style, rectangle.Left, rectangle.Top, rectangle.Right - rectangle.Left, rectangle.Bottom - rectangle.Top, IntPtr.Zero, IntPtr.Zero, Program.Handle, IntPtr.Zero);
+        Handle = User32.CreateWindowEx(0, className, title, style, rectangle.Left, rectangle.Top, rectangle.Right - rectangle.Left, rectangle.Bottom - rectangle.Top, Program.Arguments.WindowParent, IntPtr.Zero, Program.Handle, IntPtr.Zero);
         if (Handle == IntPtr.Zero)
             throw new Win32Exception("Failed to craete Win32 window.").Log(LogSeverity.Fatal);
     }

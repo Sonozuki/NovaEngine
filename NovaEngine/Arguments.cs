@@ -15,6 +15,9 @@ public sealed class Arguments
     /// <summary>Whether the block on the engine thread should be removed.</summary>
     public bool RemoveEngineThreadBlock { get; private set; }
 
+    /// <summary>The parent to use when creating <see cref="Program.MainWindow"/>.</summary>
+    public IntPtr WindowParent { get; private set; }
+
 
     /*********
     ** Constructors
@@ -51,6 +54,22 @@ public sealed class Arguments
                     arguments.RemoveEngineThreadBlock = true;
                     break;
 
+                case "-window-parent":
+                    if (!TryGetNextValue(args, ref i, out var windowParent))
+                    {
+                        Logger.LogError("Failed to retrieve value after '-window-parent'.");
+                        break;
+                    }
+
+                    if (!IntPtr.TryParse(windowParent, out var windowParentPointer))
+                    {
+                        Logger.LogError($"Failed to parse '{windowParent}' as a pointer.");
+                        break;
+                    }
+
+                    arguments.WindowParent = windowParentPointer;
+                    break;
+
                 default:
                     Logger.LogError($"Unrecognised command-line argument '{arg}'.");
                     break;
@@ -58,5 +77,28 @@ public sealed class Arguments
         }
 
         return arguments;
+    }
+
+    /// <summary>Tries to get the next specified value.</summary>
+    /// <param name="args">The complete list of command-line arguments being parsed.</param>
+    /// <param name="index">The current index into <paramref name="args"/> being parsed.</param>
+    /// <param name="value">The value that was retrieved, if one could be retrieved; otherwise, <see langword="null"/>.</param>
+    /// <returns><see langword="true"/>, if a value could be retrieved; otherwise, <see langword="false"/>.</returns>
+    /// <remarks>If the next next value is parsable as an argument, <paramref name="index"/> won't be incremented and <see langword="false"/> will be returned.</remarks>
+    private static bool TryGetNextValue(string[] args, ref int index, out string? value)
+    {
+        value = null;
+        var nextIndex = index + 1;
+
+        if (nextIndex >= args.Length)
+            return false;
+
+        var nextValue = args[nextIndex];
+        if (nextValue.StartsWith("-", ignoreCase: false, G11n.Culture))
+            return false;
+
+        index++;
+        value = nextValue;
+        return true;
     }
 }
