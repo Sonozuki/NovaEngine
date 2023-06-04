@@ -1,13 +1,13 @@
 ﻿namespace NovaEditor.Controls;
 
-/// <summary>Represents the panel used for inspecting game objects.</summary>
-public partial class InspectorPanel : EditorPanelBase
+/// <summary>Represents the panel used for editing properties of game objects.</summary>
+public partial class PropertiesPanel : EditorPanelBase
 {
     /*********
     ** Constructor
     *********/
     /// <summary>Constructs an instance.</summary>
-    public InspectorPanel()
+    public PropertiesPanel()
     {
         InitializeComponent();
     }

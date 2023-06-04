@@ -1,9 +1,9 @@
-﻿<controls:EditorPanelBase x:Class="NovaEditor.Controls.InspectorPanel"
+﻿<controls:EditorPanelBase x:Class="NovaEditor.Controls.PropertiesPanel"
                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:controls="clr-namespace:NovaEditor.Controls"
-                          Title="Inspector">
+                          Title="Properties">
 
-    <Label Content="Inspector panel content" />
+    <Label Content="Properties panel content" />
 
 </controls:EditorPanelBase>
