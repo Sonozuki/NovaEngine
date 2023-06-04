@@ -8,8 +8,19 @@ internal static class EmbeddedEngineManager
     *********/
     /// <summary>Starts the embedded engine.</summary>
     /// <param name="hwndParent">A handle to the parent window.</param>
-    public static void StartEngine(HandleRef hwndParent)
+    /// <param name="width">The width of the engine window.</param>
+    /// <param name="height">The height of the engine window.</param>
+    public static void StartEngine(HandleRef hwndParent, int width, int height)
     {
-        NovaEngine.Program.Main(new[] { "-disable-read-commands", "-remove-engine-thread-block", $"-window-parent", hwndParent.Handle.ToString(G11n.Culture) });
+        var arguments = new[]
+        {
+            "-disable-read-commands",
+            "-remove-engine-thread-block",
+            "-window-parent", hwndParent.Handle.ToString(G11n.Culture),
+            "-width", width.ToString(G11n.Culture),
+            "-height", height.ToString(G11n.Culture)
+        };
+
+        NovaEngine.Program.Main(arguments);
     }
 }

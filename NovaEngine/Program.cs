@@ -98,7 +98,7 @@ public static class Program
     {
         if (PlatformManager.CurrentPlatform == null)
             return false; // manager has already created a fatal log
-        MainWindow = new Window("NovaEngine", new(1280, 720)); // TODO: don't hardcode
+        MainWindow = new Window("NovaEngine", new(Arguments.Width, Arguments.Height));
         MainWindowTaskCompletionSource.SetResult(MainWindow);
 
         if (InputHandlerManager.CurrentInputHandler == null)

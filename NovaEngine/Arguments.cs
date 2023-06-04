@@ -18,6 +18,13 @@ public sealed class Arguments
     /// <summary>The parent to use when creating <see cref="Program.MainWindow"/>.</summary>
     public IntPtr WindowParent { get; private set; }
 
+    // TODO: retrieve default values from a settings file
+    /// <summary>The width of the window.</summary>
+    public int Width { get; private set; } = 1280;
+
+    /// <summary>The height of the window.</summary>
+    public int Height { get; private set; } = 720;
+
 
     /*********
     ** Constructors
@@ -68,6 +75,38 @@ public sealed class Arguments
                     }
 
                     arguments.WindowParent = windowParentPointer;
+                    break;
+
+                case "-width":
+                    if (!TryGetNextValue(args, ref i, out var widthString))
+                    {
+                        Logger.LogError("Failed to retrieve value after '-width'.");
+                        break;
+                    }
+
+                    if (!int.TryParse(widthString, out var width))
+                    {
+                        Logger.LogError($"Failed to parse '{widthString}' as an integer.");
+                        break;
+                    }
+
+                    arguments.Width = width;
+                    break;
+
+                case "-height":
+                    if (!TryGetNextValue(args, ref i, out var heightString))
+                    {
+                        Logger.LogError("Failed to retrieve value after '-height'.");
+                        break;
+                    }
+
+                    if (!int.TryParse(heightString, out var height))
+                    {
+                        Logger.LogError($"Failed to parse '{heightString}' as an integer.");
+                        break;
+                    }
+
+                    arguments.Height = height;
                     break;
 
                 default:

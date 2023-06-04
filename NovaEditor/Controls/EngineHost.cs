@@ -34,7 +34,7 @@ public class EngineHost : HwndHost
     /// <returns>The handle to the child Win32 window.</returns>
     protected override HandleRef BuildWindowCore(HandleRef hwndParent)
     {
-        EmbeddedEngineManager.StartEngine(hwndParent);
+        EmbeddedEngineManager.StartEngine(hwndParent, Width, Height);
         var engineWindow = NovaEngine.Program.MainWindowTask.Result.Handle;
         return new HandleRef(this, engineWindow);
     }
