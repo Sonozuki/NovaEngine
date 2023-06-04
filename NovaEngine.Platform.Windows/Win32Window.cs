@@ -66,9 +66,9 @@ public class Win32Window : PlatformWindowBase
 
         // adjust window size so client area is the specified size
         var rectangle = new Common.Windows.Native.Rectangle(Vector2I.Zero, Size);
-        var style = WindowStyle.OverlappedWindow;
-        if (Program.Arguments.WindowParent != 0)
-            style |= WindowStyle.Child;
+        var style = Program.Arguments.WindowParent == 0
+            ? WindowStyle.OverlappedWindow
+            : WindowStyle.Child;
 
         if (!User32.AdjustWindowRect(&rectangle, style, false))
             throw new Win32Exception("Failed to adjust Win32 window client area.").Log(LogSeverity.Fatal);
