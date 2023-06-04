@@ -1,6 +1,6 @@
 ﻿namespace NovaEngine.Physics;
 
-/// <summary>Contains info abount a collision pair.</summary>
+/// <summary>Contains info about a collision pair.</summary>
 internal struct CollisionInfo
 {
     /*********

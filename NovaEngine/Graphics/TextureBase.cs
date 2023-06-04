@@ -25,7 +25,7 @@ public abstract class TextureBase : IDisposable
     internal uint _LayerCount;
 
     /// <summary>The pixel data of the texture.</summary>
-    /// <remarks>This will always be <see langword="null"/> when accessed manually.<br/>When a texture gets serialised it means it woun't be loaded through the content pipeline when deserialised, therefore, we need to store the pixel data for the serialiser to save; this will be populated just before being serialised and set to <see langword="null"/> straight after.</remarks>
+    /// <remarks>This will always be <see langword="null"/> when accessed manually.<br/>When a texture gets serialised it means it wouldn't be loaded through the content pipeline when deserialised, therefore, we need to store the pixel data for the serialiser to save; this will be populated just before being serialised and set to <see langword="null"/> straight after.</remarks>
     private Colour32[]? SerialiserPixelData;
 
 

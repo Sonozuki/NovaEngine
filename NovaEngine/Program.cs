@@ -84,7 +84,7 @@ public static class Program
         }
         catch (Exception ex)
         {
-            Logger.LogFatal($"Unrecoverable error occured outside the main loop: {ex}");
+            Logger.LogFatal($"Unrecoverable error occurred outside the main loop: {ex}");
         }
     }
 

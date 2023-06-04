@@ -81,7 +81,7 @@ public class Win32Window : PlatformWindowBase
 
         Handle = User32.CreateWindowEx(0, className, title, style, rectangle.Left, rectangle.Top, rectangle.Right - rectangle.Left, rectangle.Bottom - rectangle.Top, Program.Arguments.WindowParent, IntPtr.Zero, Program.Handle, IntPtr.Zero);
         if (Handle == IntPtr.Zero)
-            throw new Win32Exception("Failed to craete Win32 window.").Log(LogSeverity.Fatal);
+            throw new Win32Exception("Failed to create Win32 window.").Log(LogSeverity.Fatal);
     }
 
 
@@ -105,7 +105,7 @@ public class Win32Window : PlatformWindowBase
     /*********
     ** Private Methods
     *********/
-    /// <summary>An application-defined method that processess messges sent to a window.</summary>
+    /// <summary>An application-defined method that processes messages sent to a window.</summary>
     /// <param name="windowHandle">A handle to the window.</param>
     /// <param name="message">The message.</param>
     /// <param name="wParam">Additional message information. The contents of this parameter depend on the value of the <paramref name="message"/> parameter.</param>
@@ -142,7 +142,7 @@ public class Win32Window : PlatformWindowBase
         }
         catch (Exception ex)
         {
-            Logger.LogFatal($"Unhandled exception occured in window procedure: {ex}");
+            Logger.LogFatal($"Unhandled exception occurred in window procedure: {ex}");
             return IntPtr.Zero;
         }
     }

@@ -21,7 +21,7 @@ internal sealed class WorkspaceTabGroupGroup : WorkspacePanel
         : base(typeof(PanelTabGroupGroup).FullName) { }
 
     /// <summary>Constructs an instance.</summary>
-    /// <param name="orientation">The orientation of the tab group gorup.</param>
+    /// <param name="orientation">The orientation of the tab group group.</param>
     /// <param name="panels">The tab group panels in the tab group group.</param>
     public WorkspaceTabGroupGroup(Orientation orientation, IEnumerable<WorkspacePanel> panels)
         : base(typeof(PanelTabGroupGroup).FullName)

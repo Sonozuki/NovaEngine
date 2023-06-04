@@ -2,7 +2,7 @@
 
 namespace NovaEngine.Common.Windows.Api;
 
-/// <summary>Exposes neccessary User32.dll apis.</summary>
+/// <summary>Exposes necessary User32.dll apis.</summary>
 public static class User32
 {
     /*********
@@ -47,14 +47,14 @@ public static class User32
     public static IntPtr SetWindowLong(IntPtr window, WindowLongOffset index, IntPtr newValue)
     {
         // set the last error to zero, this is because SetWindowLongPtr will return 0 in the case of an error *or* if the previous value of the specified int is 0
-        // this means we can call GetLastError to determine if an error actually occured (GetLastError will return a non-zero value if an error occured)
+        // this means we can call GetLastError to determine if an error actually occurred (GetLastError will return a non-zero value if an error occurred)
         Kernel32.SetLastError(0);
 
         var returnValue = SetWindowLongPtr(window, index, newValue);
         if (returnValue == IntPtr.Zero)
         {
             var error = Marshal.GetLastWin32Error();
-            if (error != 0) // check if an error actually occured
+            if (error != 0) // check if an error actually occurred
                 throw new Win32Exception($"Failed to modify window attribute: {error}").Log(LogSeverity.Fatal);
         }
 
@@ -62,7 +62,7 @@ public static class User32
     }
 
     /// <summary>Calculates the required size of the window rectangle, based on the desired client-rectangle size.</summary>
-    /// <param name="rectangle">A pointer to a <see cref="Rectangle"/> structure that contains the coordinates of the top-left and bottom-right corners of the desired client area. When the function returns, the structure contains the coordinates of the top-left and bottom-right corners of the window to accomodate the desired client area.</param>
+    /// <param name="rectangle">A pointer to a <see cref="Rectangle"/> structure that contains the coordinates of the top-left and bottom-right corners of the desired client area. When the function returns, the structure contains the coordinates of the top-left and bottom-right corners of the window to accommodate the desired client area.</param>
     /// <param name="style">The window style of the window whose required size is to be calculated. Note that you cannot specify the <see cref="WindowStyle.Overlapped"/> style.</param>
     /// <param name="menu">Indicates whether the window has a menu.</param>
     /// <returns><see langword="true"/>; if the call succeeds; otherwise, <see langword="false"/>.</returns>
@@ -87,7 +87,7 @@ public static class User32
     public static extern bool ClientToScreen(IntPtr window, ref Vector2I point);
 
     /// <summary>Confines the cursor to a rectangular area on the screen.</summary>
-    /// <param name="rectangle">A pointer to the structure that contains the screen coordiantes of the upper-left and lower-right corners of the confining rectangle. If this parameter is <see langword="null"/>, the cursor is free to move anywhere on the screen.</param>
+    /// <param name="rectangle">A pointer to the structure that contains the screen coordinates of the upper-left and lower-right corners of the confining rectangle. If this parameter is <see langword="null"/>, the cursor is free to move anywhere on the screen.</param>
     /// <returns><see langword="true"/>, if the call succeeds; otherwise, <see langword="false"/>.</returns>
     [DllImport("User32", SetLastError = true)]
     public unsafe static extern bool ClipCursor(Rectangle* rectangle);
@@ -131,13 +131,13 @@ public static class User32
     public static extern IntPtr DispatchMessage(in Msg message);
 
     /// <summary>Retrieves the screen coordinates of the rectangle area to which the cursor is confined.</summary>
-    /// <param name="rectangle">A reference to the <see cref="Rectangle"/> structure that receives the screen coordinates of the confining rectanlge. The structure receives the dimensions of the screen if the cursor is not confined to a rectangle.</param>
+    /// <param name="rectangle">A reference to the <see cref="Rectangle"/> structure that receives the screen coordinates of the confining rectangle. The structure receives the dimensions of the screen if the cursor is not confined to a rectangle.</param>
     /// <returns><see langword="true"/>, if the call succeeds; otherwise, <see langword="false"/>.</returns>
     [DllImport("User32", SetLastError = true)]
     public static extern bool GetClipCursor(ref Rectangle rectangle);
 
     /// <summary>Retrieves information about the global cursor.</summary>
-    /// <param name="cursorInfo">The structure to populate with the cursor infomation.</param>
+    /// <param name="cursorInfo">The structure to populate with the cursor information.</param>
     /// <returns><see langword="true"/>, if the call succeeds; otherwise, <see langword="false"/>.</returns>
     [DllImport("User32", SetLastError = true)]
     public static extern bool GetCursorInfo(ref CursorInfo cursorInfo);
@@ -174,7 +174,7 @@ public static class User32
     public static extern IntPtr LoadCursor(IntPtr handle, int cursorName);
 
     /// <summary>Dispatches incoming sent messages, chest the thread message queue for a posted message, and retrieves the message (if any exist).</summary>
-    /// <param name="message">The reveived message information.</param>
+    /// <param name="message">The received message information.</param>
     /// <param name="window">A handle to the window whose messages are to be retrieved.</param>
     /// <param name="messageFilterMin">The value of the first message in the range of messages to be examined.</param>
     /// <param name="messageFilterMax">The value of the last message in the range of messages to be examined.</param>
@@ -196,7 +196,7 @@ public static class User32
 
     /// <summary>Registers the devices that supply the raw input data.</summary>
     /// <param name="rawInputDevices">The devices that represent the raw input.</param>
-    /// <param name="numDevices">The number of <see cref="RawInputDevice"/> strucures in <paramref name="rawInputDevices"/>.</param>
+    /// <param name="numDevices">The number of <see cref="RawInputDevice"/> structures in <paramref name="rawInputDevices"/>.</param>
     /// <param name="size">The size, in <see langword="byte"/>s, of a <see cref="RawInputDevice"/> structure.</param>
     /// <returns><see langword="true"/>, if the call succeeds; otherwise, <see langword="false"/>.</returns>
     [DllImport("User32", SetLastError = true)]
@@ -210,7 +210,7 @@ public static class User32
     public static extern bool ScreenToClient(IntPtr window, ref Vector2I point);
 
     /// <summary>Changes an attribute of the specified window.</summary>
-    /// <param name="window">A handle to the window and, indirectly, athe class to which the window belongs.</param>
+    /// <param name="window">A handle to the window and, indirectly, the class to which the window belongs.</param>
     /// <param name="index">The zero-based offset to the value to be set. Valid values are in the range zero through the number of <see langword="byte"/>s of extra window memory, minus the size of am <see cref="IntPtr"/>. To set any other value, specify one of the <see cref="WindowLongOffset"/> values.</param>
     /// <param name="newValue">The replacement values.</param>
     /// <returns>The previous value of the specified offset, if the call succeeds; otherwise, 0.</returns>

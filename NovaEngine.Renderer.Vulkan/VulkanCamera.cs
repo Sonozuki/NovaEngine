@@ -184,7 +184,7 @@ public unsafe class VulkanCamera : RendererCameraBase
             VK.WaitForFences(VulkanRenderer.Instance.Device.NativeDevice, 1, new[] { ImagesInFlight[imageIndex] }, true, ulong.MaxValue);
         if (!RenderingCommandBufferInFlight.IsNull)
         {
-            // TODO: this is because the first two frames don't have their fences waited on resulting in freeing prematurly, this shouldn't wait on the queue like this eventually
+            // TODO: this is because the first two frames don't have their fences waited on resulting in freeing prematurely, this shouldn't wait on the queue like this eventually
             VK.QueueWaitIdle(VulkanRenderer.Instance.Device.GraphicsQueue);
             GraphicsCommandPool.FreeCommandBuffers(new[] { RenderingCommandBufferInFlight });
         }
@@ -595,7 +595,7 @@ public unsafe class VulkanCamera : RendererCameraBase
                 },
                 new()
                 {
-                    // trasparent -> ui
+                    // transparent -> ui
                     SourceSubpass = 1,
                     DestinationSubpass = 2,
                     SourceStageMask = VkPipelineStageFlags.ColorAttachmentOutput,
@@ -841,12 +841,12 @@ public unsafe class VulkanCamera : RendererCameraBase
         if (VK.CreateFence(VulkanRenderer.Instance.Device.NativeDevice, ref fenceCreateInfo, null, out var fence) != VkResult.Success)
             throw new VulkanException("Failed to create fence.").Log(LogSeverity.Fatal);
 
-        var furstumsCommandBuffer = GenerateFrustumsCommandBuffer;
+        var frustumsCommandBuffer = GenerateFrustumsCommandBuffer;
         var submitInfo = new VkSubmitInfo
         {
             SType = VkStructureType.SubmitInfo,
             CommandBufferCount = 1,
-            CommandBuffers = &furstumsCommandBuffer
+            CommandBuffers = &frustumsCommandBuffer
         };
 
         VK.QueueSubmit(VulkanRenderer.Instance.Device.ComputeQueue, 1, new[] { submitInfo }, fence);

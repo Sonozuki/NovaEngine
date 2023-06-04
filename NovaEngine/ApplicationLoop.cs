@@ -37,7 +37,7 @@ public static class ApplicationLoop
         }
         catch (Exception ex)
         {
-            Logger.LogFatal($"Unrecoverable error occured inside the main loop: {ex}");
+            Logger.LogFatal($"Unrecoverable error occurred inside the main loop: {ex}");
         }
     }
 }

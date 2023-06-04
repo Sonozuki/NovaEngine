@@ -28,10 +28,10 @@ public sealed class Camera : ComponentBase
     /// <summary>The field of view of the camera in degrees (perspective projection only).</summary>
     public float FieldOfView { get; set; }
 
-    /// <summary>The width of the view frustum, in units (orthograhic projection only).</summary>
+    /// <summary>The width of the view frustum, in units (orthographic projection only).</summary>
     public float Width { get; set; }
 
-    /// <summary>The height of the view frustum, in units (orthograhic projection only).</summary>
+    /// <summary>The height of the view frustum, in units (orthographic projection only).</summary>
     public float Height { get; set; }
 
     /// <summary>The near clipping plane of the camera.</summary>
@@ -109,7 +109,7 @@ public sealed class Camera : ComponentBase
     /// <param name="farClippingPlane">The far clipping plane of the camera.</param>
     /// <param name="resolution">The resolution of the camera's render target; specifying <see langword="null"/> will automatically update the resolution to be the same as the window's.</param>
     /// <param name="aspectRatio">The aspect ratio of the camera (width / height); specifying <see langword="null"/> will automatically update the aspect ratio to be the same as the window's.</param>
-    /// <param name="setMainCamera">Whether <see cref="Main"/> should be set to this camnera.</param>
+    /// <param name="setMainCamera">Whether <see cref="Main"/> should be set to this camera.</param>
     public Camera(float fieldOfView, float nearClippingPlane, float farClippingPlane, Vector2I? resolution, float? aspectRatio, bool setMainCamera)
         : this(CameraProjection.Perspective, fieldOfView, 0, 0, nearClippingPlane, farClippingPlane, resolution, aspectRatio, setMainCamera) { }
 
@@ -119,7 +119,7 @@ public sealed class Camera : ComponentBase
     /// <param name="nearClippingPlane">The near clipping plane of the camera.</param>
     /// <param name="farClippingPlane">The far clipping plane of the camera.</param>
     /// <param name="resolution">The resolution of the camera's render target; specifying <see langword="null"/> will automatically update the resolution to be the same as the window's.</param>
-    /// <param name="setMainCamera">Whether <see cref="Main"/> should be set to this camnera.</param>
+    /// <param name="setMainCamera">Whether <see cref="Main"/> should be set to this camera.</param>
     public Camera(float width, float height, float nearClippingPlane, float farClippingPlane, Vector2I? resolution, bool setMainCamera)
         : this(CameraProjection.Othographic, 0, width, height, nearClippingPlane, farClippingPlane, resolution, null, setMainCamera) { }
 
@@ -128,13 +128,13 @@ public sealed class Camera : ComponentBase
     /// <summary>Constructs an instance.</summary>
     /// <param name="projection">The projection to use for the camera.</param>
     /// <param name="fieldOfView">The field of view of the camera, in degrees (perspective projection only).</param>
-    /// <param name="width">The width of the view frustum, in units (orthograhic projection only).</param>
-    /// <param name="height">The height of the view frustum, in units (orthograhic projection only).</param>
+    /// <param name="width">The width of the view frustum, in units (orthographic projection only).</param>
+    /// <param name="height">The height of the view frustum, in units (orthographic projection only).</param>
     /// <param name="nearClippingPlane">The near clipping place of the camera.</param>
     /// <param name="farClippingPlane">The far clipping place of the camera.</param>
     /// <param name="resolution">The resolution of the camera's render target; specifying <see langword="null"/> will automatically update the resolution to be the same as the window's.</param>
     /// <param name="aspectRatio">The aspect ratio of the camera (width / height).</param>
-    /// <param name="setMainCamera">Whether <see cref="Main"/> should be set to this camnera.</param>
+    /// <param name="setMainCamera">Whether <see cref="Main"/> should be set to this camera.</param>
     private Camera(CameraProjection projection, float fieldOfView, float width, float height, float nearClippingPlane, float farClippingPlane, Vector2I? resolution, float? aspectRatio, bool setMainCamera)
     {
         Projection = projection;
