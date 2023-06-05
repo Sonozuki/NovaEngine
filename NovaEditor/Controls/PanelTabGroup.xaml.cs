@@ -12,11 +12,11 @@ public partial class PanelTabGroup : EditorPanelBase
     /// <summary>The cached bounding box of all the tabs in the tab group.</summary>
     private Rect TabsBoundingBox;
 
-    /// <summary>The cached position boundries of each tag in the tab group.</summary>
-    private List<double> TabBoundries;
+    /// <summary>The cached position boundaries of each tag in the tab group.</summary>
+    private List<double> TabBoundaries;
 
-    /// <summary>The index into <see cref="TabBoundries"/> the mouse position fell into last move event.</summary>
-    private int OldBoundryIndex;
+    /// <summary>The index into <see cref="TabBoundaries"/> the mouse position fell into last move event.</summary>
+    private int OldBoundaryIndex;
 
 
     /*********
@@ -48,13 +48,13 @@ public partial class PanelTabGroup : EditorPanelBase
     {
         RelativePosition = Mouse.GetPosition(this);
 
-        // calculate tab boundries, when the mouse crosses one of these the tab being dragged will change index
+        // calculate tab boundaries, when the mouse crosses one of these the tab being dragged will change index
         // these are cached as tabs can be variable width meaning the tab could go back and forth quickly if
-        // the boundries are calculated each move event
+        // the boundaries are calculated each move event
         var tabPanel = (TabPanel)VisualTreeHelper.GetParent((DependencyObject)sender);
         CalculateTabMetrics(tabPanel);
 
-        OldBoundryIndex = CalculateBoundyIndex(RelativePosition.X);
+        OldBoundaryIndex = CalculateBoundaryIndex(RelativePosition.X);
 
         ((IInputElement)sender).CaptureMouse();
     }
@@ -97,11 +97,11 @@ public partial class PanelTabGroup : EditorPanelBase
         }
 
         // check for tab reorganisation
-        var boundryIndex = CalculateBoundyIndex(mousePosition.X);
-        if (OldBoundryIndex != boundryIndex)
+        var boundaryIndex = CalculateBoundaryIndex(mousePosition.X);
+        if (OldBoundaryIndex != boundaryIndex)
         {
-            viewModel.Panels.Move(OldBoundryIndex, boundryIndex);
-            OldBoundryIndex = boundryIndex;
+            viewModel.Panels.Move(OldBoundaryIndex, boundaryIndex);
+            OldBoundaryIndex = boundaryIndex;
         }
     }
 
@@ -121,7 +121,7 @@ public partial class PanelTabGroup : EditorPanelBase
 
         TabsBoundingBox = new(CalculateTabTopLeft(tabItems.First()), CalculateTabBottomRight(tabItems.Last()));
 
-        TabBoundries = tabItems.Skip(1)
+        TabBoundaries = tabItems.Skip(1)
             .Select(tabItem => CalculateTabTopLeft(tabItem).X)
             .ToList();
 
@@ -137,22 +137,22 @@ public partial class PanelTabGroup : EditorPanelBase
         }
     }
 
-    /// <summary>Calculates the index into <see cref="TabBoundries"/> a specified value falls into.</summary>
-    /// <param name="xPosition">The value to determine which boundry it falls in.</param>
-    /// <returns>The index into <see cref="TabBoundries"/> <paramref name="xPosition"/> falls into.</returns>
-    private int CalculateBoundyIndex(double xPosition)
+    /// <summary>Calculates the index into <see cref="TabBoundaries"/> a specified value falls into.</summary>
+    /// <param name="xPosition">The value to determine which boundary it falls in.</param>
+    /// <returns>The index into <see cref="TabBoundaries"/> <paramref name="xPosition"/> falls into.</returns>
+    private int CalculateBoundaryIndex(double xPosition)
     {
-        var boundryIndex = 0;
+        var boundaryIndex = 0;
 
-        for (var i = 0; i < TabBoundries.Count; i++)
+        for (var i = 0; i < TabBoundaries.Count; i++)
         {
-            if (TabBoundries[boundryIndex] >= xPosition)
+            if (TabBoundaries[boundaryIndex] >= xPosition)
                 break;
 
-            boundryIndex++;
+            boundaryIndex++;
         }
 
-        return boundryIndex;
+        return boundaryIndex;
     }
 
     /// <summary>Closes the selected panel.</summary>
