@@ -26,6 +26,6 @@ public partial class FloatingPanelWindow : Window
         ArgumentNullException.ThrowIfNull(content);
 
         Content = content;
-        ((PanelTabGroupViewModel)content.DataContext).Emptied += Close;
+        content.ViewModel.Emptied += Close;
     }
 }

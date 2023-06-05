@@ -56,15 +56,9 @@ internal static class WorkspaceManager
     private static WorkspacePanel CreatePanel(EditorPanelBase editorPanel)
     {
         if (editorPanel is PanelTabGroup panelTabGroup)
-        {
-            var viewModel = (PanelTabGroupViewModel)panelTabGroup.DataContext;
-            return new WorkspaceTabGroup(viewModel.Panels.Select(CreatePanel), panelTabGroup.PanelTabControl.SelectedIndex);
-        }
+            return new WorkspaceTabGroup(panelTabGroup.ViewModel.Panels.Select(CreatePanel), panelTabGroup.PanelTabControl.SelectedIndex);
         else if (editorPanel is PanelTabGroupGroup panelTabGroupGroup)
-        {
-            var viewModel = (PanelTabGroupGroupViewModel)panelTabGroupGroup.DataContext;
-            return new WorkspaceTabGroupGroup(viewModel.Orientation, viewModel.Panels.Select(CreatePanel));
-        }
+            return new WorkspaceTabGroupGroup(panelTabGroupGroup.ViewModel.Orientation, panelTabGroupGroup.ViewModel.Panels.Select(CreatePanel));
         else
             return new WorkspacePanel(editorPanel.GetType().FullName);
     }
@@ -77,10 +71,9 @@ internal static class WorkspaceManager
         if (workspacePanel is WorkspaceTabGroup workspaceTabGroup)
         {
             var panelTabGroup = new PanelTabGroup();
-            var viewModel = (PanelTabGroupViewModel)panelTabGroup.DataContext;
 
             foreach (var editorPanel in workspaceTabGroup.Panels.Select(CreatePanel))
-                viewModel.Panels.Add(editorPanel);
+                panelTabGroup.ViewModel.Panels.Add(editorPanel);
             panelTabGroup.PanelTabControl.SelectedIndex = workspaceTabGroup.SelectedPanelIndex;
 
             return panelTabGroup;
@@ -88,11 +81,10 @@ internal static class WorkspaceManager
         else if (workspacePanel is WorkspaceTabGroupGroup workspaceTabGroupGroup)
         {
             var panelTabGroupGroup = new PanelTabGroupGroup();
-            var viewModel = (PanelTabGroupGroupViewModel)panelTabGroupGroup.DataContext;
 
-            viewModel.Orientation = workspaceTabGroupGroup.Orientation;
+            panelTabGroupGroup.ViewModel.Orientation = workspaceTabGroupGroup.Orientation;
             foreach (var editorPanel in workspaceTabGroupGroup.Panels.Select(CreatePanel))
-                viewModel.Panels.Add(editorPanel);
+                panelTabGroupGroup.ViewModel.Panels.Add(editorPanel);
 
             return panelTabGroupGroup;
         }

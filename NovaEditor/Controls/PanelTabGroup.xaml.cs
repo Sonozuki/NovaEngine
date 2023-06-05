@@ -20,11 +20,19 @@ public partial class PanelTabGroup : EditorPanelBase
 
 
     /*********
+    ** Properties
+    *********/
+    /// <summary>The view model of the panel.</summary>
+    public PanelTabGroupViewModel ViewModel { get; } = new();
+
+
+    /*********
     ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     public PanelTabGroup()
     {
+        DataContext = ViewModel;
         InitializeComponent();
     }
 
@@ -34,7 +42,7 @@ public partial class PanelTabGroup : EditorPanelBase
     {
         ArgumentNullException.ThrowIfNull(panel);
 
-        ((PanelTabGroupViewModel)DataContext).Panels.Add(panel);
+        ViewModel.Panels.Add(panel);
     }
 
 
@@ -67,11 +75,10 @@ public partial class PanelTabGroup : EditorPanelBase
         if (!((IInputElement)sender).IsMouseCaptured)
             return;
 
-        var viewModel = (PanelTabGroupViewModel)DataContext;
         var mousePosition = Mouse.GetPosition(this);
 
         // if the tab is the only tab and the tab group is the root of a floating window, the window should be moved instead
-        if (viewModel.Panels.Count == 1 && Window.GetWindow((DependencyObject)sender) is FloatingPanelWindow floatingPanelWindow)
+        if (ViewModel.Panels.Count == 1 && Window.GetWindow((DependencyObject)sender) is FloatingPanelWindow floatingPanelWindow)
         {
             ((IInputElement)sender).ReleaseMouseCapture();
             floatingPanelWindow.DragMove();
@@ -100,7 +107,7 @@ public partial class PanelTabGroup : EditorPanelBase
         var boundaryIndex = CalculateBoundaryIndex(mousePosition.X);
         if (OldBoundaryIndex != boundaryIndex)
         {
-            viewModel.Panels.Move(OldBoundaryIndex, boundaryIndex);
+            ViewModel.Panels.Move(OldBoundaryIndex, boundaryIndex);
             OldBoundaryIndex = boundaryIndex;
         }
     }
@@ -156,8 +163,7 @@ public partial class PanelTabGroup : EditorPanelBase
     }
 
     /// <summary>Closes the selected panel.</summary>
-    private void CloseSelectedPanel() =>
-        ((PanelTabGroupViewModel)DataContext).Panels.Remove((EditorPanelBase)PanelTabControl.SelectedItem);
+    private void CloseSelectedPanel() => ViewModel.Panels.Remove((EditorPanelBase)PanelTabControl.SelectedItem);
 
     /// <summary>Invoked when the close button is clicked.</summary>
     /// <param name="sender">The event sender.</param>

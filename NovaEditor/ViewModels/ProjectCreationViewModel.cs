@@ -3,7 +3,7 @@
 namespace NovaEditor.ViewModels;
 
 /// <summary>Represents the view model for <see cref="ProjectCreationPanel"/>.</summary>
-internal sealed class ProjectCreationViewModel
+public sealed class ProjectCreationViewModel
 {
     /*********
     ** Constants

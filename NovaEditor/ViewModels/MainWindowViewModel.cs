@@ -1,7 +1,7 @@
 ﻿namespace NovaEditor.ViewModels;
 
 /// <summary>Represents the view model for <see cref="MainWindow"/>.</summary>
-internal sealed class MainWindowViewModel
+public sealed class MainWindowViewModel
 {
     /*********
     ** Properties

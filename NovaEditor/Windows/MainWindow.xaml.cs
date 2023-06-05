@@ -4,6 +4,13 @@
 public partial class MainWindow : Window
 {
     /*********
+    ** Properties
+    *********/
+    /// <summary>The view model of the window.</summary>
+    public MainWindowViewModel ViewModel { get; } = new();
+
+
+    /*********
     ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>

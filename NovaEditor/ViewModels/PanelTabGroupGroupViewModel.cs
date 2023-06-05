@@ -1,7 +1,7 @@
 ﻿namespace NovaEditor.ViewModels;
 
 /// <summary>Represents the view model for <see cref="PanelTabGroupGroup"/>.</summary>
-internal sealed class PanelTabGroupGroupViewModel : DependencyObject
+public sealed class PanelTabGroupGroupViewModel : DependencyObject
 {
     /*********
     ** Events
@@ -42,9 +42,9 @@ internal sealed class PanelTabGroupGroupViewModel : DependencyObject
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 if (e.NewItems[0] is PanelTabGroup panelTabGroup)
-                    ((PanelTabGroupViewModel)panelTabGroup.DataContext).Emptied += () => Panels.Remove(panelTabGroup);
+                    panelTabGroup.ViewModel.Emptied += () => Panels.Remove(panelTabGroup);
                 else if (e.NewItems[0] is PanelTabGroupGroup panelTabGroupGroup)
-                    ((PanelTabGroupGroupViewModel)panelTabGroupGroup.DataContext).Emptied += () => Panels.Remove(panelTabGroupGroup);
+                    panelTabGroupGroup.ViewModel.Emptied += () => Panels.Remove(panelTabGroupGroup);
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {

@@ -1,7 +1,7 @@
 ﻿namespace NovaEditor.ViewModels;
 
 /// <summary>Represents the view model for <see cref="ProjectSelectionPanel"/>.</summary>
-internal sealed class ProjectSelectionViewModel
+public sealed class ProjectSelectionViewModel
 {
     /*********
     ** Properties

@@ -1,13 +1,8 @@
 ﻿<controls:EditorPanelBase x:Class="NovaEditor.Controls.ProjectCreationPanel"
                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                          xmlns:controls="clr-namespace:NovaEditor.Controls"
-                          xmlns:viewModels="clr-namespace:NovaEditor.ViewModels">
+                          xmlns:controls="clr-namespace:NovaEditor.Controls">
 
-    <UserControl.DataContext>
-        <viewModels:ProjectCreationViewModel />
-    </UserControl.DataContext>
-    
     <StackPanel Orientation="Vertical">
         
         <Label Content="Project Name" />

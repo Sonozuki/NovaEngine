@@ -4,14 +4,22 @@
 public partial class PanelTabGroupGroup : EditorPanelBase
 {
     /*********
+    ** Properties
+    *********/
+    /// <summary>The view model of the panel.</summary>
+    public PanelTabGroupGroupViewModel ViewModel { get; } = new();
+
+
+    /*********
     ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     public PanelTabGroupGroup()
     {
+        DataContext = ViewModel;
         InitializeComponent();
 
-        ((PanelTabGroupGroupViewModel)DataContext).Panels.CollectionChanged += OnCollectionChanged;
+        ViewModel.Panels.CollectionChanged += OnCollectionChanged;
     }
 
 
@@ -62,7 +70,7 @@ public partial class PanelTabGroupGroup : EditorPanelBase
         {
             MainGrid.Children.RemoveAt(index);
 
-            if (((PanelTabGroupGroupViewModel)DataContext).Orientation == Orientation.Horizontal)
+            if (ViewModel.Orientation == Orientation.Horizontal)
                 MainGrid.ColumnDefinitions.RemoveAt(index);
             else
                 MainGrid.RowDefinitions.RemoveAt(index);
@@ -77,7 +85,7 @@ public partial class PanelTabGroupGroup : EditorPanelBase
             HorizontalAlignment = HorizontalAlignment.Stretch
         };
 
-        if (((PanelTabGroupGroupViewModel)DataContext).Orientation == Orientation.Horizontal)
+        if (ViewModel.Orientation == Orientation.Horizontal)
         {
             gridSplitter.Width = 5;
             gridSplitter.SetValue(Grid.ColumnProperty, MainGrid.Children.Count);
@@ -95,7 +103,7 @@ public partial class PanelTabGroupGroup : EditorPanelBase
     /// <param name="panel">The panel to add to the grid.</param>
     private void AddPanel(EditorPanelBase panel)
     {
-        if (((PanelTabGroupGroupViewModel)DataContext).Orientation == Orientation.Horizontal)
+        if (ViewModel.Orientation == Orientation.Horizontal)
             panel.SetValue(Grid.ColumnProperty, MainGrid.Children.Count);
         else
             panel.SetValue(Grid.RowProperty, MainGrid.Children.Count);
@@ -107,7 +115,7 @@ public partial class PanelTabGroupGroup : EditorPanelBase
     /// <param name="size">The size of the row/column.</param>
     private void AddDefinition(GridLength size)
     {
-        if (((PanelTabGroupGroupViewModel)DataContext).Orientation == Orientation.Horizontal)
+        if (ViewModel.Orientation == Orientation.Horizontal)
             MainGrid.ColumnDefinitions.Add(new() { Width = size });
         else
             MainGrid.RowDefinitions.Add(new() { Height = size });

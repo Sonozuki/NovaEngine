@@ -1,7 +1,7 @@
 ﻿namespace NovaEditor.ViewModels;
 
 /// <summary>Represents the view model for <see cref="PanelTabGroup"/>.</summary>
-internal sealed class PanelTabGroupViewModel : DependencyObject
+public sealed class PanelTabGroupViewModel : DependencyObject
 {
     /*********
     ** Events
