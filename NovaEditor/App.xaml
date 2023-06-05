@@ -2,12 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:NovaEditor.Controls"
-             xmlns:multiValueConverters="clr-namespace:NovaEditor.MultiValueConverters"
              Startup="OnStartup">
 
     <Application.Resources>
-
-        <multiValueConverters:MultiValueEqualityConverter x:Key="MultiValueEqualityConverter" />
 
         <!-- colours -->
         <Color x:Key="BackgroundColourMedium">#181818</Color>
