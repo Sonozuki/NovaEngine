@@ -118,6 +118,10 @@ public sealed class Arguments
         return arguments;
     }
 
+
+    /*********
+    ** Private Methods
+    *********/
     /// <summary>Tries to get the next specified value.</summary>
     /// <param name="args">The complete list of command-line arguments being parsed.</param>
     /// <param name="index">The current index into <paramref name="args"/> being parsed.</param>
