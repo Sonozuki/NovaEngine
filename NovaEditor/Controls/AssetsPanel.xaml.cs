@@ -18,5 +18,8 @@ public partial class AssetsPanel : EditorPanelBase
     {
         DataContext = ViewModel;
         InitializeComponent();
+
+        foreach (var children in ViewModel.SelectedDirectoryInfo.Children)
+            RootUniformGrid.Children.Add(children.IsDirectory ? new AssetFolder(children.Name) : new AssetFile(children.Name));
     }
 }

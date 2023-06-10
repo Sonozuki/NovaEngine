@@ -4,6 +4,6 @@
                           xmlns:controls="clr-namespace:NovaEditor.Controls"
                           Title="Assets">
 
-    <Label Content="Assets panel content" />
+    <UniformGrid x:Name="RootUniformGrid" Columns="10" />
 
 </controls:EditorPanelBase>

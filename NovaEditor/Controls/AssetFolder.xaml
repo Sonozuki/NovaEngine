@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="NovaEditor.Controls.AssetFolder"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:icons="clr-namespace:NovaEditor.Controls.Icons"
+             xmlns:controls="clr-namespace:NovaEditor.Controls">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <icons:FolderIcon />
+        <Label Grid.Row="1"
+               Content="{Binding FolderName, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetFolder}}}" />
+
+    </Grid>
+
+</UserControl>
