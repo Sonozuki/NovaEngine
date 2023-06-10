@@ -1,0 +1,10 @@
+﻿<UserControl x:Class="NovaEditor.Controls.Icons.FileIcon"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <Canvas>
+        <Path Fill="#FFB3B3B3" Data="M 30 0 V 20 H 50 Z" />
+        <Path Fill="#FFCCCCCC" Data="M 30 0 C 28.353354 -0.50666039 0 0 0 0 V 70 H 50 V 20 H 30 Z" />
+    </Canvas>
+    
+</UserControl>
