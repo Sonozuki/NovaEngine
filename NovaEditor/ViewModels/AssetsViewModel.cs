@@ -1,7 +1,7 @@
 ﻿namespace NovaEditor.ViewModels;
 
 /// <summary>Represents the view model for <see cref="AssetsPanel"/>.</summary>
-public sealed class AssetsViewModel
+public sealed class AssetsViewModel : DependencyObject
 {
     /*********
     ** Events
@@ -15,6 +15,9 @@ public sealed class AssetsViewModel
     *********/
     /// <summary>The path info of the currently selected directory.</summary>
     private PathInfo _SelectedDirectoryInfo;
+
+    /// <summary>The scale of the icons.</summary>
+    public static readonly DependencyProperty ScaleProperty = DependencyProperty.Register(nameof(Scale), typeof(double), typeof(AssetsViewModel));
 
 
     /*********
@@ -31,6 +34,13 @@ public sealed class AssetsViewModel
         }
     }
 
+    /// <summary>The scale of the icons.</summary>
+    public double Scale
+    {
+        get => (double)GetValue(ScaleProperty);
+        set => SetValue(ScaleProperty, value);
+    }
+
     /// <summary>The command to change the selected directory.</summary>
     public ICommand ChangeDirectoryCommand { get; }
 
@@ -42,6 +52,7 @@ public sealed class AssetsViewModel
     public AssetsViewModel()
     {
         SelectedDirectoryInfo = AssetManager.GetAssetPathInfo();
+        Scale = .75;
 
         ChangeDirectoryCommand = new RelayCommand<string>(ChangeDirectory);
     }

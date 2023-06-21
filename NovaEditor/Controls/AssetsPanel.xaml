@@ -4,6 +4,20 @@
                           xmlns:controls="clr-namespace:NovaEditor.Controls"
                           Title="Assets">
 
-    <UniformGrid x:Name="RootUniformGrid" Columns="10" />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <UniformGrid x:Name="RootUniformGrid"
+                     Columns="10" />
+        
+        <Slider x:Name="ScaleSlider"
+                Grid.Row="1"
+                Minimum=".5"
+                Maximum="2"
+                Value="{Binding Scale}" />
+    </Grid>
 
 </controls:EditorPanelBase>

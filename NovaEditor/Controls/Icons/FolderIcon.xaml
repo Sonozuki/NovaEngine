@@ -1,8 +1,14 @@
 ﻿<UserControl x:Class="NovaEditor.Controls.Icons.FolderIcon"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:NovaEditor.Controls">
 
     <Canvas>
+        <Canvas.RenderTransform>
+            <ScaleTransform ScaleX="{Binding ViewModel.Scale, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetsPanel}}}"
+                            ScaleY="{Binding ViewModel.Scale, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetsPanel}}}" />
+        </Canvas.RenderTransform>
+        
         <Path Fill="#FFFFDD55" Data="M 0 0 V 70 H 100 V 0 H 50 L 45 5 H 5 Z" />
     </Canvas>
 
