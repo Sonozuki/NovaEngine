@@ -19,7 +19,20 @@ public partial class AssetsPanel : EditorPanelBase
         DataContext = ViewModel;
         InitializeComponent();
 
+        UpdateContent();
+        ViewModel.SelectedDirectoryInfoChanged += UpdateContent;
+    }
+
+
+    /*********
+    ** Private Methods
+    *********/
+    /// <summary>Updates the content of the panel.</summary>
+    private void UpdateContent()
+    {
+        RootUniformGrid.Children.Clear();
+
         foreach (var children in ViewModel.SelectedDirectoryInfo.Children)
-            RootUniformGrid.Children.Add(children.IsDirectory ? new AssetFolder(children.Name) : new AssetFile(children.Name));
+            RootUniformGrid.Children.Add(children.IsDirectory ? new AssetFolder(children.FullName) : new AssetFile(children.Name));
     }
 }
