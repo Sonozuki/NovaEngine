@@ -5,8 +5,8 @@
 
     <Canvas>
         <Canvas.RenderTransform>
-            <ScaleTransform ScaleX="{Binding ViewModel.Scale, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetsPanel}}}"
-                            ScaleY="{Binding ViewModel.Scale, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetsPanel}}}" />
+            <ScaleTransform ScaleX="{Binding IconScale, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetsPanel}}}"
+                            ScaleY="{Binding IconScale, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetsPanel}}}" />
         </Canvas.RenderTransform>
         
         <Path Fill="#FFFFDD55" Data="M 0 0 V 70 H 100 V 0 H 50 L 45 5 H 5 Z" />

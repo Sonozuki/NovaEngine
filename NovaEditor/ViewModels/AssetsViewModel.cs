@@ -9,6 +9,9 @@ public sealed class AssetsViewModel : DependencyObject
     /// <summary>Invoked when <see cref="SelectedDirectoryInfo"/> is changed.</summary>
     public event Action SelectedDirectoryInfoChanged;
 
+    /// <summary>Invoked when <see cref="NumberOfColumns"/> is changed.</summary>
+    public event Action NumberOfColumnsChanged;
+
 
     /*********
     ** Fields
@@ -16,8 +19,8 @@ public sealed class AssetsViewModel : DependencyObject
     /// <summary>The path info of the currently selected directory.</summary>
     private PathInfo _SelectedDirectoryInfo;
 
-    /// <summary>The scale of the icons.</summary>
-    public static readonly DependencyProperty ScaleProperty = DependencyProperty.Register(nameof(Scale), typeof(double), typeof(AssetsViewModel));
+    /// <summary>The number of columns in the assets panel.</summary>
+    public static readonly DependencyProperty NumberOfColumnsProperty = DependencyProperty.Register(nameof(NumberOfColumns), typeof(int), typeof(AssetsViewModel), new((sender, _) => (sender as AssetsViewModel).NumberOfColumnsChanged?.Invoke()));
 
 
     /*********
@@ -34,11 +37,11 @@ public sealed class AssetsViewModel : DependencyObject
         }
     }
 
-    /// <summary>The scale of the icons.</summary>
-    public double Scale
+    /// <summary>The number of columns in the assets panel.</summary>
+    public int NumberOfColumns
     {
-        get => (double)GetValue(ScaleProperty);
-        set => SetValue(ScaleProperty, value);
+        get => (int)GetValue(NumberOfColumnsProperty);
+        set => SetValue(NumberOfColumnsProperty, value);
     }
 
     /// <summary>The command to change the selected directory.</summary>
@@ -52,7 +55,6 @@ public sealed class AssetsViewModel : DependencyObject
     public AssetsViewModel()
     {
         SelectedDirectoryInfo = AssetManager.GetAssetPathInfo();
-        Scale = .75;
 
         ChangeDirectoryCommand = new RelayCommand<string>(ChangeDirectory);
     }

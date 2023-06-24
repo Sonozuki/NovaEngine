@@ -10,14 +10,24 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <UniformGrid x:Name="RootUniformGrid"
-                     Columns="10" />
-        
-        <Slider x:Name="ScaleSlider"
-                Grid.Row="1"
-                Minimum=".5"
-                Maximum="2"
-                Value="{Binding Scale}" />
+        <ItemsControl x:Name="RootItemsControl">
+            <ItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="FrameworkElement.Margin" Value="2"/>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+            
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="{Binding NumberOfColumns}" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+
+        <Slider Grid.Row="1"
+                Minimum="10"
+                Maximum="15"
+                Value="{Binding NumberOfColumns}" />
     </Grid>
 
 </controls:EditorPanelBase>
