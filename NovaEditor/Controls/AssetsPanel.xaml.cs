@@ -8,6 +8,9 @@ public partial class AssetsPanel : EditorPanelBase
     *********/
     /// <summary>The scale of the file and folder icons in the panel.</summary>
     public static readonly DependencyProperty IconScaleProperty = DependencyProperty.Register(nameof(IconScale), typeof(double), typeof(AssetsPanel));
+    
+    /// <summary>The height of the file and folder icons in the panel.</summary>
+    public static readonly DependencyProperty IconHeightProperty = DependencyProperty.Register(nameof(IconHeight), typeof(double), typeof(AssetsPanel));
 
 
     /*********
@@ -21,6 +24,13 @@ public partial class AssetsPanel : EditorPanelBase
     {
         get => (double)GetValue(IconScaleProperty);
         set => SetValue(IconScaleProperty, value);
+    }
+
+    /// <summary>The height of the file and folder icons in the panel.</summary>
+    public double IconHeight
+    {
+        get => (double)GetValue(IconHeightProperty);
+        set => SetValue(IconHeightProperty, value);
     }
 
 
@@ -53,9 +63,13 @@ public partial class AssetsPanel : EditorPanelBase
     /// <summary>Updates the icon scale based on the current number of columns.</summary>
     private void UpdateIconScale()
     {
+        // TODO: these shouldn't be hardcoded
+        const int iconWidth = 100;
+        const int iconHeight = 70;
+
         var columnWidth = RootItemsControl.ActualWidth / ViewModel.NumberOfColumns - 4; // -4 is 2x the margin applied to each cell in the uniform grid
-        var iconWidth = 100; // this is the folder icon width (as it's wider that the file one) // TODO: this shouldn't be hardcoded
 
         IconScale = columnWidth / iconWidth;
+        IconHeight = iconHeight * IconScale;
     }
 }
