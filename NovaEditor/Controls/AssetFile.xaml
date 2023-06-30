@@ -6,7 +6,7 @@
 
     <Button Command="{Binding ViewModel.SelectPathCommand, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetsPanel}}}"
             CommandParameter="{Binding FileFullName, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetFile}}}"
-            Style="{StaticResource FolderIconButtonStyle}">
+            Style="{StaticResource FolderFileIconButton}">
 
         <Grid>
             <Grid.RowDefinitions>
