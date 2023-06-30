@@ -6,6 +6,9 @@ public partial class AssetFile : UserControl
     /*********
     ** Fields
     *********/
+    /// <summary>The full name of the file.</summary>
+    public static readonly DependencyProperty FileFullNameProperty = DependencyProperty.Register(nameof(FileFullName), typeof(string), typeof(AssetFile));
+
     /// <summary>The name of the file.</summary>
     public static readonly DependencyProperty FileNameProperty = DependencyProperty.Register(nameof(FileName), typeof(string), typeof(AssetFile));
 
@@ -13,6 +16,13 @@ public partial class AssetFile : UserControl
     /*********
     ** Properties
     *********/
+    /// <summary>The full name of the file.</summary>
+    public string FileFullName
+    {
+        get => (string)GetValue(FileFullNameProperty);
+        set => SetValue(FileFullNameProperty, value);
+    }
+
     /// <summary>The name of the file.</summary>
     public string FileName
     {
@@ -31,10 +41,11 @@ public partial class AssetFile : UserControl
     }
 
     /// <summary>Constructs an instance.</summary>
-    /// <param name="fileName">The name of the file.</param>
-    public AssetFile(string fileName)
+    /// <param name="fileFullName">The full name of the file.</param>
+    public AssetFile(string fileFullName)
         : this()
     {
-        FileName = fileName;
+        FileFullName = fileFullName;
+        FileName = new FileInfo(fileFullName).Name;
     }
 }

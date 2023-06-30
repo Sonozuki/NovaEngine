@@ -57,7 +57,7 @@ public partial class AssetsPanel : EditorPanelBase
     {
         RootItemsControl.Items.Clear();
         foreach (var children in ViewModel.SelectedDirectoryInfo.Children)
-            RootItemsControl.Items.Add(children.IsDirectory ? new AssetFolder(children.FullName) : new AssetFile(children.Name));
+            RootItemsControl.Items.Add(children.IsDirectory ? new AssetFolder(children.FullName) : new AssetFile(children.FullName));
     }
 
     /// <summary>Updates the icon scale based on the current number of columns.</summary>

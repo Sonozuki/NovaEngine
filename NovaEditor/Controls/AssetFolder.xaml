@@ -19,6 +19,7 @@
                    Content="{Binding FolderName, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetFolder}}}" />
 
         </Grid>
+        
     </Button>
 
 </UserControl>
