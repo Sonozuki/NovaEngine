@@ -5,69 +5,55 @@
              Startup="OnStartup">
 
     <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ResourceDictionaries/ColoursResourceDictionary.xaml" />
+                <ResourceDictionary Source="ResourceDictionaries/SliderResourceDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-        <!-- colours -->
-        <Color x:Key="BackgroundColourMedium">#181818</Color>
-        <Color x:Key="BackgroundColourLight">#282828</Color>
-        
+            <!-- implicit -->
+            <Style TargetType="controls:PanelTabGroupGroup">
+                <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
+            </Style>
 
-        <Color x:Key="BorderColourMedium">#303030</Color>
+            <Style TargetType="controls:PanelTabGroup">
+                <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
+            </Style>
 
-        <Color x:Key="TextColourPrimary">#ddd</Color>
-        <Color x:Key="TextColourSecondary">#999</Color>
+            <Style TargetType="TabControl">
+                <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource BorderColourMediumBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Padding" Value="5" />
+                <Setter Property="SnapsToDevicePixels" Value="True" />
+            </Style>
 
-        <!-- brushes -->
-        <SolidColorBrush x:Key="BackgroundColourMediumBrush" Color="{StaticResource BackgroundColourMedium}" />
-        <SolidColorBrush x:Key="BackgroundColourLightBrush" Color="{StaticResource BackgroundColourLight}" />
+            <Style TargetType="TabItem">
+                <Setter Property="Foreground" Value="{StaticResource TextColourSecondaryBrush}"/>
+                <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}"/>
+                <Setter Property="Margin" Value="-2,0,0,0"/>
+                <Setter Property="Padding" Value="6,0,6,2"/>
+                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                <Setter Property="VerticalContentAlignment" Value="Stretch"/>
 
-        <SolidColorBrush x:Key="BorderColourMediumBrush" Color="{StaticResource BorderColourMedium}" />
-
-        <SolidColorBrush x:Key="TextColourPrimaryBrush" Color="{StaticResource TextColourPrimary}" />
-        <SolidColorBrush x:Key="TextColourSecondaryBrush" Color="{StaticResource TextColourSecondary}" />
-
-        <!-- implicit -->
-        <Style TargetType="controls:PanelTabGroupGroup">
-            <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
-        </Style>
-
-        <Style TargetType="controls:PanelTabGroup">
-            <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
-        </Style>
-
-        <Style TargetType="TabControl">
-            <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColourMediumBrush}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Padding" Value="5" />
-            <Setter Property="SnapsToDevicePixels" Value="True" />
-        </Style>
-
-        <Style TargetType="TabItem">
-            <Setter Property="Foreground" Value="{StaticResource TextColourSecondaryBrush}"/>
-            <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}"/>
-            <Setter Property="Margin" Value="-2,0,0,0"/>
-            <Setter Property="Padding" Value="6,0,6,2"/>
-            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TabItem">
-                        <Grid SnapsToDevicePixels="true">
-                            <Border x:Name="mainBorder"
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabItem">
+                            <Grid SnapsToDevicePixels="true">
+                                <Border x:Name="mainBorder"
                                     Background="{StaticResource BackgroundColourMediumBrush}"
                                     BorderBrush="Transparent"
                                     Margin="0,0">
 
-                                <Border x:Name="innerBorder"
+                                    <Border x:Name="innerBorder"
                                         Background="{StaticResource BackgroundColourMediumBrush}"
                                         BorderBrush="{StaticResource BorderColourMediumBrush}"
                                         Margin="0,-1,0,0"
                                         Opacity="0"/>
 
-                            </Border>
+                                </Border>
 
-                            <ContentPresenter x:Name="contentPresenter"
+                                <ContentPresenter x:Name="contentPresenter"
                                               ContentSource="Header"
                                               Focusable="False"
                                               Margin="{TemplateBinding Padding}"
@@ -75,95 +61,100 @@
                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                               HorizontalAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
                                               VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-                        </Grid>
+                            </Grid>
 
-                        <ControlTemplate.Triggers>
+                            <ControlTemplate.Triggers>
 
-                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="true">
-                                <Setter Property="Foreground" Value="{StaticResource TextColourPrimaryBrush}" />
-                                <Setter Property="Background" TargetName="mainBorder" Value="{StaticResource BorderColourMediumBrush}"/>
-                                <Setter Property="BorderBrush" TargetName="mainBorder" Value="{StaticResource BorderColourMediumBrush}"/>
-                            </DataTrigger>
+                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="true">
+                                    <Setter Property="Foreground" Value="{StaticResource TextColourPrimaryBrush}" />
+                                    <Setter Property="Background" TargetName="mainBorder" Value="{StaticResource BorderColourMediumBrush}"/>
+                                    <Setter Property="BorderBrush" TargetName="mainBorder" Value="{StaticResource BorderColourMediumBrush}"/>
+                                </DataTrigger>
 
-                            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="true">
-                                <Setter Property="Foreground" Value="{StaticResource TextColourPrimaryBrush}" />
-                                <Setter Property="Panel.ZIndex" Value="1"/>
-                                <Setter Property="Opacity" TargetName="innerBorder" Value="1"/>
-                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="1,0,1,1" />
-                            </DataTrigger>
+                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="true">
+                                    <Setter Property="Foreground" Value="{StaticResource TextColourPrimaryBrush}" />
+                                    <Setter Property="Panel.ZIndex" Value="1"/>
+                                    <Setter Property="Opacity" TargetName="innerBorder" Value="1"/>
+                                    <Setter Property="BorderThickness" TargetName="innerBorder" Value="1,0,1,1" />
+                                </DataTrigger>
 
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <Style TargetType="GridSplitter">
-            <!-- for some reason the border colour for tab controls is really inconsistent without this -->
-            <Setter Property="Margin" Value=".5" />
-            <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
-        </Style>
+            <Style TargetType="GridSplitter">
+                <!-- for some reason the border colour for tab controls is really inconsistent without this -->
+                <Setter Property="Margin" Value=".5" />
+                <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
+            </Style>
 
-        <Style TargetType="Label">
-            <Setter Property="Foreground" Value="{StaticResource TextColourPrimaryBrush}" />
-            <Setter Property="FontSize" Value="13" />
-            <Setter Property="Padding" Value="0" />
-        </Style>
+            <Style TargetType="Label">
+                <Setter Property="Foreground" Value="{StaticResource TextColourPrimaryBrush}" />
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="Padding" Value="0" />
+            </Style>
 
-        <!-- explicit -->
-        <Style x:Key="DockSelectorContent" TargetType="Border">
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColourMediumBrush}" />
-        </Style>
+            <!-- explicit -->
+            <Style x:Key="DockSelectorContent" TargetType="Border">
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="BorderBrush" Value="{StaticResource BorderColourMediumBrush}" />
+            </Style>
 
-        <Style x:Key="DockSelectorBorder" TargetType="Border" BasedOn="{StaticResource DockSelectorContent}">
-            <Setter Property="Padding" Value="2" />
-            <Setter Property="Margin" Value="1" />
-            <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
-        </Style>
-        
-        <Style x:Key="RootPanelTabGroupGroup" TargetType="controls:PanelTabGroupGroup" BasedOn="{StaticResource {x:Type controls:PanelTabGroupGroup}}">
-            <Setter Property="Padding" Value="5" />
-        </Style>
+            <Style x:Key="DockSelectorBorder" TargetType="Border" BasedOn="{StaticResource DockSelectorContent}">
+                <Setter Property="Padding" Value="2" />
+                <Setter Property="Margin" Value="1" />
+                <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
+            </Style>
 
-        <Style x:Key="FolderFileIconButton" TargetType="Button">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="VerticalAlignment" Value="Top" />
-            <Setter Property="HorizontalContentAlignment" Value="Left" />
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="BorderThickness" Value="0" />
-        </Style>
-        
-        <ControlTemplate x:Key="IconButtonTemplate" TargetType="Button">
-            <Border Background="{TemplateBinding Background}"
+            <Style x:Key="RootPanelTabGroupGroup" TargetType="controls:PanelTabGroupGroup" BasedOn="{StaticResource {x:Type controls:PanelTabGroupGroup}}">
+                <Setter Property="Padding" Value="5" />
+            </Style>
+
+            <Style x:Key="FolderFileIconButton" TargetType="Button">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="HorizontalContentAlignment" Value="Left" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="BorderThickness" Value="0" />
+            </Style>
+
+            <ControlTemplate x:Key="IconButtonTemplate" TargetType="Button">
+                <Border Background="{TemplateBinding Background}"
                     BorderThickness="0"
                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}">
-                
-                <ContentPresenter x:Name="contentPresenter"
+
+                    <ContentPresenter x:Name="contentPresenter"
                                   Focusable="False"
                                   Margin="{TemplateBinding Padding}"
                                   RecognizesAccessKey="True"
                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                   HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                   />
-            </Border>
-        </ControlTemplate>
+                                  VerticalAlignment="Center" />
+                    
+                </Border>
+            </ControlTemplate>
 
-        <Style x:Key="IconButtonStyle" TargetType="Button">
-            <Setter Property="Foreground" Value="{StaticResource TextColourPrimaryBrush}" />
-            <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
-            <Setter Property="FontSize" Value="20" />
-            <Setter Property="Padding" Value="-5,-8,-5,-2" />
+            <Style x:Key="IconButtonStyle" TargetType="Button">
+                <Setter Property="Foreground" Value="{StaticResource TextColourPrimaryBrush}" />
+                <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="Padding" Value="-5,-8,-5,-2" />
 
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource BackgroundColourMediumBrush}" />
-                    <Setter Property="Background" Value="{StaticResource TextColourPrimaryBrush}" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Foreground" Value="{StaticResource BackgroundColourMediumBrush}" />
+                        <Setter Property="Background" Value="{StaticResource TextColourPrimaryBrush}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="SecondaryForeground" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+                <Setter Property="Foreground" Value="{StaticResource TextColourSecondaryBrush}" />
+            </Style>
+
+        </ResourceDictionary>
     </Application.Resources>
 
 </Application>
