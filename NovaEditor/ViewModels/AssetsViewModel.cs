@@ -21,6 +21,9 @@ public sealed class AssetsViewModel : DependencyObject
 
     /// <summary>The number of columns in the assets panel.</summary>
     public static readonly DependencyProperty NumberOfColumnsProperty = DependencyProperty.Register(nameof(NumberOfColumns), typeof(int), typeof(AssetsViewModel), new((sender, _) => (sender as AssetsViewModel).NumberOfColumnsChanged?.Invoke()));
+    
+    /// <summary>The path of the selected item in the assets panel.</summary>
+    public static readonly DependencyProperty SelectedPathProperty = DependencyProperty.Register(nameof(SelectedPath), typeof(string), typeof(AssetsViewModel));
 
 
     /*********
@@ -33,6 +36,7 @@ public sealed class AssetsViewModel : DependencyObject
         set
         {
             _SelectedDirectoryInfo = value;
+            SelectedPath = "";
             SelectedDirectoryInfoChanged?.Invoke();
         }
     }
@@ -44,8 +48,15 @@ public sealed class AssetsViewModel : DependencyObject
         set => SetValue(NumberOfColumnsProperty, value);
     }
 
-    /// <summary>The command to change the selected directory.</summary>
-    public ICommand ChangeDirectoryCommand { get; }
+    /// <summary>The path of the selected item in the assets panel.</summary>
+    public string SelectedPath
+    {
+        get => (string)GetValue(SelectedPathProperty);
+        set => SetValue(SelectedPathProperty, value);
+    }
+
+    /// <summary>The command to change the selected path.</summary>
+    public ICommand SelectPathCommand { get; }
 
 
     /*********
@@ -56,23 +67,32 @@ public sealed class AssetsViewModel : DependencyObject
     {
         SelectedDirectoryInfo = AssetManager.GetAssetPathInfo();
 
-        ChangeDirectoryCommand = new RelayCommand<string>(ChangeDirectory);
+        SelectPathCommand = new RelayCommand<string>(SelectDirectory);
     }
 
 
     /*********
     ** Private Methods
     *********/
-    /// <summary>Changes the selected directory.</summary>
-    /// <param name="newSelectedDirectory">The new selected directory.</param>
-    private void ChangeDirectory(string newSelectedDirectory)
+    /// <summary>Changes the selected path.</summary>
+    /// <param name="newSelectedPath">The new selected path.</param>
+    private void SelectDirectory(string newSelectedPath)
     {
-        var directory = new DirectoryInfo(newSelectedDirectory);
-        if (!directory.Exists)
+        if (string.IsNullOrEmpty(newSelectedPath))
+            return;
+
+        var newRelativeSelectedPath = Path.GetRelativePath(NovaEngine.Constants.ContentDirectory, newSelectedPath);
+        if (SelectedPath != newRelativeSelectedPath)
         {
-            // TODO: notify the directory wasn't found
+            // the directory or path has been clicked for the first time, just set the selected path string
+            SelectedPath = newRelativeSelectedPath;
             return;
         }
+
+        // the icon has been double clicked
+        var directory = new DirectoryInfo(newSelectedPath);
+        if (!directory.Exists)
+            return;
 
         SelectedDirectoryInfo = new(isDirectory: true, directory.FullName);
     }

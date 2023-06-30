@@ -24,10 +24,17 @@
             </ItemsControl.ItemsPanel>
         </ItemsControl>
 
-        <Slider Grid.Row="1"
-                Minimum="10"
-                Maximum="15"
-                Value="{Binding NumberOfColumns}" />
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal">
+            
+            <Label Content="{Binding SelectedPath}" />
+            
+            <Slider Grid.Row="1"
+                    Minimum="10"
+                    Maximum="15"
+                    Value="{Binding NumberOfColumns}" />
+            
+        </StackPanel>
     </Grid>
 
 </controls:EditorPanelBase>
