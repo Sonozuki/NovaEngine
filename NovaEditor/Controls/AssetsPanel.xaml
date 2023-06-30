@@ -7,9 +7,10 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
 
+        <!-- file/folder view -->
         <ItemsControl x:Name="RootItemsControl">
             <ItemsControl.ItemContainerStyle>
                 <Style>
@@ -24,17 +25,20 @@
             </ItemsControl.ItemsPanel>
         </ItemsControl>
 
-        <StackPanel Grid.Row="1"
-                    Orientation="Horizontal">
+        <!-- selected path & scale slider -->
+        <DockPanel Grid.Row="1">
             
-            <Label Content="{Binding SelectedPath}" />
+            <Label Content="{Binding SelectedPath}"
+                   Style="{StaticResource SecondaryForeground}" />
             
             <Slider Grid.Row="1"
+                    HorizontalAlignment="Right"
+                    Width="50"
                     Minimum="10"
                     Maximum="15"
                     Value="{Binding NumberOfColumns}" />
             
-        </StackPanel>
+        </DockPanel>
     </Grid>
 
 </controls:EditorPanelBase>
