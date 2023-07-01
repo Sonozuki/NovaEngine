@@ -29,7 +29,10 @@
             </Grid.RowDefinitions>
 
             <!-- file/folder view -->
-            <ItemsControl x:Name="RootItemsControl">
+            <ItemsControl x:Name="RootItemsControl"
+                          ItemsSource="{Binding SelectedDirectoryInfo.Children}"
+                          ItemTemplateSelector="{StaticResource AssetsPanelIconDataTemplateSelector}">
+                
                 <ItemsControl.ItemContainerStyle>
                     <Style>
                         <Setter Property="FrameworkElement.Margin" Value="2" />
@@ -41,6 +44,7 @@
                         <UniformGrid Columns="{Binding NumberOfColumns}" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
+                
             </ItemsControl>
 
             <!-- selected path & scale slider -->

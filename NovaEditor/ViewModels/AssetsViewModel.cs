@@ -6,9 +6,6 @@ public sealed class AssetsViewModel : DependencyObject
     /*********
     ** Events
     *********/
-    /// <summary>Invoked when <see cref="SelectedDirectoryInfo"/> is changed.</summary>
-    public event Action SelectedDirectoryInfoChanged;
-
     /// <summary>Invoked when <see cref="NumberOfColumns"/> is changed.</summary>
     public event Action NumberOfColumnsChanged;
 
@@ -16,12 +13,12 @@ public sealed class AssetsViewModel : DependencyObject
     /*********
     ** Fields
     *********/
-    /// <summary>The path info of the currently selected directory.</summary>
-    private PathInfo _SelectedDirectoryInfo;
-
     /// <summary>The number of columns in the assets panel.</summary>
     public static readonly DependencyProperty NumberOfColumnsProperty = DependencyProperty.Register(nameof(NumberOfColumns), typeof(int), typeof(AssetsViewModel), new((sender, _) => (sender as AssetsViewModel).NumberOfColumnsChanged?.Invoke()));
-    
+
+    /// <summary>The path info of the currently selected directory.</summary>
+    public static readonly DependencyProperty SelectedDirectoryInfoProperty = DependencyProperty.Register(nameof(SelectedDirectoryInfo), typeof(PathInfo), typeof(AssetsViewModel));
+
     /// <summary>The path of the selected item in the assets panel.</summary>
     public static readonly DependencyProperty SelectedPathProperty = DependencyProperty.Register(nameof(SelectedPath), typeof(string), typeof(AssetsViewModel));
 
@@ -32,12 +29,11 @@ public sealed class AssetsViewModel : DependencyObject
     /// <summary>The path info of the currently selected directory.</summary>
     public PathInfo SelectedDirectoryInfo
     {
-        get => _SelectedDirectoryInfo;
+        get => (PathInfo)GetValue(SelectedDirectoryInfoProperty);
         set
         {
-            _SelectedDirectoryInfo = value;
+            SetValue(SelectedDirectoryInfoProperty, value);
             SelectedPath = "";
-            SelectedDirectoryInfoChanged?.Invoke();
         }
     }
 

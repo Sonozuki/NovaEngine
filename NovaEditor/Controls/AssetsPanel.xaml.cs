@@ -43,8 +43,6 @@ public partial class AssetsPanel : EditorPanelBase
         DataContext = ViewModel;
         InitializeComponent();
 
-        UpdateContent();
-        ViewModel.SelectedDirectoryInfoChanged += UpdateContent;
         ViewModel.NumberOfColumnsChanged += UpdateIconScale;
     }
 
@@ -52,14 +50,6 @@ public partial class AssetsPanel : EditorPanelBase
     /*********
     ** Private Methods
     *********/
-    /// <summary>Updates the content of the panel.</summary>
-    private void UpdateContent()
-    {
-        RootItemsControl.Items.Clear();
-        foreach (var children in ViewModel.SelectedDirectoryInfo.Children)
-            RootItemsControl.Items.Add(children.IsDirectory ? new AssetFolder(children.FullName) : new AssetFile(children.FullName));
-    }
-
     /// <summary>Updates the icon scale based on the current number of columns.</summary>
     private void UpdateIconScale()
     {

@@ -19,7 +19,7 @@ public class PathInfo
     public bool HasChildren => Children.Any();
 
     /// <summary>The child paths of the path.</summary>
-    public IReadOnlyList<PathInfo> Children { get; private set; }
+    public ObservableCollection<PathInfo> Children { get; private set; }
 
 
     /*********
@@ -57,6 +57,6 @@ public class PathInfo
                 children.Add(new(isDirectory: false, file.FullName));
         }
 
-        Children = children.AsReadOnly();
+        Children = new(children);
     }
 }
