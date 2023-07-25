@@ -7,7 +7,7 @@ public partial class FontIconButton : Button
     ** Fields
     *********/
     /// <summary>The glyph in the button.</summary>
-    public static readonly DependencyProperty GlyphProperty = DependencyProperty.Register(nameof(Glyph), typeof(string), typeof(FontIconButton));
+    public static readonly DependencyProperty GlyphProperty = DependencyProperty.Register(nameof(Glyph), typeof(char), typeof(FontIconButton));
 
 
     /*********
