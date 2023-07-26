@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:icons="clr-namespace:NovaEditor.Controls.Icons"
              xmlns:controls="clr-namespace:NovaEditor.Controls"
+             xmlns:valueConverters="clr-namespace:NovaEditor.ValueConverters"
              xmlns:dataTemplateSelectors="clr-namespace:NovaEditor.DataTemplateSelectors"
              Startup="OnStartup">
 
@@ -14,6 +15,8 @@
             </ResourceDictionary.MergedDictionaries>
 
             <dataTemplateSelectors:AssetsPanelIconDataTemplateSelector x:Key="AssetsPanelIconDataTemplateSelector" />
+
+            <valueConverters:BoolVisibilityValueConverter x:Key="BoolVisibilityValueConverter" />
 
             <!-- implicit -->
             <Style TargetType="controls:PanelTabGroupGroup">

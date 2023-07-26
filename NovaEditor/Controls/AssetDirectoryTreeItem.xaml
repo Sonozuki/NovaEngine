@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="NovaEditor.Controls.AssetDirectoryTreeItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:NovaEditor.Controls">
+
+    <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal">
+
+            <Button Command="{Binding ToggleIsExpandedCommand, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetDirectoryTreeItem}}}"
+                    Visibility="{Binding PathInfo.HasChildren, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetDirectoryTreeItem}}, Converter={StaticResource BoolVisibilityValueConverter}}"
+                    Style="{StaticResource FolderFileIconButton}"
+                    Width="15"
+                    Height="15">
+                <!-- TODO: temp style -->
+
+                <ContentPresenter x:Name="IconPresenter" />
+                
+            </Button>
+
+            <Label Content="{Binding PathInfo.Name, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetDirectoryTreeItem}}}"
+                   Margin="3 0 0 0" />
+
+        </StackPanel>
+
+        <ItemsControl ItemsSource="{Binding PathInfo.Children, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetDirectoryTreeItem}}}"
+                      Visibility="{Binding PathInfo.IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetDirectoryTreeItem}}, Converter={StaticResource BoolVisibilityValueConverter}}"
+                      Margin="15 0 0 0">
+
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Vertical" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <controls:AssetDirectoryTreeItem PathInfo="{Binding}" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+
+        </ItemsControl>
+    </StackPanel>
+
+</UserControl>

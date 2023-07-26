@@ -13,6 +13,7 @@
         <Using Include="CommunityToolkit.Mvvm.Input" />
         <Using Include="Microsoft.Win32" />
         <Using Include="NovaEditor.Controls" />
+        <Using Include="NovaEditor.Controls.Icons" />
         <Using Include="NovaEditor.Managers" />
         <Using Include="NovaEditor.ViewModels" />
         <Using Include="NovaEditor.Windows" />

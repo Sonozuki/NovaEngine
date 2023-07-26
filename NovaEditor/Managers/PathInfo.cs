@@ -1,8 +1,22 @@
 ﻿namespace NovaEditor.Managers;
 
 /// <summary>Represents a file or directory in a directory tree.</summary>
-public class PathInfo
+public class PathInfo : DependencyObject
 {
+    /*********
+    ** Events
+    *********/
+    /// <summary>Invoked when <see cref="IsExpanded"/> is changed.</summary>
+    public event Action IsExpandedChanged;
+
+
+    /*********
+    ** Fields
+    *********/
+    /// <summary>Whether the path is expanded.</summary>
+    public static readonly DependencyProperty IsExpandedProperty = DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(PathInfo), new((sender, _) => (sender as PathInfo).IsExpandedChanged?.Invoke()));
+
+
     /*********
     ** Properties
     *********/
@@ -14,6 +28,14 @@ public class PathInfo
 
     /// <summary>Whether the path is a directory.</summary>
     public bool IsDirectory { get; }
+
+    /// <summary>Whether the path is expanded.</summary>
+    /// <remarks>This is only used if the path is a directory.</remarks>
+    public bool IsExpanded
+    {
+        get => (bool)GetValue(IsExpandedProperty);
+        set => SetValue(IsExpandedProperty, value);
+    }
 
     /// <summary>Whether the path has child paths.</summary>
     public bool HasChildren => Children.Any();

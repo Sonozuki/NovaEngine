@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="NovaEditor.Controls.Icons.DirectoryMinimisedIcon"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Canvas>
+        <Canvas.RenderTransform>
+            <TransformGroup>
+                <ScaleTransform ScaleX=".6" ScaleY=".6" />
+                <TranslateTransform X="2" Y="-4" />
+            </TransformGroup>
+        </Canvas.RenderTransform>
+
+        <Path Stroke="#FBBB" StrokeThickness="2" Data="M 1 18.414213 V 2.4142135 l 8 7.9999995 Z" />
+    </Canvas>
+
+</UserControl>

@@ -11,10 +11,8 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <StackPanel>
-            <Label>test1</Label>
-            <Label>test2</Label>
-            <Label>test3</Label>
+        <StackPanel Orientation="Vertical">
+            <controls:AssetDirectoryTreeItem PathInfo="{Binding RootAssetsPath}" />
         </StackPanel>
 
         <GridSplitter Grid.Column="1"

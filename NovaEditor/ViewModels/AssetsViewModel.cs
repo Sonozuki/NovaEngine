@@ -16,6 +16,9 @@ public sealed class AssetsViewModel : DependencyObject
     /// <summary>The number of columns in the assets panel.</summary>
     public static readonly DependencyProperty NumberOfColumnsProperty = DependencyProperty.Register(nameof(NumberOfColumns), typeof(int), typeof(AssetsViewModel), new((sender, _) => (sender as AssetsViewModel).NumberOfColumnsChanged?.Invoke()));
 
+    /// <summary>The root path info of the assets directory.</summary>
+    public static readonly DependencyProperty RootAssetsPathProperty = DependencyProperty.Register(nameof(RootAssetsPath), typeof(PathInfo), typeof(AssetsViewModel));
+
     /// <summary>The path info of the currently selected directory.</summary>
     public static readonly DependencyProperty SelectedDirectoryInfoProperty = DependencyProperty.Register(nameof(SelectedDirectoryInfo), typeof(PathInfo), typeof(AssetsViewModel));
 
@@ -26,6 +29,13 @@ public sealed class AssetsViewModel : DependencyObject
     /*********
     ** Properties
     *********/
+    /// <summary>The root path info of the assets directory.</summary>
+    public PathInfo RootAssetsPath
+    {
+        get => (PathInfo)GetValue(RootAssetsPathProperty);
+        set => SetValue(RootAssetsPathProperty, value);
+    }
+
     /// <summary>The path info of the currently selected directory.</summary>
     public PathInfo SelectedDirectoryInfo
     {
@@ -61,7 +71,8 @@ public sealed class AssetsViewModel : DependencyObject
     /// <summary>Constructs an instance.</summary>
     public AssetsViewModel()
     {
-        SelectedDirectoryInfo = AssetManager.GetAssetPathInfo();
+        RootAssetsPath = AssetManager.GetAssetPathInfo();
+        SelectedDirectoryInfo = RootAssetsPath;
 
         SelectPathCommand = new RelayCommand<string>(SelectDirectory);
     }
