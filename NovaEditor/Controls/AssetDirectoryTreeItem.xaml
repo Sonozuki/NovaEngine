@@ -14,7 +14,7 @@
                 <!-- TODO: temp style -->
 
                 <ContentPresenter x:Name="IconPresenter" />
-                
+
             </Button>
 
             <Label Content="{Binding PathInfo.Name, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetDirectoryTreeItem}}}"

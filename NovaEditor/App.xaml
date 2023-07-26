@@ -139,7 +139,7 @@
                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                   HorizontalAlignment="Center"
                                   VerticalAlignment="Center" />
-                    
+
                 </Border>
             </ControlTemplate>
 

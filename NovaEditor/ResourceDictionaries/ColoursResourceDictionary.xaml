@@ -11,7 +11,7 @@
     <Color x:Key="TextColourPrimary">#ddd</Color>
     <Color x:Key="TextColourSecondary">#999</Color>
 
-    
+
     <SolidColorBrush x:Key="BackgroundColourMediumBrush" Color="{StaticResource BackgroundColourMedium}" />
     <SolidColorBrush x:Key="BackgroundColourLightBrush" Color="{StaticResource BackgroundColourLight}" />
     <SolidColorBrush x:Key="BackgroundColourVeryLightBrush" Color="{StaticResource BackgroundColourVeryLight}" />

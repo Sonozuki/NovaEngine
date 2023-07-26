@@ -9,5 +9,5 @@
     <Border Style="{StaticResource DockSelectorBorder}">
         <Border Style="{StaticResource DockSelectorContent}" />
     </Border>
-    
+
 </UserControl>

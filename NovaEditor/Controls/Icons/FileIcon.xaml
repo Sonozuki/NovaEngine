@@ -8,9 +8,9 @@
             <ScaleTransform ScaleX="{Binding IconScale, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetsPanel}}}"
                             ScaleY="{Binding IconScale, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetsPanel}}}" />
         </Canvas.RenderTransform>
-        
+
         <Path Fill="#FFB3B3B3" Data="M 30 0 V 20 H 50 Z" />
         <Path Fill="#FFCCCCCC" Data="M 30 0 C 28.353354 -0.50666039 0 0 0 0 V 70 H 50 V 20 H 30 Z" />
     </Canvas>
-    
+
 </UserControl>

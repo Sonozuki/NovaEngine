@@ -4,7 +4,7 @@
                           xmlns:controls="clr-namespace:NovaEditor.Controls">
 
     <StackPanel Orientation="Vertical">
-        
+
         <Label Content="Project Name" />
         <TextBox Text="{Binding ProjectName}" />
 
@@ -14,7 +14,7 @@
 
         <Button Command="{Binding BackCommand}">Back</Button>
         <Button Command="{Binding CreateCommand}">Create</Button>
-        
+
     </StackPanel>
-    
+
 </controls:EditorPanelBase>

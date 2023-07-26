@@ -19,7 +19,7 @@
                       BorderBrush="{StaticResource BorderColourMediumBrush}"
                       BorderThickness="1 0"
                       HorizontalAlignment="Stretch" />
-        
+
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition />
@@ -30,7 +30,7 @@
             <ItemsControl x:Name="RootItemsControl"
                           ItemsSource="{Binding SelectedDirectoryInfo.Children}"
                           ItemTemplateSelector="{StaticResource AssetsPanelIconDataTemplateSelector}">
-                
+
                 <ItemsControl.ItemContainerStyle>
                     <Style>
                         <Setter Property="FrameworkElement.Margin" Value="2" />
@@ -42,7 +42,7 @@
                         <UniformGrid Columns="{Binding NumberOfColumns}" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
-                
+
             </ItemsControl>
 
             <!-- selected path & scale slider -->
@@ -61,7 +61,5 @@
             </DockPanel>
         </Grid>
     </Grid>
-    
-    
 
 </controls:EditorPanelBase>
