@@ -10,5 +10,31 @@ public partial class OptionsWindow : Window
     public OptionsWindow()
     {
         InitializeComponent();
+
+        foreach (var category in OptionsManager.RootOptionCategories)
+            RootTreeView.Items.Add(CreateTreeViewItemFromCategory(category));
+    }
+
+
+    /*********
+    ** Private Methods
+    *********/
+    /// <summary>Creates an equivalent <see cref="TreeViewItem"/> of an <see cref="OptionsCategory"/>.</summary>
+    /// <param name="category">The category to use to create the <see cref="TreeViewItem"/>.</param>
+    /// <returns>The <see cref="TreeViewItem"/> equivalent to <paramref name="category"/>.</returns>
+    private TreeViewItem CreateTreeViewItemFromCategory(OptionsCategory category)
+    {
+        var treeViewItem = new TreeViewItem
+        {
+            Header = category.Name
+        };
+
+        foreach (var subCategory in category.SubCategories)
+            treeViewItem.Items.Add(CreateTreeViewItemFromCategory(subCategory));
+
+        foreach (var group in category.Groups)
+            treeViewItem.Items.Add(new TreeViewItem { Header = group.Name });
+
+        return treeViewItem;
     }
 }
