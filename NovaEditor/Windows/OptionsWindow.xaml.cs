@@ -4,11 +4,19 @@
 public partial class OptionsWindow : Window
 {
     /*********
+    ** Properties
+    *********/
+    /// <summary>The view model of the window.</summary>
+    public OptionsWindowViewModel ViewModel { get; } = new();
+
+
+    /*********
     ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     public OptionsWindow()
     {
+        DataContext = ViewModel;
         InitializeComponent();
 
         foreach (var category in OptionsManager.RootOptionCategories)
@@ -28,6 +36,7 @@ public partial class OptionsWindow : Window
         {
             Header = category.Name
         };
+        treeViewItem.Selected += (_, _) => ViewModel.SelectedCategory = category;
 
         foreach (var subCategory in category.SubCategories)
             treeViewItem.Items.Add(CreateTreeViewItemFromCategory(subCategory));
