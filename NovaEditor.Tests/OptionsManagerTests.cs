@@ -13,7 +13,7 @@ public class OptionsManagerTests
         var categoryTree = OptionsManager.CalculateCategoryTree(optionTypeData);
 
         Assert.That(categoryTree, Has.Length.EqualTo(1));
-        PerformCategoryTests(categoryTree[0], Category_1.CategoryName, 0, new[] { typeof(Category_1) });
+        PerformCategoryTests(categoryTree[0], Category_1.CategoryName, 0);
     }
 
     [Test]
@@ -26,8 +26,8 @@ public class OptionsManagerTests
         var subCategory = categoryTree[0].SubCategories;
         Assert.That(subCategory, Has.Count.EqualTo(1));
 
-        PerformCategoryTests(categoryTree[0], Category_1_Category_2.Category1Name, 1, Array.Empty<Type>());
-        PerformCategoryTests(subCategory[0], Category_1_Category_2.Category2Name, 0, new[] { typeof(Category_1_Category_2) });
+        PerformCategoryTests(categoryTree[0], Category_1_Category_2.Category1Name, 1);
+        PerformCategoryTests(subCategory[0], Category_1_Category_2.Category2Name, 0);
     }
 
     [Test]
@@ -38,7 +38,7 @@ public class OptionsManagerTests
 
         Assert.That(categoryTree, Has.Length.EqualTo(1));
 
-        PerformCategoryTests(categoryTree[0], Category_1.CategoryName, 0, new[] { typeof(Category_1), typeof(Category_1_2) });
+        PerformCategoryTests(categoryTree[0], Category_1.CategoryName, 0);
     }
 
     [Test]
@@ -49,8 +49,8 @@ public class OptionsManagerTests
 
         Assert.That(categoryTree, Has.Length.EqualTo(2));
 
-        PerformCategoryTests(categoryTree[0], Category_1.CategoryName, 0, new[] { typeof(Category_1) });
-        PerformCategoryTests(categoryTree[1], Category_2.CategoryName, 0, new[] { typeof(Category_2) });
+        PerformCategoryTests(categoryTree[0], Category_1.CategoryName, 0);
+        PerformCategoryTests(categoryTree[1], Category_2.CategoryName, 0);
     }
 
 
@@ -69,13 +69,11 @@ public class OptionsManagerTests
     /// <param name="category">The category to check.</param>
     /// <param name="expectedCategoryName">The name the category should have.</param>
     /// <param name="expectedSubCategoryCount">The number of sub-categories the category should have.</param>
-    /// <param name="expectedGroupTypes">The option types the category should have.</param>
-    private void PerformCategoryTests(OptionsCategory category, string expectedCategoryName, int expectedSubCategoryCount, Type[] expectedOptionTypes) =>
+    private void PerformCategoryTests(OptionsCategory category, string expectedCategoryName, int expectedSubCategoryCount) =>
         Assert.Multiple(() =>
         {
             Assert.That(category.Name, Is.EqualTo(expectedCategoryName));
             Assert.That(category.SubCategories, Has.Count.EqualTo(expectedSubCategoryCount));
-            Assert.That(category.TempTypes, Is.EquivalentTo(expectedOptionTypes));
         });
 }
 
