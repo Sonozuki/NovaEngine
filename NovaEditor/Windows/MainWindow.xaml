@@ -32,6 +32,10 @@
                 <MenuItem Header="_Assets" Command="{Binding CreatePanelCommand}" CommandParameter="Assets" InputGestureText="Shift+Alt+A" />
                 <MenuItem Header="_Hierarchy" Command="{Binding CreatePanelCommand}" CommandParameter="Hierarchy" InputGestureText="Shift+Alt+H" />
             </MenuItem>
+
+            <MenuItem Header="_Tools">
+                <MenuItem Header="_Options" Command="{Binding OpenOptionsWindowCommand}" />
+            </MenuItem>
         </Menu>
 
         <controls:PanelTabGroupGroup x:Name="RootPanelTabGroupGroup" Style="{StaticResource RootPanelTabGroupGroup}" />

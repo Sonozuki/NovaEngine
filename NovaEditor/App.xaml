@@ -19,6 +19,10 @@
             <valueConverters:BoolVisibilityValueConverter x:Key="BoolVisibilityValueConverter" />
 
             <!-- implicit -->
+            <Style TargetType="Window">
+                <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
+            </Style>
+            
             <Style TargetType="controls:PanelTabGroupGroup">
                 <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
             </Style>

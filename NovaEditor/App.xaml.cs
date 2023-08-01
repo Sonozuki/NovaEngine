@@ -18,6 +18,13 @@ public partial class App : Application
     /// <param name="e">The event data.</param>
     private void OnStartup(object sender, StartupEventArgs e)
     {
+        // this will apply the 'Window' style to all windows that are created, this isn't automatically
+        // handled because all windows that are created are derived types
+        FrameworkElement.StyleProperty.OverrideMetadata(typeof(Window), new FrameworkPropertyMetadata
+        {
+            DefaultValue = Current.FindResource(typeof(Window))
+        });
+
         // the NovaEngine project isn't copied over to the output meaning the runtime doesn't
         // automatically load it into the app domain, so we just need to manually load it
         Assembly.LoadFrom("./EmbeddedEngine/NovaEngine.dll");

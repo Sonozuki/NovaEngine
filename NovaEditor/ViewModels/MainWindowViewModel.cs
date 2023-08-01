@@ -33,6 +33,9 @@ public sealed class MainWindowViewModel
     /// <summary>The command used to create a new panel.</summary>
     public ICommand CreatePanelCommand { get; }
 
+    /// <summary>The command used to open the options window.</summary>
+    public ICommand OpenOptionsWindowCommand { get; }
+
 
     /*********
     ** Constructors
@@ -51,6 +54,8 @@ public sealed class MainWindowViewModel
         PasteCommand = new RelayCommand(Paste);
 
         CreatePanelCommand = new RelayCommand<string>(CreatePanel);
+
+        OpenOptionsWindowCommand = new RelayCommand(OpenOptionsWindow);
     }
 
 
@@ -84,4 +89,7 @@ public sealed class MainWindowViewModel
     /// <summary>Creates a panel.</summary>
     /// <param name="panelName">The name of the panel to create.</param>
     private void CreatePanel(string panelName) => throw new NotImplementedException();
+
+    /// <summary>Opens the options window.</summary>
+    private void OpenOptionsWindow() => new OptionsWindow().ShowDialog();
 }

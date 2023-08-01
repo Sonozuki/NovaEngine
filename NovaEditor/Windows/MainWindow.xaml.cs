@@ -16,6 +16,7 @@ public partial class MainWindow : Window
     /// <summary>Constructs an instance.</summary>
     internal MainWindow()
     {
+        DataContext = ViewModel;
         InitializeComponent();
     }
 }
