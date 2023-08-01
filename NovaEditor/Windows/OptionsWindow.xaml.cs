@@ -32,9 +32,6 @@ public partial class OptionsWindow : Window
         foreach (var subCategory in category.SubCategories)
             treeViewItem.Items.Add(CreateTreeViewItemFromCategory(subCategory));
 
-        foreach (var group in category.Groups)
-            treeViewItem.Items.Add(new TreeViewItem { Header = group.Name });
-
         return treeViewItem;
     }
 }

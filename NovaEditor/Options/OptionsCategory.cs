@@ -9,11 +9,12 @@ public class OptionsCategory
     /// <summary>The name of the category.</summary>
     public string Name { get; }
 
-    /// <summary>The groups in the category.</summary>
-    public List<OptionsGroup> Groups { get; } = new();
-
     /// <summary>The sub-categories in the category.</summary>
     public List<OptionsCategory> SubCategories { get; } = new();
+
+    /// <summary>The types that contain the options for the category.</summary>
+    /// <remarks>TODO: temp</remarks>
+    public List<Type> TempTypes { get; } = new();
 
 
     /*********
