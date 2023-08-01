@@ -1,29 +1,5 @@
 ﻿namespace NovaEditor.Managers;
 
-[Options(new[] { "Text Editor", "General" })]
-class Test1
-{
-
-}
-
-[Options(new[] { "Text Editor", "Test" })]
-class Test2
-{
-
-}
-
-[Options(new[] { "Text Editor", "Test", "Example" })]
-class Test22
-{
-
-}
-
-[Options(new[] { "Test", "General" })]
-class Test3
-{
-
-}
-
 /// <summary>Manages editor options.</summary>
 internal static class OptionsManager
 {
