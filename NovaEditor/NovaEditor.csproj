@@ -20,6 +20,7 @@
         <Using Include="NovaEditor.Windows" />
         <Using Include="NovaEditor.Workspace" />
         <Using Include="NovaEngine.Common.Windows.Api" />
+        <Using Include="NovaEngine.Extensions" />
         <Using Include="NovaEngine.Globalisation" />
         <Using Include="System.Collections.Immutable" />
         <Using Include="System.Collections.ObjectModel" />

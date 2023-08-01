@@ -36,6 +36,32 @@ internal static class OptionsManager
 
 
     /*********
+    ** Public Methods
+    *********/
+    /// <summary>Calculates the options present in a type.</summary>
+    /// <param name="type">The type whose options should be calculated.</param>
+    /// <returns>The options present in <paramref name="type"/>.</returns>
+    public static ImmutableArray<Option> CalculateOptions(Type type)
+    {
+        var options = new List<Option>();
+
+        var fieldInfos = type
+            .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+            .Where(fieldInfo => fieldInfo.HasCustomAttribute<OptionAttribute>());
+        var propertyInfos = type
+            .GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+            .Where(propertyInfo => propertyInfo.HasCustomAttribute<OptionAttribute>() && propertyInfo.CanWrite);
+
+        foreach (var fieldInfo in fieldInfos)
+            options.Add(new Option(fieldInfo.FieldType, fieldInfo.GetCustomAttribute<OptionAttribute>().Text));
+        foreach (var propertyInfo in propertyInfos)
+            options.Add(new Option(propertyInfo.PropertyType, propertyInfo.GetCustomAttribute<OptionAttribute>().Text));
+
+        return options.ToImmutableArray();
+    }
+
+
+    /*********
     ** Internal Methods
     *********/
     /// <summary>Calculates an options tree from a dictionary of types with an <see cref="OptionsAttribute"/>.</summary>
@@ -70,6 +96,6 @@ internal static class OptionsManager
         if (requestedOptionCategoriesNames.Count() > 1)
             AddOption(existingCategory.SubCategories, requestedOptionCategoriesNames.Skip(1), optionType);
         else
-            existingCategory.TempTypes.Add(optionType);
+            existingCategory.Options.AddRange(CalculateOptions(optionType));
     }
 }

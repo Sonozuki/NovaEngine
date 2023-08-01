@@ -12,9 +12,8 @@ public class OptionsCategory
     /// <summary>The sub-categories in the category.</summary>
     public List<OptionsCategory> SubCategories { get; } = new();
 
-    /// <summary>The types that contain the options for the category.</summary>
-    /// <remarks>TODO: temp</remarks>
-    public List<Type> TempTypes { get; } = new();
+    /// <summary>The options in the category.</summary>
+    public List<Option> Options { get; } = new();
 
 
     /*********

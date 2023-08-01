@@ -1,6 +1,6 @@
 ﻿namespace NovaEditor.Tests;
 
-/// <summary>The <see cref="OptionsManager"/> option tree generation tests.</summary>
+/// <summary>The <see cref="OptionsManager"/> tests.</summary>
 public class OptionsManagerTests
 {
     /*********
@@ -51,6 +51,113 @@ public class OptionsManagerTests
 
         PerformCategoryTests(categoryTree[0], Category_1.CategoryName, 0);
         PerformCategoryTests(categoryTree[1], Category_2.CategoryName, 0);
+    }
+
+    [Test]
+    public void OptionsManagerCalculateOptions_OptionWithPublicField_OptionIsCreated()
+    {
+        var options = OptionsManager.CalculateOptions(typeof(PublicFieldOption));
+        Assert.That(options, Has.Length.EqualTo(1));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(options[0].Type, Is.SameAs(typeof(string)));
+            Assert.That(options[0].Text, Is.EqualTo(PublicFieldOption.OptionText));
+        });
+    }
+    
+    [Test]
+    public void OptionsManagerCalculateOptions_OptionWithPrivateField_OptionIsCreated()
+    {
+        var options = OptionsManager.CalculateOptions(typeof(PrivateFieldOption));
+        Assert.That(options, Has.Length.EqualTo(1));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(options[0].Type, Is.SameAs(typeof(string)));
+            Assert.That(options[0].Text, Is.EqualTo(PrivateFieldOption.OptionText));
+        });
+    }
+
+    [Test]
+    public void OptionsManagerCalculateOptions_OptionWithPublicGetSetProperty_OptionIsCreated()
+    {
+        var options = OptionsManager.CalculateOptions(typeof(PublicPropertyGetSetOption));
+        Assert.That(options, Has.Length.EqualTo(1));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(options[0].Type, Is.SameAs(typeof(string)));
+            Assert.That(options[0].Text, Is.EqualTo(PublicPropertyGetSetOption.OptionText));
+        });
+    }
+    
+    [Test]
+    public void OptionsManagerCalculateOptions_OptionWithPrivateGetSetProperty_OptionIsCreated()
+    {
+        var options = OptionsManager.CalculateOptions(typeof(PrivatePropertyGetSetOption));
+        Assert.That(options, Has.Length.EqualTo(1));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(options[0].Type, Is.SameAs(typeof(string)));
+            Assert.That(options[0].Text, Is.EqualTo(PrivatePropertyGetSetOption.OptionText));
+        });
+    }
+
+    [Test]
+    public void OptionsManagerCalculateOptions_OptionWithGetProperty_OptionIsNotCreated()
+    {
+        var options = OptionsManager.CalculateOptions(typeof(PropertyGetOption));
+        Assert.That(options, Has.Length.Zero);
+    }
+
+    [Test]
+    public void OptionsManagerCalculateOptions_TwoFieldOptions_OptionsAreCreated()
+    {
+        var options = OptionsManager.CalculateOptions(typeof(TwoFieldOptions));
+        Assert.That(options, Has.Length.EqualTo(2));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(options[0].Type, Is.SameAs(typeof(string)));
+            Assert.That(options[0].Text, Is.EqualTo(TwoFieldOptions.Option1Text));
+
+            Assert.That(options[1].Type, Is.SameAs(typeof(int)));
+            Assert.That(options[1].Text, Is.EqualTo(TwoFieldOptions.Option2Text));
+        });
+    }
+
+    [Test]
+    public void OptionsManagerCalculateOptions_TwoPropertyOptions_OptionsAreCreated()
+    {
+        var options = OptionsManager.CalculateOptions(typeof(TwoPropertyOptions));
+        Assert.That(options, Has.Length.EqualTo(2));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(options[0].Type, Is.SameAs(typeof(string)));
+            Assert.That(options[0].Text, Is.EqualTo(TwoPropertyOptions.Option1Text));
+
+            Assert.That(options[1].Type, Is.SameAs(typeof(int)));
+            Assert.That(options[1].Text, Is.EqualTo(TwoPropertyOptions.Option2Text));
+        });
+    }
+
+    [Test]
+    public void OptionsManagerCalculateOptions_OneFieldOnePropertyOption_OptionsAreCreated()
+    {
+        var options = OptionsManager.CalculateOptions(typeof(FieldPropertyOptions));
+        Assert.That(options, Has.Length.EqualTo(2));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(options[0].Type, Is.SameAs(typeof(string)));
+            Assert.That(options[0].Text, Is.EqualTo(FieldPropertyOptions.Option1Text));
+
+            Assert.That(options[1].Type, Is.SameAs(typeof(int)));
+            Assert.That(options[1].Text, Is.EqualTo(FieldPropertyOptions.Option2Text));
+        });
     }
 
 
@@ -106,4 +213,88 @@ file sealed class Category_1_Category_2
 file sealed class Category_2
 {
     public const string CategoryName = "category 2";
+}
+
+[Options(new[] { "asd" })]
+file sealed class PublicFieldOption
+{
+    public const string OptionText = "public field option";
+
+    [Option(OptionText)]
+    public string Option;
+}
+
+[Options(new[] { "asd" })]
+file sealed class PrivateFieldOption
+{
+    public const string OptionText = "private field option";
+
+    [Option(OptionText)]
+    private string Option;
+}
+
+[Options(new[] { "asd" })]
+file sealed class PublicPropertyGetSetOption
+{
+    public const string OptionText = "public property get set option";
+
+    [Option(OptionText)]
+    public string Option { get; set; }
+}
+
+[Options(new[] { "asd" })]
+file sealed class PrivatePropertyGetSetOption
+{
+    public const string OptionText = "private property get set option";
+
+    [Option(OptionText)]
+    private string Option { get; set; }
+}
+
+[Options(new[] { "asd" })]
+file sealed class PropertyGetOption
+{
+    public const string OptionText = "property get option";
+
+    [Option(OptionText)]
+    public string Option { get; }
+}
+
+[Options(new[] { "asd" })]
+file sealed class TwoFieldOptions
+{
+    public const string Option1Text = "option 1";
+    public const string Option2Text = "option 2";
+
+    [Option(Option1Text)]
+    public string Option1;
+
+    [Option(Option2Text)]
+    public int Option2;
+}
+
+[Options(new[] { "asd" })]
+file sealed class TwoPropertyOptions
+{
+    public const string Option1Text = "option 1";
+    public const string Option2Text = "option 2";
+
+    [Option(Option1Text)]
+    public string Option1 { get; set; }
+
+    [Option(Option2Text)]
+    public int Option2 { get; set; }
+}
+
+[Options(new[] { "asd" })]
+file sealed class FieldPropertyOptions
+{
+    public const string Option1Text = "option 1";
+    public const string Option2Text = "option 2";
+
+    [Option(Option1Text)]
+    public string Option1;
+
+    [Option(Option2Text)]
+    public int Option2 { get; set; }
 }
