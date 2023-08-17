@@ -6,22 +6,48 @@
     <Grid>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="1.5*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <ListBox ItemsSource="{Binding RecentProjects}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Button Command="{Binding DataContext.LoadProjectCommand, RelativeSource={RelativeSource AncestorType={x:Type controls:ProjectSelectionPanel}}}"
-                            CommandParameter="{Binding}">
+        <StackPanel Orientation="Vertical">
+            <Label Content="Open recent project" Style="{StaticResource Header}" Margin="20 10 0 0" />
 
-                        <TextBlock Text="{Binding}" />
+            <ItemsControl ItemsSource="{Binding RecentProjects}"
+                          Margin="15">
 
-                    </Button>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button HorizontalContentAlignment="Stretch"
+                                Command="{Binding DataContext.LoadProjectCommand, RelativeSource={RelativeSource AncestorType={x:Type controls:ProjectSelectionPanel}}}"
+                                CommandParameter="{Binding FullName}">
+
+                            <DockPanel LastChildFill="False">
+
+                                <Label Content="{Binding Name}" />
+
+                                <Label Content="{Binding Directory}"
+                                       Style="{StaticResource SecondaryForeground}"
+                                       Margin="5 0" />
+
+                                <Label DockPanel.Dock="Right"
+                                       Content="{Binding LastOpened}"
+                                       Style="{StaticResource SecondaryForeground}" />
+
+                            </DockPanel>
+
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+            </ItemsControl>
+        </StackPanel>
 
         <StackPanel Grid.Column="1" Orientation="Vertical">
             <Button Command="{Binding OpenProjectCommand}">Open Project</Button>

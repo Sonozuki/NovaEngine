@@ -41,14 +41,14 @@ internal static class ProjectManager
     *********/
     /// <summary>Retrieves the recent projects.</summary>
     /// <returns>The recent projects.</returns>
-    public static List<string> GetRecentProjects()
+    public static List<RecentProject> GetRecentProjects()
     {
         if (!File.Exists(Constants.RecentProjectsFile))
             return new();
 
         try
         {
-            return JsonSerializer.Deserialize<List<string>>(File.ReadAllText(Constants.RecentProjectsFile));
+            return JsonSerializer.Deserialize<List<RecentProject>>(File.ReadAllText(Constants.RecentProjectsFile));
         }
         catch
         {
@@ -63,7 +63,7 @@ internal static class ProjectManager
     *********/
     /// <summary>Saves the recent projects.</summary>
     /// <param name="recentProjects">The new contents of the recent projects file.</param>
-    private static void SaveRecentProjects(IEnumerable<string> recentProjects)
+    private static void SaveRecentProjects(IEnumerable<RecentProject> recentProjects)
     {
         Directory.CreateDirectory(Constants.AppDataDirectory);
         File.WriteAllText(Constants.RecentProjectsFile, JsonSerializer.Serialize(recentProjects));
@@ -73,8 +73,11 @@ internal static class ProjectManager
     /// <param name="project">The project to add to the recent projects.</param>
     private static void AddProjectToRecentProjects(string project)
     {
+        var projectFileInfo = new FileInfo(project);
+        var recentProject = new RecentProject(projectFileInfo.Name, projectFileInfo.DirectoryName, DateTime.UtcNow);
+
         var recentProjects = GetRecentProjects();
-        recentProjects.Insert(0, project);
+        recentProjects.Insert(0, recentProject);
         SaveRecentProjects(recentProjects.Distinct());
     }
 }

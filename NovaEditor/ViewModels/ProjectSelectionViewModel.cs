@@ -7,7 +7,7 @@ public sealed class ProjectSelectionViewModel
     ** Properties
     *********/
     /// <summary>The recently opened projects.</summary>
-    public ObservableCollection<string> RecentProjects { get; } = new();
+    public ObservableCollection<RecentProject> RecentProjects { get; } = new();
 
     /// <summary>The command used to open a file dialog to pick a project.</summary>
     public ICommand OpenProjectCommand { get; set; }

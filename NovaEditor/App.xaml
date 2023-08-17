@@ -12,6 +12,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="ResourceDictionaries/ColoursResourceDictionary.xaml" />
                 <ResourceDictionary Source="ResourceDictionaries/SliderResourceDictionary.xaml" />
+                <ResourceDictionary Source="ResourceDictionaries/ButtonResourceDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <dataTemplateSelectors:AssetsPanelIconDataTemplateSelector x:Key="AssetsPanelIconDataTemplateSelector" />
@@ -22,7 +23,7 @@
             <Style TargetType="Window">
                 <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
             </Style>
-            
+
             <Style TargetType="controls:PanelTabGroupGroup">
                 <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
             </Style>
@@ -159,6 +160,10 @@
                         <Setter Property="Background" Value="{StaticResource TextColourPrimaryBrush}" />
                     </Trigger>
                 </Style.Triggers>
+            </Style>
+
+            <Style x:Key="Header" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+                <Setter Property="FontSize" Value="18" />
             </Style>
 
             <Style x:Key="SecondaryForeground" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
