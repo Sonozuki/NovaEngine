@@ -4,6 +4,6 @@
                           xmlns:controls="clr-namespace:NovaEditor.Controls"
                           Title="Hierarchy">
 
-    <Label Content="Hierarchy panel content" />
+    <TreeView x:Name="RootTreeView" />
 
 </controls:EditorPanelBase>

@@ -20,8 +20,11 @@
         <Using Include="NovaEditor.Windows" />
         <Using Include="NovaEditor.Workspace" />
         <Using Include="NovaEngine.Common.Windows.Api" />
+        <Using Include="NovaEngine.ContentPipeline" />
+        <Using Include="NovaEngine.Core" />
         <Using Include="NovaEngine.Extensions" />
         <Using Include="NovaEngine.Globalisation" />
+        <Using Include="NovaEngine.SceneManagement" />
         <Using Include="System.Collections.Immutable" />
         <Using Include="System.Collections.ObjectModel" />
         <Using Include="System.Collections.Specialized" />
