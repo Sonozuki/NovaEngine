@@ -1,6 +1,7 @@
-﻿<controls:EditorPanelBase x:Class="NovaEditor.Controls.AssetsPanel"
+﻿<panels:EditorPanelBase x:Class="NovaEditor.Controls.Panels.AssetsPanel"
                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:panels="clr-namespace:NovaEditor.Controls.Panels"
                           xmlns:controls="clr-namespace:NovaEditor.Controls"
                           Title="Assets">
 
@@ -63,4 +64,4 @@
         </Grid>
     </Grid>
 
-</controls:EditorPanelBase>
+</panels:EditorPanelBase>

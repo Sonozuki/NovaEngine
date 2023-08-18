@@ -1,6 +1,6 @@
 ﻿using SceneManager = NovaEditor.Managers.SceneManager;
 
-namespace NovaEditor.Controls;
+namespace NovaEditor.Controls.Panels;
 
 /// <summary>Represents the panel used for managing the content of scenes.</summary>
 public partial class HierarchyPanel : EditorPanelBase

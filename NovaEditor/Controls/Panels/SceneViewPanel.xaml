@@ -1,11 +1,11 @@
-﻿<controls:EditorPanelBase x:Class="NovaEditor.Controls.SceneView"
+﻿<panels:EditorPanelBase x:Class="NovaEditor.Controls.Panels.SceneViewPanel"
                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                          xmlns:controls="clr-namespace:NovaEditor.Controls"
+                          xmlns:panels="clr-namespace:NovaEditor.Controls.Panels"
                           Title="Scene View" Loaded="OnLoaded">
 
     <Border Name="RootBorder"
             VerticalAlignment="Stretch"
             HorizontalAlignment="Stretch" />
 
-</controls:EditorPanelBase>
+</panels:EditorPanelBase>

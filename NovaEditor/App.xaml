@@ -2,7 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:icons="clr-namespace:NovaEditor.Controls.Icons"
-             xmlns:controls="clr-namespace:NovaEditor.Controls"
+             xmlns:panels="clr-namespace:NovaEditor.Controls.Panels"
              xmlns:valueConverters="clr-namespace:NovaEditor.ValueConverters"
              xmlns:dataTemplateSelectors="clr-namespace:NovaEditor.DataTemplateSelectors"
              Startup="OnStartup">
@@ -24,11 +24,11 @@
                 <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
             </Style>
 
-            <Style TargetType="controls:PanelTabGroupGroup">
+            <Style TargetType="panels:PanelTabGroupGroup">
                 <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
             </Style>
 
-            <Style TargetType="controls:PanelTabGroup">
+            <Style TargetType="panels:PanelTabGroup">
                 <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
             </Style>
 
@@ -120,7 +120,7 @@
                 <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
             </Style>
 
-            <Style x:Key="RootPanelTabGroupGroup" TargetType="controls:PanelTabGroupGroup" BasedOn="{StaticResource {x:Type controls:PanelTabGroupGroup}}">
+            <Style x:Key="RootPanelTabGroupGroup" TargetType="panels:PanelTabGroupGroup" BasedOn="{StaticResource {x:Type panels:PanelTabGroupGroup}}">
                 <Setter Property="Padding" Value="5" />
             </Style>
 
@@ -171,13 +171,13 @@
             </Style>
 
             <DataTemplate x:Key="AssetFileIcon">
-                <Button Command="{Binding ViewModel.SelectPathCommand, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetsPanel}}}"
+                <Button Command="{Binding ViewModel.SelectPathCommand, RelativeSource={RelativeSource AncestorType={x:Type panels:AssetsPanel}}}"
                         CommandParameter="{Binding FullName}"
                         Style="{StaticResource FolderFileIconButton}">
 
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="{Binding IconHeight, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetsPanel}}}" />
+                            <RowDefinition Height="{Binding IconHeight, RelativeSource={RelativeSource AncestorType={x:Type panels:AssetsPanel}}}" />
                             <RowDefinition />
                         </Grid.RowDefinitions>
 
@@ -191,13 +191,13 @@
             </DataTemplate>
 
             <DataTemplate x:Key="AssetFolderIcon">
-                <Button Command="{Binding ViewModel.SelectPathCommand, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetsPanel}}}"
+                <Button Command="{Binding ViewModel.SelectPathCommand, RelativeSource={RelativeSource AncestorType={x:Type panels:AssetsPanel}}}"
                         CommandParameter="{Binding FullName}"
                         Style="{StaticResource FolderFileIconButton}">
 
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="{Binding IconHeight, RelativeSource={RelativeSource AncestorType={x:Type controls:AssetsPanel}}}" />
+                            <RowDefinition Height="{Binding IconHeight, RelativeSource={RelativeSource AncestorType={x:Type panels:AssetsPanel}}}" />
                             <RowDefinition />
                         </Grid.RowDefinitions>
 

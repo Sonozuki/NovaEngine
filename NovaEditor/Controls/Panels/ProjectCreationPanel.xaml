@@ -1,7 +1,7 @@
-﻿<controls:EditorPanelBase x:Class="NovaEditor.Controls.ProjectCreationPanel"
+﻿<panels:EditorPanelBase x:Class="NovaEditor.Controls.Panels.ProjectCreationPanel"
                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                          xmlns:controls="clr-namespace:NovaEditor.Controls">
+                          xmlns:panels="clr-namespace:NovaEditor.Controls.Panels">
 
     <StackPanel Orientation="Vertical">
 
@@ -17,4 +17,4 @@
 
     </StackPanel>
 
-</controls:EditorPanelBase>
+</panels:EditorPanelBase>

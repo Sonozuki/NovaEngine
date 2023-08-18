@@ -1,4 +1,4 @@
-﻿namespace NovaEditor.Controls;
+﻿namespace NovaEditor.Controls.Panels;
 
 /// <summary>Represents an editor panel.</summary>
 /// <remarks>An editor panel refers to a control that can be docked.</remarks>

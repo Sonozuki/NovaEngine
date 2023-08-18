@@ -1,7 +1,7 @@
-﻿<controls:EditorPanelBase x:Class="NovaEditor.Controls.ProjectSelectionPanel"
+﻿<panels:EditorPanelBase x:Class="NovaEditor.Controls.Panels.ProjectSelectionPanel"
                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                          xmlns:controls="clr-namespace:NovaEditor.Controls">
+                          xmlns:panels="clr-namespace:NovaEditor.Controls.Panels">
 
     <Grid>
 
@@ -25,7 +25,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Button HorizontalContentAlignment="Stretch"
-                                Command="{Binding DataContext.LoadProjectCommand, RelativeSource={RelativeSource AncestorType={x:Type controls:ProjectSelectionPanel}}}"
+                                Command="{Binding DataContext.LoadProjectCommand, RelativeSource={RelativeSource AncestorType={x:Type panels:ProjectSelectionPanel}}}"
                                 CommandParameter="{Binding FullName}">
 
                             <DockPanel LastChildFill="False">
@@ -56,4 +56,4 @@
 
     </Grid>
 
-</controls:EditorPanelBase>
+</panels:EditorPanelBase>

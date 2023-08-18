@@ -1,4 +1,4 @@
-﻿namespace NovaEditor.Controls;
+﻿namespace NovaEditor.Controls.Panels;
 
 /// <summary>Represents the panel used for managing assets.</summary>
 public partial class AssetsPanel : EditorPanelBase

@@ -1,4 +1,4 @@
-﻿namespace NovaEditor.Controls;
+﻿namespace NovaEditor.Controls.Panels;
 
 /// <summary>Represents a group of panels with a tab selector.</summary>
 public partial class PanelTabGroup : EditorPanelBase

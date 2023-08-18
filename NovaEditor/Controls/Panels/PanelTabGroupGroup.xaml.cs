@@ -1,4 +1,4 @@
-﻿namespace NovaEditor.Controls;
+﻿namespace NovaEditor.Controls.Panels;
 
 /// <summary>Represents a group of <see cref="PanelTabGroup"/>s.</summary>
 public partial class PanelTabGroupGroup : EditorPanelBase

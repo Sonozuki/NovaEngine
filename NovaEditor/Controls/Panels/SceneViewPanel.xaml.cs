@@ -1,7 +1,7 @@
-﻿namespace NovaEditor.Controls;
+﻿namespace NovaEditor.Controls.Panels;
 
 /// <summary>Represents the panel that displays the scene view.</summary>
-public sealed partial class SceneView : EditorPanelBase, IDisposable
+public sealed partial class SceneViewPanel : EditorPanelBase, IDisposable
 {
     /*********
     ** Fields
@@ -17,10 +17,10 @@ public sealed partial class SceneView : EditorPanelBase, IDisposable
     ** Constructors
     *********/
     /// <summary>Destructs the instance.</summary>
-    ~SceneView() => Dispose(false);
+    ~SceneViewPanel() => Dispose(false);
 
     /// <summary>Constructs an instance.</summary>
-    public SceneView()
+    public SceneViewPanel()
     {
         InitializeComponent();
     }

@@ -1,4 +1,4 @@
-﻿namespace NovaEditor.Controls;
+﻿namespace NovaEditor.Controls.Panels;
 
 /// <summary>Represents the panel used for editing properties of game objects.</summary>
 public partial class PropertiesPanel : EditorPanelBase

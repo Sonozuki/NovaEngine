@@ -1,20 +1,20 @@
-﻿namespace NovaEditor.Controls;
+﻿namespace NovaEditor.Controls.Panels;
 
-/// <summary>Represents the panel used for creating a project.</summary>
-public partial class ProjectCreationPanel : EditorPanelBase
+/// <summary>Represents the panel used for selecting a project to load.</summary>
+public partial class ProjectSelectionPanel : EditorPanelBase
 {
     /*********
     ** Properties
     *********/
     /// <summary>The view model of the panel.</summary>
-    public ProjectCreationViewModel ViewModel { get; } = new();
+    public ProjectSelectionViewModel ViewModel { get; } = new();
 
 
     /*********
     ** Constructor
     *********/
     /// <summary>Constructs an instance.</summary>
-    public ProjectCreationPanel()
+    public ProjectSelectionPanel()
     {
         DataContext = ViewModel;
         InitializeComponent();
