@@ -1,11 +1,34 @@
 ﻿namespace NovaEditor.ViewModels;
 
-/// <summary>Represents the view model for <see cref="MainWindow"/>.</summary>
-public sealed class MainWindowViewModel
+/// <summary>Represents the view model for <see cref="MainWindowTitleBar"/>.</summary>
+public sealed class MainWindowTitleBarViewModel
 {
+    /*********
+    ** Events
+    *********/
+    /// <summary>Invoked after the maximise button is pressed.</summary>
+    public event Action MaximiseStateChanged;
+
+
+    /*********
+    ** Fields
+    *********/
+    /// <summary>The window the title bar belongs to.</summary>
+    private Window Window;
+
+
     /*********
     ** Properties
     *********/
+    /// <summary>The command used to minimise the window.</summary>
+    public ICommand MinimiseCommand { get; }
+
+    /// <summary>The command used to toggle the maximise state of the window.</summary>
+    public ICommand MaximiseCommand { get; }
+
+    /// <summary>The command used to close the window.</summary>
+    public ICommand CloseCommand { get; }
+
     /// <summary>The command used to create a new project.</summary>
     public ICommand CreateNewProjectCommand { get; }
 
@@ -41,8 +64,14 @@ public sealed class MainWindowViewModel
     ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
-    public MainWindowViewModel()
+    public MainWindowTitleBarViewModel(Window window)
     {
+        Window = window;
+
+        MinimiseCommand = new RelayCommand(Minimise);
+        MaximiseCommand = new RelayCommand(Maximise);
+        CloseCommand = new RelayCommand(Close);
+
         CreateNewProjectCommand = new RelayCommand(CreateNewProject);
         OpenProjectCommand = new RelayCommand(OpenProject);
         SaveProjectCommand = new RelayCommand(SaveProject);
@@ -62,6 +91,19 @@ public sealed class MainWindowViewModel
     /*********
     ** Private Methods
     *********/
+    /// <summary>Minimises the window.</summary>
+    private void Minimise() => Window.WindowState = WindowState.Minimized;
+
+    /// <summary>Toggles the maximise state of the window.</summary>
+    private void Maximise()
+    {
+        Window.WindowState = Window.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+        MaximiseStateChanged?.Invoke();
+    }
+
+    /// <summary>Closes the window.</summary>
+    private void Close() => Window.Close();
+
     /// <summary>Opens a dialog to create a new project.</summary>
     private void CreateNewProject() => throw new NotImplementedException();
 
