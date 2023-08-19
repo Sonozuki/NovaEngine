@@ -1,4 +1,4 @@
-﻿namespace NovaEditor.Controls;
+﻿namespace NovaEditor.Controls.Docking;
 
 /// <summary>Represents the left dock selector.</summary>
 public partial class DockSelectorLeft : UserControl

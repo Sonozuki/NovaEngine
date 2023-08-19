@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="NovaEditor.Controls.DockSelectorRight"
+﻿<UserControl x:Class="NovaEditor.Controls.Docking.DockSelectorTop"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,13 +8,12 @@
 
     <Border Style="{StaticResource DockSelectorBorder}">
         <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
-            <Border Grid.Column="1"
-                Style="{StaticResource DockSelectorContent}" />
+            <Border Style="{StaticResource DockSelectorContent}" />
 
         </Grid>
     </Border>

@@ -1,4 +1,4 @@
-﻿namespace NovaEditor.Controls;
+﻿namespace NovaEditor.Controls.Docking;
 
 /// <summary>Represents the top dock selector.</summary>
 public partial class DockSelectorTop : UserControl
