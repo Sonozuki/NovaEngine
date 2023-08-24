@@ -47,6 +47,7 @@
                    Fill="{StaticResource BackgroundColourMediumBrush}">
             <Rectangle.InputBindings>
                 <MouseBinding Gesture="LeftClick" Command="{Binding DragRectangleCommand}"/>
+                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding MaximiseCommand}"/>
             </Rectangle.InputBindings>
         </Rectangle>
 
