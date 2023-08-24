@@ -6,6 +6,7 @@
 
     <Grid Height="32">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
@@ -42,7 +43,14 @@
             </MenuItem>
         </Menu>
 
-        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+        <Rectangle Grid.Column="1"
+                   Fill="{StaticResource BackgroundColourMediumBrush}">
+            <Rectangle.InputBindings>
+                <MouseBinding Gesture="LeftClick" Command="{Binding DragRectangleCommand}"/>
+            </Rectangle.InputBindings>
+        </Rectangle>
+
+        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button x:Name="Minimise" Command="{Binding MinimiseCommand}" Style="{StaticResource WindowTitleButton}">
                 <icons:MinimiseIcon />
             </Button>
