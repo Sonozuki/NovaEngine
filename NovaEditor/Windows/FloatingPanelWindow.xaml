@@ -1,4 +1,10 @@
 ﻿<Window x:Class="NovaEditor.Windows.FloatingPanelWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        WindowStyle="None" />
+        WindowStyle="None">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="0" CaptionHeight="0" />
+    </WindowChrome.WindowChrome>
+
+</Window>
