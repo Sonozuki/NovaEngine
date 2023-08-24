@@ -11,9 +11,26 @@
         <WindowChrome GlassFrameThickness="0" CaptionHeight="0" />
     </WindowChrome.WindowChrome>
 
-    <DockPanel>
-        <controls:MainWindowTitleBar DockPanel.Dock="Top" />
-        <panels:PanelTabGroupGroup x:Name="RootPanelTabGroupGroup" Style="{StaticResource RootPanelTabGroupGroup}" />
-    </DockPanel>
+    <Border>
+        <Border.Style>
+            <Style TargetType="Border">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding WindowState, RelativeSource={RelativeSource AncestorType=Window}}" Value="Maximized">
+                        <Setter Property="Margin" Value="7"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding WindowState, RelativeSource={RelativeSource AncestorType=Window}}" Value="Normal">
+                        <Setter Property="Margin" Value="0"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+
+        <Grid>
+            <DockPanel>
+                <controls:MainWindowTitleBar DockPanel.Dock="Top" />
+                <panels:PanelTabGroupGroup x:Name="RootPanelTabGroupGroup" Style="{StaticResource RootPanelTabGroupGroup}" />
+            </DockPanel>
+        </Grid>
+    </Border>
 
 </Window>
