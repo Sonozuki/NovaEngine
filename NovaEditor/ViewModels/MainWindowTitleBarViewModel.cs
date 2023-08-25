@@ -20,9 +20,6 @@ public sealed class MainWindowTitleBarViewModel
     /*********
     ** Properties
     *********/
-    /// <summary>The command used to drag the window.</summary>
-    public ICommand DragRectangleCommand { get; }
-
     /// <summary>The command used to minimise the window.</summary>
     public ICommand MinimiseCommand { get; }
 
@@ -71,7 +68,6 @@ public sealed class MainWindowTitleBarViewModel
     {
         Window = window;
 
-        DragRectangleCommand = new RelayCommand(DragRectangle);
         MinimiseCommand = new RelayCommand(Minimise);
         MaximiseCommand = new RelayCommand(Maximise);
         CloseCommand = new RelayCommand(Close);
@@ -95,9 +91,6 @@ public sealed class MainWindowTitleBarViewModel
     /*********
     ** Private Methods
     *********/
-    /// <summary>The command used to drag the window.</summary>
-    private void DragRectangle() => Window.DragMove();
-
     /// <summary>Minimises the window.</summary>
     private void Minimise() => Window.WindowState = WindowState.Minimized;
 

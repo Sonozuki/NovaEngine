@@ -44,12 +44,10 @@
         </Menu>
 
         <Rectangle Grid.Column="1"
-                   Fill="{StaticResource BackgroundColourMediumBrush}">
-            <Rectangle.InputBindings>
-                <MouseBinding Gesture="LeftClick" Command="{Binding DragRectangleCommand}"/>
-                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding MaximiseCommand}"/>
-            </Rectangle.InputBindings>
-        </Rectangle>
+                   Fill="{StaticResource BackgroundColourMediumBrush}"
+                   MouseLeftButtonDown="OnMouseLeftButtonDown"
+                   MouseLeftButtonUp="OnMouseLeftButtonUp"
+                   MouseMove="OnMouseMove" />
 
         <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button x:Name="Minimise" Command="{Binding MinimiseCommand}" Style="{StaticResource WindowTitleButton}">
