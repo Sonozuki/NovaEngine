@@ -52,8 +52,8 @@ internal unsafe sealed class VulkanBuffer : IDisposable
             SharingMode = VkSharingMode.Exclusive
         };
 
-        if (VK.CreateBuffer(VulkanRenderer.Instance.Device.NativeDevice, ref bufferCreateInfo, null, out var nativeBuffer) != VkResult.Success)
-            throw new VulkanException("Failed to create buffer.").Log(LogSeverity.Fatal);
+        if (!VK.CreateBuffer(VulkanRenderer.Instance.Device.NativeDevice, ref bufferCreateInfo, null, out var nativeBuffer, out var result))
+            throw new VulkanException($"Failed to create buffer. \"{result}\"").Log(LogSeverity.Fatal);
         NativeBuffer = nativeBuffer;
 
         // allocate & bind buffer memory
@@ -66,11 +66,11 @@ internal unsafe sealed class VulkanBuffer : IDisposable
             MemoryTypeIndex = VulkanRenderer.Instance.Device.GetMemoryTypeIndex(memoryRequirements.MemoryTypeBits, MemoryProperties)
         };
 
-        if (VK.AllocateMemory(VulkanRenderer.Instance.Device.NativeDevice, ref memoryAllocateInfo, null, out NativeMemory) != VkResult.Success)
-            throw new VulkanException("Failed to allocate buffer memory.").Log(LogSeverity.Fatal);
+        if (!VK.AllocateMemory(VulkanRenderer.Instance.Device.NativeDevice, ref memoryAllocateInfo, null, out NativeMemory, out result))
+            throw new VulkanException($"Failed to allocate buffer memory. \"{result}\"").Log(LogSeverity.Fatal);
 
-        if (VK.BindBufferMemory(VulkanRenderer.Instance.Device.NativeDevice, NativeBuffer, NativeMemory, 0) != VkResult.Success)
-            throw new VulkanException("Failed to bind buffer memory.").Log(LogSeverity.Fatal);
+        if (!VK.BindBufferMemory(VulkanRenderer.Instance.Device.NativeDevice, NativeBuffer, NativeMemory, 0, out result))
+            throw new VulkanException($"Failed to bind buffer memory. \"{result}\"").Log(LogSeverity.Fatal);
 
         // create a command pool for the transfer commands
         TransferCommandPool = new(CommandPoolUsage.Transfer, VkCommandPoolCreateFlags.Transient);

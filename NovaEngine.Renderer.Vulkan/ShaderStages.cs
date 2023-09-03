@@ -80,8 +80,8 @@ internal unsafe static class ShaderStages
                 Code = shaderDataPointer
             };
 
-            if (VK.CreateShaderModule(VulkanRenderer.Instance.Device.NativeDevice, ref shaderModuleCreateInfo, null, out shaderModule) != VkResult.Success)
-                throw new VulkanException($"Failed to create shader module: {path}.").Log(LogSeverity.Fatal);
+            if (!VK.CreateShaderModule(VulkanRenderer.Instance.Device.NativeDevice, ref shaderModuleCreateInfo, null, out shaderModule, out var result))
+                throw new VulkanException($"Failed to create shader module: {path}. \"{result}\"").Log(LogSeverity.Fatal);
             ShaderModules.Add(shaderModule);
         }
 

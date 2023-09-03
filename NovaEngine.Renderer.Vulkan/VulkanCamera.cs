@@ -493,8 +493,8 @@ public unsafe class VulkanCamera : RendererCameraBase
                 Dependencies = &dependency
             };
 
-            if (VK.CreateRenderPass(VulkanRenderer.Instance.Device.NativeDevice, ref renderPassCreateInfo, null, out var nativeRenderPass) != VkResult.Success)
-                throw new VulkanException("Failed to create depth pre-pass render pass.").Log(LogSeverity.Fatal);
+            if (!VK.CreateRenderPass(VulkanRenderer.Instance.Device.NativeDevice, ref renderPassCreateInfo, null, out var nativeRenderPass, out var result))
+                throw new VulkanException($"Failed to create depth pre-pass render pass. \"{result}\"").Log(LogSeverity.Fatal);
             DepthPrepassRenderPass = nativeRenderPass;
         }
 
@@ -621,8 +621,8 @@ public unsafe class VulkanCamera : RendererCameraBase
                     Dependencies = dependenciesPointer
                 };
 
-                if (VK.CreateRenderPass(VulkanRenderer.Instance.Device.NativeDevice, ref renderPassCreateInfo, null, out var nativeRenderPass) != VkResult.Success)
-                    throw new VulkanException("Failed to create final rendering render pass.").Log(LogSeverity.Fatal);
+                if (!VK.CreateRenderPass(VulkanRenderer.Instance.Device.NativeDevice, ref renderPassCreateInfo, null, out var nativeRenderPass, out var result))
+                    throw new VulkanException($"Failed to create final rendering render pass. \"{result}\"").Log(LogSeverity.Fatal);
                 FinalRenderingRenderPass = nativeRenderPass;
             }
         }
@@ -653,8 +653,8 @@ public unsafe class VulkanCamera : RendererCameraBase
                 Layers = 1
             };
 
-            if (VK.CreateFramebuffer(VulkanRenderer.Instance.Device.NativeDevice, ref framebufferCreateInfo, null, out DepthPrepassFramebuffers[i]) != VkResult.Success)
-                throw new VulkanException("Failed to create depth pre-pass framebuffer").Log(LogSeverity.Fatal);
+            if (!VK.CreateFramebuffer(VulkanRenderer.Instance.Device.NativeDevice, ref framebufferCreateInfo, null, out DepthPrepassFramebuffers[i], out var result))
+                throw new VulkanException($"Failed to create depth pre-pass framebuffer. \"{result}\"").Log(LogSeverity.Fatal);
         }
     }
 
@@ -692,14 +692,14 @@ public unsafe class VulkanCamera : RendererCameraBase
                 Flags = VkFenceCreateFlags.Signaled
             };
 
-            if (VK.CreateSemaphore(VulkanRenderer.Instance.Device.NativeDevice, ref semaphoreCreateInfo, null, out DepthPrepassFinishedSemaphores[i]) != VkResult.Success ||
-                VK.CreateSemaphore(VulkanRenderer.Instance.Device.NativeDevice, ref semaphoreCreateInfo, null, out LightCullingFinishedSemaphores[i]) != VkResult.Success ||
-                VK.CreateSemaphore(VulkanRenderer.Instance.Device.NativeDevice, ref semaphoreCreateInfo, null, out ImageAvailableSemaphores[i]) != VkResult.Success ||
-                VK.CreateSemaphore(VulkanRenderer.Instance.Device.NativeDevice, ref semaphoreCreateInfo, null, out RenderFinishedSemaphores[i]) != VkResult.Success)
-                throw new VulkanException("Failed to create semaphores.").Log(LogSeverity.Fatal);
+            if (!VK.CreateSemaphore(VulkanRenderer.Instance.Device.NativeDevice, ref semaphoreCreateInfo, null, out DepthPrepassFinishedSemaphores[i], out var result) ||
+                !VK.CreateSemaphore(VulkanRenderer.Instance.Device.NativeDevice, ref semaphoreCreateInfo, null, out LightCullingFinishedSemaphores[i], out result) ||
+                !VK.CreateSemaphore(VulkanRenderer.Instance.Device.NativeDevice, ref semaphoreCreateInfo, null, out ImageAvailableSemaphores[i], out result) ||
+                !VK.CreateSemaphore(VulkanRenderer.Instance.Device.NativeDevice, ref semaphoreCreateInfo, null, out RenderFinishedSemaphores[i], out result))
+                throw new VulkanException($"Failed to create semaphores. \"{result}\"").Log(LogSeverity.Fatal);
 
-            if (VK.CreateFence(VulkanRenderer.Instance.Device.NativeDevice, ref fenceCreateInfo, null, out InFlightFences[i]) != VkResult.Success)
-                throw new VulkanException("Failed to create fence.").Log(LogSeverity.Fatal);
+            if (!VK.CreateFence(VulkanRenderer.Instance.Device.NativeDevice, ref fenceCreateInfo, null, out InFlightFences[i], out result))
+                throw new VulkanException($"Failed to create fence. \"{result}\"").Log(LogSeverity.Fatal);
         }
     }
 
@@ -838,8 +838,8 @@ public unsafe class VulkanCamera : RendererCameraBase
         };
 
         // TODO: don't create a fence each time
-        if (VK.CreateFence(VulkanRenderer.Instance.Device.NativeDevice, ref fenceCreateInfo, null, out var fence) != VkResult.Success)
-            throw new VulkanException("Failed to create fence.").Log(LogSeverity.Fatal);
+        if (!VK.CreateFence(VulkanRenderer.Instance.Device.NativeDevice, ref fenceCreateInfo, null, out var fence, out var result))
+            throw new VulkanException($"Failed to create fence. \"{result}\"").Log(LogSeverity.Fatal);
 
         var frustumsCommandBuffer = GenerateFrustumsCommandBuffer;
         var submitInfo = new VkSubmitInfo

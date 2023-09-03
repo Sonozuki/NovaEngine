@@ -103,8 +103,8 @@ internal unsafe sealed class VulkanSwapchain : IDisposable
             Clipped = true,
         };
 
-        if (VK.CreateSwapchainKHR(VulkanRenderer.Instance.Device.NativeDevice, ref swapchainCreateInfo, null, out var nativeSwapchain) != VkResult.Success)
-            throw new VulkanException("Failed to create swapchain.").Log(LogSeverity.Fatal);
+        if (!VK.CreateSwapchainKHR(VulkanRenderer.Instance.Device.NativeDevice, ref swapchainCreateInfo, null, out var nativeSwapchain, out var result))
+            throw new VulkanException($"Failed to create swapchain. \"{result}\"").Log(LogSeverity.Fatal);
         NativeSwapchain = nativeSwapchain;
 
         // retrieve images and create image views
@@ -127,8 +127,8 @@ internal unsafe sealed class VulkanSwapchain : IDisposable
                 SubresourceRange = new(VkImageAspectFlags.Color, 0, 1, 0, 1)
             };
 
-            if (VK.CreateImageView(VulkanRenderer.Instance.Device.NativeDevice, ref imageViewCreateInfo, null, out var nativeImageView) != VkResult.Success)
-                throw new VulkanException("Failed to create swapchain image view.").Log(LogSeverity.Fatal);
+            if (!VK.CreateImageView(VulkanRenderer.Instance.Device.NativeDevice, ref imageViewCreateInfo, null, out var nativeImageView, out result))
+                throw new VulkanException($"Failed to create swapchain image view. \"{result}\"").Log(LogSeverity.Fatal);
             NativeImageViews[i] = nativeImageView;
         }
 
@@ -164,8 +164,8 @@ internal unsafe sealed class VulkanSwapchain : IDisposable
                     Layers = 1
                 };
 
-                if (VK.CreateFramebuffer(VulkanRenderer.Instance.Device.NativeDevice, ref framebufferCreateInfo, null, out var framebuffer) != VkResult.Success)
-                    throw new VulkanException("Failed to create framebuffer.").Log(LogSeverity.Fatal);
+                if (!VK.CreateFramebuffer(VulkanRenderer.Instance.Device.NativeDevice, ref framebufferCreateInfo, null, out var framebuffer, out var result))
+                    throw new VulkanException($"Failed to create framebuffer. \"{result}\"").Log(LogSeverity.Fatal);
                 NativeFramebuffers[i] = framebuffer;
             }
         }
@@ -177,8 +177,8 @@ internal unsafe sealed class VulkanSwapchain : IDisposable
     /// <exception cref="VulkanException">Thrown if the next image couldn't be acquired.</exception>
     public uint AcquireNextImage(VkSemaphore semaphore)
     {
-        if (VK.AcquireNextImageKHR(VulkanRenderer.Instance.Device.NativeDevice, NativeSwapchain, ulong.MaxValue, semaphore, VkFence.Null, out var imageIndex) != VkResult.Success)
-            throw new VulkanException("Failed to acquire next image.").Log(LogSeverity.Fatal);
+        if (!VK.AcquireNextImageKHR(VulkanRenderer.Instance.Device.NativeDevice, NativeSwapchain, ulong.MaxValue, semaphore, VkFence.Null, out var imageIndex, out var result))
+            throw new VulkanException($"Failed to acquire next image. \"{result}\"").Log(LogSeverity.Fatal);
         return imageIndex;
     }
 
@@ -200,8 +200,8 @@ internal unsafe sealed class VulkanSwapchain : IDisposable
             Swapchains = &swapchain
         };
 
-        if (VK.QueuePresentKHR(VulkanRenderer.Instance.Device.GraphicsQueue, ref presentInfo) != VkResult.Success)
-            throw new VulkanException("Failed to queue presentation.").Log(LogSeverity.Fatal);
+        if (!VK.QueuePresentKHR(VulkanRenderer.Instance.Device.GraphicsQueue, ref presentInfo, out var result))
+            throw new VulkanException($"Failed to queue presentation. \"{result}\"").Log(LogSeverity.Fatal);
     }
 
     /// <summary>Gets the format for a depth texture.</summary>

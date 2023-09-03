@@ -49,8 +49,8 @@ internal unsafe sealed class VulkanDescriptorPool : IDisposable
                 PoolSizes = poolSizesPointer
             };
 
-            if (VK.CreateDescriptorPool(VulkanRenderer.Instance.Device.NativeDevice, ref descriptorPoolCreateInfo, null, out var descriptorPool) != VkResult.Success)
-                throw new VulkanException("Failed to create descriptor pool.").Log(LogSeverity.Fatal);
+            if (!VK.CreateDescriptorPool(VulkanRenderer.Instance.Device.NativeDevice, ref descriptorPoolCreateInfo, null, out var descriptorPool, out var result))
+                throw new VulkanException($"Failed to create descriptor pool. \"{result}\"").Log(LogSeverity.Fatal);
             NativeDescriptorPool = descriptorPool;
         }
     }

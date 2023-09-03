@@ -42,8 +42,8 @@ internal unsafe sealed class VulkanCommandPool : IDisposable
             Flags = commandPoolCreateFlags ?? 0
         };
 
-        if (VK.CreateCommandPool(VulkanRenderer.Instance.Device.NativeDevice, ref commandPoolCreateInfo, null, out var nativeCommandPool) != VkResult.Success)
-            throw new VulkanException("Failed to create command pool.").Log(LogSeverity.Fatal);
+        if (!VK.CreateCommandPool(VulkanRenderer.Instance.Device.NativeDevice, ref commandPoolCreateInfo, null, out var nativeCommandPool, out var result))
+            throw new VulkanException($"Failed to create command pool. \"{result}\"").Log(LogSeverity.Fatal);
         NativeCommandPool = nativeCommandPool;
     }
 
@@ -68,8 +68,8 @@ internal unsafe sealed class VulkanCommandPool : IDisposable
         };
 
         var commandBuffers = new VkCommandBuffer[1];
-        if (VK.AllocateCommandBuffers(VulkanRenderer.Instance.Device.NativeDevice, ref commandBufferAllocateInfo, commandBuffers) != VkResult.Success)
-            throw new VulkanException("Failed to allocate command buffer.").Log(LogSeverity.Fatal);
+        if (!VK.AllocateCommandBuffers(VulkanRenderer.Instance.Device.NativeDevice, ref commandBufferAllocateInfo, commandBuffers, out var result))
+            throw new VulkanException($"Failed to allocate command buffer. \"{result}\"").Log(LogSeverity.Fatal);
         var commandBuffer = commandBuffers[0];
 
         // begin and return command buffer
@@ -81,8 +81,8 @@ internal unsafe sealed class VulkanCommandPool : IDisposable
                 Flags = commandBufferUsageFlags == null ? 0 : commandBufferUsageFlags.Value
             };
 
-            if (VK.BeginCommandBuffer(commandBuffer, &commandBufferBeginInfo) != VkResult.Success)
-                throw new VulkanException("Failed to start command buffer.").Log(LogSeverity.Fatal);
+            if (!VK.BeginCommandBuffer(commandBuffer, &commandBufferBeginInfo, out result))
+                throw new VulkanException($"Failed to start command buffer. \"{result}\"").Log(LogSeverity.Fatal);
         }
 
         return commandBuffer;
@@ -101,8 +101,8 @@ internal unsafe sealed class VulkanCommandPool : IDisposable
     {
         // end recording commands
         if (endCommandBuffer)
-            if (VK.EndCommandBuffer(commandBuffer) != VkResult.Success)
-                throw new VulkanException("Failed to end command buffer.").Log(LogSeverity.Fatal);
+            if (!VK.EndCommandBuffer(commandBuffer, out var result))
+                throw new VulkanException($"Failed to end command buffer. \"{result}\"").Log(LogSeverity.Fatal);
 
         waitSemaphores ??= Array.Empty<VkSemaphore>();
         waitDestinationStageMask ??= Array.Empty<VkPipelineStageFlags>();
@@ -125,11 +125,11 @@ internal unsafe sealed class VulkanCommandPool : IDisposable
                 SignalSemaphores = signalSemaphoresPointer
             };
 
-            if (VK.QueueSubmit(Queue, 1, new[] { submitInfo }, VkFence.Null) != VkResult.Success)
-                throw new VulkanException("Failed to submit command buffer.").Log(LogSeverity.Fatal);
+            if (!VK.QueueSubmit(Queue, 1, new[] { submitInfo }, VkFence.Null, out var result))
+                throw new VulkanException($"Failed to submit command buffer. \"{result}\"").Log(LogSeverity.Fatal);
 
-            if (VK.QueueWaitIdle(Queue) != VkResult.Success)
-                throw new VulkanException("Failed to queue wait idle.").Log(LogSeverity.Fatal);
+            if (!VK.QueueWaitIdle(Queue, out result))
+                throw new VulkanException($"Failed to queue wait idle. \"{result}\"").Log(LogSeverity.Fatal);
         }
 
         // free command buffer

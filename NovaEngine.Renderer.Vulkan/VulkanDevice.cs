@@ -92,8 +92,8 @@ internal unsafe sealed class VulkanDevice : IDisposable
                     EnabledExtensionNames = (byte**)enabledExtensionNamesPointer
                 };
 
-                if (VK.CreateDevice(NativePhysicalDevice, ref deviceCreateInfo, null, out var nativeDevice) != VkResult.Success)
-                    throw new VulkanException("Failed to create device.").Log(LogSeverity.Fatal);
+                if (!VK.CreateDevice(NativePhysicalDevice, ref deviceCreateInfo, null, out var nativeDevice, out var result))
+                    throw new VulkanException($"Failed to create device. \"{result}\"").Log(LogSeverity.Fatal);
                 NativeDevice = nativeDevice;
             }
         }

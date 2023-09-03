@@ -126,8 +126,8 @@ internal unsafe static class DescriptorSetLayouts
                 Bindings = bindingsPointer
             };
 
-            if (VK.CreateDescriptorSetLayout(VulkanRenderer.Instance.Device.NativeDevice, ref descriptorSetLayoutCreateInfo, null, out var descriptorSetLayout) != VkResult.Success)
-                throw new VulkanException("Failed to create descriptor set layout.").Log(LogSeverity.Fatal);
+            if (!VK.CreateDescriptorSetLayout(VulkanRenderer.Instance.Device.NativeDevice, ref descriptorSetLayoutCreateInfo, null, out var descriptorSetLayout, out var result))
+                throw new VulkanException($"Failed to create descriptor set layout. \"{result}\"").Log(LogSeverity.Fatal);
             return descriptorSetLayout;
         }
     }

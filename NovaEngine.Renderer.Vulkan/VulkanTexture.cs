@@ -104,8 +104,8 @@ public unsafe class VulkanTexture : RendererTextureBase
             InitialLayout = VkImageLayout.Undefined
         };
 
-        if (VK.CreateImage(VulkanRenderer.Instance.Device.NativeDevice, ref imageCreateInfo, null, out var nativeImage) != VkResult.Success)
-            throw new VulkanException("Failed to create image.").Log(LogSeverity.Fatal);
+        if (!VK.CreateImage(VulkanRenderer.Instance.Device.NativeDevice, ref imageCreateInfo, null, out var nativeImage, out var result))
+            throw new VulkanException($"Failed to create image. \"{result}\"").Log(LogSeverity.Fatal);
         NativeImage = nativeImage;
 
         // allocate memory
@@ -118,11 +118,11 @@ public unsafe class VulkanTexture : RendererTextureBase
             MemoryTypeIndex = VulkanRenderer.Instance.Device.GetMemoryTypeIndex(memoryRequirements.MemoryTypeBits, VkMemoryPropertyFlags.DeviceLocal)
         };
 
-        if (VK.AllocateMemory(VulkanRenderer.Instance.Device.NativeDevice, ref memoryAllocateInfo, null, out NativeMemory) != VkResult.Success)
-            throw new VulkanException("Failed to allocate image memory.").Log(LogSeverity.Fatal);
+        if (!VK.AllocateMemory(VulkanRenderer.Instance.Device.NativeDevice, ref memoryAllocateInfo, null, out NativeMemory, out result))
+            throw new VulkanException($"Failed to allocate image memory. \"{result}\"").Log(LogSeverity.Fatal);
 
-        if (VK.BindImageMemory(VulkanRenderer.Instance.Device.NativeDevice, NativeImage, NativeMemory, 0) != VkResult.Success)
-            throw new VulkanException("Failed to bind image memory.").Log(LogSeverity.Fatal);
+        if (!VK.BindImageMemory(VulkanRenderer.Instance.Device.NativeDevice, NativeImage, NativeMemory, 0, out result))
+            throw new VulkanException($"Failed to bind image memory. \"{result}\"").Log(LogSeverity.Fatal);
 
         // create image view
         var imageViewCreateInfo = new VkImageViewCreateInfo
@@ -135,8 +135,8 @@ public unsafe class VulkanTexture : RendererTextureBase
             SubresourceRange = new(AspectFlags, 0, MipLevels, 0, LayerCount)
         };
 
-        if (VK.CreateImageView(VulkanRenderer.Instance.Device.NativeDevice, ref imageViewCreateInfo, null, out var nativeImageView) != VkResult.Success)
-            throw new VulkanException("Failed to create image view.").Log(LogSeverity.Fatal);
+        if (!VK.CreateImageView(VulkanRenderer.Instance.Device.NativeDevice, ref imageViewCreateInfo, null, out var nativeImageView, out result))
+            throw new VulkanException($"Failed to create image view. \"{result}\"").Log(LogSeverity.Fatal);
         NativeImageView = nativeImageView;
 
         // create sampler
@@ -160,8 +160,8 @@ public unsafe class VulkanTexture : RendererTextureBase
             UnnormalizedCoordinates = false
         };
 
-        if (VK.CreateSampler(VulkanRenderer.Instance.Device.NativeDevice, ref samplerCreateInfo, null, out var nativeSampler) != VkResult.Success)
-            throw new VulkanException("Failed to create sampler.").Log(LogSeverity.Fatal);
+        if (!VK.CreateSampler(VulkanRenderer.Instance.Device.NativeDevice, ref samplerCreateInfo, null, out var nativeSampler, out result))
+            throw new VulkanException($"Failed to create sampler. \"{result}\"").Log(LogSeverity.Fatal);
         NativeSampler = nativeSampler;
 
         CommandPool = new(CommandPoolUsage.Graphics, VkCommandPoolCreateFlags.Transient);

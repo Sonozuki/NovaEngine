@@ -214,8 +214,8 @@ public unsafe sealed class VulkanRenderer : IRenderer
                 instanceCreateInfo.EnabledExtensionCount = (uint)enabledExtensionNames.Length;
                 instanceCreateInfo.EnabledExtensionNames = (byte**)enabledExtensionNamesPointer;
 
-                if (VK.CreateInstance(ref instanceCreateInfo, null, out NativeInstance) != VkResult.Success)
-                    throw new VulkanException("Failed to create Vulkan instance.").Log(LogSeverity.Fatal);
+                if (!VK.CreateInstance(ref instanceCreateInfo, null, out NativeInstance, out var result))
+                    throw new VulkanException($"Failed to create Vulkan instance. \"{result}\"").Log(LogSeverity.Fatal);
 
                 VK.InitialiseInstanceMethods(NativeInstance);
             }
@@ -230,8 +230,8 @@ public unsafe sealed class VulkanRenderer : IRenderer
                     Callback = &DebugReport
                 };
 
-                if (VK.CreateDebugReportCallbackEXT(NativeInstance, ref debugReportCallbackCreateInfo, null, out NativeDebugReportCallback) != VkResult.Success)
-                    throw new VulkanException("Failed to create debug report callback.").Log(LogSeverity.Fatal);
+                if (!VK.CreateDebugReportCallbackEXT(NativeInstance, ref debugReportCallbackCreateInfo, null, out NativeDebugReportCallback, out var result))
+                    throw new VulkanException($"Failed to create debug report callback. \"{result}\"").Log(LogSeverity.Fatal);
             }
         }
         finally
@@ -257,8 +257,8 @@ public unsafe sealed class VulkanRenderer : IRenderer
                 Hinstance = Program.Handle
             };
 
-            if (VK.CreateWin32SurfaceKHR(NativeInstance, ref win32SurfaceCreateInfo, null, out var nativeSurface) != VkResult.Success)
-                throw new VulkanException("Failed to create surface.").Log(LogSeverity.Fatal);
+            if (!VK.CreateWin32SurfaceKHR(NativeInstance, ref win32SurfaceCreateInfo, null, out var nativeSurface, out var result))
+                throw new VulkanException($"Failed to create surface. \"{result}\"").Log(LogSeverity.Fatal);
             NativeSurface = nativeSurface;
         }
         // TODO: add mac and linux support

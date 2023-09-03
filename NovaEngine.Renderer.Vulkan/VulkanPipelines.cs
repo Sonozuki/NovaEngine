@@ -199,8 +199,8 @@ internal unsafe sealed class VulkanPipelines : IDisposable
                 PushConstantRanges = pushConstantRangesPointer
             };
 
-            if (VK.CreatePipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, ref pipelineLayoutCreateInfo, null, out var pipelineLayout) != VkResult.Success)
-                throw new VulkanException("Failed to create pipeline layout.").Log(LogSeverity.Fatal);
+            if (!VK.CreatePipelineLayout(VulkanRenderer.Instance.Device.NativeDevice, ref pipelineLayoutCreateInfo, null, out var pipelineLayout, out var result))
+                throw new VulkanException($"Failed to create pipeline layout. \"{result}\"").Log(LogSeverity.Fatal);
             return pipelineLayout;
         }
     }
@@ -219,8 +219,8 @@ internal unsafe sealed class VulkanPipelines : IDisposable
             Layout = layout
         };
 
-        if (VK.CreateComputePipelines(VulkanRenderer.Instance.Device.NativeDevice, VkPipelineCache.Null, 1, new[] { pipelineCreateInfo }, null, out var computePipeline) != VkResult.Success)
-            throw new VulkanException("Failed to create compute pipeline.").Log(LogSeverity.Fatal);
+        if (!VK.CreateComputePipelines(VulkanRenderer.Instance.Device.NativeDevice, VkPipelineCache.Null, 1, new[] { pipelineCreateInfo }, null, out var computePipeline, out var result))
+            throw new VulkanException($"Failed to create compute pipeline. \"{result}\"").Log(LogSeverity.Fatal);
         return computePipeline;
     }
 
@@ -365,8 +365,8 @@ internal unsafe sealed class VulkanPipelines : IDisposable
                 Subpass = subpass
             };
 
-            if (VK.CreateGraphicsPipelines(VulkanRenderer.Instance.Device.NativeDevice, VkPipelineCache.Null, 1, new[] { pipelineCreateInfo }, null, out var graphicsPipeline) != VkResult.Success)
-                throw new VulkanException("Failed to create graphics pipeline.").Log(LogSeverity.Fatal);
+            if (!VK.CreateGraphicsPipelines(VulkanRenderer.Instance.Device.NativeDevice, VkPipelineCache.Null, 1, new[] { pipelineCreateInfo }, null, out var graphicsPipeline, out var result))
+                throw new VulkanException($"Failed to create graphics pipeline. \"{result}\"").Log(LogSeverity.Fatal);
             return graphicsPipeline;
         }
     }
