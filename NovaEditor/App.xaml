@@ -13,6 +13,7 @@
                 <ResourceDictionary Source="ResourceDictionaries/ColoursResourceDictionary.xaml" />
                 <ResourceDictionary Source="ResourceDictionaries/SliderResourceDictionary.xaml" />
                 <ResourceDictionary Source="ResourceDictionaries/ButtonResourceDictionary.xaml" />
+                <ResourceDictionary Source="ResourceDictionaries/TreeViewItemResourceDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <dataTemplateSelectors:AssetsPanelIconDataTemplateSelector x:Key="AssetsPanelIconDataTemplateSelector" />
@@ -106,6 +107,11 @@
                 <Setter Property="Foreground" Value="{StaticResource TextColourPrimaryBrush}" />
                 <Setter Property="FontSize" Value="13" />
                 <Setter Property="Padding" Value="0" />
+            </Style>
+
+            <Style TargetType="TreeView">
+                <Setter Property="Background" Value="{StaticResource BackgroundColourMediumBrush}" />
+                <Setter Property="BorderThickness" Value="0" />
             </Style>
 
             <!-- explicit -->
