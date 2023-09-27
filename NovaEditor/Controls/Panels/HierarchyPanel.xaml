@@ -1,8 +1,9 @@
 ﻿<panels:EditorPanelBase x:Class="NovaEditor.Controls.Panels.HierarchyPanel"
-                          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                          xmlns:panels="clr-namespace:NovaEditor.Controls.Panels"
-                          Title="Hierarchy">
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:panels="clr-namespace:NovaEditor.Controls.Panels"
+                        Title="Hierarchy"
+                        Loaded="OnLoaded">
 
     <TreeView x:Name="RootTreeView" />
 

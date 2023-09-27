@@ -16,6 +16,7 @@ internal static class EmbeddedEngineManager
         {
             "-disable-read-commands",
             "-remove-engine-thread-block",
+            "-force-load-scenes",
             "-window-parent", hwndParent.Handle.ToString(G11n.Culture),
             "-width", width.ToString(G11n.Culture),
             "-height", height.ToString(G11n.Culture)
