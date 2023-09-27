@@ -16,10 +16,20 @@ public sealed class ButtonExtensions
     /// <summary>Gets whether the button is rounded.</summary>
     /// <param name="target">The element with the <see cref="IsRoundedProperty"/>.</param>
     /// <returns>Whether the button is rounded.</returns>
-    public static bool GetIsRounded(UIElement target) => (bool)target.GetValue(IsRoundedProperty);
+    public static bool GetIsRounded(UIElement target)
+    {
+        ArgumentNullException.ThrowIfNull(target);
+
+        return (bool)target.GetValue(IsRoundedProperty);
+    }
 
     /// <summary>Sets whether the button is rounded.</summary>
     /// <param name="target">The element with the <see cref="IsRoundedProperty"/>.</param>
     /// <param name="value">The new IsRounded value.</param>
-    public static void SetIsRounded(UIElement target, bool value) => target.SetValue(IsRoundedProperty, value);
+    public static void SetIsRounded(UIElement target, bool value)
+    {
+        ArgumentNullException.ThrowIfNull(target);
+
+        target.SetValue(IsRoundedProperty, value);
+    }
 }
