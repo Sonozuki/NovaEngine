@@ -44,6 +44,9 @@ public partial class AssetsPanel : EditorPanelBase
         InitializeComponent();
 
         ViewModel.NumberOfColumnsChanged += UpdateIconScale;
+
+        foreach (var childPath in ViewModel.RootAssetsPath.Children)
+            RootTreeView.Items.Add(CreateTreeViewItem(childPath));
     }
 
 
@@ -61,5 +64,21 @@ public partial class AssetsPanel : EditorPanelBase
 
         IconScale = columnWidth / iconWidth;
         IconHeight = iconHeight * IconScale;
+    }
+
+    /// <summary>Creates a <see cref="TreeViewItem"/> from a path info.</summary>
+    /// <param name="pathInfo">The path info to create the <see cref="TreeViewItem"/> from.</param>
+    /// <returns>The <see cref="TreeViewItem"/> with the specified name and children.</returns>
+    private TreeViewItem CreateTreeViewItem(PathInfo pathInfo)
+    {
+        var treeViewItem = new TreeViewItem
+        {
+            Header = pathInfo.Name
+        };
+
+        foreach (var childPath in pathInfo.Children)
+            treeViewItem.Items.Add(CreateTreeViewItem(childPath));
+
+        return treeViewItem;
     }
 }

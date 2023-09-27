@@ -2,7 +2,6 @@
                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:panels="clr-namespace:NovaEditor.Controls.Panels"
-                          xmlns:controls="clr-namespace:NovaEditor.Controls"
                           Title="Assets">
 
     <Grid>
@@ -12,9 +11,7 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Orientation="Vertical">
-            <controls:AssetDirectoryTreeItem PathInfo="{Binding RootAssetsPath}" />
-        </StackPanel>
+        <TreeView x:Name="RootTreeView" />
 
         <GridSplitter Grid.Column="1"
                       BorderBrush="{StaticResource BorderColourMediumBrush}"
