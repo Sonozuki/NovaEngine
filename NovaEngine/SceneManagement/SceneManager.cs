@@ -6,15 +6,15 @@ public static class SceneManager
     /*********
     ** Fields
     *********/
-    /// <summary>The currently loaded scenes.</summary>
-    private static readonly List<Scene> _LoadedScenes = new();
+    /// <summary>The currently loaded scenes keyed on scene name.</summary>
+    private static readonly Dictionary<string, Scene> _LoadedScenes = new();
 
 
     /*********
     ** Properties
     *********/
     /// <summary>The currently loaded scenes.</summary>
-    public static IReadOnlyList<Scene> LoadedScenes => _LoadedScenes.AsReadOnly();
+    public static ImmutableArray<Scene> LoadedScenes => _LoadedScenes.Values.ToImmutableArray();
 
     /// <summary>The scene responsible for storing gizmos.</summary>
     internal static GizmosScene GizmosScene { get; } = new();
@@ -40,8 +40,11 @@ public static class SceneManager
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
 
+        if (_LoadedScenes.ContainsKey(name))
+            return;
+
         var loadedScene = Content.Load<Scene>(Path.Combine(Constants.RelativeSceneDirectory, name + Constants.SceneFileExtension));
-        _LoadedScenes.Add(loadedScene);
+        _LoadedScenes[name] = loadedScene;
         loadedScene.Start();
     }
 
