@@ -27,6 +27,10 @@ public static class SceneManager
     static SceneManager()
     {
         GizmosScene.Start();
+
+        if (Program.Arguments.ForceLoadScenes)
+            foreach (var sceneFile in Directory.GetFiles(Constants.SceneDirectory, $"*{Constants.SceneFileExtension}"))
+                LoadScene(Path.GetFileNameWithoutExtension(sceneFile));
     }
 
 
@@ -53,6 +57,9 @@ public static class SceneManager
     /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is <see langword="null"/> or empty.</exception>
     public static void UnloadScene(string name)
     {
+        if (Program.Arguments.ForceLoadScenes)
+            return;
+
         ArgumentException.ThrowIfNullOrEmpty(name);
 
         var sceneToUnload = LoadedScenes.FirstOrDefault(loadedScene => loadedScene.Name.ToLower(G11n.Culture) == name.ToLower(G11n.Culture));

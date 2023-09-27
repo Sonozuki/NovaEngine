@@ -15,6 +15,9 @@ public sealed class Arguments
     /// <summary>Whether the block on the engine thread should be removed.</summary>
     public bool RemoveEngineThreadBlock { get; private set; }
 
+    /// <summary>Whether all the scenes should be force loaded and never get unloaded.</summary>
+    public bool ForceLoadScenes { get; private set; }
+
     /// <summary>The parent to use when creating <see cref="Program.MainWindow"/>.</summary>
     public IntPtr WindowParent { get; private set; }
 
@@ -59,6 +62,10 @@ public sealed class Arguments
 
                 case "-remove-engine-thread-block":
                     arguments.RemoveEngineThreadBlock = true;
+                    break;
+                    
+                case "-force-load-scenes":
+                    arguments.ForceLoadScenes = true;
                     break;
 
                 case "-window-parent":
