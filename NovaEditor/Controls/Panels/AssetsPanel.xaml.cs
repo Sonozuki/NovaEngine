@@ -8,7 +8,7 @@ public partial class AssetsPanel : EditorPanelBase
     *********/
     /// <summary>The scale of the file and folder icons in the panel.</summary>
     public static readonly DependencyProperty IconScaleProperty = DependencyProperty.Register(nameof(IconScale), typeof(double), typeof(AssetsPanel));
-    
+
     /// <summary>The height of the file and folder icons in the panel.</summary>
     public static readonly DependencyProperty IconHeightProperty = DependencyProperty.Register(nameof(IconHeight), typeof(double), typeof(AssetsPanel));
 
@@ -44,9 +44,9 @@ public partial class AssetsPanel : EditorPanelBase
         InitializeComponent();
 
         ViewModel.NumberOfColumnsChanged += UpdateIconScale;
+        ViewModel.RootAssetsPathChanged += UpdateTreeView;
 
-        foreach (var childPath in ViewModel.RootAssetsPath.Children)
-            RootTreeView.Items.Add(CreateTreeViewItem(childPath));
+        UpdateTreeView();
     }
 
 
@@ -80,5 +80,13 @@ public partial class AssetsPanel : EditorPanelBase
             treeViewItem.Items.Add(CreateTreeViewItem(childPath));
 
         return treeViewItem;
+    }
+
+    /// <summary>Updates the tree view.</summary>
+    private void UpdateTreeView()
+    {
+        RootTreeView.Items.Clear();
+        foreach (var childPath in ViewModel.RootAssetsPath.Children)
+            RootTreeView.Items.Add(CreateTreeViewItem(childPath));
     }
 }
