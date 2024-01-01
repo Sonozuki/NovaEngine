@@ -3,7 +3,7 @@
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                         xmlns:panels="clr-namespace:NovaEditor.Controls.Panels"
                         Title="Hierarchy"
-                        Loaded="OnLoaded">
+                        Initialized="OnInitialised">
 
     <TreeView x:Name="RootTreeView" />
 

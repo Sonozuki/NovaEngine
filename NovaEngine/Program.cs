@@ -11,6 +11,9 @@ public static class Program
     /// <summary>The completion source for <see cref="MainWindowTask"/>.</summary>
     private static readonly TaskCompletionSource<Window> MainWindowTaskCompletionSource = new();
 
+    /// <summary>The completion source for <see cref="ScenesLoadedTask"/>.</summary>
+    private static readonly TaskCompletionSource ScenesLoadedTaskCompletionSource = new();
+
 
     /*********
     ** Properties
@@ -32,6 +35,9 @@ public static class Program
 
     /// <summary>A task used for retrieving the main window once it has been created.</summary>
     public static Task<Window> MainWindowTask => MainWindowTaskCompletionSource.Task;
+    
+    /// <summary>A task used for determining when the scenes have been loaded.</summary>
+    public static Task ScenesLoadedTask => ScenesLoadedTaskCompletionSource.Task;
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 
@@ -62,6 +68,7 @@ public static class Program
 
                 Content.EnsureDirectoryExists();
                 LoadInitialScenes();
+                ScenesLoadedTaskCompletionSource.SetResult();
 
                 if (!Arguments.HideWindow)
                     MainWindow.Show();

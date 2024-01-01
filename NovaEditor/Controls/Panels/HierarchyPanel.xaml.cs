@@ -33,14 +33,12 @@ public partial class HierarchyPanel : EditorPanelBase
         return treeViewItem;
     }
 
-    // TODO: temp - the onloaded is only used as it's called after the SceneViewPanel's onloaded, once the below modifications have been done
-    // then this can be moved back into the constructor
-    private void OnLoaded(object sender, RoutedEventArgs e)
+    /// <summary>Invoked when the control has been initialised.</summary>
+    /// <param name="sender">The event sender.</param>
+    /// <param name="e">The event data.</param>
+    private async void OnInitialised(object sender, EventArgs e)
     {
-        // TODO: currently there is a race condition between the engine getting initialised and this panel retrieving the loaded scenes
-        // this will probably need to be changed to loaded the engine before the workspace starts getting parsed, this way the scenes can be loaded
-        // and the SceneViewPanel can just hook into the engine instance that is already been created
-        Thread.Sleep(2000);
+        await NovaEngine.Program.ScenesLoadedTask.WaitAsync(TimeSpan.FromMinutes(1)).ConfigureAwait(true);
 
         // TODO: there may also need to be some sort of dependency system, e.g. if scene X is loaded which requires the HUD scene, the HUD
         // scene will automatically be loaded this needs some way of setting ofc and to be displayed. perhaps show all scenes in this panel
