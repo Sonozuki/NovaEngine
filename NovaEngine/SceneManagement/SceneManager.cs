@@ -62,9 +62,8 @@ public static class SceneManager
 
         ArgumentException.ThrowIfNullOrEmpty(name);
 
-        var sceneToUnload = LoadedScenes.FirstOrDefault(loadedScene => loadedScene.Name.ToLower(G11n.Culture) == name.ToLower(G11n.Culture));
-        if (sceneToUnload == null)
-            throw new ArgumentException($"No scene with the name '{name}' is loaded.");
+        var sceneToUnload = LoadedScenes.FirstOrDefault(loadedScene => loadedScene.Name.ToLower(G11n.Culture) == name.ToLower(G11n.Culture))
+            ?? throw new ArgumentException($"No scene with the name '{name}' is loaded.");
 
         foreach (var rootObject in sceneToUnload.RootGameObjects)
             rootObject.Dispose();
