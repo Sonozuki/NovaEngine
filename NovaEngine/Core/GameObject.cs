@@ -222,11 +222,11 @@ public sealed class GameObject : IDisposable
             Parent = null; // this is to remove this instance from the child list
             RendererGameObject?.Dispose();
 
-            foreach (var component in Components)
-                component.Dispose();
+            for (var i = 0; i < Components.Count; i++)
+                Components[i].Dispose();
 
-            foreach (var child in Children)
-                child.Dispose();
+            for (var i = 0; i < Children.Count; i++)
+                Children[i].Dispose();
         }
 
         IsDisposed = true;
