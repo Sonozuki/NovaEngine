@@ -11,14 +11,19 @@ internal class WorkspacePanel
     /// <summary>The fully qualified type name of the panel.</summary>
     public string PanelTypeName { get; set; }
 
+    /// <summary>The persistent settings of the panel.</summary>
+    public Dictionary<string, string> Settings { get; set; }
+
 
     /*********
     ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
     /// <param name="panelTypeName">The fully qualified type name of the panel.</param>
-    public WorkspacePanel(string panelTypeName)
+    /// <param name="settings">The persistent settings of the panel.</param>
+    public WorkspacePanel(string panelTypeName, Dictionary<string, string> settings)
     {
         PanelTypeName = panelTypeName;
+        Settings = settings;
     }
 }

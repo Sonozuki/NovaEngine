@@ -20,7 +20,9 @@ public sealed partial class SceneViewPanel : EditorPanelBase, IDisposable
     ~SceneViewPanel() => Dispose(false);
 
     /// <summary>Constructs an instance.</summary>
-    public SceneViewPanel()
+    /// <param name="settings">The persistent settings of the panel.</param>
+    public SceneViewPanel(NotificationDictionary<string, string> settings)
+        : base(settings)
     {
         InitializeComponent();
     }

@@ -15,6 +15,7 @@ public partial class PanelTabGroupGroup : EditorPanelBase
     *********/
     /// <summary>Constructs an instance.</summary>
     public PanelTabGroupGroup()
+        : base(null)
     {
         DataContext = ViewModel;
         InitializeComponent();

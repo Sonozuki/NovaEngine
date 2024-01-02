@@ -7,7 +7,9 @@ public partial class HierarchyPanel : EditorPanelBase
     ** Constructor
     *********/
     /// <summary>Constructs an instance.</summary>
-    public HierarchyPanel()
+    /// <param name="settings">The persistent settings of the panel.</param>
+    public HierarchyPanel(NotificationDictionary<string, string> settings)
+        : base(settings)
     {
         InitializeComponent();
     }

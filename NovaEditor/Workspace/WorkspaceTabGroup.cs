@@ -18,13 +18,13 @@ internal sealed class WorkspaceTabGroup : WorkspacePanel
     *********/
     /// <summary>Constructs an instance.</summary>
     public WorkspaceTabGroup()
-        : base(typeof(PanelTabGroup).FullName) { }
+        : base(typeof(PanelTabGroup).FullName, new()) { }
 
     /// <summary>Constructs an instance.</summary>
     /// <param name="panels">The panels in the tab group.</param>
     /// <param name="selectedPanelIndex">The index of the selected panel in the tab group.</param>
     public WorkspaceTabGroup(IEnumerable<WorkspacePanel> panels, int selectedPanelIndex)
-        : base(typeof(PanelTabGroup).FullName)
+        : base(typeof(PanelTabGroup).FullName, new())
     {
         Panels = panels.ToList();
         SelectedPanelIndex = selectedPanelIndex;

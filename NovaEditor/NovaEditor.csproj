@@ -12,6 +12,7 @@
     <ItemGroup>
         <Using Include="CommunityToolkit.Mvvm.Input" />
         <Using Include="Microsoft.Win32" />
+        <Using Include="NovaEditor.Collections" />
         <Using Include="NovaEditor.Controls" />
         <Using Include="NovaEditor.Controls.Icons" />
         <Using Include="NovaEditor.Controls.Panels" />

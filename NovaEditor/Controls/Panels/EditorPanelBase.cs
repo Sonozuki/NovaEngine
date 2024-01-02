@@ -20,4 +20,18 @@ public abstract class EditorPanelBase : UserControl
         get => (string)GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
     }
+
+    /// <summary>The persistent settings of the panel.</summary>
+    public NotificationDictionary<string, string> Settings { get; }
+
+
+    /*********
+    ** Constructors
+    *********/
+    /// <summary>Constructs an instance.</summary>
+    /// <param name="settings">The persistent settings of the panel.</param>
+    protected EditorPanelBase(NotificationDictionary<string, string> settings)
+    {
+        Settings = settings;
+    }
 }

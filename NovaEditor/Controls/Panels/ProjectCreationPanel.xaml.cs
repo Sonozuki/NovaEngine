@@ -15,6 +15,7 @@ public partial class ProjectCreationPanel : EditorPanelBase
     *********/
     /// <summary>Constructs an instance.</summary>
     public ProjectCreationPanel()
+        : base(null)
     {
         DataContext = ViewModel;
         InitializeComponent();

@@ -7,7 +7,9 @@ public partial class PropertiesPanel : EditorPanelBase
     ** Constructor
     *********/
     /// <summary>Constructs an instance.</summary>
-    public PropertiesPanel()
+    /// <param name="settings">The persistent settings of the panel.</param>
+    public PropertiesPanel(NotificationDictionary<string, string> settings)
+        : base(settings)
     {
         InitializeComponent();
     }

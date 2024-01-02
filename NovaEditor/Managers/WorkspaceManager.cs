@@ -37,7 +37,7 @@ internal static class WorkspaceManager
     private static WorkspacePanel GetWorkspace()
     {
         if (!File.Exists(Constants.WorkspaceFile))
-            return new(null); // TODO: default workspace
+            return new(null, new()); // TODO: default workspace
 
         try
         {
@@ -46,7 +46,7 @@ internal static class WorkspaceManager
         catch
         {
             File.Delete(Constants.WorkspaceFile);
-            return new(null); // TODO: default workspace
+            return new(null, new()); // TODO: default workspace
         }
     }
 
@@ -60,7 +60,7 @@ internal static class WorkspaceManager
         else if (editorPanel is PanelTabGroupGroup panelTabGroupGroup)
             return new WorkspaceTabGroupGroup(panelTabGroupGroup.ViewModel.Orientation, panelTabGroupGroup.ViewModel.Panels.Select(CreatePanel));
         else
-            return new WorkspacePanel(editorPanel.GetType().FullName);
+            return new WorkspacePanel(editorPanel.GetType().FullName, editorPanel.Settings?.AsDictionary());
     }
 
     /// <summary>Creates an editor panel from a workspace panel.</summary>
@@ -89,7 +89,12 @@ internal static class WorkspaceManager
             return panelTabGroupGroup;
         }
         else
-            return (EditorPanelBase)Activator.CreateInstance(Type.GetType(workspacePanel.PanelTypeName))
+        {
+            var settings = new NotificationDictionary<string, string>(workspacePanel.Settings);
+            settings.NotificationDictionaryChanged += (_, _) => SaveWorkspace();
+
+            return (EditorPanelBase)Activator.CreateInstance(Type.GetType(workspacePanel.PanelTypeName), new[] { settings })
                 ?? throw new InvalidOperationException("Failed to create panel in workspace");
+        }
     }
 }

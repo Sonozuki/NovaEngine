@@ -38,7 +38,9 @@ public partial class AssetsPanel : EditorPanelBase
     ** Constructor
     *********/
     /// <summary>Constructs an instance.</summary>
-    public AssetsPanel()
+    /// <param name="settings">The persistent settings of the panel.</param>
+    public AssetsPanel(NotificationDictionary<string, string> settings)
+        : base(settings)
     {
         DataContext = ViewModel;
         InitializeComponent();
