@@ -41,7 +41,7 @@ public class PathInfo : DependencyObject
     public bool HasChildren => Children.Any();
 
     /// <summary>The child paths of the path.</summary>
-    public ObservableCollection<PathInfo> Children { get; private set; }
+    public ReadOnlyObservableCollection<PathInfo> Children { get; private set; }
 
 
     /*********
@@ -79,6 +79,6 @@ public class PathInfo : DependencyObject
                 children.Add(new(isDirectory: false, file.FullName));
         }
 
-        Children = new(children);
+        Children = new(new(children));
     }
 }
