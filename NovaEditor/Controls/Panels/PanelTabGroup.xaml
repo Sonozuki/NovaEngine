@@ -1,8 +1,8 @@
 ﻿<panels:EditorPanelBase x:Class="NovaEditor.Controls.Panels.PanelTabGroup"
-                          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                          xmlns:panels="clr-namespace:NovaEditor.Controls.Panels"
-                          xmlns:controls="clr-namespace:NovaEditor.Controls">
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:panels="clr-namespace:NovaEditor.Controls.Panels"
+                        xmlns:controls="clr-namespace:NovaEditor.Controls">
 
     <TabControl x:Name="PanelTabControl"
                 TabStripPlacement="Bottom"
