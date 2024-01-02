@@ -9,7 +9,7 @@ internal static class WorkspaceManager
     /// <summary>Saves the current workspace.</summary>
     public static void SaveWorkspace()
     {
-        var rootTabGroupGroup = (Application.Current as App).MainWindow.RootPanelTabGroupGroup;
+        var rootTabGroupGroup = (EditorPanelBase)(Application.Current as App).MainWindow.RootPanelTabGroupGroup.Content;
         var rootWorkspacePanel = CreatePanel(rootTabGroupGroup);
         File.WriteAllText(Constants.WorkspaceFile, JsonSerializer.Serialize(rootWorkspacePanel));
     }
