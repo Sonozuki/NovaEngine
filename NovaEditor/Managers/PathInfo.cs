@@ -50,13 +50,31 @@ public class PathInfo : DependencyObject
     /// <summary>Constructs an instance.</summary>
     /// <param name="isDirectory">Whether the path is a directory.</param>
     /// <param name="fullName">The full name of the path.</param>
-    internal PathInfo(bool isDirectory, string fullName)
+    /// <param name="expandedDirectories">The full names of the directories (including children directories) whose path infos should have <see cref="IsExpanded"/> initialised to <see langword="true"/>.</param>
+    internal PathInfo(bool isDirectory, string fullName, List<string> expandedDirectories)
     {
         IsDirectory = isDirectory;
         FullName = fullName;
+        IsExpanded = expandedDirectories.Contains(fullName);
         Name = Path.GetFileName(fullName);
 
-        CalculateChildren();
+        CalculateChildren(expandedDirectories);
+    }
+
+
+    /*********
+    ** Public Methods
+    *********/
+    /// <summary>Retrieves <paramref name="rootPathInfo"/> as well as all recursive child PathInfos.</summary>
+    /// <param name="rootPathInfo">The root PathInfo of the tree to flatten.</param>
+    /// <returns><paramref name="rootPathInfo"/> as well as all recursive child PathInfos.</returns>
+    public static ImmutableArray<PathInfo> Flatten(PathInfo rootPathInfo)
+    {
+        ArgumentNullException.ThrowIfNull(rootPathInfo);
+
+        var allPathInfos = new List<PathInfo>();
+        Flatten(allPathInfos, rootPathInfo);
+        return allPathInfos.ToImmutableArray();
     }
 
 
@@ -64,7 +82,8 @@ public class PathInfo : DependencyObject
     ** Private Methods
     *********/
     /// <summary>Calculates the children of the path.</summary>
-    private void CalculateChildren()
+    /// <param name="expandedDirectories">The full names of the directories (including children directories) whose path infos should have <see cref="IsExpanded"/> initialised to <see langword="true"/>.</param>
+    private void CalculateChildren(List<string> expandedDirectories)
     {
         var children = new List<PathInfo>();
 
@@ -73,12 +92,26 @@ public class PathInfo : DependencyObject
             var directoryInfo = new DirectoryInfo(FullName);
 
             foreach (var directory in directoryInfo.GetDirectories())
-                children.Add(new(isDirectory: true, directory.FullName));
+                children.Add(new(isDirectory: true, directory.FullName, expandedDirectories));
 
             foreach (var file in directoryInfo.GetFiles())
-                children.Add(new(isDirectory: false, file.FullName));
+                children.Add(new(isDirectory: false, file.FullName, expandedDirectories));
         }
 
         Children = new(new(children));
+    }
+
+    /// <summary>Adds <paramref name="pathInfo"/> and all recursive children to <paramref name="allPathInfos"/>.</summary>
+    /// <param name="allPathInfos">The collection that <paramref name="pathInfo"/> and all recursive children should get added to.</param>
+    /// <param name="pathInfo">The node to start flattening from.</param>
+    private static void Flatten(List<PathInfo> allPathInfos, PathInfo pathInfo)
+    {
+        allPathInfos.Add(pathInfo);
+
+        foreach (var child in pathInfo.Children)
+            if (!child.IsDirectory)
+                allPathInfos.Add(child);
+            else
+                Flatten(allPathInfos, child);
     }
 }

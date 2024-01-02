@@ -99,8 +99,9 @@ public sealed class AssetsViewModel : DependencyObject, IDisposable
     public void UpdateRootAssetsPath() =>
         Dispatcher.Invoke(() => // TODO: only temp, instead of recreating it should just apply the changes (or at the very least copy over IsExpanded)
         {
-            RootAssetsPath = AssetManager.GetAssetPathInfo();
-            SelectedDirectoryInfo = RootAssetsPath;
+            RootAssetsPath = AssetManager.GetAssetPathInfo(RootAssetsPath);
+            SelectedDirectoryInfo = SelectedDirectoryInfo == null ? RootAssetsPath
+                                                                  : AssetManager.GetPathInfoByPath(RootAssetsPath, SelectedDirectoryInfo.FullName) ?? RootAssetsPath;
         });
 
 
@@ -138,7 +139,7 @@ public sealed class AssetsViewModel : DependencyObject, IDisposable
         if (!directory.Exists)
             return;
 
-        SelectedDirectoryInfo = new(isDirectory: true, directory.FullName);
+        SelectedDirectoryInfo = AssetManager.GetPathInfoByPath(RootAssetsPath, directory.FullName);
     }
 
     /// <summary>Cleans up unmanaged resources in the component.</summary>
