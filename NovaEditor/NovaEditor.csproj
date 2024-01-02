@@ -26,9 +26,11 @@
         <Using Include="NovaEngine.Extensions" />
         <Using Include="NovaEngine.Globalisation" />
         <Using Include="NovaEngine.SceneManagement" />
+        <Using Include="System.Collections" />
         <Using Include="System.Collections.Immutable" />
         <Using Include="System.Collections.ObjectModel" />
         <Using Include="System.Collections.Specialized" />
+        <Using Include="System.Diagnostics.CodeAnalysis" />
         <Using Include="System.Globalization" />
         <Using Include="System.IO" />
         <Using Include="System.Reflection" />
