@@ -73,8 +73,11 @@ public partial class AssetsPanel : EditorPanelBase
     {
         var treeViewItem = new TreeViewItem
         {
-            Header = pathInfo.Name
+            Header = pathInfo.Name,
+            IsExpanded = pathInfo.IsExpanded
         };
+        treeViewItem.Expanded += (_, _) => pathInfo.IsExpanded = true;
+        treeViewItem.Collapsed += (_, _) => pathInfo.IsExpanded = false;
 
         foreach (var childPath in pathInfo.Children)
             treeViewItem.Items.Add(CreateTreeViewItem(childPath));
