@@ -47,7 +47,10 @@ public class NotificationDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         {
             var changeType = NotificationDictionaryChangeTypes.Add;
             if (Dictionary.TryGetValue(key, out var oldValue))
-                changeType = NotificationDictionaryChangeTypes.Change;
+                if (oldValue == null && value == null || (oldValue?.Equals(value) ?? false)) // if a value is unchanged, don't create a notification
+                    return;
+                else
+                    changeType = NotificationDictionaryChangeTypes.Change;
 
             Dictionary[key] = value;
             NotificationDictionaryChanged?.Invoke(this, new(changeType, key, value, oldValue));
