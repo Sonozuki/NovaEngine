@@ -17,16 +17,19 @@ public sealed class AssetsViewModel : DependencyObject, IDisposable
     ** Fields
     *********/
     /// <summary>The number of columns in the assets panel.</summary>
-    public static readonly DependencyProperty NumberOfColumnsProperty = DependencyProperty.Register(nameof(NumberOfColumns), typeof(int), typeof(AssetsViewModel), new((sender, _) => (sender as AssetsViewModel).NumberOfColumnsChanged?.Invoke()));
+    public static readonly DependencyProperty NumberOfColumnsProperty = DependencyProperty.Register(nameof(NumberOfColumns), typeof(int), typeof(AssetsViewModel), new(NumberOfColumnsPropertyChanged));
 
     /// <summary>The root path info of the assets directory.</summary>
-    public static readonly DependencyProperty RootAssetsPathProperty = DependencyProperty.Register(nameof(RootAssetsPath), typeof(PathInfo), typeof(AssetsViewModel), new((sender, _) => (sender as AssetsViewModel).RootAssetsPathChanged?.Invoke()));
+    public static readonly DependencyProperty RootAssetsPathProperty = DependencyProperty.Register(nameof(RootAssetsPath), typeof(PathInfo), typeof(AssetsViewModel), new(RootAssetsPathPropertyChanged));
 
     /// <summary>The path info of the currently selected directory.</summary>
     public static readonly DependencyProperty SelectedDirectoryInfoProperty = DependencyProperty.Register(nameof(SelectedDirectoryInfo), typeof(PathInfo), typeof(AssetsViewModel));
 
     /// <summary>The path of the selected item in the assets panel.</summary>
     public static readonly DependencyProperty SelectedPathProperty = DependencyProperty.Register(nameof(SelectedPath), typeof(string), typeof(AssetsViewModel));
+
+    /// <summary>The persistent settings of the panel.</summary>
+    private readonly NotificationDictionary<string, string> Settings;
 
     /// <summary>Whether the view model has been disposed.</summary>
     private bool IsDisposed;
@@ -78,8 +81,13 @@ public sealed class AssetsViewModel : DependencyObject, IDisposable
     ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
-    public AssetsViewModel()
+    /// <param name="settings">The settings of the panel.</param>
+    public AssetsViewModel(NotificationDictionary<string, string> settings)
     {
+        Settings = settings;
+        if (Settings.TryGetValue(nameof(NumberOfColumns), out var numberOfColumns))
+            NumberOfColumns = int.Parse(numberOfColumns, G11n.Culture);
+
         UpdateRootAssetsPath();
 
         SelectPathCommand = new RelayCommand<string>(SelectDirectory);
@@ -157,5 +165,22 @@ public sealed class AssetsViewModel : DependencyObject, IDisposable
             NumberOfColumnsChanged = null;
             RootAssetsPathChanged = null;
         }
+    }
+
+    /// <summary>Invoked when <see cref="NumberOfColumnsProperty"/> is changed.</summary>
+    /// <param name="sender">The event sender.</param>
+    /// <param name="e">The event data.</param>
+    private static void NumberOfColumnsPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+    {
+        (sender as AssetsViewModel).Settings[nameof(NumberOfColumns)] = ((int)e.NewValue).ToString(G11n.Culture);
+        (sender as AssetsViewModel).NumberOfColumnsChanged?.Invoke();
+    }
+
+    /// <summary>Invoked when <see cref="RootAssetsPathProperty"/> is changed.</summary>
+    /// <param name="sender">The event sender.</param>
+    /// <param name="e">The event data.</param>
+    private static void RootAssetsPathPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+    {
+        (sender as AssetsViewModel).RootAssetsPathChanged?.Invoke();
     }
 }

@@ -17,7 +17,7 @@ public partial class AssetsPanel : EditorPanelBase
     ** Properties
     *********/
     /// <summary>The view model of the panel.</summary>
-    public AssetsViewModel ViewModel { get; } = new();
+    public AssetsViewModel ViewModel { get; }
 
     /// <summary>The scale of the file and folder icons in the panel.</summary>
     public double IconScale
@@ -42,6 +42,7 @@ public partial class AssetsPanel : EditorPanelBase
     public AssetsPanel(NotificationDictionary<string, string> settings)
         : base(settings)
     {
+        ViewModel = new(Settings);
         DataContext = ViewModel;
         InitializeComponent();
 
