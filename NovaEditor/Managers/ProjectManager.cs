@@ -1,7 +1,7 @@
 ﻿namespace NovaEditor.Managers;
 
 /// <summary>Manages nova projects.</summary>
-internal static class ProjectManager
+internal class ProjectManager : DependencyObject
 {
     /*********
     ** Events
@@ -13,6 +13,9 @@ internal static class ProjectManager
     /*********
     ** Fields
     *********/
+    /// <summary>The currently selected game object in the project.</summary>
+    public static readonly DependencyProperty SelectedGameObjectProperty = DependencyProperty.Register(nameof(SelectedGameObject), typeof(GameObject), typeof(ProjectManager));
+
     /// <summary>The current loaded project.</summary>
     private static string _CurrentProject;
 
@@ -20,6 +23,9 @@ internal static class ProjectManager
     /*********
     ** Properties
     *********/
+    /// <summary>The singleton instance of <see cref="ProjectManager"/>.</summary>
+    public static ProjectManager Instance { get; } = new();
+
     /// <summary>The current loaded project.</summary>
     public static string CurrentProject
     {
@@ -34,6 +40,27 @@ internal static class ProjectManager
                 AddProjectToRecentProjects(value);
         }
     }
+
+    /// <summary>The currently selected game object in the project.</summary>
+    public static GameObject SelectedGameObject
+    {
+        get => Instance.InternalSelectedGameObject;
+        set => Instance.InternalSelectedGameObject = value;
+    }
+
+    /// <summary>The currently selected game object in the project.</summary>
+    private GameObject InternalSelectedGameObject
+    {
+        get => (GameObject)GetValue(SelectedGameObjectProperty);
+        set => SetValue(SelectedGameObjectProperty, value);
+    }
+
+
+    /*********
+    ** Constructors
+    *********/
+    /// <summary>Constructs an instance.</summary>
+    private ProjectManager() { }
 
 
     /*********

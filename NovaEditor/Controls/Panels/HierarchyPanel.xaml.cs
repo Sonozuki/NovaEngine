@@ -18,21 +18,46 @@ public partial class HierarchyPanel : EditorPanelBase
     /*********
     ** Private Methods
     *********/
-    /// <summary>Creates a <see cref="TreeViewItem"/> with a name and child game objects.</summary>
-    /// <param name="name">The header of the <see cref="TreeViewItem"/>.</param>
-    /// <param name="childGameObjects">The children of the <see cref="TreeViewItem"/>.</param>
-    /// <returns>The <see cref="TreeViewItem"/> with the specified name and children.</returns>
-    private TreeViewItem CreateTreeViewItem(string name, IEnumerable<GameObject> childGameObjects)
+    /// <summary>Creates a tree view item from a scene.</summary>
+    /// <param name="scene">The scene to create the tree view item from.</param>
+    /// <returns>A tree view item representing <paramref name="scene"/>.</returns>
+    private TreeViewItem CreateTreeViewItem(Scene scene)
     {
         var treeViewItem = new TreeViewItem
         {
-            Header = name
+            Header = scene.Name
         };
 
-        foreach (var childGameObject in childGameObjects)
-            treeViewItem.Items.Add(CreateTreeViewItem(childGameObject.Name, childGameObject.Children));
+        foreach (var rootGameObject in scene.RootGameObjects)
+            treeViewItem.Items.Add(CreateTreeViewItem(rootGameObject));
 
         return treeViewItem;
+    }
+
+    /// <summary>Creates a tree view item from a game object.</summary>
+    /// <param name="gameObject">The game object to create the tree view item from.</param>
+    /// <returns>A tree view item representing <paramref name="gameObject"/>.</returns>
+    private TreeViewItem CreateTreeViewItem(GameObject gameObject)
+    {
+        var treeViewItem = new TreeViewItem
+        {
+            Header = gameObject.Name
+        };
+        treeViewItem.Selected += (_, e) => OnGameObjectTreeViewItemSelected(e, gameObject);
+
+        foreach (var childGameObject in gameObject.Children)
+            treeViewItem.Items.Add(CreateTreeViewItem(childGameObject));
+
+        return treeViewItem;
+    }
+
+    /// <summary>Invoked when a game object in the hierarchy is selected.</summary>
+    /// <param name="e">The event data.</param>
+    /// <param name="gameObject">The game object that was selected.</param>
+    private void OnGameObjectTreeViewItemSelected(RoutedEventArgs e, GameObject gameObject)
+    {
+        ProjectManager.SelectedGameObject = gameObject;
+        e.Handled = true;
     }
 
     /// <summary>Invoked when the control has been initialised.</summary>
@@ -46,6 +71,6 @@ public partial class HierarchyPanel : EditorPanelBase
         // scene will automatically be loaded this needs some way of setting ofc and to be displayed. perhaps show all scenes in this panel
         // and you can select scenes to hide all others that aren't that scene or any of it's dependency scenes
         foreach (var scene in SceneManager.LoadedScenes)
-            RootTreeView.Items.Add(CreateTreeViewItem(scene.Name, scene.RootGameObjects));
+            RootTreeView.Items.Add(CreateTreeViewItem(scene));
     }
 }

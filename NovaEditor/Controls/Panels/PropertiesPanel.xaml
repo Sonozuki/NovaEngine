@@ -2,8 +2,12 @@
                         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                         xmlns:panels="clr-namespace:NovaEditor.Controls.Panels"
+                        xmlns:managers="clr-namespace:NovaEditor.Managers"
                         Title="Properties">
 
-    <Label Content="Properties panel content" />
+    <StackPanel Orientation="Vertical">
+        <Label Content="Properties panel content" />
+        <Label Content="{Binding Source={x:Static managers:ProjectManager.Instance}, Path=SelectedGameObject.Name}" />
+    </StackPanel>
 
 </panels:EditorPanelBase>
