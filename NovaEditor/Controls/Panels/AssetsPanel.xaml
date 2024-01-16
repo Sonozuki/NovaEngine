@@ -6,7 +6,7 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
+            <ColumnDefinition Width="{Binding FileFolderViewWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <ColumnDefinition Width="8" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>

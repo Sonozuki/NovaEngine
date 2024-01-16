@@ -16,6 +16,9 @@ public sealed class AssetsViewModel : DependencyObject, IDisposable
     /*********
     ** Fields
     *********/
+    /// <summary>The width of the file/folder view in the assets panel.</summary>
+    public static readonly DependencyProperty FileFolderViewWidthProperty = DependencyProperty.Register(nameof(FileFolderViewWidth), typeof(GridLength), typeof(AssetsViewModel), new(FileFolderViewWidthPropertyChanged));
+
     /// <summary>The number of columns in the assets panel.</summary>
     public static readonly DependencyProperty NumberOfColumnsProperty = DependencyProperty.Register(nameof(NumberOfColumns), typeof(int), typeof(AssetsViewModel), new(NumberOfColumnsPropertyChanged));
 
@@ -41,6 +44,13 @@ public sealed class AssetsViewModel : DependencyObject, IDisposable
     /*********
     ** Properties
     *********/
+    /// <summary>The width of the file/folder view in the assets panel.</summary>
+    public GridLength FileFolderViewWidth
+    {
+        get => (GridLength)GetValue(FileFolderViewWidthProperty);
+        set => SetValue(FileFolderViewWidthProperty, value);
+    }
+
     /// <summary>The root path info of the assets directory.</summary>
     public PathInfo RootAssetsPath
     {
@@ -85,6 +95,8 @@ public sealed class AssetsViewModel : DependencyObject, IDisposable
     public AssetsViewModel(NotificationDictionary<string, string> settings)
     {
         Settings = settings;
+        if (Settings.TryGetValue(nameof(FileFolderViewWidth), out var fileFolderViewWidth))
+            FileFolderViewWidth = new GridLength(double.Parse(fileFolderViewWidth, G11n.Culture));
         if (Settings.TryGetValue(nameof(NumberOfColumns), out var numberOfColumns))
             NumberOfColumns = int.Parse(numberOfColumns, G11n.Culture);
 
@@ -165,6 +177,14 @@ public sealed class AssetsViewModel : DependencyObject, IDisposable
             NumberOfColumnsChanged = null;
             RootAssetsPathChanged = null;
         }
+    }
+
+    /// <summary>Invoked when <see cref="FileFolderViewWidthProperty"/> is changed.</summary>
+    /// <param name="sender">The event sender.</param>
+    /// <param name="e">The event data.</param>
+    private static void FileFolderViewWidthPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+    {
+        (sender as AssetsViewModel).Settings[nameof(FileFolderViewWidth)] = ((GridLength)e.NewValue).Value.ToString(G11n.Culture);
     }
 
     /// <summary>Invoked when <see cref="NumberOfColumnsProperty"/> is changed.</summary>
