@@ -59,7 +59,7 @@ internal static class WorkspaceManager
     private static WorkspacePanel CreatePanel(EditorPanelBase editorPanel)
     {
         if (editorPanel is PanelTabGroup panelTabGroup)
-            return new WorkspaceTabGroup(panelTabGroup.ViewModel.Panels.Select(CreatePanel), panelTabGroup.PanelTabControl.SelectedIndex);
+            return new WorkspaceTabGroup(panelTabGroup.ViewModel.Panels.Select(CreatePanel).ToList(), panelTabGroup.Settings?.AsDictionary());
         else if (editorPanel is PanelTabGroupGroup panelTabGroupGroup)
             return new WorkspaceTabGroupGroup(panelTabGroupGroup.ViewModel.Orientation, panelTabGroupGroup.ViewModel.Panels.Select(CreatePanel));
         else
@@ -73,11 +73,13 @@ internal static class WorkspaceManager
     {
         if (workspacePanel is WorkspaceTabGroup workspaceTabGroup)
         {
-            var panelTabGroup = new PanelTabGroup();
+            var settings = new NotificationDictionary<string, string>(workspaceTabGroup.Settings);
+            settings.NotificationDictionaryChanged += (_, _) => SaveWorkspace();
+
+            var panelTabGroup = new PanelTabGroup(settings);
 
             foreach (var editorPanel in workspaceTabGroup.Panels.Select(CreatePanel))
                 panelTabGroup.ViewModel.Panels.Add(editorPanel);
-            panelTabGroup.PanelTabControl.SelectedIndex = workspaceTabGroup.SelectedPanelIndex;
 
             return panelTabGroup;
         }

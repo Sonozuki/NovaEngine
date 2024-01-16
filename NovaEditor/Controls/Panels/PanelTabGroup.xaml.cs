@@ -22,24 +22,31 @@ public partial class PanelTabGroup : EditorPanelBase
     /*********
     ** Properties
     *********/
+    // TODO: make a standard way of creating default settings for each panel
+    /// <summary>The default settings for the panel.</summary>
+    public static NotificationDictionary<string, string> DefaultSettings => new(new() { [nameof(PanelTabGroupViewModel.SelectedIndex)] = "0" });
+
     /// <summary>The view model of the panel.</summary>
-    public PanelTabGroupViewModel ViewModel { get; } = new();
+    public PanelTabGroupViewModel ViewModel { get; }
 
 
     /*********
     ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
-    public PanelTabGroup()
-        : base(null)
+    /// <param name="settings">The persistent settings of the panel.</param>
+    public PanelTabGroup(NotificationDictionary<string, string> settings)
+        : base(settings)
     {
+        ViewModel = new(Settings);
         DataContext = ViewModel;
         InitializeComponent();
     }
 
     /// <summary>Constructs an instance.</summary>
+    /// <param name="panel">The panel to add to the initial tab group.</param>
     public PanelTabGroup(EditorPanelBase panel)
-        : this()
+        : this(DefaultSettings)
     {
         ArgumentNullException.ThrowIfNull(panel);
 

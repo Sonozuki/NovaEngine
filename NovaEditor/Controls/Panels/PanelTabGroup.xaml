@@ -6,7 +6,8 @@
 
     <TabControl x:Name="PanelTabControl"
                 TabStripPlacement="Bottom"
-                ItemsSource="{Binding Panels}">
+                ItemsSource="{Binding Panels}"
+                SelectedIndex="{Binding SelectedIndex}">
 
         <TabControl.ItemContainerStyle>
             <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource {x:Type TabItem}}">

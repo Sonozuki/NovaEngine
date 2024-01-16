@@ -9,24 +9,22 @@ internal sealed class WorkspaceTabGroup : WorkspacePanel
     /// <summary>The panels in the tab group.</summary>
     public List<WorkspacePanel> Panels { get; set; }
 
-    /// <summary>The index of the selected panel in the tab group.</summary>
-    public int SelectedPanelIndex { get; set; }
-
 
     /*********
     ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
-    public WorkspaceTabGroup()
-        : base(typeof(PanelTabGroup).FullName, new()) { }
+    /// <param name="settings">The persistent settings of the panel.</param>
+    public WorkspaceTabGroup(Dictionary<string, string> settings)
+        : base(typeof(PanelTabGroup).FullName, settings) { }
 
     /// <summary>Constructs an instance.</summary>
     /// <param name="panels">The panels in the tab group.</param>
-    /// <param name="selectedPanelIndex">The index of the selected panel in the tab group.</param>
-    public WorkspaceTabGroup(IEnumerable<WorkspacePanel> panels, int selectedPanelIndex)
-        : base(typeof(PanelTabGroup).FullName, new())
+    /// <param name="settings">The persistent settings of the panel.</param>
+    [JsonConstructor]
+    public WorkspaceTabGroup(List<WorkspacePanel> panels, Dictionary<string, string> settings)
+        : base(typeof(PanelTabGroup).FullName, settings)
     {
         Panels = panels.ToList();
-        SelectedPanelIndex = selectedPanelIndex;
     }
 }
