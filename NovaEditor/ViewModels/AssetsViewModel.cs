@@ -38,7 +38,7 @@ public sealed class AssetsViewModel : DependencyObject, IDisposable
     private bool IsDisposed;
 
     /// <summary>The file system watcher for the assets panel.</summary>
-    private FileSystemWatcher FileSystemWatcher;
+    private readonly FileSystemWatcher FileSystemWatcher;
 
 
     /*********
