@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Extensions;
 
 /// <summary>Extension methods for <see cref="Type"/>.</summary>
-internal static class TypeExtensions
+public static class TypeExtensions
 {
     /*********
     ** Fields
@@ -25,6 +25,8 @@ internal static class TypeExtensions
     /*********
     ** Public Methods
     *********/
+#pragma warning disable CA1062 // Validate arguments of public methods
+
     /// <summary>Retrieves the serialisable fields of a type.</summary>
     /// <param name="type">The type to retrieve the serialisable fields for.</param>
     /// <returns>The <see cref="FieldInfo"/>s for the serialisable fields of the type.</returns>
@@ -38,7 +40,7 @@ internal static class TypeExtensions
                              && !fieldInfo.HasCustomAttribute<NonSerialisableAttribute>()
                              && !(fieldInfo.IsStatic && fieldInfo.IsInitOnly)) // the serialiser isn't able to set the value of static initonly fields
             .ToArray();
-        
+
         CachedTypeFieldInfos[type] = fieldInfos;
         return fieldInfos;
     }
@@ -61,26 +63,6 @@ internal static class TypeExtensions
 
         CachedTypePropetyInfos[type] = propertyInfos;
         return propertyInfos;
-    }
-
-    /// <summary>Retrieves the serialiser callbacks methods of a type.</summary>
-    /// <param name="type">The type to retrieve the callback methods for.</param>
-    /// <returns>The serialiser callback methods of the type.</returns>
-    public static SerialiserCallbacks GetSerialiserCallbacks(this Type type)
-    {
-        if (CachedTypeSerialiserCallbacks.TryGetValue(type, out var callbacks))
-            return callbacks;
-
-        var methodInfos = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-
-        var onSerialisingMethods = methodInfos.Where(methodInfo => methodInfo.HasCustomAttribute<OnSerialisingAttribute>()).OrderBy(methodInfo => methodInfo.GetCustomAttribute<OnSerialisingAttribute>()!.Priority).ToArray();
-        var onSerialisedMethods = methodInfos.Where(methodInfo => methodInfo.HasCustomAttribute<OnSerialisedAttribute>()).OrderBy(methodInfo => methodInfo.GetCustomAttribute<OnSerialisedAttribute>()!.Priority).ToArray();
-        var onDeserialisingMethods = methodInfos.Where(methodInfo => methodInfo.HasCustomAttribute<OnDeserialisingAttribute>()).OrderBy(methodInfo => methodInfo.GetCustomAttribute<OnDeserialisingAttribute>()!.Priority).ToArray();
-        var onDeserialisedMethods = methodInfos.Where(methodInfo => methodInfo.HasCustomAttribute<OnDeserialisedAttribute>()).ToArray(); // OnDeserialised doesn't get ordered here as they get all grouped together and ordered then, so priorities work across types
-        callbacks = new(onSerialisingMethods, onSerialisedMethods, onDeserialisingMethods, onDeserialisedMethods);
-
-        CachedTypeSerialiserCallbacks[type] = callbacks;
-        return callbacks;
     }
 
     /// <summary>Gets whether the type is <see langword="unmanaged"/>.</summary>
@@ -113,6 +95,32 @@ internal static class TypeExtensions
 
         CachedTypeInlinable[type] = isInlinable;
         return isInlinable;
+    }
+
+#pragma warning restore CA1062 // Validate arguments of public methods
+
+
+    /*********
+    ** Internal Methods
+    *********/
+    /// <summary>Retrieves the serialiser callbacks methods of a type.</summary>
+    /// <param name="type">The type to retrieve the callback methods for.</param>
+    /// <returns>The serialiser callback methods of the type.</returns>
+    internal static SerialiserCallbacks GetSerialiserCallbacks(this Type type)
+    {
+        if (CachedTypeSerialiserCallbacks.TryGetValue(type, out var callbacks))
+            return callbacks;
+
+        var methodInfos = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+
+        var onSerialisingMethods = methodInfos.Where(methodInfo => methodInfo.HasCustomAttribute<OnSerialisingAttribute>()).OrderBy(methodInfo => methodInfo.GetCustomAttribute<OnSerialisingAttribute>()!.Priority).ToArray();
+        var onSerialisedMethods = methodInfos.Where(methodInfo => methodInfo.HasCustomAttribute<OnSerialisedAttribute>()).OrderBy(methodInfo => methodInfo.GetCustomAttribute<OnSerialisedAttribute>()!.Priority).ToArray();
+        var onDeserialisingMethods = methodInfos.Where(methodInfo => methodInfo.HasCustomAttribute<OnDeserialisingAttribute>()).OrderBy(methodInfo => methodInfo.GetCustomAttribute<OnDeserialisingAttribute>()!.Priority).ToArray();
+        var onDeserialisedMethods = methodInfos.Where(methodInfo => methodInfo.HasCustomAttribute<OnDeserialisedAttribute>()).ToArray(); // OnDeserialised doesn't get ordered here as they get all grouped together and ordered then, so priorities work across types
+        callbacks = new(onSerialisingMethods, onSerialisedMethods, onDeserialisingMethods, onDeserialisedMethods);
+
+        CachedTypeSerialiserCallbacks[type] = callbacks;
+        return callbacks;
     }
 }
 

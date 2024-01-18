@@ -1,7 +1,7 @@
 ﻿namespace NovaEngine.Extensions;
 
 /// <summary>Extension methods for <see cref="PropertyInfo"/>.</summary>
-internal static class PropertyInfoExtensions
+public static class PropertyInfoExtensions
 {
     /*********
     ** Fields
@@ -13,6 +13,8 @@ internal static class PropertyInfoExtensions
     /*********
     ** Public Methods
     *********/
+#pragma warning disable CA1062 // Validate arguments of public methods
+
     /// <summary>Gets whether the property is static.</summary>
     /// <param name="propertyInfo">The property to check whether it's static.</param>
     /// <returns><see langword="true"/>, if the property is static; otherwise, <see langword="false"/>.</returns>
@@ -55,4 +57,6 @@ internal static class PropertyInfoExtensions
         else
             return $"<{propertyInfo.Name}>k__BackingField";
     }
+
+#pragma warning restore CA1062 // Validate arguments of public methods
 }
