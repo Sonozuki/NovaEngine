@@ -1,7 +1,7 @@
 ﻿namespace NovaEditor.Managers;
 
 /// <summary>Manages nova projects.</summary>
-internal class ProjectManager : DependencyObject
+internal static class ProjectManager
 {
     /*********
     ** Events
@@ -9,23 +9,23 @@ internal class ProjectManager : DependencyObject
     /// <summary>Invoked when the current project is changed.</summary>
     public static event EventHandler<CurrentProjectChangedEventArgs> CurrentProjectChanged;
 
+    /// <summary>Invoked when the selected game object has changed.</summary>
+    public static event EventHandler<SelectedGameObjectChangedEventArgs> SelectedGameObjectChanged;
+
 
     /*********
     ** Fields
     *********/
-    /// <summary>The currently selected game object in the project.</summary>
-    public static readonly DependencyProperty SelectedGameObjectProperty = DependencyProperty.Register(nameof(SelectedGameObject), typeof(GameObject), typeof(ProjectManager));
-
     /// <summary>The current loaded project.</summary>
     private static string _CurrentProject;
+
+    /// <summary>The currently selected game object in the project.</summary>
+    private static GameObject _SelectedGameObject;
 
 
     /*********
     ** Properties
     *********/
-    /// <summary>The singleton instance of <see cref="ProjectManager"/>.</summary>
-    public static ProjectManager Instance { get; } = new();
-
     /// <summary>The current loaded project.</summary>
     public static string CurrentProject
     {
@@ -44,23 +44,14 @@ internal class ProjectManager : DependencyObject
     /// <summary>The currently selected game object in the project.</summary>
     public static GameObject SelectedGameObject
     {
-        get => Instance.InternalSelectedGameObject;
-        set => Instance.InternalSelectedGameObject = value;
+        get => _SelectedGameObject;
+        set
+        {
+            var oldGameObject = _SelectedGameObject;
+            _SelectedGameObject = value;
+            SelectedGameObjectChanged?.Invoke(null, new(oldGameObject, value));
+        }
     }
-
-    /// <summary>The currently selected game object in the project.</summary>
-    private GameObject InternalSelectedGameObject
-    {
-        get => (GameObject)GetValue(SelectedGameObjectProperty);
-        set => SetValue(SelectedGameObjectProperty, value);
-    }
-
-
-    /*********
-    ** Constructors
-    *********/
-    /// <summary>Constructs an instance.</summary>
-    private ProjectManager() { }
 
 
     /*********
