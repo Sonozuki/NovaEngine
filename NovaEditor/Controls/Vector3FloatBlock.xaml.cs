@@ -13,19 +13,19 @@ public partial class Vector3FloatBlock : UserControl
     {
         InitializeComponent();
 
-        RootStackPanel.Children.Add(new FloatBox(() => getValue().X, value => {
+        RootStackPanel.Children.Add(new FloatBox("X", () => getValue().X, value => {
             var vector = getValue();
             vector.X = value;
             setValue(vector);
         }));
 
-        RootStackPanel.Children.Add(new FloatBox(() => getValue().Y, value => {
+        RootStackPanel.Children.Add(new FloatBox("Y", () => getValue().Y, value => {
             var vector = getValue();
             vector.Y = value;
             setValue(vector);
         }));
 
-        RootStackPanel.Children.Add(new FloatBox(() => getValue().Z, value => {
+        RootStackPanel.Children.Add(new FloatBox("Z", () => getValue().Z, value => {
             var vector = getValue();
             vector.Z = value;
             setValue(vector);

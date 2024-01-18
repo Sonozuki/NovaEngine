@@ -5,9 +5,15 @@
              Loaded="OnLoaded"
              Unloaded="OnUnloaded">
 
-    <TextBox x:Name="TextBox"
+    <StackPanel Orientation="Horizontal">
+
+        <Label Content="{Binding Label}" />
+
+        <TextBox x:Name="TextBox"
              PreviewTextInput="OnPreviewTextInput"
              DataObject.Pasting="OnPasting"
              Text="{Binding ValueWrapper.Value}" />
+        
+    </StackPanel>
 
 </UserControl>

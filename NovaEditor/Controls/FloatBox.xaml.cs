@@ -6,6 +6,9 @@ public partial class FloatBox : UserControl
     /*********
     ** Properties
     *********/
+    /// <summary>The label of the float box.</summary>
+    public string Label { get; }
+
     /// <summary>The wrapper to bind to the float.</summary>
     public FloatBindingWrapper ValueWrapper { get; }
 
@@ -14,10 +17,12 @@ public partial class FloatBox : UserControl
     ** Constructors
     *********/
     /// <summary>Constructs an instance.</summary>
+    /// <param name="label">The label of the float box.</param>
     /// <param name="getValue">The function to call to retrieve the <see langword="float"/> being bound.</param>
     /// <param name="setValue">The function to call to set the <see langword="float"/> being bound.</param>
-    public FloatBox(Func<float> getValue, Action<float> setValue)
+    public FloatBox(string label, Func<float> getValue, Action<float> setValue)
     {
+        Label = label;
         ValueWrapper = new(getValue, setValue);
 
         InitializeComponent();
