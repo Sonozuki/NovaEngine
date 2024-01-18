@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="NovaEditor.Controls.FloatBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             Loaded="OnLoaded"
+             Unloaded="OnUnloaded">
+
+    <TextBox x:Name="TextBox"
+             PreviewTextInput="OnPreviewTextInput"
+             DataObject.Pasting="OnPasting"
+             Text="{Binding ValueWrapper.Value}" />
+
+</UserControl>
