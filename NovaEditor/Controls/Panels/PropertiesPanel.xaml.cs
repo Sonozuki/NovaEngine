@@ -12,5 +12,16 @@ public partial class PropertiesPanel : EditorPanelBase
         : base(settings)
     {
         InitializeComponent();
+
+        GUI.GUIUpdated += OnGUIUpdated;
+    }
+
+    /// <summary>Invoked when the controls in <see cref="GUI"/> has changed.</summary>
+    private void OnGUIUpdated()
+    {
+        RootStackPanel.Children.Clear();
+
+        foreach (var control in GUI.CreateControls())
+            RootStackPanel.Children.Add(control);
     }
 }
